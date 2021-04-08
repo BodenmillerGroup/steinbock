@@ -28,6 +28,10 @@ Allow the Docker container to run graphical user interfaces:
 
     xhost +local:root  # this is unsafe!
 
+Check whether steinbock runs:
+
+    steinbock
+
 ### Data preparation
 
 Copy the [raw data](https://github.com/BodenmillerGroup/TestData/tree/main/datasets/210308_ImcTestData/raw) to `$DATA/raw`
