@@ -1,4 +1,4 @@
-# steinbock documentation
+# Home
 
 Documentation will be made available upon request
 
