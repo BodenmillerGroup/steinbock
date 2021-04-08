@@ -1,5 +1,6 @@
 import click
 import numpy as np
+import os
 import shutil
 import sys
 
@@ -145,7 +146,10 @@ def app(ilastik_args):
     if x11_warning_message is not None:
         click.echo(x11_warning_message, file=sys.stderr)
     args = [ilastik_binary] + list(ilastik_args)
-    result = system.run_captured(args)
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+    env.pop("PYTHONHOME", None)
+    result = system.run_captured(args, env=env)
     sys.exit(result.returncode)
 
 

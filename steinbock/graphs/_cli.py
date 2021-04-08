@@ -42,15 +42,15 @@ def graphs():
 )
 @click.option(
     "--dest",
-    "cell_graph_dir",
+    "graph_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_cell_graph_dir,
+    default=cli.default_graph_dir,
     show_default=True,
-    help="Path to the cell graph output directory",
+    help="Path to the graph output directory",
 )
-def knn(cell_data_dir, cell_dist_dir, num_cell_neighbors, cell_graph_dir):
-    cell_graph_dir = Path(cell_graph_dir)
-    cell_graph_dir.mkdir(exist_ok=True)
+def knn(cell_data_dir, cell_dist_dir, num_cell_neighbors, graph_dir):
+    graph_dir = Path(graph_dir)
+    graph_dir.mkdir(exist_ok=True)
     cell_data_files = sorted(Path(cell_data_dir).glob("*.csv"))
     cell_dist_files = sorted(Path(cell_dist_dir).glob("*.csv"))
     it = construct_knn_graphs(
@@ -58,10 +58,10 @@ def knn(cell_data_dir, cell_dist_dir, num_cell_neighbors, cell_graph_dir):
         cell_dist_files,
         num_cell_neighbors,
     )
-    it = click.progressbar(it, length=len(cell_data_files))
-    for cell_data_file, cell_dist_file, cell_graph in it:
-        cell_graph_name = Path(cell_data_file).with_suffix(".graphml").name
-        io.write_cell_graph(cell_graph, cell_graph_dir / cell_graph_name)
+    with click.progressbar(it, length=len(cell_data_files)) as pbar:
+        for cell_data_file, cell_dist_file, graph in pbar:
+            graph_file_name = Path(cell_data_file).with_suffix(".graphml").name
+            io.write_graph(graph, graph_dir / graph_file_name)
 
 
 @graphs.command(
@@ -92,15 +92,15 @@ def knn(cell_data_dir, cell_dist_dir, num_cell_neighbors, cell_graph_dir):
 )
 @click.option(
     "--dest",
-    "cell_graph_dir",
+    "graph_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_cell_graph_dir,
+    default=cli.default_graph_dir,
     show_default=True,
-    help="Path to the cell graph output directory",
+    help="Path to the graph output directory",
 )
-def dist(cell_data_dir, cell_dist_dir, cell_dist_thres, cell_graph_dir):
-    cell_graph_dir = Path(cell_graph_dir)
-    cell_graph_dir.mkdir(exist_ok=True)
+def dist(cell_data_dir, cell_dist_dir, cell_dist_thres, graph_dir):
+    graph_dir = Path(graph_dir)
+    graph_dir.mkdir(exist_ok=True)
     cell_data_files = sorted(Path(cell_data_dir).glob("*.csv"))
     cell_dist_files = sorted(Path(cell_dist_dir).glob("*.csv"))
     it = construct_dist_graphs(
@@ -108,8 +108,7 @@ def dist(cell_data_dir, cell_dist_dir, cell_dist_thres, cell_graph_dir):
         cell_dist_files,
         cell_dist_thres,
     )
-    it = click.progressbar(it, length=len(cell_data_files))
-    for cell_data_file, cell_dist_file, cell_graph in it:
-        cell_data_file = Path(cell_data_file)
-        cell_graph_name = cell_data_file.with_suffix(".graphml").name
-        io.write_cell_graph(cell_graph, cell_graph_dir / cell_graph_name)
+    with click.progressbar(it, length=len(cell_data_files)) as pbar:
+        for cell_data_file, cell_dist_file, graph in pbar:
+            graph_file_name = Path(cell_data_file).with_suffix(".graphml").name
+            io.write_graph(graph, graph_dir / graph_file_name)

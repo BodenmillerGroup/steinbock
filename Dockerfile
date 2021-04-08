@@ -22,7 +22,7 @@ ENV PYTHONUNBUFFERED=1
 
 # ilastik
 
-RUN wget https://files.ilastik.org/$ILASTIK_BINARY && \
+RUN wget -q https://files.ilastik.org/$ILASTIK_BINARY && \
     mkdir /opt/ilastik && \
     tar xjf $ILASTIK_BINARY -C /opt/ilastik --strip-components=1 && \
     rm $ILASTIK_BINARY
@@ -37,7 +37,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     openjdk-11-jdk-headless
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-RUN wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
+RUN wget -q https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     pip3 install numpy wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 

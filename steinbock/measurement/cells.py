@@ -1,4 +1,4 @@
-import xarray as xr
+import numpy as np
 import pandas as pd
 
 from imctoolkit import ImageSingleCellData
@@ -23,38 +23,38 @@ def measure_cell_intensities(
         yield img_file, mask_file, data.mean_intensities_table
 
 
+def combine_cell_data(
+    cell_data_files: Sequence[Union[str, PathLike]],
+) -> pd.DataFrame:
+    objs = [io.read_cell_data(f) for f in cell_data_files]
+    keys = [Path(f).with_suffix(".tiff").name for f in cell_data_files]
+    return pd.concat(objs, keys=keys, names=["image", "cell"])
+
+
 def measure_cell_centroid_dist(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     metric: str,
-) -> Generator[Tuple[Path, Path, xr.DataArray], None, None]:
+) -> Generator[Tuple[Path, Path, np.ndarray], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
         img_file = Path(img_file)
         mask_file = Path(mask_file)
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
         data = ImageSingleCellData(img, mask)
-        cell_dist = data.compute_cell_centroid_distances(metric=metric)
+        cell_dist = data.compute_cell_centroid_distances(metric=metric).values
         yield img_file, mask_file, cell_dist
 
 
 def measure_euclidean_cell_border_dist(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
-) -> Generator[Tuple[Path, Path, xr.DataArray], None, None]:
+) -> Generator[Tuple[Path, Path, np.ndarray], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
         img_file = Path(img_file)
         mask_file = Path(mask_file)
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
         data = ImageSingleCellData(img, mask)
-        cell_dist = data.compute_cell_border_distances()
+        cell_dist = data.compute_cell_border_distances().values
         yield img_file, mask_file, cell_dist
-
-
-def combine_cell_data(
-    cell_data_files: Sequence[Union[str, PathLike]],
-) -> pd.DataFrame:
-    objs = [io.read_cell_data(f) for f in cell_data_files]
-    keys = [Path(f).with_suffix(".tiff").name for f in cell_data_files]
-    return pd.merge(objs, keys=keys, names=["image", "cell"])

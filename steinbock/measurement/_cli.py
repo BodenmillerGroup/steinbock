@@ -34,7 +34,7 @@ def measure():
     "--mask",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=cli.default_img_dir,
+    default=cli.default_mask_dir,
     show_default=True,
     help="Path to the mask .tiff directory",
 )
@@ -61,14 +61,13 @@ def intensities(img_dir, mask_dir, panel_file, cell_intensities_dir):
     channel_names = panel[io.panel_name_col].tolist()
     cell_intensities_dir = Path(cell_intensities_dir)
     cell_intensities_dir.mkdir(exist_ok=True)
-    for img_file, mask_file, cell_intensities in click.progressbar(
-        measure_cell_intensities(img_files, mask_files, channel_names),
-        length=len(img_files),
-    ):
-        io.write_cell_data(
-            cell_intensities,
-            cell_intensities_dir / img_file.with_suffix(".csv").name,
-        )
+    it = measure_cell_intensities(img_files, mask_files, channel_names)
+    with click.progressbar(it, length=len(img_files)) as pbar:
+        for img_file, mask_file, cell_intensities in pbar:
+            io.write_cell_data(
+                cell_intensities,
+                cell_intensities_dir / img_file.with_suffix(".csv").name,
+            )
 
 
 @measure.command(
@@ -87,7 +86,7 @@ def intensities(img_dir, mask_dir, panel_file, cell_intensities_dir):
     "--mask",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=cli.default_img_dir,
+    default=cli.default_mask_dir,
     show_default=True,
     help="Path to the mask .tiff directory",
 )
@@ -112,53 +111,11 @@ def centroid_dists(img_dir, mask_dir, metric, cell_dist_dir):
     mask_files = sorted(Path(mask_dir).glob("*.tiff"))
     cell_dist_dir = Path(cell_dist_dir)
     cell_dist_dir.mkdir(exist_ok=True)
-    for img_file, mask_file, cell_dist in click.progressbar(
-        measure_cell_centroid_dist(img_files, mask_files, metric),
-        length=len(img_files),
-    ):
-        cell_dist_file = cell_dist_dir / img_file.with_suffix(".csv").name
-        io.write_cell_dist(cell_dist, cell_dist_file)
-
-
-@measure.command(
-    name="border-dists",
-    help="Measure Euclidean distances between cell borders",
-)
-@click.option(
-    "--img",
-    "img_dir",
-    type=click.Path(exists=True, file_okay=False),
-    default=cli.default_img_dir,
-    show_default=True,
-    help="Path to the image .tiff directory",
-)
-@click.option(
-    "--mask",
-    "mask_dir",
-    type=click.Path(exists=True, file_okay=False),
-    default=cli.default_img_dir,
-    show_default=True,
-    help="Path to the mask .tiff directory",
-)
-@click.option(
-    "--dest",
-    "cell_dist_dir",
-    type=click.Path(file_okay=False),
-    default=cli.default_cell_dist_dir,
-    show_default=True,
-    help="Path to the cell distances output directory",
-)
-def border_dists(img_dir, mask_dir, cell_dist_dir):
-    img_files = sorted(Path(img_dir).glob("*.tiff"))
-    mask_files = sorted(Path(mask_dir).glob("*.tiff"))
-    cell_dist_dir = Path(cell_dist_dir)
-    cell_dist_dir.mkdir(exist_ok=True)
-    for img_file, mask_file, cell_dist in click.progressbar(
-        measure_euclidean_cell_border_dist(img_files, mask_files),
-        length=len(img_files),
-    ):
-        cell_dist_file = cell_dist_dir / img_file.with_suffix(".csv").name
-        io.write_cell_dist(cell_dist, cell_dist_file)
+    it = measure_cell_centroid_dist(img_files, mask_files, metric)
+    with click.progressbar(it, length=len(img_files)) as pbar:
+        for img_file, mask_file, cell_dist in pbar:
+            cell_dist_file = cell_dist_dir / img_file.with_suffix(".csv").name
+            io.write_cell_dist(cell_dist, cell_dist_file)
 
 
 @measure.command(
@@ -186,6 +143,46 @@ def collect(cell_data_dir, combined_cell_data_file):
         cell_data_files,
     )
     combined_cell_data.to_csv(combined_cell_data_file)
+
+
+@measure.command(
+    name="border-dists",
+    help="Measure Euclidean distances between cell borders",
+)
+@click.option(
+    "--img",
+    "img_dir",
+    type=click.Path(exists=True, file_okay=False),
+    default=cli.default_img_dir,
+    show_default=True,
+    help="Path to the image .tiff directory",
+)
+@click.option(
+    "--mask",
+    "mask_dir",
+    type=click.Path(exists=True, file_okay=False),
+    default=cli.default_mask_dir,
+    show_default=True,
+    help="Path to the mask .tiff directory",
+)
+@click.option(
+    "--dest",
+    "cell_dist_dir",
+    type=click.Path(file_okay=False),
+    default=cli.default_cell_dist_dir,
+    show_default=True,
+    help="Path to the cell distances output directory",
+)
+def border_dists(img_dir, mask_dir, cell_dist_dir):
+    img_files = sorted(Path(img_dir).glob("*.tiff"))
+    mask_files = sorted(Path(mask_dir).glob("*.tiff"))
+    cell_dist_dir = Path(cell_dist_dir)
+    cell_dist_dir.mkdir(exist_ok=True)
+    it = measure_euclidean_cell_border_dist(img_files, mask_files)
+    with click.progressbar(it, length=len(img_files)) as pbar:
+        for img_file, mask_file, cell_dist in pbar:
+            cell_dist_file = cell_dist_dir / img_file.with_suffix(".csv").name
+            io.write_cell_dist(cell_dist, cell_dist_file)
 
 
 @measure.command(

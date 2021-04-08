@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import tifffile
-import xarray as xr
 
 from imctoolkit import SpatialCellGraph
 from os import PathLike
@@ -61,7 +60,7 @@ def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]):
 
 
 def read_cell_data(cell_data_file: Union[str, PathLike]) -> pd.DataFrame:
-    return pd.read_csv(cell_data_file)
+    return pd.read_csv(cell_data_file, index_col=0)
 
 
 def write_cell_data(
@@ -71,20 +70,17 @@ def write_cell_data(
     cell_data.to_csv(cell_data_file)
 
 
-def read_cell_dist(cell_dist_file: Union[str, PathLike]) -> xr.DataArray:
-    return xr.open_dataarray(cell_dist_file)
+def read_cell_dist(cell_dist_file: Union[str, PathLike]) -> np.ndarray:
+    return np.genfromtxt(cell_dist_file, delimiter=",")
 
 
 def write_cell_dist(
-    cell_dist: xr.DataArray,
+    cell_dist: np.ndarray,
     cell_dist_file: Union[str, PathLike],
 ):
-    cell_dist.to_netcdf(cell_dist_file)
+    np.savetxt(cell_dist_file, cell_dist, delimiter=",")
 
 
-def write_cell_graph(
-    cell_graph: SpatialCellGraph,
-    cell_graph_file: Union[str, PathLike],
-):
-    g = cell_graph.to_igraph()
-    g.write_graphml(cell_graph_file)
+def write_graph(graph: SpatialCellGraph, graph_file: Union[str, PathLike]):
+    g = graph.to_igraph()
+    g.write_graphml(str(graph_file))

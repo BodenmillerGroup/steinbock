@@ -4,63 +4,71 @@
 ![GitHub License](https://img.shields.io/github/license/BodenmillerGroup/steinbock)
 ![GitHub Issues](https://img.shields.io/github/issues/BodenmillerGroup/steinbock)
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr/BodenmillerGroup/steinbock?label=pull%20requests)
-![Docker Build Status](https://img.shields.io/docker/build/jwindhager/steinbock)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/jwindhager/steinbock)
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/jwindhager/steinbock?label=docker%20version&sort=semver)
 
 Dockerized multi-channel image segmentation framework
+
+The steinbock repository comprises the following components:
+- Python package with interactive command-line interface (CLI)
+- Docker container with third-party software (e.g. Ilastik, CellProfiler) pre-installed
 
 Documentation is available at https://bodenmillergroup.github.io/steinbock
 
 
 ## Requirements
 
-Docker
+[Install Docker](https://docs.docker.com/get-docker/)
 
 
 ## Installation
 
-To pull the most recent version of steinbock:
+To pull the most recent version of steinbock (not recommended):
 
-    docker pull jwindhager/steinbock:latest
+    docker pull jwindhager/steinbock
+
+For reproducibility, it is recommended to explicitly specify the [steinbock release](https://github.com/BodenmillerGroup/steinbock/releases):
+
+    docker pull jwindhager/steinbock:v0.1.0
 
 
 ## Usage
 
 To run the steinbock Docker container:
 
-    docker run -v /mnt/data:/data steinbock --help
+    docker run -v /mnt/data:/data jwindhager/steinbock
 
 Replace `/mnt/data` with the path to your data directory.
 
 To run the steinbock Docker container with X11 enabled (Linux/MacOS):
 
     xhost +local:root  # this is unsafe!
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro steinbock --help
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock
 
 On Windows platforms, it is recommended to run GUI applications (e.g. Ilastik, Cellprofiler) natively.
 
 For repeated use, it is recommended to create a shell alias (Linux/MacOS):
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro steinbock"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock"
 
 Further documentation is available at https://bodenmillergroup.github.io/steinbock
 
 
 ## Authors
 
-- Jonas Windhager [jonas.windhager@uzh.ch](mailto:jonas.windhager@uzh.ch)
+- [Jonas Windhager](mailto:jonas.windhager@uzh.ch)
 
 
 ## Contributing
 
-[Contributing](CONTRIBUTING.md)
+[Contributing](https://github.com/BodenmillerGroup/steinbock/blob/main/CONTRIBUTING.md)
 
 
 ## Changelog
 
-[Changelog](CHANGELOG.md)
+[Changelog](https://github.com/BodenmillerGroup/steinbock/blob/main/CHANGELOG.md)
 
 
 ## License
 
-[MIT](LICENSE.md)
+[MIT](https://github.com/BodenmillerGroup/steinbock/blob/main/LICENSE.md)

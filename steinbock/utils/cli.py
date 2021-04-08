@@ -8,7 +8,7 @@ default_mask_dir = "masks"
 default_cell_intensities_dir = "cell_intensities"
 default_combined_cell_data_file = "cell_intensities.csv"
 default_cell_dist_dir = "cell_distances"
-default_cell_graph_dir = "cell_graphs"
+default_graph_dir = "graphs"
 
 
 class OrderedClickGroup(click.Group):

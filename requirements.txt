@@ -7,3 +7,4 @@ pandas
 python-igraph
 scipy
 tifffile
+xarray
