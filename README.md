@@ -13,6 +13,9 @@ The steinbock repository comprises the following components:
 - Python package with interactive command-line interface (CLI)
 - Docker container with third-party software (e.g. Ilastik, CellProfiler) pre-installed
 
+Multi-channel image segmentation approaches currently implemented in steinbock:
+- Zanotelli et al. _ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline_. Zenodo, 2017.
+
 Documentation is available at https://bodenmillergroup.github.io/steinbock
 
 
