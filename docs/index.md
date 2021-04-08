@@ -58,8 +58,11 @@ Usually, one would now interactively train a pixel classifier using ilastik:
     # steinbock classify ilastik app
 
 Instead, to use the pre-trained classifier:
+  
   1. Replace `$DATA/pixel_classifier.ilp` with [ilastik.ilp](https://github.com/BodenmillerGroup/TestData/blob/main/datasets/210308_ImcTestData/ilastik.ilp) (rename to `pixel_classifier.ilp`)
+  
   2. Replace the contents of `$DATA/ilastik_patches` with the contents of [ilastik](https://github.com/BodenmillerGroup/TestData/tree/main/datasets/210308_ImcTestData/analysis/ilastik) (optional)
+  
   3. Run `steinbock classify ilastik fix` to patch the provided files
 
 Perform the pixel classification batch:
