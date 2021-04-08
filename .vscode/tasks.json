@@ -1,0 +1,35 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "python",
+			"dockerBuild": {
+				"tag": "steinbock:latest",
+				"dockerfile": "${workspaceFolder}/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build"
+			],
+			"python": {
+				"file": "/app/steinbock/__main__.py"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "compose-up: debug",
+			"dependsOn": [
+				"docker-build"
+			],
+			"command": "docker-compose -f docker-compose.yml up -d"
+		  }
+		  
+	]
+}
