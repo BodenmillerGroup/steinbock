@@ -13,7 +13,7 @@ Instructions for testing this pipeline with [TestData](https://github.com/Bodenm
 
 Pull the steinbock Docker container:
 
-    docker pull jwindhager/steinbock
+    docker pull jwindhager/steinbock:0.1.0
 
 Specify and create the data/working directory:
 
