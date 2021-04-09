@@ -1,4 +1,5 @@
 import click
+import sys
 
 from pathlib import Path
 
@@ -56,11 +57,27 @@ from steinbock.utils import cli, io
     help="Path to the panel output file",
 )
 def imc(mcd_dir, txt_dir, imc_panel_file, hpf, img_dir, panel_file):
+    mcd_files = sorted(Path(mcd_dir).rglob("*.mcd"))
+    unique_mcd_file_names = []
+    for mcd_file in mcd_files:
+        if mcd_file.name in unique_mcd_file_names:
+            return click.echo(
+                f"Duplicated file name: {mcd_file.name}",
+                file=sys.stdout,
+            )
+        unique_mcd_file_names.append(mcd_file.name)
+    txt_files = sorted(Path(txt_dir).rglob("*.txt"))
+    unique_txt_file_names = []
+    for txt_file in txt_files:
+        if txt_file.name in unique_txt_file_names:
+            return click.echo(
+                f"Duplicated file name: {mcd_file.name}",
+                file=sys.stdout,
+            )
+        unique_txt_file_names.append(txt_file.name)
     panel, metal_order = preprocess_panel(imc_panel_file)
     panel.to_csv(panel_file)
     Path(img_dir).mkdir(exist_ok=True)
-    mcd_files = sorted(Path(mcd_dir).rglob("*.mcd"))
-    txt_files = sorted(Path(txt_dir).rglob("*.txt"))
     for mcd_txt_file, acquisition_id, img in preprocess_images(
         mcd_files,
         txt_files,

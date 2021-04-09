@@ -257,14 +257,18 @@ def fix(
         ilastik_project_file.name + ".bak"
     )
     if ilastik_project_backup_file.exists():
-        click.echo("Existing Ilastik project backup file", file=sys.stdout)
-        return
+        return click.echo(
+            "Ilastik project backup file exists",
+            file=sys.stdout,
+        )
     ilastik_patch_backup_dir = ilastik_patch_dir.with_name(
         ilastik_patch_dir.name + ".bak"
     )
     if ilastik_patch_backup_dir.exists():
-        click.echo("Existing Ilastik patch backup directory", file=sys.stdout)
-        return
+        return click.echo(
+            "Ilastik patch backup directory exists",
+            file=sys.stdout,
+        )
     shutil.copyfile(ilastik_project_file, ilastik_project_backup_file)
     ilastik_patch_backup_dir.mkdir()
     for ilastik_patch_file in sorted(ilastik_patch_dir.glob("*.h5")):
