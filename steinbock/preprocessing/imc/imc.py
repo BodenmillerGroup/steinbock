@@ -24,16 +24,20 @@ imc_panel_ilastik_col = "ilastik"
 def preprocess_panel(
     imc_panel_file: Union[str, Path],
 ) -> Tuple[pd.DataFrame, Sequence[str]]:
-    imc_panel = pd.read_csv(imc_panel_file)
-    if imc_panel_metal_col not in imc_panel:
-        raise ValueError(f"Missing {imc_panel_metal_col} column in IMC panel")
-    if imc_panel_name_col not in imc_panel:
-        raise ValueError(f"Missing {imc_panel_name_col} column in IMC panel")
+    imc_panel = pd.read_csv(
+        imc_panel_file,
+        usecols=[
+            imc_panel_metal_col,
+            imc_panel_name_col,
+            imc_panel_enable_col,
+            imc_panel_ilastik_col,
+        ],
+    )
+    imc_panel = imc_panel[imc_panel[imc_panel_enable_col].astype(bool)]
+    imc_panel.drop(columns=imc_panel_enable_col, inplace=True)
     panel = pd.DataFrame(
         data={
-            io.panel_number_col: imc_panel.index.values + 1,
             io.panel_name_col: imc_panel[imc_panel_name_col].tolist(),
-            io.panel_enable_col: imc_panel[imc_panel_enable_col].tolist(),
             panel_ilastik_col: imc_panel[imc_panel_ilastik_col].tolist(),
         }
     )

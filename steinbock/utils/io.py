@@ -6,34 +6,15 @@ from imctoolkit import SpatialCellGraph
 from os import PathLike
 from typing import Union
 
-panel_number_col = "channel"
 panel_name_col = "name"
-panel_enable_col = "enable"
 
 
 def read_panel(panel_file: Union[str, PathLike]) -> pd.DataFrame:
     panel = pd.read_csv(panel_file)
-    if panel_number_col not in panel:
-        raise ValueError(f"Missing {panel_number_col} in panel {panel_file}")
     if panel_name_col not in panel:
         raise ValueError(f"Missing {panel_name_col} in panel {panel_file}")
-    if (
-        panel[panel_number_col].isna().any()
-        or panel[panel_number_col].min() != 1
-        or panel[panel_number_col].max() != len(panel.index)
-        or not panel[panel_number_col].is_unique
-    ):
-        raise ValueError(
-            "Channel number is not one-based, incomplete, "
-            f"or contains duplicates in panel {panel_file}"
-        )
     if panel[panel_name_col].isna().any():
         raise ValueError(f"Incomplete channel names in panel {panel_file}")
-    if panel_enable_col in panel:
-        panel = panel.loc[panel[panel_enable_col].astype(bool), :]
-        panel.drop(columns=panel_enable_col, inplace=True)
-    panel[panel_number_col] = panel[panel_number_col].astype(int)
-    panel.sort_values(panel_number_col, inplace=True)
     return panel
 
 
@@ -42,7 +23,7 @@ def read_image(img_file: Union[str, PathLike]) -> np.ndarray:
     if img.ndim == 2:
         img = img[np.newaxis, :, :]
     elif img.ndim != 3:
-        raise ValueError(f"Unsupported number of iamge dimensions: {img_file}")
+        raise ValueError(f"Unsupported number of image dimensions: {img_file}")
     return img
 
 
