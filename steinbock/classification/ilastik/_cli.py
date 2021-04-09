@@ -95,7 +95,6 @@ def ilastik():
     "--seed",
     "seed",
     type=click.INT,
-    required=True,
     help="Random seed",
 )
 def prepare(
