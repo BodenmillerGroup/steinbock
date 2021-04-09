@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from steinbock.classification.ilastik.ilastik import (
+    panel_ilastik_col,
     create_ilastik_images,
     create_ilastik_patches,
     create_ilastik_project,
@@ -16,7 +17,6 @@ from steinbock.classification.ilastik.ilastik import (
 from steinbock.utils import cli, io, system
 
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
-ilastik_panel_col = "ilastik"
 
 default_ilastik_img_dir = "ilastik_img"
 default_ilastik_patch_dir = "ilastik_patches"
@@ -112,8 +112,8 @@ def prepare(
     channel_indices = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
-        if ilastik_panel_col in panel:
-            channel_indices = np.flatnonzero(panel[ilastik_panel_col].values)
+        if panel_ilastik_col in panel:
+            channel_indices = np.flatnonzero(panel[panel_ilastik_col].values)
     Path(ilastik_img_dir).mkdir(exist_ok=True)
     ilastik_img_files = create_ilastik_images(
         img_files,

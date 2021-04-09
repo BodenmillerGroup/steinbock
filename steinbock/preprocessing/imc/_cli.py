@@ -2,10 +2,8 @@ import click
 
 from pathlib import Path
 
-from steinbock.preprocessing.imc.imc import preprocess_images
+from steinbock.preprocessing.imc.imc import preprocess_panel, preprocess_images
 from steinbock.utils import cli, io
-
-_keep_panel_col = "keep"
 
 
 @click.command(
@@ -17,7 +15,7 @@ _keep_panel_col = "keep"
     type=click.Path(exists=True, file_okay=False),
     default="raw",
     show_default=True,
-    help="Path to the .mcd file directory",
+    help="Path to the IMC .mcd file directory",
 )
 @click.option(
     "--txt",
@@ -25,23 +23,15 @@ _keep_panel_col = "keep"
     type=click.Path(exists=True, file_okay=False),
     default="raw",
     show_default=True,
-    help="Path to the .txt file directory",
+    help="Path to the IMC .txt file directory",
 )
 @click.option(
     "--panel",
-    "panel_file",
+    "imc_panel_file",
     type=click.Path(exists=True, dir_okay=False),
-    default=cli.default_panel_file,
+    default=str(Path("raw", "panel.csv")),
     show_default=True,
-    help="Path to the panel .csv file",
-)
-@click.option(
-    "--dest",
-    "img_dir",
-    type=click.Path(file_okay=False),
-    default=cli.default_img_dir,
-    show_default=True,
-    help="Path to the image output directory",
+    help="Path to the IMC panel .csv file",
 )
 @click.option(
     "--hpf",
@@ -49,18 +39,32 @@ _keep_panel_col = "keep"
     type=click.FLOAT,
     help="Hot pixel filter (specify delta threshold)",
 )
-def imc(mcd_dir, txt_dir, panel_file, img_dir, hpf):
+@click.option(
+    "--imgdest",
+    "img_dir",
+    type=click.Path(file_okay=False),
+    default=cli.default_img_dir,
+    show_default=True,
+    help="Path to the image output directory",
+)
+@click.option(
+    "--paneldest",
+    "panel_file",
+    type=click.Path(file_okay=False),
+    default=cli.default_panel_file,
+    show_default=True,
+    help="Path to the panel output file",
+)
+def imc(mcd_dir, txt_dir, imc_panel_file, hpf, img_dir, panel_file):
+    panel, metal_order = preprocess_panel(imc_panel_file)
+    panel.to_csv(panel_file)
+    Path(img_dir).mkdir(exist_ok=True)
     mcd_files = sorted(Path(mcd_dir).rglob("*.mcd"))
     txt_files = sorted(Path(txt_dir).rglob("*.txt"))
-    channel_indices = None
-    if Path(panel_file).exists():
-        channel_indices = io.read_panel(panel_file).index.values
-    Path(img_dir).mkdir(exist_ok=True)
     for mcd_txt_file, acquisition_id, img in preprocess_images(
         mcd_files,
         txt_files,
-        img_dir,
-        channel_indices=channel_indices,
+        metal_order,
         hpf=hpf,
     ):
         if acquisition_id is not None:

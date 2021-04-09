@@ -28,6 +28,7 @@ class VigraAxisInfo(IntEnum):
 
 img_dataset_name = "img"
 patch_dataset_name = "patch"
+panel_ilastik_col = "ilastik"
 logger = logging.getLogger(__name__)
 
 _steinbock_display_mode = "grayscale"

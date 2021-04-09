@@ -36,14 +36,7 @@ Check whether steinbock runs:
 
 Copy the [raw data](https://github.com/BodenmillerGroup/TestData/tree/main/datasets/210308_ImcTestData/raw) to `$DATA/raw`
 
-Create the following `$DATA/panel.csv` file:
-
-    channel,name,keep,ilastik
-    1,Laminin,1,1
-    2,H3K27Ac,1,1
-    3,Cytokeratin 5,1,1
-    4,YBX1,1,1
-    5,Ag107,0,0
+Copy the [panel.csv](https://github.com/BodenmillerGroup/TestData/blob/main/datasets/210308_ImcTestData/panel.csv) to `$DATA/raw`
 
 ### Data preprocessing
 

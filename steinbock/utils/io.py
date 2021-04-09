@@ -8,6 +8,7 @@ from typing import Union
 
 panel_number_col = "channel"
 panel_name_col = "name"
+panel_enable_col = "enable"
 
 
 def read_panel(panel_file: Union[str, PathLike]) -> pd.DataFrame:
@@ -28,8 +29,9 @@ def read_panel(panel_file: Union[str, PathLike]) -> pd.DataFrame:
         )
     if panel[panel_name_col].isna().any():
         raise ValueError(f"Incomplete channel names in panel {panel_file}")
-    if "keep" in panel:
-        panel = panel.loc[panel["keep"].astype(bool), :].drop(columns="keep")
+    if panel_enable_col in panel:
+        panel = panel.loc[panel[panel_enable_col].astype(bool), :]
+        panel.drop(columns=panel_enable_col, inplace=True)
     panel[panel_number_col] = panel[panel_number_col].astype(int)
     panel.sort_values(panel_number_col, inplace=True)
     return panel
