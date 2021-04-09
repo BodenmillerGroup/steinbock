@@ -92,6 +92,13 @@ def ilastik():
     help="Ilastik patch size (in pixels)",
 )
 @click.option(
+    "--mean/--no-mean",
+    "prepend_mean",
+    default=True,
+    show_default=True,
+    help="Prepend mean of all channels as a new channel",
+)
+@click.option(
     "--seed",
     "seed",
     type=click.INT,
@@ -105,6 +112,7 @@ def prepare(
     ilastik_patch_dir,
     img_scale,
     patch_size,
+    prepend_mean,
     seed,
 ):
     img_files = sorted(Path(img_dir).glob("*.tiff"))
@@ -119,6 +127,7 @@ def prepare(
         ilastik_img_dir,
         img_scale=img_scale,
         channel_indices=channel_indices,
+        prepend_mean=prepend_mean,
     )
     Path(ilastik_patch_dir).mkdir(exist_ok=True)
     ilastik_patch_files = create_ilastik_patches(

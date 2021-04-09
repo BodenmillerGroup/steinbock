@@ -50,6 +50,7 @@ def create_ilastik_images(
     img_files: Sequence[Union[str, PathLike]],
     ilastik_img_dir: Union[str, PathLike],
     channel_indices: Optional[Sequence[int]] = None,
+    prepend_mean: bool = True,
     img_scale: int = 1,
 ) -> List[Path]:
     ilastik_img_files = []
@@ -59,6 +60,9 @@ def create_ilastik_images(
         ilastik_img = io.read_image(img_file)
         if channel_indices is not None:
             ilastik_img = ilastik_img[channel_indices, :, :]
+        if prepend_mean:
+            mean_ilastik_img = ilastik_img.mean(axis=0, keepdims=True)
+            ilastik_img = np.concatenate((mean_ilastik_img, ilastik_img))
         if img_scale > 1:
             ilastik_img = ilastik_img.repeat(img_scale, axis=1)
             ilastik_img = ilastik_img.repeat(img_scale, axis=2)
