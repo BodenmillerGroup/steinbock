@@ -53,15 +53,15 @@ def write_cell_data(
     cell_data.to_csv(cell_data_file)
 
 
-def read_cell_dist(cell_dist_file: Union[str, PathLike]) -> np.ndarray:
-    return np.genfromtxt(cell_dist_file, delimiter=",")
+def read_cell_dists(cell_dists_file: Union[str, PathLike]) -> np.ndarray:
+    return np.genfromtxt(cell_dists_file, delimiter=",")
 
 
-def write_cell_dist(
-    cell_dist: np.ndarray,
-    cell_dist_file: Union[str, PathLike],
+def write_cell_dists(
+    cell_dists: np.ndarray,
+    cell_dists_file: Union[str, PathLike],
 ):
-    np.savetxt(cell_dist_file, cell_dist, delimiter=",")
+    np.savetxt(cell_dists_file, cell_dists, delimiter=",")
 
 
 def write_graph(graph: SpatialCellGraph, graph_file: Union[str, PathLike]):
