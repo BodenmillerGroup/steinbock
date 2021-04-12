@@ -45,7 +45,7 @@ Replace `/mnt/data` with the path to your data directory.
 
 To run the steinbock Docker container with X11 enabled (Linux/MacOS):
 
-    xhost +local:root  # this is unsafe!
+    xhost +local:root
     docker run -v /mnt/data:/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock
 
 On Windows platforms, it is recommended to run GUI applications (e.g. Ilastik, Cellprofiler) natively.

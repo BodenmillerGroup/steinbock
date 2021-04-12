@@ -29,7 +29,8 @@ For convenience, create an alias for running the steinbock Docker container:
 
 If necessary, allow the Docker container to run graphical user interfaces:
 
-    xhost +local:root  # this is unsafe!
+    # this is unsafe!
+    xhost +local:root
 
 Check whether steinbock runs:
 
@@ -47,7 +48,7 @@ In the following instructions, instead of calling `steinbock`, type:
 Adapt the path to your data directory (`"D:\steinbock"` in the above example) accordingly.
 
 !!! note
-    Commands that launch a graphical user interface (e.g. for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host machine, if graphical user interfaces are required.
+    Commands that launch a graphical user interface (e.g. for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host, if graphical user interfaces are required.
 
 ## Data preparation
 
