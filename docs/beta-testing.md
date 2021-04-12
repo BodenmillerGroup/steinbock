@@ -21,11 +21,11 @@ Pull the steinbock Docker container:
 Specify and create the data directory:
 
     export DATA="/mnt/data/steinbock"  # adapt accordingly
-    mkdir "${DATA}"
+    mkdir -p "${DATA}"
 
 For convenience, create an alias for running the steinbock Docker container:
 
-    alias steinbock="docker run -v \"${DATA}\":/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock"
+    alias steinbock="docker run -v \"${DATA}\":/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.2.0"
 
 If necessary, allow the Docker container to run graphical user interfaces:
 
@@ -42,12 +42,12 @@ Check whether steinbock runs:
 
 In the following instructions, instead of calling `steinbock`, type:
 
-    docker run -v "D:\steinbock":/data jwindhager/steinbock
+    docker run -v "D:\steinbock":/data jwindhager/steinbock:0.2.0
 
 Adapt the path to your data directory (`"D:\steinbock"` in the above example) accordingly.
 
 !!! note
-    Commands that launch a graphical user interface (e.g. for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host machine if graphical user interfaces are required.
+    Commands that launch a graphical user interface (e.g. for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host machine, if graphical user interfaces are required.
 
 ## Data preparation
 
