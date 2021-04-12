@@ -32,7 +32,7 @@ To pull the most recent version of steinbock (not recommended):
 
 For reproducibility, it is recommended to explicitly specify the [steinbock release](https://github.com/BodenmillerGroup/steinbock/releases):
 
-    docker pull jwindhager/steinbock:0.1.0
+    docker pull jwindhager/steinbock:0.2.0
 
 
 ## Usage
@@ -46,13 +46,13 @@ Replace `/mnt/data` with the path to your data directory.
 To run the steinbock Docker container with X11 enabled (Linux/MacOS):
 
     xhost +local:root  # this is unsafe!
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock
 
 On Windows platforms, it is recommended to run GUI applications (e.g. Ilastik, Cellprofiler) natively.
 
 For repeated use, it is recommended to create a shell alias (Linux/MacOS):
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock"
 
 Further documentation is available at https://bodenmillergroup.github.io/steinbock
 
