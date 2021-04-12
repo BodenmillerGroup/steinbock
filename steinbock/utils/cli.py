@@ -3,12 +3,13 @@ import click
 from collections import OrderedDict
 
 default_img_dir = "img"
-default_panel_file = "panel.csv"
 default_mask_dir = "masks"
+default_panel_file = "panel.csv"
+default_combined_cell_data_file = "cells.csv"
 default_cell_intensities_dir = "cell_intensities"
-default_combined_cell_data_file = "cell_intensities.csv"
+default_cell_regionprops_dir = "cell_regionprops"
 default_cell_dists_dir = "cell_distances"
-default_graph_dir = "graphs"
+default_cell_graph_dir = "cell_graphs"
 
 
 class OrderedClickGroup(click.Group):

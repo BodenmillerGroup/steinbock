@@ -1,47 +1,40 @@
 import click
 import numpy as np
-import os
 import shutil
 import sys
 
 from pathlib import Path
 
-from steinbock.classification.ilastik.ilastik import (
-    panel_ilastik_col,
-    create_ilastik_images,
-    create_ilastik_patches,
-    create_ilastik_project,
-    fix_patches_and_project_inplace,
-    classify_pixels,
-)
+from steinbock.classification.ilastik import ilastik
 from steinbock.utils import cli, io, system
 
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 
-default_ilastik_img_dir = "ilastik_img"
-default_ilastik_patch_dir = "ilastik_patches"
-default_ilastik_project_file = "pixel_classifier.ilp"
-default_ilastik_probab_dir = "ilastik_probabilities"
+default_img_dir = "ilastik_img"
+default_crop_dir = "ilastik_crops"
+default_project_file = "pixel_classifier.ilp"
+default_probab_dir = "ilastik_probabilities"
 
 
 @click.group(
+    name="ilastik",
     cls=cli.OrderedClickGroup,
     help="Perform supervised pixel classification using Ilastik",
 )
-def ilastik():
+def ilastik_cmd():
     pass
 
 
-@ilastik.command(
-    help="Prepare Ilastik images, patches and project file",
+@ilastik_cmd.command(
+    help="Prepare an Ilastik project file, images and crops",
 )
 @click.option(
     "--img",
-    "img_dir",
+    "src_img_dir",
     type=click.Path(exists=True, file_okay=False),
     default=cli.default_img_dir,
     show_default=True,
-    help="Path to the image .tiff directory",
+    help="Path to the image directory",
 )
 @click.option(
     "--panel",
@@ -49,31 +42,31 @@ def ilastik():
     type=click.Path(exists=True, dir_okay=False),
     default=cli.default_panel_file,
     show_default=True,
-    help="Path to the panel .csv file",
+    help="Path to the panel file",
 )
 @click.option(
     "--dest",
-    "ilastik_project_file",
+    "project_file",
     type=click.Path(dir_okay=False),
-    default=default_ilastik_project_file,
+    default=default_project_file,
     show_default=True,
     help="Path to the Ilastik project output file",
 )
 @click.option(
     "--imgdest",
-    "ilastik_img_dir",
+    "img_dir",
     type=click.Path(file_okay=False),
-    default=default_ilastik_img_dir,
+    default=default_img_dir,
     show_default=True,
     help="Path to the Ilastik image output directory",
 )
 @click.option(
-    "--patchdest",
-    "ilastik_patch_dir",
+    "--cropdest",
+    "crop_dir",
     type=click.Path(file_okay=False),
-    default=default_ilastik_patch_dir,
+    default=default_crop_dir,
     show_default=True,
-    help="Path to the Ilastik patch output directory",
+    help="Path to the Ilastik crop output directory",
 )
 @click.option(
     "--imgscale",
@@ -84,12 +77,12 @@ def ilastik():
     help="Ilastik image scale factor",
 )
 @click.option(
-    "--patchsize",
-    "patch_size",
+    "--cropsize",
+    "crop_size",
     type=click.INT,
     default=512,
     show_default=True,
-    help="Ilastik patch size (in pixels)",
+    help="Ilastik crop size (in pixels)",
 )
 @click.option(
     "--mean/--no-mean",
@@ -105,43 +98,73 @@ def ilastik():
     help="Random seed",
 )
 def prepare(
-    img_dir,
+    src_img_dir,
     panel_file,
-    ilastik_project_file,
-    ilastik_img_dir,
-    ilastik_patch_dir,
+    project_file,
+    img_dir,
+    crop_dir,
     img_scale,
-    patch_size,
+    crop_size,
     prepend_mean,
     seed,
 ):
-    img_files = sorted(Path(img_dir).glob("*.tiff"))
-    channel_indices = None
+    enabled_channel_indices = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
-        if panel_ilastik_col in panel:
-            channel_indices = np.flatnonzero(panel[panel_ilastik_col].values)
-    Path(ilastik_img_dir).mkdir(exist_ok=True)
-    ilastik_img_files = create_ilastik_images(
-        img_files,
-        ilastik_img_dir,
+        if ilastik.panel_ilastik_col in panel:
+            channels_enabled = panel[ilastik.panel_ilastik_col].values
+            enabled_channel_indices = np.flatnonzero(channels_enabled)
+    src_img_files = io.list_images(src_img_dir)
+    img_files = []
+    img_dir = Path(img_dir)
+    img_dir.mkdir(exist_ok=True)
+    it = ilastik.create_images(
+        src_img_files,
         img_scale=img_scale,
-        channel_indices=channel_indices,
+        channel_indices=enabled_channel_indices,
         prepend_mean=prepend_mean,
     )
-    Path(ilastik_patch_dir).mkdir(exist_ok=True)
-    ilastik_patch_files = create_ilastik_patches(
-        ilastik_img_files,
-        ilastik_patch_dir,
-        patch_size=patch_size,
+    with click.progressbar(it, length=len(src_img_files)) as pbar:
+        for src_img_file, img in pbar:
+            img_file = ilastik.write_image(
+                img,
+                img_dir / f"{src_img_file.stem}",
+                ilastik.img_dataset_path,
+            )
+            img_files.append(img_file)
+    crop_files = []
+    crop_dir = Path(crop_dir)
+    crop_dir.mkdir(exist_ok=True)
+    it = ilastik.create_crops(
+        img_files,
+        crop_size=crop_size,
         seed=seed,
     )
-    create_ilastik_project(ilastik_patch_files, ilastik_project_file)
+    with click.progressbar(it, length=len(img_files)) as pbar:
+        for img_file, x_start, y_start, crop in pbar:
+            if crop is not None:
+                crop_file_name = (
+                    f"{img_file.stem}"
+                    f"_x{x_start}_y{y_start}"
+                    f"_w{crop_size}_h{crop_size}"
+                )
+                crop_file = ilastik.write_image(
+                    crop,
+                    crop_dir / crop_file_name,
+                    ilastik.crop_dataset_path,
+                )
+                crop_files.append(crop_file)
+            else:
+                click.echo(
+                    f"Image too small for crop size: {img_file}",
+                    file=sys.stderr,
+                )
+    ilastik.create_project(crop_files, project_file)
 
 
-@ilastik.command(
+@ilastik_cmd.command(
     context_settings={"ignore_unknown_options": True},
-    help="Run Ilastik application (GUI mode requires X11)",
+    help="Run the Ilastik application (GUI mode requires X11)",
     add_help_option=False,
 )
 @click.argument(
@@ -154,37 +177,34 @@ def app(ilastik_args):
     if x11_warning_message is not None:
         click.echo(x11_warning_message, file=sys.stderr)
     args = [ilastik_binary] + list(ilastik_args)
-    env = os.environ.copy()
-    env.pop("PYTHONPATH", None)
-    env.pop("PYTHONHOME", None)
-    result = system.run_captured(args, env=env)
+    result = system.run_captured(args, env=ilastik.get_env())
     sys.exit(result.returncode)
 
 
-@ilastik.command(
-    help="Run pixel classification batch using Ilastik",
+@ilastik_cmd.command(
+    help="Run a pixel classification batch using Ilastik",
 )
 @click.option(
     "--ilp",
-    "ilastik_project_file",
+    "project_file",
     type=click.Path(exists=True, dir_okay=False),
-    default=default_ilastik_project_file,
+    default=default_project_file,
     show_default=True,
-    help="Path to the Ilastik project .ilp file",
+    help="Path to the Ilastik project file",
 )
 @click.option(
     "--img",
-    "ilastik_img_dir",
+    "img_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=default_ilastik_img_dir,
+    default=default_img_dir,
     show_default=True,
-    help="Path to the Ilastik image .h5 directory",
+    help="Path to the Ilastik image directory",
 )
 @click.option(
     "--dest",
-    "ilastik_probab_dir",
+    "probab_dir",
     type=click.Path(file_okay=False),
-    default=default_ilastik_probab_dir,
+    default=default_probab_dir,
     show_default=True,
     help="Path to the Ilastik probabilities output directory",
 )
@@ -201,92 +221,112 @@ def app(ilastik_args):
     help="Memory limit (in megabytes)",
 )
 def run(
-    ilastik_project_file,
-    ilastik_img_dir,
-    ilastik_probab_dir,
+    project_file,
+    img_dir,
+    probab_dir,
     num_threads,
     memory_limit,
 ):
-    ilastik_img_files = sorted(Path(ilastik_img_dir).glob("*.h5"))
-    Path(ilastik_probab_dir).mkdir(exist_ok=True)
-    result = classify_pixels(
+    Path(probab_dir).mkdir(exist_ok=True)
+    result = ilastik.classify_pixels(
         ilastik_binary,
-        ilastik_project_file,
-        ilastik_img_files,
-        ilastik_probab_dir,
+        project_file,
+        ilastik.list_images(img_dir),
+        probab_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
     )
     sys.exit(result.returncode)
 
 
-@ilastik.command(
+@ilastik_cmd.command(
     help="Fix existing Ilastik training data (experimental)",
 )
 @click.option(
     "--ilp",
-    "ilastik_project_file",
+    "project_file",
     type=click.Path(exists=True, dir_okay=False),
-    default=default_ilastik_project_file,
+    default=default_project_file,
     show_default=True,
-    help="Path to the Ilastik project .ilp file",
+    help="Path to the Ilastik project file",
 )
 @click.option(
-    "--patch",
-    "ilastik_patch_dir",
+    "--crops",
+    "crop_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=default_ilastik_patch_dir,
+    default=default_crop_dir,
     show_default=True,
-    help="Path to the Ilastik patch .h5 directory",
+    help="Path to the Ilastik crop directory",
 )
 @click.option(
     "--probab",
-    "ilastik_probab_dir",
+    "probab_dir",
     type=click.Path(file_okay=False),
-    default=default_ilastik_probab_dir,
+    default=default_probab_dir,
     show_default=True,
-    help="Path to the Ilastik probabilities .tiff directory",
+    help="Path to the Ilastik probabilities directory",
+)
+@click.option(
+    "--backup/--no-backup",
+    "create_backup",
+    default=True,
+    show_default=True,
+    help="Backup files before attempting to patch them",
 )
 @click.option(
     "--axisorder",
     "axis_order",
     type=click.STRING,
-    help="Axis order of the existing patches (e.g., zyxc)",
+    help="Axis order of the existing crops (e.g., zyxc)",
 )
 def fix(
-    ilastik_project_file,
-    ilastik_patch_dir,
-    ilastik_probab_dir,
+    project_file,
+    crop_dir,
+    probab_dir,
+    create_backup,
     axis_order,
 ):
-    ilastik_project_file = Path(ilastik_project_file)
-    ilastik_patch_dir = Path(ilastik_patch_dir)
-    ilastik_project_backup_file = ilastik_project_file.with_name(
-        ilastik_project_file.name + ".bak"
-    )
-    if ilastik_project_backup_file.exists():
-        return click.echo(
-            "Ilastik project backup file exists",
-            file=sys.stdout,
-        )
-    ilastik_patch_backup_dir = ilastik_patch_dir.with_name(
-        ilastik_patch_dir.name + ".bak"
-    )
-    if ilastik_patch_backup_dir.exists():
-        return click.echo(
-            "Ilastik patch backup directory exists",
-            file=sys.stdout,
-        )
-    shutil.copyfile(ilastik_project_file, ilastik_project_backup_file)
-    ilastik_patch_backup_dir.mkdir()
-    for ilastik_patch_file in sorted(ilastik_patch_dir.glob("*.h5")):
-        shutil.copyfile(
-            ilastik_patch_file,
-            ilastik_patch_backup_dir / ilastik_patch_file.name,
-        )
-    fix_patches_and_project_inplace(
-        ilastik_project_file,
-        ilastik_patch_dir,
-        ilastik_probab_dir,
-        axis_order=axis_order,
+    project_file = Path(project_file)
+    crop_dir = Path(crop_dir)
+    if create_backup:
+        project_bak_file = project_file.with_name(project_file.name + ".bak")
+        if project_bak_file.exists():
+            return click.echo(
+                "Ilastik project backup file exists",
+                file=sys.stderr,
+            )
+        crop_bak_dir = crop_dir.with_name(crop_dir.name + ".bak")
+        if crop_bak_dir.exists():
+            return click.echo(
+                "Ilastik crop backup directory exists",
+                file=sys.stderr,
+            )
+        shutil.copyfile(project_file, project_bak_file)
+        crop_bak_dir.mkdir()
+        for crop_file in ilastik.list_crops(crop_dir):
+            shutil.copyfile(crop_file, crop_bak_dir / crop_file.name)
+    crop_shapes = {}
+    last_transpose_axes = None
+    crop_files = ilastik.list_crops(crop_dir)
+    it = ilastik.fix_crops_inplace(crop_files, axis_order=axis_order)
+    with click.progressbar(it, length=len(crop_files)) as pbar:
+        for crop_file, transpose_axes, crop in pbar:
+            if last_transpose_axes not in (None, transpose_axes):
+                return click.echo(
+                    "Inconsistent axis orders across crops",
+                    file=sys.stderr,
+                )
+            crop_file = ilastik.write_image(
+                crop,
+                crop_file,
+                ilastik.crop_dataset_path,
+            )
+            crop_shapes[crop_file.stem] = crop.shape
+            last_transpose_axes = transpose_axes
+    ilastik.fix_project_inplace(
+        project_file,
+        crop_dir,
+        probab_dir,
+        crop_shapes,
+        last_transpose_axes,
     )

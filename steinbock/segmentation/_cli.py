@@ -1,6 +1,6 @@
 import click
 
-from steinbock.segmentation.cellprofiler._cli import cellprofiler
+from steinbock.segmentation.cellprofiler._cli import cellprofiler_cmd
 from steinbock.utils import cli
 
 
@@ -12,4 +12,4 @@ def segment():
     pass
 
 
-segment.add_command(cellprofiler)
+segment.add_command(cellprofiler_cmd)

@@ -17,14 +17,15 @@ default_segmentation_pipeline_file = "cell_segmentation.cppipe"
 
 
 @click.group(
+    name="cellprofiler",
     cls=cli.OrderedClickGroup,
-    help="Perform cell segmentation using a CellProfiler pipeline",
+    help="Perform cell segmentation using CellProfiler",
 )
-def cellprofiler():
+def cellprofiler_cmd():
     pass
 
 
-@cellprofiler.command(
+@cellprofiler_cmd.command(
     help="Prepare a CellProfiler segmentation pipeline",
 )
 @click.option(
@@ -39,9 +40,9 @@ def prepare(segmentation_pipeline_file):
     create_segmentation_pipeline(segmentation_pipeline_file)
 
 
-@cellprofiler.command(
+@cellprofiler_cmd.command(
     context_settings={"ignore_unknown_options": True},
-    help="Run CellProfiler application (GUI mode requires X11)",
+    help="Run the CellProfiler application (GUI mode requires X11)",
     add_help_option=False,
 )
 @click.argument(
@@ -60,8 +61,8 @@ def app(cellprofiler_args):
     sys.exit(result.returncode)
 
 
-@cellprofiler.command(
-    help="Run cell segmentation batch using CellProfiler",
+@cellprofiler_cmd.command(
+    help="Run a cell segmentation batch using CellProfiler",
 )
 @click.option(
     "--pipe",
@@ -69,7 +70,7 @@ def app(cellprofiler_args):
     type=click.Path(exists=True, dir_okay=False),
     default=default_segmentation_pipeline_file,
     show_default=True,
-    help="Path to the CellProfiler segmentation pipeline .cppipe file",
+    help="Path to the CellProfiler segmentation pipeline file",
 )
 @click.option(
     "--probab",
@@ -77,7 +78,7 @@ def app(cellprofiler_args):
     type=click.Path(exists=True, file_okay=False),
     default="ilastik_probabilities",
     show_default=True,
-    help="Path to the probabilities .tiff directory",
+    help="Path to the probabilities directory",
 )
 @click.option(
     "--dest",

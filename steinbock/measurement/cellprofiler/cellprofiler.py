@@ -23,8 +23,8 @@ def create_measurement_pipeline(
 def measure_cells(
     cellprofiler_binary: str,
     measurement_pipeline_file: Union[str, PathLike],
-    cellprofiler_input_dir: Union[str, PathLike],
-    cellprofiler_output_dir: Union[str, PathLike],
+    input_dir: Union[str, PathLike],
+    output_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ):
     args = [
@@ -34,9 +34,9 @@ def measure_cells(
         "-p",
         str(measurement_pipeline_file),
         "-i",
-        str(cellprofiler_input_dir),
+        str(input_dir),
         "-o",
-        str(cellprofiler_output_dir),
+        str(output_dir),
     ]
     if cellprofiler_plugin_dir is not None:
         args.append("--plugins-directory")

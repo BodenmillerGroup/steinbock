@@ -2,3 +2,6 @@ site_name: steinbock documentation
 
 theme:
   name: material
+
+markdown_extensions:
+  - admonition

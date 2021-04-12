@@ -1,7 +1,6 @@
 import click
 
-from steinbock.preprocessing.hifi._cli import hifi
-from steinbock.preprocessing.imc._cli import imc
+from steinbock.preprocessing.imc._cli import imc_cmd
 from steinbock.utils import cli
 
 
@@ -13,5 +12,4 @@ def preprocess():
     pass
 
 
-preprocess.add_command(hifi)
-preprocess.add_command(imc)
+preprocess.add_command(imc_cmd)

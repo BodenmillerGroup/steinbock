@@ -13,7 +13,6 @@ _segmentation_pipeline_file_template = _data_dir / "cell_segmentation.cppipe"
 def create_segmentation_pipeline(
     segmentation_pipeline_file: Union[str, PathLike],
 ):
-    segmentation_pipeline_file = Path(segmentation_pipeline_file)
     shutil.copyfile(
         _segmentation_pipeline_file_template,
         segmentation_pipeline_file,
@@ -21,14 +20,14 @@ def create_segmentation_pipeline(
 
 
 def segment_cells(
-    cellprofiler_binary: str,
+    cellprofiler_binary: Union[str, PathLike],
     segmentation_pipeline_file: Union[str, PathLike],
     probab_dir: Union[str, PathLike],
     mask_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ):
     args = [
-        cellprofiler_binary,
+        str(cellprofiler_binary),
         "-c",
         "-r",
         "-p",

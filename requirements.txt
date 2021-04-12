@@ -1,10 +1,8 @@
 click
 h5py
-imctoolkit
 imctools
 numpy
 pandas
-python-igraph
+scikit-image
 scipy
 tifffile
-xarray

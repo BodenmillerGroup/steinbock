@@ -1,6 +1,6 @@
 import click
 
-from steinbock.classification.ilastik._cli import ilastik
+from steinbock.classification.ilastik._cli import ilastik_cmd
 from steinbock.utils import cli
 
 
@@ -12,4 +12,4 @@ def classify():
     pass
 
 
-classify.add_command(ilastik)
+classify.add_command(ilastik_cmd)

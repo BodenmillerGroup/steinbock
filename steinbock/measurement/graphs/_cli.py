@@ -2,28 +2,21 @@ import click
 
 from pathlib import Path
 
-from steinbock.graphs.graphs import construct_knn_graphs, construct_dist_graphs
+from steinbock.measurement.graphs import graphs
 from steinbock.utils import cli, io
 
 
 @click.group(
+    name="graphs",
     cls=cli.OrderedClickGroup,
-    help="Construct spatial cell graphs",
+    help="Construct spatial cell neighborhood graphs",
 )
-def graphs():
+def graphs_cmd():
     pass
 
 
-@graphs.command(
+@graphs_cmd.command(
     help="Construct directed spatial k-nearest neighbor graphs",
-)
-@click.option(
-    "--data",
-    "cell_data_dir",
-    type=click.Path(exists=True, file_okay=False),
-    default=cli.default_cell_intensities_dir,
-    show_default=True,
-    help="Path to the cell data .csv directory",
 )
 @click.option(
     "--dists",
@@ -31,49 +24,36 @@ def graphs():
     type=click.Path(exists=True, file_okay=False),
     default=cli.default_cell_dists_dir,
     show_default=True,
-    help="Path to the cell distances .csv directory",
+    help="Path to the cell distances directory",
 )
 @click.option(
     "--k",
-    "num_cell_neighbors",
+    "k",
     type=click.INT,
     required=True,
     help="Number of neighbors per cell",
 )
 @click.option(
     "--dest",
-    "graph_dir",
+    "cell_graph_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_graph_dir,
+    default=cli.default_cell_graph_dir,
     show_default=True,
-    help="Path to the graph output directory",
+    help="Path to the cell graph output directory",
 )
-def knn(cell_data_dir, cell_dists_dir, num_cell_neighbors, graph_dir):
-    graph_dir = Path(graph_dir)
-    graph_dir.mkdir(exist_ok=True)
-    cell_data_files = sorted(Path(cell_data_dir).glob("*.csv"))
-    cell_dists_files = sorted(Path(cell_dists_dir).glob("*.csv"))
-    it = construct_knn_graphs(
-        cell_data_files,
-        cell_dists_files,
-        num_cell_neighbors,
-    )
-    with click.progressbar(it, length=len(cell_data_files)) as pbar:
-        for cell_data_file, cell_dists_file, graph in pbar:
-            graph_file_name = Path(cell_data_file).with_suffix(".graphml").name
-            io.write_graph(graph, graph_dir / graph_file_name)
+def knn(cell_dists_dir, k, cell_graph_dir):
+    cell_graph_dir = Path(cell_graph_dir)
+    cell_graph_dir.mkdir(exist_ok=True)
+    cell_dists_files = io.list_cell_dists(cell_dists_dir)
+    it = graphs.construct_knn_graphs(cell_dists_files, k)
+    with click.progressbar(it, length=len(cell_dists_files)) as pbar:
+        for cell_dists_file, cell_graph in pbar:
+            cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
+            cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)
 
 
-@graphs.command(
+@graphs_cmd.command(
     help="Construct undirected graphs by thresholding cell border distances",
-)
-@click.option(
-    "--data",
-    "cell_data_dir",
-    type=click.Path(exists=True, file_okay=False),
-    default=cli.default_cell_intensities_dir,
-    show_default=True,
-    help="Path to the cell data .csv directory",
 )
 @click.option(
     "--dists",
@@ -81,7 +61,7 @@ def knn(cell_data_dir, cell_dists_dir, num_cell_neighbors, graph_dir):
     type=click.Path(exists=True, file_okay=False),
     default=cli.default_cell_dists_dir,
     show_default=True,
-    help="Path to the cell distances .csv directory",
+    help="Path to the cell distances directory",
 )
 @click.option(
     "--thres",
@@ -92,23 +72,18 @@ def knn(cell_data_dir, cell_dists_dir, num_cell_neighbors, graph_dir):
 )
 @click.option(
     "--dest",
-    "graph_dir",
+    "cell_graph_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_graph_dir,
+    default=cli.default_cell_graph_dir,
     show_default=True,
-    help="Path to the graph output directory",
+    help="Path to the cell graph output directory",
 )
-def dist(cell_data_dir, cell_dists_dir, cell_dist_thres, graph_dir):
-    graph_dir = Path(graph_dir)
-    graph_dir.mkdir(exist_ok=True)
-    cell_data_files = sorted(Path(cell_data_dir).glob("*.csv"))
-    cell_dists_files = sorted(Path(cell_dists_dir).glob("*.csv"))
-    it = construct_dist_graphs(
-        cell_data_files,
-        cell_dists_files,
-        cell_dist_thres,
-    )
-    with click.progressbar(it, length=len(cell_data_files)) as pbar:
-        for cell_data_file, cell_dists_file, graph in pbar:
-            graph_file_name = Path(cell_data_file).with_suffix(".graphml").name
-            io.write_graph(graph, graph_dir / graph_file_name)
+def dist(cell_dists_dir, cell_dist_thres, cell_graph_dir):
+    cell_graph_dir = Path(cell_graph_dir)
+    cell_graph_dir.mkdir(exist_ok=True)
+    cell_dists_files = io.list_cell_dists(cell_dists_dir)
+    it = graphs.construct_dist_graphs(cell_dists_files, cell_dist_thres)
+    with click.progressbar(it, length=len(cell_dists_files)) as pbar:
+        for cell_dists_file, cell_graph in pbar:
+            cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
+            cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)

@@ -7,42 +7,50 @@ from imctools.io.txt.txtparser import TxtParser
 from os import PathLike
 from pathlib import Path
 from scipy.ndimage import maximum_filter
-from typing import Generator, Optional, Sequence, Tuple, Union
+from typing import Generator, List, Optional, Sequence, Tuple, Union
 
-from steinbock.classification.ilastik.ilastik import panel_ilastik_col
+from steinbock.classification.ilastik import ilastik
 from steinbock.utils import io
 
 
 logger = logging.getLogger(__name__)
 
-imc_panel_metal_col = "Metal Tag"
-imc_panel_name_col = "Target"
-imc_panel_enable_col = "full"
-imc_panel_ilastik_col = "ilastik"
+panel_metal_col = "Metal Tag"
+panel_name_col = "Target"
+panel_enable_col = "full"
+panel_ilastik_col = "ilastik"
+
+
+def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(mcd_dir).rglob("*.mcd"))
+
+
+def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(mcd_dir).rglob("*.txt"))
 
 
 def preprocess_panel(
-    imc_panel_file: Union[str, Path],
+    panel_file: Union[str, Path],
 ) -> Tuple[pd.DataFrame, Sequence[str]]:
-    imc_panel = pd.read_csv(
-        imc_panel_file,
+    panel = pd.read_csv(
+        panel_file,
         usecols=[
-            imc_panel_metal_col,
-            imc_panel_name_col,
-            imc_panel_enable_col,
-            imc_panel_ilastik_col,
+            panel_metal_col,
+            panel_name_col,
+            panel_enable_col,
+            panel_ilastik_col,
         ],
     )
-    imc_panel = imc_panel[imc_panel[imc_panel_enable_col].astype(bool)]
-    imc_panel.drop(columns=imc_panel_enable_col, inplace=True)
-    panel = pd.DataFrame(
+    panel = panel[panel[panel_enable_col].astype(bool)]
+    panel.drop(columns=panel_enable_col, inplace=True)
+    dest_panel = pd.DataFrame(
         data={
-            io.panel_name_col: imc_panel[imc_panel_name_col].tolist(),
-            panel_ilastik_col: imc_panel[imc_panel_ilastik_col].tolist(),
+            io.panel_name_col: panel[panel_name_col].tolist(),
+            ilastik.panel_ilastik_col: panel[panel_ilastik_col].tolist(),
         }
     )
-    metal_order = imc_panel[imc_panel_metal_col].tolist()
-    return panel, metal_order
+    metal_order = panel[panel_metal_col].tolist()
+    return dest_panel, metal_order
 
 
 def preprocess_images(
