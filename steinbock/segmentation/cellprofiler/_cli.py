@@ -3,15 +3,12 @@ import sys
 
 from pathlib import Path
 
+from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.segmentation.cellprofiler.cellprofiler import (
     create_segmentation_pipeline,
     segment_cells,
 )
-from steinbock.utils import cli, system
-
-
-cellprofiler_binary = "cellprofiler"
-cellprofiler_plugin_dir = "/opt/cellprofiler_plugins"
+from steinbock.utils import cli
 
 default_segmentation_pipeline_file = "cell_segmentation.cppipe"
 
@@ -38,27 +35,6 @@ def cellprofiler_cmd():
 )
 def prepare(segmentation_pipeline_file):
     create_segmentation_pipeline(segmentation_pipeline_file)
-
-
-@cellprofiler_cmd.command(
-    context_settings={"ignore_unknown_options": True},
-    help="Run the CellProfiler application (GUI mode requires X11)",
-    add_help_option=False,
-)
-@click.argument(
-    "cellprofiler_args",
-    nargs=-1,
-    type=click.UNPROCESSED,
-)
-def app(cellprofiler_args):
-    x11_warning_message = system.check_x11()
-    if x11_warning_message is not None:
-        click.echo(x11_warning_message, file=sys.stderr)
-    args = [cellprofiler_binary] + list(cellprofiler_args)
-    if not any(arg.startswith("--plugins-directory") for arg in args):
-        args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
-    result = system.run_captured(args)
-    sys.exit(result.returncode)
 
 
 @cellprofiler_cmd.command(

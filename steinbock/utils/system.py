@@ -1,17 +1,5 @@
-import os
 import subprocess
 import sys
-
-
-def check_x11():
-    if "DISPLAY" not in os.environ:
-        return "X11 required - did you set $DISPLAY?"
-    if not os.path.exists("/tmp/.X11-unix"):
-        return "X11 required - did you mount /tmp/.X11-unix"
-    xauthority_path = os.path.expanduser("~/.Xauthority")
-    if not os.path.exists(xauthority_path):
-        return f"X11 required - did you mount {xauthority_path}?"
-    return None
 
 
 def run_captured(args, *popen_args, file=sys.stdout, **popen_kwargs):

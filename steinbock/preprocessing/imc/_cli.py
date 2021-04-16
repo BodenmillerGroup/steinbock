@@ -59,23 +59,23 @@ from steinbock.utils import cli, io
 )
 def imc_cmd(mcd_dir, txt_dir, panel_file, hpf, img_dir, dest_panel_file):
     mcd_files = imc.list_mcd_files(mcd_dir)
-    unique_mcd_file_names = []
+    unique_mcd_file_stems = []
     for mcd_file in mcd_files:
-        if mcd_file.name in unique_mcd_file_names:
+        if mcd_file.stem in unique_mcd_file_stems:
             return click.echo(
-                f"Duplicated file name: {mcd_file.name}",
+                f"Duplicated file stem: {mcd_file.stem}",
                 file=sys.stderr,
             )
-        unique_mcd_file_names.append(mcd_file.name)
+        unique_mcd_file_stems.append(mcd_file.stem)
     txt_files = imc.list_txt_files(txt_dir)
-    unique_txt_file_names = []
+    unique_txt_file_stems = []
     for txt_file in txt_files:
-        if txt_file.name in unique_txt_file_names:
+        if txt_file.stem in unique_txt_file_stems:
             return click.echo(
-                f"Duplicated file name: {mcd_file.name}",
+                f"Duplicated file stem: {txt_file.stem}",
                 file=sys.stderr,
             )
-        unique_txt_file_names.append(txt_file.name)
+        unique_txt_file_stems.append(txt_file.stem)
     dest_panel, metal_order = imc.preprocess_panel(panel_file)
     dest_panel_file = io.write_panel(dest_panel, dest_panel_file)
     Path(img_dir).mkdir(exist_ok=True)
@@ -85,8 +85,9 @@ def imc_cmd(mcd_dir, txt_dir, panel_file, hpf, img_dir, dest_panel_file):
         metal_order,
         hpf=hpf,
     ):
-        img_file_name = mcd_txt_file.stem
+        img_file_stem = mcd_txt_file.stem
         if acquisition_id is not None:
-            img_file_name += f"_{acquisition_id}"
-        img_file = io.write_image(img, Path(img_dir) / img_file_name)
+            img_file_stem += f"_{acquisition_id}"
+        img_file = io.write_image(img, Path(img_dir) / img_file_stem)
         click.echo(img_file)
+        del img

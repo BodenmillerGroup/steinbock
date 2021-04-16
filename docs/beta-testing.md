@@ -74,7 +74,7 @@ This will create an Ilastik pixel classification project (`$DATA/pixel_classifie
 
 Usually, one would now interactively train the created pixel classifier using Ilastik:
 
-    # steinbock classify ilastik app
+    # steinbock tools ilastik
 
 Instead, to use the pre-trained classifier:
   
@@ -106,7 +106,7 @@ This will create a CellProfiler segmentation pipeline `$DATA/pixel_classifier.il
 
 Interactively adapt the created pipeline as needed using the graphical CellProfiler interface:
 
-    # steinbock segment cellprofiler app
+    # steinbock tools cellprofiler
 
 Now we are ready to run the cell segmentation batch:
 

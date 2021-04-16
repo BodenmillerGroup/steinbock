@@ -29,9 +29,14 @@ def list_images(img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(img_dir).rglob("*.tiff"))
 
 
-def read_image(img_file: Union[str, PathLike]) -> np.ndarray:
+def read_image(
+    img_file: Union[str, PathLike],
+    ignore_dtype: bool = False,
+) -> np.ndarray:
     img_file = Path(img_file).with_suffix(".tiff")
-    img = tifffile.imread(img_file).squeeze().astype(np.float32)
+    img = tifffile.imread(img_file).squeeze()
+    if not ignore_dtype:
+        img = img.astype(np.float32)
     if img.ndim == 2:
         img = img[np.newaxis, :, :]
     elif img.ndim != 3:
@@ -39,9 +44,18 @@ def read_image(img_file: Union[str, PathLike]) -> np.ndarray:
     return img
 
 
-def write_image(img: np.ndarray, img_file: Union[str, PathLike]) -> Path:
+def write_image(
+    img: np.ndarray,
+    img_file: Union[str, PathLike],
+    ignore_dtype: bool = False,
+) -> Path:
     img_file = Path(img_file).with_suffix(".tiff")
-    tifffile.imwrite(img_file, data=img, dtype=np.float32, imagej=True)
+    tifffile.imwrite(
+        img_file,
+        data=img,
+        dtype=np.float32 if not ignore_dtype else None,
+        imagej=True,
+    )
     return img_file
 
 

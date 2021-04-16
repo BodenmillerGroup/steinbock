@@ -3,7 +3,6 @@ import json
 import logging
 import numpy as np
 
-import os
 import shutil
 import subprocess
 
@@ -44,13 +43,6 @@ _steinbock_axis_tags = json.dumps(
 
 _data_dir = Path(__file__).parent / "data"
 _project_file_template = _data_dir / "pixel_classifier.ilp"
-
-
-def get_env() -> Dict[str, str]:
-    env = os.environ.copy()
-    env.pop("PYTHONPATH", None)
-    env.pop("PYTHONHOME", None)
-    return env
 
 
 def list_images(img_dir: Union[str, PathLike]) -> List[Path]:
@@ -136,6 +128,7 @@ def classify_pixels(
     probab_dir: Union[str, PathLike],
     num_threads: Optional[int] = None,
     memory_limit: Optional[int] = None,
+    ilastik_env: Optional[Dict[str, str]] = None,
 ) -> subprocess.CompletedProcess:
     probab_dir = Path(probab_dir)
     args = [
@@ -154,11 +147,13 @@ def classify_pixels(
     ]
     for img_file in img_files:
         args.append(str(Path(img_file) / img_dataset_path))
-    env = get_env()
-    if num_threads is not None:
-        env["LAZYFLOW_THREADS"] = num_threads
-    if memory_limit is not None:
-        env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
+    env = None
+    if ilastik_env is not None:
+        env = ilastik_env.copy()
+        if num_threads is not None:
+            env["LAZYFLOW_THREADS"] = num_threads
+        if memory_limit is not None:
+            env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
     result = system.run_captured(args, env=env)
     for probab_file in sorted(probab_dir.rglob(f"*-{img_dataset_path}.tiff")):
         probab_file_name = probab_file.name.replace(f"-{img_dataset_path}", "")

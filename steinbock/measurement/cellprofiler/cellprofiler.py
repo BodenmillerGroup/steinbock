@@ -1,8 +1,8 @@
-from steinbock.utils import system
-
 from os import PathLike
 from pathlib import Path
 from typing import Union
+
+from steinbock.utils import system
 
 _data_dir = Path(__file__).parent / "data"
 _measurement_pipeline_file_template = _data_dir / "cell_measurement.cppipe"

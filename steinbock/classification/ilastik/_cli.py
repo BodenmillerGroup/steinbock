@@ -5,10 +5,9 @@ import sys
 
 from pathlib import Path
 
+from steinbock._env import ilastik_binary, get_ilastik_env
 from steinbock.classification.ilastik import ilastik
-from steinbock.utils import cli, io, system
-
-ilastik_binary = "/opt/ilastik/run_ilastik.sh"
+from steinbock.utils import cli, io
 
 default_img_dir = "ilastik_img"
 default_crop_dir = "ilastik_crops"
@@ -143,14 +142,14 @@ def prepare(
     with click.progressbar(it, length=len(img_files)) as pbar:
         for img_file, x_start, y_start, crop in pbar:
             if crop is not None:
-                crop_file_name = (
+                crop_file_stem = (
                     f"{img_file.stem}"
                     f"_x{x_start}_y{y_start}"
                     f"_w{crop_size}_h{crop_size}"
                 )
                 crop_file = ilastik.write_image(
                     crop,
-                    crop_dir / crop_file_name,
+                    crop_dir / crop_file_stem,
                     ilastik.crop_dataset_path,
                 )
                 crop_files.append(crop_file)
@@ -160,25 +159,6 @@ def prepare(
                     file=sys.stderr,
                 )
     ilastik.create_project(crop_files, project_file)
-
-
-@ilastik_cmd.command(
-    context_settings={"ignore_unknown_options": True},
-    help="Run the Ilastik application (GUI mode requires X11)",
-    add_help_option=False,
-)
-@click.argument(
-    "ilastik_args",
-    nargs=-1,
-    type=click.UNPROCESSED,
-)
-def app(ilastik_args):
-    x11_warning_message = system.check_x11()
-    if x11_warning_message is not None:
-        click.echo(x11_warning_message, file=sys.stderr)
-    args = [ilastik_binary] + list(ilastik_args)
-    result = system.run_captured(args, env=ilastik.get_env())
-    sys.exit(result.returncode)
 
 
 @ilastik_cmd.command(
@@ -235,6 +215,7 @@ def run(
         probab_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
+        ilastik_env=get_ilastik_env(),
     )
     sys.exit(result.returncode)
 
