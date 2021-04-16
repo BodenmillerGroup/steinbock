@@ -71,6 +71,7 @@ def create_images(
             img = img.repeat(img_scale, axis=1)
             img = img.repeat(img_scale, axis=2)
         yield src_img_file, img
+        del img
 
 
 def create_crops(
@@ -92,6 +93,7 @@ def create_crops(
             y_end = y_start + crop_size
             crop = img[:, y_start:y_end, x_start:x_end]
             yield img_file, x_start, y_start, crop
+            del crop
         else:
             yield img_file, None, None, None
 
@@ -211,6 +213,7 @@ def fix_crops_inplace(
         crop = np.reshape(crop, crop.shape[:3])
         crop = crop.astype(np.float32)
         yield crop_file, transpose_axes, crop
+        del crop
 
 
 def fix_project_inplace(

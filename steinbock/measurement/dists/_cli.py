@@ -50,10 +50,14 @@ def centroid(mask_dir, metric, cell_dists_dir):
     mask_files = io.list_masks(mask_dir)
     cell_dists_dir = Path(cell_dists_dir)
     cell_dists_dir.mkdir(exist_ok=True)
-    it = dists.measure_cell_centroid_dists(mask_files, metric)
-    with click.progressbar(it, length=len(mask_files)) as pbar:
-        for mask_file, cell_dists in pbar:
-            io.write_cell_dists(cell_dists, cell_dists_dir / mask_file.stem)
+    for mask_file, cell_dists in dists.measure_cell_centroid_dists(
+        mask_files,
+        metric,
+    ):
+        cell_dists_file = cell_dists_dir / mask_file.stem
+        cell_dists_file = io.write_cell_dists(cell_dists, cell_dists_file)
+        click.echo(cell_dists_file)
+        del cell_dists
 
 
 @dists_cmd.command(
@@ -79,7 +83,10 @@ def border(mask_dir, cell_dists_dir):
     mask_files = io.list_masks(mask_dir)
     cell_dists_dir = Path(cell_dists_dir)
     cell_dists_dir.mkdir(exist_ok=True)
-    it = dists.measure_euclidean_cell_border_dists(mask_files)
-    with click.progressbar(it, length=len(mask_files)) as pbar:
-        for mask_file, cell_dists in pbar:
-            io.write_cell_dists(cell_dists, cell_dists_dir / mask_file.stem)
+    for mask_file, cell_dists in dists.measure_euclidean_cell_border_dists(
+        mask_files,
+    ):
+        cell_dists_file = cell_dists_dir / mask_file.stem
+        cell_dists_file = io.write_cell_dists(cell_dists, cell_dists_file)
+        click.echo(cell_dists_file)
+        del cell_dists

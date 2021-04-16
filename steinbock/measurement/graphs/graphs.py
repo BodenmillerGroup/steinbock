@@ -30,6 +30,7 @@ def construct_knn_graphs(
             }
         )
         yield cell_dists_file, cell_graph
+        del cell_graph
 
 
 def construct_dist_graphs(
@@ -43,3 +44,4 @@ def construct_dist_graphs(
         cells2 = cell_dists.columns[indices[:, 1]].values.astype(np.uint16)
         cell_graph = pd.DataFrame(data={"Cells1": cells1, "Cells2": cells2})
         yield cell_dists_file, cell_graph
+        del cell_graph

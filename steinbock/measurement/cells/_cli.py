@@ -85,19 +85,19 @@ def intensities(
     channel_names = panel[io.panel_name_col].tolist()
     cell_intensities_dir = Path(cell_intensities_dir)
     cell_intensities_dir.mkdir(exist_ok=True)
-    it = cells.measure_intensities(
+    for img_file, mask_file, cell_intensities in cells.measure_intensities(
         img_files,
         io.list_masks(mask_dir),
         channel_names,
         aggr_function,
-    )
-    with click.progressbar(it, length=len(img_files)) as pbar:
-        for img_file, mask_file, cell_intensities in pbar:
-            cell_intensities_file = cell_intensities_dir / img_file.stem
-            cell_intensities_file = io.write_cell_data(
-                cell_intensities,
-                cell_intensities_file,
-            )
+    ):
+        cell_intensities_file = cell_intensities_dir / img_file.stem
+        cell_intensities_file = io.write_cell_data(
+            cell_intensities,
+            cell_intensities_file,
+        )
+        click.echo(cell_intensities_file)
+        del cell_intensities
 
 
 @cells_cmd.command(
@@ -154,19 +154,19 @@ def regionprops(
     cell_regionprops_dir.mkdir(exist_ok=True)
     if not skimage_regionprops:
         skimage_regionprops = default_skimage_regionprops
-    it = cells.measure_regionprops(
+    for img_file, mask_file, cell_regionprops in cells.measure_regionprops(
         img_files,
         io.list_masks(mask_dir),
         channel_names,
         skimage_regionprops,
-    )
-    with click.progressbar(it, length=len(img_files)) as pbar:
-        for img_file, mask_file, cell_regionprops in pbar:
-            cell_regionprops_file = cell_regionprops_dir / img_file.stem
-            cell_regionprops_file = io.write_cell_data(
-                cell_regionprops,
-                cell_regionprops_file,
-            )
+    ):
+        cell_regionprops_file = cell_regionprops_dir / img_file.stem
+        cell_regionprops_file = io.write_cell_data(
+            cell_regionprops,
+            cell_regionprops_file,
+        )
+        click.echo(cell_regionprops_file)
+        del cell_regionprops
 
 
 @cells_cmd.command(

@@ -31,6 +31,7 @@ def measure_intensities(
             index=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
         )
         yield Path(img_file), Path(mask_file), cell_intensities
+        del cell_intensities
 
 
 def measure_regionprops(
@@ -56,6 +57,7 @@ def measure_regionprops(
             index=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
         )
         yield Path(img_file), Path(mask_file), cell_regionprops
+        del cell_regionprops
 
 
 def combine_cell_data(

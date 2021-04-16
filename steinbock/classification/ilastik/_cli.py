@@ -117,47 +117,47 @@ def prepare(
     img_files = []
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
-    it = ilastik.create_images(
+    for src_img_file, img in ilastik.create_images(
         src_img_files,
         img_scale=img_scale,
         channel_indices=enabled_channel_indices,
         prepend_mean=prepend_mean,
-    )
-    with click.progressbar(it, length=len(src_img_files)) as pbar:
-        for src_img_file, img in pbar:
-            img_file = ilastik.write_image(
-                img,
-                img_dir / f"{src_img_file.stem}",
-                ilastik.img_dataset_path,
-            )
-            img_files.append(img_file)
+    ):
+        img_file = ilastik.write_image(
+            img,
+            img_dir / f"{src_img_file.stem}",
+            ilastik.img_dataset_path,
+        )
+        img_files.append(img_file)
+        click.echo(img_file)
+        del img
     crop_files = []
     crop_dir = Path(crop_dir)
     crop_dir.mkdir(exist_ok=True)
-    it = ilastik.create_crops(
+    for img_file, x_start, y_start, crop in ilastik.create_crops(
         img_files,
         crop_size=crop_size,
         seed=seed,
-    )
-    with click.progressbar(it, length=len(img_files)) as pbar:
-        for img_file, x_start, y_start, crop in pbar:
-            if crop is not None:
-                crop_file_stem = (
-                    f"{img_file.stem}"
-                    f"_x{x_start}_y{y_start}"
-                    f"_w{crop_size}_h{crop_size}"
-                )
-                crop_file = ilastik.write_image(
-                    crop,
-                    crop_dir / crop_file_stem,
-                    ilastik.crop_dataset_path,
-                )
-                crop_files.append(crop_file)
-            else:
-                click.echo(
-                    f"Image too small for crop size: {img_file}",
-                    file=sys.stderr,
-                )
+    ):
+        if crop is not None:
+            crop_file_stem = (
+                f"{img_file.stem}"
+                f"_x{x_start}_y{y_start}"
+                f"_w{crop_size}_h{crop_size}"
+            )
+            crop_file = ilastik.write_image(
+                crop,
+                crop_dir / crop_file_stem,
+                ilastik.crop_dataset_path,
+            )
+            crop_files.append(crop_file)
+            click.echo(crop_file)
+            del crop
+        else:
+            click.echo(
+                f"Image too small for crop size: {img_file}",
+                file=sys.stderr,
+            )
     ilastik.create_project(crop_files, project_file)
 
 
@@ -289,21 +289,24 @@ def fix(
     crop_shapes = {}
     last_transpose_axes = None
     crop_files = ilastik.list_crops(crop_dir)
-    it = ilastik.fix_crops_inplace(crop_files, axis_order=axis_order)
-    with click.progressbar(it, length=len(crop_files)) as pbar:
-        for crop_file, transpose_axes, crop in pbar:
-            if last_transpose_axes not in (None, transpose_axes):
-                return click.echo(
-                    "Inconsistent axis orders across crops",
-                    file=sys.stderr,
-                )
-            crop_file = ilastik.write_image(
-                crop,
-                crop_file,
-                ilastik.crop_dataset_path,
+    for crop_file, transpose_axes, crop in ilastik.fix_crops_inplace(
+        crop_files,
+        axis_order=axis_order,
+    ):
+        if last_transpose_axes not in (None, transpose_axes):
+            return click.echo(
+                "Inconsistent axis orders across crops",
+                file=sys.stderr,
             )
-            crop_shapes[crop_file.stem] = crop.shape
-            last_transpose_axes = transpose_axes
+        crop_file = ilastik.write_image(
+            crop,
+            crop_file,
+            ilastik.crop_dataset_path,
+        )
+        crop_shapes[crop_file.stem] = crop.shape
+        last_transpose_axes = transpose_axes
+        click.echo(crop_file)
+        del crop
     ilastik.fix_project_inplace(
         project_file,
         crop_dir,

@@ -45,11 +45,14 @@ def knn(cell_dists_dir, k, cell_graph_dir):
     cell_graph_dir = Path(cell_graph_dir)
     cell_graph_dir.mkdir(exist_ok=True)
     cell_dists_files = io.list_cell_dists(cell_dists_dir)
-    it = graphs.construct_knn_graphs(cell_dists_files, k)
-    with click.progressbar(it, length=len(cell_dists_files)) as pbar:
-        for cell_dists_file, cell_graph in pbar:
-            cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
-            cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)
+    for cell_dists_file, cell_graph in graphs.construct_knn_graphs(
+        cell_dists_files,
+        k,
+    ):
+        cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
+        cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)
+        click.echo(cell_graph_file)
+        del cell_graph
 
 
 @graphs_cmd.command(
@@ -82,8 +85,11 @@ def dist(cell_dists_dir, cell_dist_thres, cell_graph_dir):
     cell_graph_dir = Path(cell_graph_dir)
     cell_graph_dir.mkdir(exist_ok=True)
     cell_dists_files = io.list_cell_dists(cell_dists_dir)
-    it = graphs.construct_dist_graphs(cell_dists_files, cell_dist_thres)
-    with click.progressbar(it, length=len(cell_dists_files)) as pbar:
-        for cell_dists_file, cell_graph in pbar:
-            cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
-            cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)
+    for cell_dists_file, cell_graph in graphs.construct_dist_graphs(
+        cell_dists_files,
+        cell_dist_thres,
+    ):
+        cell_graph_file = cell_graph_dir / Path(cell_dists_file).stem
+        cell_graph_file = io.write_cell_graph(cell_graph, cell_graph_file)
+        click.echo(cell_graph_file)
+        del cell_graph

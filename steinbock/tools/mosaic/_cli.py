@@ -47,11 +47,14 @@ def tile(images, tile_size, tile_dir):
             img_files.append(Path(image))
     tile_dir = Path(tile_dir)
     tile_dir.mkdir(exist_ok=True)
-    it = mosaic.extract_tiles(img_files, tile_size)
-    for img_file, x, y, w, h, tile in it:
+    for img_file, x, y, w, h, tile in mosaic.extract_tiles(
+        img_files,
+        tile_size,
+    ):
         tile_file = tile_dir / f"{img_file.stem}_tx{x}_ty{y}_tw{w}_th{h}"
         tile_file = io.write_image(tile, tile_file, ignore_dtype=True)
         click.echo(tile_file)
+        del tile
 
 
 @mosaic_cmd.command(
@@ -82,14 +85,14 @@ def stitch(tiles, img_dir):
         match = pattern.match(tile_file.stem)
         if match:
             img_file_stem = match.group(1)
-            x, y, w, h = [int(g) for g in pattern.group(2, 3, 4, 5)]
+            x, y, w, h = [int(g) for g in match.group(2, 3, 4, 5)]
             if img_file_stem not in img_tile_info:
                 img_tile_info[img_file_stem] = []
             img_tile_info[img_file_stem].append((tile_file, x, y, w, h))
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
-    it = mosaic.combine_tiles(img_tile_info)
-    with click.progressbar(it, length=len(img_tile_info)) as pbar:
-        for img_file_stem, img in pbar:
-            img_file = img_dir / img_file_stem
-            img_file = io.write_image(img, img_file, ignore_dtype=True)
+    for img_file_stem, img in mosaic.combine_tiles(img_tile_info):
+        img_file = img_dir / img_file_stem
+        img_file = io.write_image(img, img_file, ignore_dtype=True)
+        click.echo(img_file)
+        del img

@@ -28,6 +28,7 @@ def measure_cell_centroid_dists(
             columns=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
         )
         yield Path(mask_file), cell_dists
+        del cell_dists
 
 
 def measure_euclidean_cell_border_dists(
@@ -49,3 +50,4 @@ def measure_euclidean_cell_border_dists(
             columns=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
         )
         yield Path(mask_file), cell_dists
+        del cell_dists

@@ -87,6 +87,7 @@ def preprocess_images(
                     img = data.get_image_stack_by_names(metal_order)
                     img = preprocess_image(img, hpf=hpf)
                     yield mcd_file, acquisition.id, img
+                    del img
     while len(remaining_txt_files) > 0:
         txt_file = Path(remaining_txt_files.pop(0))
         with TxtParser(txt_file) as txt_parser:
@@ -95,6 +96,7 @@ def preprocess_images(
             img = data.get_image_stack_by_names(metal_order)
             img = preprocess_image(img, hpf=hpf)
             yield txt_file, None, img
+            del img
 
 
 def preprocess_image(
