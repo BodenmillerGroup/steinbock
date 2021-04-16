@@ -32,7 +32,7 @@ To pull the most recent version of steinbock (not recommended):
 
 For reproducibility, it is recommended to explicitly specify the [steinbock release](https://github.com/BodenmillerGroup/steinbock/releases):
 
-    docker pull jwindhager/steinbock:0.2.0
+    docker pull jwindhager/steinbock:0.3.0
 
 
 ## Usage
