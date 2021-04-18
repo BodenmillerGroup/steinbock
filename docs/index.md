@@ -2,14 +2,14 @@
 
 *steinbock* is a framework for processing multi-channel images to extract single-cell data.
 
+## Overview
+
 The *steinbock* framework comprises the following components:
 
 - The [*steinbock* Python package](https://github.com/BodenmillerGroup/steinbock) with the integrated *steinbock* command-line interface
 - The [*steinbock* Docker container](https://hub.docker.com/r/jwindhager/steinbock), exposing the *steinbock* command-line interface, with supported third-party software (e.g., Ilastik, CellProfiler) pre-installed
 
 It is extensible and supports any **pixel classification-based image segmentation** workflow.
-
-## Introduction
 
 At its core, pixel classification-based image segmentation comprises the following steps:
 
