@@ -11,7 +11,7 @@ It is extensible and supports any **pixel classification-based image segmentatio
 
 ## Introduction
 
-At their core, pixel classification-based image segmentation comprise the following steps:
+At its core, pixel classification-based image segmentation comprises the following steps:
 
   1. **Preprocessing**: extract images from raw data for processing
 
