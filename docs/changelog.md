@@ -13,7 +13,7 @@ Documentation, minor improvements
 
 ## [0.3.0] - 2021-04-16
 
-CLI refactoring, mosaic tooling
+CLI refactoring, mosaic tooling, fix memory leaks & stitching
 
 
 ## [0.2.0] - 2021-04-12
