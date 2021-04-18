@@ -81,10 +81,20 @@ def list_cell_data(cell_data_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(cell_data_dir).rglob("*.csv"))
 
 
-def read_cell_data(cell_data_file: Union[str, PathLike]) -> pd.DataFrame:
+def read_cell_data(
+    cell_data_file: Union[str, PathLike],
+    combined: bool = False,
+) -> pd.DataFrame:
     cell_data_file = Path(cell_data_file).with_suffix(".csv")
-    cell_data = pd.read_csv(cell_data_file, index_col=0)
-    cell_data.index.name = "Cell"
+    cell_data = pd.read_csv(cell_data_file, index_col=None if combined else 0)
+    if combined:
+        cell_data.set_index(
+            ["Image", "Cell"],
+            inplace=True,
+            verify_integrity=True,
+        )
+    else:
+        cell_data.index.name = "Cell"
     cell_data.columns.name = "Feature"
     return cell_data
 
@@ -92,11 +102,16 @@ def read_cell_data(cell_data_file: Union[str, PathLike]) -> pd.DataFrame:
 def write_cell_data(
     cell_data: pd.DataFrame,
     cell_data_file: Union[str, PathLike],
+    combined: bool = False,
 ) -> Path:
-    cell_data.index.name = "Cell"
+    if combined:
+        cell_data.index.names = ["Image", "Cell"]
+        cell_data = cell_data.reset_index()
+    else:
+        cell_data.index.name = "Cell"
     cell_data.columns.name = "Feature"
     cell_data_file = Path(cell_data_file).with_suffix(".csv")
-    cell_data.to_csv(cell_data_file)
+    cell_data.to_csv(cell_data_file, index=not combined)
     return cell_data_file
 
 

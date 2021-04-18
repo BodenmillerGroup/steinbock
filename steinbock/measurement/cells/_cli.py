@@ -193,4 +193,8 @@ def collect(cell_data_dirs, combined_cell_data_file):
             if Path(cell_data_dir).exists()
         ]
     combined_cell_data = cells.combine_cell_data(cell_data_dirs)
-    combined_cell_data.to_csv(combined_cell_data_file)
+    io.write_cell_data(
+        combined_cell_data,
+        combined_cell_data_file,
+        combined=True,
+    )

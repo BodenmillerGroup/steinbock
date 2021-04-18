@@ -14,7 +14,7 @@ Instructions for testing this pipeline with [TestData](https://github.com/Bodenm
 
 Pull the steinbock Docker container:
 
-    docker pull jwindhager/steinbock:0.3.0
+    docker pull jwindhager/steinbock:0.3.1
 
 ### System configuration (Linux/MacOS)
 
@@ -25,7 +25,7 @@ Specify and create the data directory:
 
 For convenience, create an alias for running the steinbock Docker container:
 
-    alias steinbock="docker run -v \"${DATA}\":/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.3.0"
+    alias steinbock="docker run -v \"${DATA}\":/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.3.1"
 
 If necessary, allow the Docker container to run graphical user interfaces:
 
@@ -43,7 +43,7 @@ Check whether steinbock runs:
 
 In the following instructions, instead of calling `steinbock`, type:
 
-    docker run -v "D:\steinbock":/data jwindhager/steinbock:0.3.0
+    docker run -v "D:\steinbock":/data jwindhager/steinbock:0.3.1
 
 Adapt the path to your data directory (`"D:\steinbock"` in the above example) accordingly.
 

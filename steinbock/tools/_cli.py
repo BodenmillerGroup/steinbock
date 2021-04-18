@@ -21,9 +21,6 @@ def tools():
     pass
 
 
-tools.add_command(mosaic_cmd)
-
-
 @tools.command(
     context_settings={"ignore_unknown_options": True},
     help="Run the Ilastik application (GUI mode requires X11)",
@@ -62,3 +59,6 @@ def cellprofiler(cellprofiler_args):
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     result = system.run_captured(args)
     sys.exit(result.returncode)
+
+
+tools.add_command(mosaic_cmd)

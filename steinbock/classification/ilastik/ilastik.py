@@ -278,13 +278,6 @@ def _fix_project_pixel_classification_inplace(
     pixel_classification_group: h5py.Group,
     transpose_axes: List[int],
 ):
-    label_names_dataset = pixel_classification_group.get("LabelNames")
-    if label_names_dataset is not None:
-        if len(label_names_dataset) != 3:
-            raise ValueError("Unsupported number of labels")
-        label_names_dataset[0] = "Nucleus".encode("ascii")
-        label_names_dataset[1] = "Cytoplasm".encode("ascii")
-        label_names_dataset[2] = "Background".encode("ascii")
     label_sets_group = pixel_classification_group.get("LabelSets")
     if label_sets_group is not None:
         for labels_group in label_sets_group.values():
