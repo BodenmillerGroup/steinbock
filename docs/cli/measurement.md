@@ -14,13 +14,13 @@ To extract default spatial cell properties ("region properties", `cell_regionpro
 
     steinbock measure cells regionprops
 
-The above commands will create cell tables in CSV format (see [file types](/specs/file-types/), one file per image). The default destination directory paths are mentioned in brackets above.
+The above commands will create cell tables in CSV format (see [file types](../specs/file-types.md#single-cell-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
 To collect all cell data from all images into a single file:
 
     steinbock measure collect cell_intensities cell_regionprops
 
-This will create a single cell table in CSV format with the first (additional) column indicating the source image (see [file types](/specs/file-types/)). The default destination file is `cells.csv`. The arguments to the `collect` command are the directories from where to collect the cell data.
+This will create a single cell table in CSV format with the first (additional) column indicating the source image (see [file types](../specs/file-types.md#single-cell-data)). The default destination file is `cells.csv`. The arguments to the `collect` command are the directories from where to collect the cell data.
 
 ## Cell-cell distances
 
@@ -38,7 +38,7 @@ To measure the pairwise Euclidean distances between cell borders:
 !!! danger "Computational complexity"
     Computing the pairwise Euclidean distances between cell borders is computationally expensive.
 
-The above commands will create symmetric cell pixel distance matrices in CSV format (see [file types](/specs/file-types/), one file per image). The default destination directory is `cell_distances`.
+The above commands will create symmetric cell pixel distance matrices in CSV format (see [file types](../specs/file-types.md#cell-cell-distances), one file per image). The default destination directory is `cell_distances`.
 
 ## Spatial cell graphs
 
@@ -53,7 +53,7 @@ To construct spatial k-nearest neighbor (kNN) cell graphs (directed):
 
     steinbock measure graphs knn --k 5
 
-The above commands will create directed edge lists in CSV format (see [file types](/specs/file-types/), one file per image). The default destination directory is `cell_graphs`.
+The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-cell-graphs), one file per image). The default destination directory is `cell_graphs`.
 
 ## CellProfiler (legacy)
 
@@ -73,7 +73,7 @@ By default, this will create a CellProfiler pipeline file `cell_measurement.cppi
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](/cli/tools/#cellprofiler)):
+To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
 
     steinbock tools cellprofiler
 

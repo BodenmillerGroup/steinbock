@@ -2,7 +2,7 @@
 
 In this step, given the probabilities from the pixel classification step, cells will be segmented.
 
-This will result in grayscale *cell masks* of the same x/y dimensions as the input images containing unique pixel values for each cell (cell IDs) and `0` for background (see [file types](/specs/file-types/)).
+This will result in grayscale *cell masks* of the same x/y dimensions as the input images containing unique pixel values for each cell (cell IDs) and `0` for background (see [file types](../specs/file-types.md#cell-masks)).
 
 Various approaches are supported by steinbock, each of which is described in the following.
 
@@ -23,14 +23,14 @@ By default, this will create a CellProfiler pipeline file `cell_segmentation.cpp
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](/cli/tools/#cellprofiler)):
+To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
 
     steinbock tools cellprofiler
 
 More detailed instructions on how to create CellProfiler pipelines can be found [here](https://cellprofiler-manual.s3.amazonaws.com/CellProfiler-4.1.3/help/pipelines_building.html).
 
 !!! note "CellProfiler output"
-    By default, the pipeline is configured to generate cell masks as grayscale 16-bit unsigned integer TIFF images with the same name and x/y dimensions as the input images (see [file types](/specs/file-types/)). In custom segmentation scenarios, this convention should be followed to ensure compatibility with downstream measurement tasks.
+    By default, the pipeline is configured to generate cell masks as grayscale 16-bit unsigned integer TIFF images with the same name and x/y dimensions as the input images (see [file types](../specs/file-types.md#cell-masks)). In custom segmentation scenarios, this convention should be followed to ensure compatibility with downstream measurement tasks.
 
 !!! danger "Segmentation parameters"
     Segmentation using CellProfiler is highly customizable and sensitive to parameter choices. The default parameter values may not be suitable in all cases and parameter values require careful tuning for each dataset.
@@ -41,4 +41,4 @@ After the pipeline has been configured, it can be applied to a batch of probabil
 
     steinbock segment cellprofiler run
 
-This will create cell masks of the same x/y dimensions as the input images containing unique pixel values for each cell (cell IDs) and `0` for background (see [file types](/specs/file-types/)). The default destination directory for these images is `masks`.
+This will create cell masks of the same x/y dimensions as the input images containing unique pixel values for each cell (cell IDs) and `0` for background (see [file types](../specs/file-types.md#cell-masks)). The default destination directory for these images is `masks`.

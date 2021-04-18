@@ -11,7 +11,7 @@ To run the Ilastik application:
 Without additional arguments, this will start the graphical user interface of Ilastik.
 
 !!! note "Graphical user interfaces"
-    If *steinbock* exits with a warning message, ensure that *steinbock* is [configured](/install/#configuration) for running graphical user interfaces.
+    If *steinbock* exits with a warning message, ensure that *steinbock* is [configured](../install.md#configuration) for running graphical user interfaces.
 
 ## CellProfiler
 
@@ -22,7 +22,7 @@ To run the CellProfiler application:
 Without additional arguments, this will start the graphical user interface of CellProfiler.
 
 !!! note "Graphical user interfaces"
-    If *steinbock* exits with a warning message, ensure that *steinbock* is [configured](/install/#configuration) for running graphical user interfaces.
+    If *steinbock* exits with a warning message, ensure that *steinbock* is [configured](../install.md#configuration) for running graphical user interfaces.
 
 ## Mosaics
 
