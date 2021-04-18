@@ -29,7 +29,7 @@ At their core, pixel classification-based image segmentation comprise the follow
 
 Currently, the following workflows are implemented:
 
-  - Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
+  - **[Standard workflow]** Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
 
 ## Resources
 

@@ -14,7 +14,7 @@ If you miss support for an imaging modality, please consider [filing an issue on
 
 ## Imaging Mass Cytometry (IMC)
 
-To convert .mcd/.txt files to .tiff and filter hot pixels:
+To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixels:
 
     steinbock preprocess imc --hpf 50
 
