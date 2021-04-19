@@ -45,7 +45,7 @@ def match(masks1, masks2, table_dir):
     table_dir = Path(table_dir)
     table_dir.mkdir(exist_ok=True)
     for mask_file1, mask_file2, table in masks.match(mask_files1, mask_files2):
-        table_file = table_dir / mask_file1.name
+        table_file = table_dir / mask_file1.with_suffix(".csv").name
         table.columns = [Path(masks1).name, Path(masks2).name]
         table.to_csv(table_file, index=False)
         click.echo(table_file)
