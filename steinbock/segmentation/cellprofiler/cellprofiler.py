@@ -19,10 +19,10 @@ def create_segmentation_pipeline(
     )
 
 
-def segment_cells(
+def segment_objects(
     cellprofiler_binary: Union[str, PathLike],
     segmentation_pipeline_file: Union[str, PathLike],
-    probab_dir: Union[str, PathLike],
+    probabilities_dir: Union[str, PathLike],
     mask_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ):
@@ -33,7 +33,7 @@ def segment_cells(
         "-p",
         str(segmentation_pipeline_file),
         "-i",
-        str(probab_dir),
+        str(probabilities_dir),
         "-o",
         str(mask_dir),
     ]

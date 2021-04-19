@@ -103,7 +103,7 @@ def prepare(
 
 
 @cellprofiler_cmd.command(
-    help="Run a cell measurement batch using CellProfiler",
+    help="Run an object measurement batch using CellProfiler",
 )
 @click.option(
     "--pipe",
@@ -135,7 +135,7 @@ def run(
     output_dir,
 ):
     Path(output_dir).mkdir(exist_ok=True)
-    result = cellprofiler.measure_cells(
+    result = cellprofiler.measure_objects(
         cellprofiler_binary,
         measurement_pipeline_file,
         input_dir,

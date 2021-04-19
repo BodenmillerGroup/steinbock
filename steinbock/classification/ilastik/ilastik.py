@@ -127,12 +127,12 @@ def classify_pixels(
     ilastik_binary: Union[str, PathLike],
     project_file: Union[str, PathLike],
     img_files: Sequence[Union[str, PathLike]],
-    probab_dir: Union[str, PathLike],
+    probabilities_dir: Union[str, PathLike],
     num_threads: Optional[int] = None,
     memory_limit: Optional[int] = None,
     ilastik_env: Optional[Dict[str, str]] = None,
 ) -> subprocess.CompletedProcess:
-    probab_dir = Path(probab_dir)
+    probabilities_dir = Path(probabilities_dir)
     args = [
         str(ilastik_binary),
         "--headless",
@@ -141,7 +141,7 @@ def classify_pixels(
         "--input_axes=cyx",
         "--export_source=Probabilities",
         "--output_format=tiff",
-        f"--output_filename_format={probab_dir}/{{nickname}}.tiff",
+        f"--output_filename_format={probabilities_dir}/{{nickname}}.tiff",
         "--export_dtype=uint16",
         "--output_axis_order=yxc",
         "--pipeline_result_drange=(0.0,1.0)",
@@ -157,9 +157,13 @@ def classify_pixels(
         if memory_limit is not None:
             env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
     result = system.run_captured(args, env=env)
-    for probab_file in sorted(probab_dir.rglob(f"*-{img_dataset_path}.tiff")):
-        probab_file_name = probab_file.name.replace(f"-{img_dataset_path}", "")
-        probab_file.rename(probab_file.with_name(probab_file_name))
+    probabilities_files = probabilities_dir.rglob(f"*-{img_dataset_path}.tiff")
+    for probabilities_file in sorted(probabilities_files):
+        probabilities_file.rename(
+            probabilities_file.with_name(
+                probabilities_file.name.replace(f"-{img_dataset_path}", ""),
+            ),
+        )
     return result
 
 
@@ -219,15 +223,15 @@ def fix_crops_inplace(
 def fix_project_inplace(
     project_file: Union[str, PathLike],
     crop_dir: Union[str, PathLike],
-    probab_dir: Union[str, PathLike],
+    probabilities_dir: Union[str, PathLike],
     crop_shapes: Dict[str, Tuple[int, ...]],
     transpose_axes: List[int],
 ):
     project_file = Path(project_file)
     crop_dir = Path(crop_dir)
-    probab_dir = Path(probab_dir)
+    probabilities_dir = Path(probabilities_dir)
     rel_crop_dir = crop_dir.relative_to(project_file.parent)
-    rel_probab_dir = probab_dir.relative_to(project_file.parent)
+    rel_probabilities_dir = probabilities_dir.relative_to(project_file.parent)
     with h5py.File(project_file, "a") as f:
         if "Input Data" in f:
             _fix_project_input_data_inplace(
@@ -243,7 +247,7 @@ def fix_project_inplace(
         if "Prediction Export" in f:
             _fix_project_prediction_export_inplace(
                 f["Prediction Export"],
-                rel_probab_dir,
+                rel_probabilities_dir,
             )
 
 
@@ -301,7 +305,7 @@ def _fix_project_pixel_classification_inplace(
 
 def _fix_project_prediction_export_inplace(
     prediction_export_group: h5py.Group,
-    rel_probab_dir: Path,
+    rel_probabilities_dir: Path,
 ):
     prediction_export_group.clear()
     logger.warn(
@@ -343,7 +347,7 @@ def _fix_project_prediction_export_inplace(
     prediction_export_group.create_dataset(
         "OutputFilenameFormat",
         dtype=h5py.string_dtype("ascii"),
-        data=f"{rel_probab_dir}/{{nickname}}.tiff".encode("ascii"),
+        data=f"{rel_probabilities_dir}/{{nickname}}.tiff".encode("ascii"),
     )
     prediction_export_group.create_dataset(
         "OutputInternalPath",

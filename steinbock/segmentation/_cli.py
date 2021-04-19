@@ -6,7 +6,7 @@ from steinbock.utils import cli
 
 @click.group(
     cls=cli.OrderedClickGroup,
-    help="Perform cell segmentation to create cell masks",
+    help="Perform image segmentation to create object masks",
 )
 def segment():
     pass

@@ -12,7 +12,7 @@ from steinbock.utils import cli, io
 default_img_dir = "ilastik_img"
 default_crop_dir = "ilastik_crops"
 default_project_file = "pixel_classifier.ilp"
-default_probab_dir = "ilastik_probabilities"
+default_probabilities_dir = "ilastik_probabilities"
 
 
 @click.group(
@@ -182,9 +182,9 @@ def prepare(
 )
 @click.option(
     "--dest",
-    "probab_dir",
+    "probabilities_dir",
     type=click.Path(file_okay=False),
-    default=default_probab_dir,
+    default=default_probabilities_dir,
     show_default=True,
     help="Path to the Ilastik probabilities output directory",
 )
@@ -203,16 +203,16 @@ def prepare(
 def run(
     project_file,
     img_dir,
-    probab_dir,
+    probabilities_dir,
     num_threads,
     memory_limit,
 ):
-    Path(probab_dir).mkdir(exist_ok=True)
+    Path(probabilities_dir).mkdir(exist_ok=True)
     result = ilastik.classify_pixels(
         ilastik_binary,
         project_file,
         ilastik.list_images(img_dir),
-        probab_dir,
+        probabilities_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
         ilastik_env=get_ilastik_env(),
@@ -241,9 +241,9 @@ def run(
 )
 @click.option(
     "--probab",
-    "probab_dir",
+    "probabilities_dir",
     type=click.Path(file_okay=False),
-    default=default_probab_dir,
+    default=default_probabilities_dir,
     show_default=True,
     help="Path to the Ilastik probabilities directory",
 )
@@ -263,7 +263,7 @@ def run(
 def fix(
     project_file,
     crop_dir,
-    probab_dir,
+    probabilities_dir,
     create_backup,
     axis_order,
 ):
@@ -310,7 +310,7 @@ def fix(
     ilastik.fix_project_inplace(
         project_file,
         crop_dir,
-        probab_dir,
+        probabilities_dir,
         crop_shapes,
         last_transpose_axes,
     )

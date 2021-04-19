@@ -18,20 +18,20 @@ def measure_intensities(
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
-        cell_ids = np.unique(mask[mask != 0])
-        cell_intensity_data = {
+        object_ids = np.unique(mask[mask != 0])
+        intensities_data = {
             channel_name: [
-                aggr_function(img[channel_index, mask == cell_id])
-                for cell_id in cell_ids
+                aggr_function(img[channel_index, mask == object_id])
+                for object_id in object_ids
             ]
             for channel_index, channel_name in enumerate(channel_names)
         }
-        cell_intensities = pd.DataFrame(
-            data=cell_intensity_data,
-            index=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
+        intensities = pd.DataFrame(
+            data=intensities_data,
+            index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
         )
-        yield Path(img_file), Path(mask_file), cell_intensities
-        del cell_intensities
+        yield Path(img_file), Path(mask_file), intensities
+        del intensities
 
 
 def measure_regionprops(
@@ -46,38 +46,30 @@ def measure_regionprops(
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
-        cell_regionprops_data = measure.regionprops_table(
+        regionprops_data = measure.regionprops_table(
             mask,
             intensity_image=np.moveaxis(img, 0, -1),
             properties=skimage_regionprops,
         )
-        cell_ids = cell_regionprops_data.pop("label")
-        cell_regionprops = pd.DataFrame(
-            data=cell_regionprops_data,
-            index=pd.Index(cell_ids, dtype=np.uint16, name="Cell"),
+        object_ids = regionprops_data.pop("label")
+        regionprops = pd.DataFrame(
+            data=regionprops_data,
+            index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
         )
-        yield Path(img_file), Path(mask_file), cell_regionprops
-        del cell_regionprops
+        yield Path(img_file), Path(mask_file), regionprops
+        del regionprops
 
 
-def combine_cell_data(
-    cell_data_dirs: Sequence[Union[str, PathLike]],
-) -> pd.DataFrame:
+def combine(data_dirs: Sequence[Union[str, PathLike]]) -> pd.DataFrame:
     objs = []
     keys = []
-    cell_data_file_groups = (
-        io.list_cell_data(cell_data_dir) for cell_data_dir in cell_data_dirs
-    )
-    for cell_data_files in zip(*cell_data_file_groups):
-        obj = io.read_cell_data(cell_data_files[0])
-        for cell_data_file in cell_data_files[1:]:
-            obj = pd.merge(
-                obj,
-                io.read_cell_data(cell_data_file),
-                left_index=True,
-                right_index=True,
-            )
-        key = Path(cell_data_files[0]).with_suffix(".tiff").name
+    data_file_groups = (io.list_data(data_dir) for data_dir in data_dirs)
+    for data_files in zip(*data_file_groups):
+        obj = io.read_data(data_files[0])
+        for data_file in data_files[1:]:
+            data = io.read_data(data_file)
+            obj = pd.merge(obj, data, left_index=True, right_index=True)
+        key = Path(data_files[0]).with_suffix(".tiff").name
         objs.append(obj)
         keys.append(key)
-    return pd.concat(objs, keys=keys, names=["Image", "Cell"])
+    return pd.concat(objs, keys=keys, names=["Image", "Object"])

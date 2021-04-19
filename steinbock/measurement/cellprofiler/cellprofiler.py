@@ -20,7 +20,7 @@ def create_measurement_pipeline(
         f.write(s)
 
 
-def measure_cells(
+def measure_objects(
     cellprofiler_binary: str,
     measurement_pipeline_file: Union[str, PathLike],
     input_dir: Union[str, PathLike],

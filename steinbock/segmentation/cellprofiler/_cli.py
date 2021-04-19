@@ -4,10 +4,7 @@ import sys
 from pathlib import Path
 
 from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
-from steinbock.segmentation.cellprofiler.cellprofiler import (
-    create_segmentation_pipeline,
-    segment_cells,
-)
+from steinbock.segmentation.cellprofiler import cellprofiler
 from steinbock.utils import cli
 
 default_segmentation_pipeline_file = "cell_segmentation.cppipe"
@@ -16,7 +13,7 @@ default_segmentation_pipeline_file = "cell_segmentation.cppipe"
 @click.group(
     name="cellprofiler",
     cls=cli.OrderedClickGroup,
-    help="Perform cell segmentation using CellProfiler",
+    help="Segment objects in probability images using CellProfiler",
 )
 def cellprofiler_cmd():
     pass
@@ -34,11 +31,11 @@ def cellprofiler_cmd():
     help="Path to the CellProfiler segmentation pipeline output file",
 )
 def prepare(segmentation_pipeline_file):
-    create_segmentation_pipeline(segmentation_pipeline_file)
+    cellprofiler.create_segmentation_pipeline(segmentation_pipeline_file)
 
 
 @cellprofiler_cmd.command(
-    help="Run a cell segmentation batch using CellProfiler",
+    help="Run a object segmentation batch using CellProfiler",
 )
 @click.option(
     "--pipe",
@@ -50,7 +47,7 @@ def prepare(segmentation_pipeline_file):
 )
 @click.option(
     "--probab",
-    "probab_dir",
+    "probabilities_dir",
     type=click.Path(exists=True, file_okay=False),
     default="ilastik_probabilities",
     show_default=True,
@@ -66,20 +63,20 @@ def prepare(segmentation_pipeline_file):
 )
 def run(
     segmentation_pipeline_file,
-    probab_dir,
+    probabilities_dir,
     mask_dir,
 ):
-    if probab_dir not in ("ilastik_probabilities",):
+    if probabilities_dir not in ("ilastik_probabilities",):
         click.echo(
             "When using probabilities originating from unknown sources, "
             "make sure to adapt the CellProfiler pipeline accordingly",
             file=sys.stderr,
         )
     Path(mask_dir).mkdir(exist_ok=True)
-    result = segment_cells(
+    result = cellprofiler.segment_objects(
         cellprofiler_binary,
         segmentation_pipeline_file,
-        probab_dir,
+        probabilities_dir,
         mask_dir,
         cellprofiler_plugin_dir=cellprofiler_plugin_dir,
     )

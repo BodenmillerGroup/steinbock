@@ -3,12 +3,12 @@ import numpy as np
 
 from pathlib import Path
 
-from steinbock.measurement.cells import cells
+from steinbock.measurement.objects import objects
 from steinbock.utils import cli, io
 
-default_collect_cell_data_dirs = [
-    cli.default_cell_intensities_dir,
-    cli.default_cell_regionprops_dir,
+default_collect_data_dirs = [
+    cli.default_intensities_dir,
+    cli.default_regionprops_dir,
 ]
 
 default_skimage_regionprops = [
@@ -21,16 +21,16 @@ default_skimage_regionprops = [
 
 
 @click.group(
-    name="cells",
+    name="objects",
     cls=cli.OrderedClickGroup,
-    help="Measure cell properties",
+    help="Measure object properties",
 )
-def cells_cmd():
+def objects_cmd():
     pass
 
 
-@cells_cmd.command(
-    help="Measure cell intensities",
+@objects_cmd.command(
+    help="Measure object intensities",
 )
 @click.option(
     "--img",
@@ -66,42 +66,41 @@ def cells_cmd():
 )
 @click.option(
     "--dest",
-    "cell_intensities_dir",
+    "intensities_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_cell_intensities_dir,
+    default=cli.default_intensities_dir,
     show_default=True,
-    help="Path to the cell intensities output directory",
+    help="Path to the object intensities output directory",
 )
 def intensities(
     img_dir,
     mask_dir,
     panel_file,
     aggr_function_name,
-    cell_intensities_dir,
+    intensities_dir,
 ):
     aggr_function = getattr(np, aggr_function_name)
     img_files = io.list_images(img_dir)
     panel = io.read_panel(panel_file)
     channel_names = panel[io.panel_name_col].tolist()
-    cell_intensities_dir = Path(cell_intensities_dir)
-    cell_intensities_dir.mkdir(exist_ok=True)
-    for img_file, mask_file, cell_intensities in cells.measure_intensities(
+    intensities_dir = Path(intensities_dir)
+    intensities_dir.mkdir(exist_ok=True)
+    for img_file, mask_file, intensities in objects.measure_intensities(
         img_files,
         io.list_masks(mask_dir),
         channel_names,
         aggr_function,
     ):
-        cell_intensities_file = cell_intensities_dir / img_file.stem
-        cell_intensities_file = io.write_cell_data(
-            cell_intensities,
-            cell_intensities_file,
+        intensities_file = io.write_data(
+            intensities,
+            intensities_dir / img_file.stem,
         )
-        click.echo(cell_intensities_file)
-        del cell_intensities
+        click.echo(intensities_file)
+        del intensities
 
 
-@cells_cmd.command(
-    help="Measure cell region properties",
+@objects_cmd.command(
+    help="Measure object region properties",
 )
 @click.option(
     "--img",
@@ -134,67 +133,60 @@ def intensities(
 )
 @click.option(
     "--dest",
-    "cell_regionprops_dir",
+    "regionprops_dir",
     type=click.Path(file_okay=False),
-    default=cli.default_cell_regionprops_dir,
+    default=cli.default_regionprops_dir,
     show_default=True,
-    help="Path to the cell region properties output directory",
+    help="Path to the object region properties output directory",
 )
 def regionprops(
     img_dir,
     mask_dir,
     panel_file,
     skimage_regionprops,
-    cell_regionprops_dir,
+    regionprops_dir,
 ):
     img_files = io.list_images(img_dir)
     panel = io.read_panel(panel_file)
     channel_names = panel[io.panel_name_col].tolist()
-    cell_regionprops_dir = Path(cell_regionprops_dir)
-    cell_regionprops_dir.mkdir(exist_ok=True)
+    regionprops_dir = Path(regionprops_dir)
+    regionprops_dir.mkdir(exist_ok=True)
     if not skimage_regionprops:
         skimage_regionprops = default_skimage_regionprops
-    for img_file, mask_file, cell_regionprops in cells.measure_regionprops(
+    for img_file, mask_file, regionprops in objects.measure_regionprops(
         img_files,
         io.list_masks(mask_dir),
         channel_names,
         skimage_regionprops,
     ):
-        cell_regionprops_file = cell_regionprops_dir / img_file.stem
-        cell_regionprops_file = io.write_cell_data(
-            cell_regionprops,
-            cell_regionprops_file,
-        )
-        click.echo(cell_regionprops_file)
-        del cell_regionprops
+        regionprops_file = regionprops_dir / img_file.stem
+        regionprops_file = io.write_data(regionprops, regionprops_file)
+        click.echo(regionprops_file)
+        del regionprops
 
 
-@cells_cmd.command(
-    help="Combine cell data into a single file",
+@objects_cmd.command(
+    help="Combine object data into a single file",
 )
 @click.argument(
-    "cell_data_dirs",
+    "data_dirs",
     nargs=-1,
     type=click.Path(exists=True, file_okay=False),
 )
 @click.option(
     "--dest",
-    "combined_cell_data_file",
+    "combined_data_file",
     type=click.Path(dir_okay=False),
-    default=cli.default_combined_cell_data_file,
+    default=cli.default_combined_data_file,
     show_default=True,
-    help="Path to the combined cell data output file",
+    help="Path to the combined object data output file",
 )
-def collect(cell_data_dirs, combined_cell_data_file):
-    if not cell_data_dirs:
-        cell_data_dirs = [
-            cell_data_dir
-            for cell_data_dir in default_collect_cell_data_dirs
-            if Path(cell_data_dir).exists()
+def collect(data_dirs, combined_data_file):
+    if not data_dirs:
+        data_dirs = [
+            data_dir
+            for data_dir in default_collect_data_dirs
+            if Path(data_dir).exists()
         ]
-    combined_cell_data = cells.combine_cell_data(cell_data_dirs)
-    io.write_cell_data(
-        combined_cell_data,
-        combined_cell_data_file,
-        combined=True,
-    )
+    combined_data = objects.combine(data_dirs)
+    io.write_data(combined_data, combined_data_file, combined=True)

@@ -77,91 +77,94 @@ def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> Path:
     return mask_file
 
 
-def list_cell_data(cell_data_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(cell_data_dir).rglob("*.csv"))
+def list_data(data_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(data_dir).rglob("*.csv"))
 
 
-def read_cell_data(
-    cell_data_file: Union[str, PathLike],
+def read_data(
+    data_file: Union[str, PathLike],
     combined: bool = False,
 ) -> pd.DataFrame:
-    cell_data_file = Path(cell_data_file).with_suffix(".csv")
-    cell_data = pd.read_csv(cell_data_file, index_col=None if combined else 0)
+    data_file = Path(data_file).with_suffix(".csv")
+    data = pd.read_csv(
+        data_file,
+        index_col=None if combined else 0,
+    )
     if combined:
-        cell_data.set_index(
-            ["Image", "Cell"],
+        data.set_index(
+            ["Image", "Object"],
             inplace=True,
             verify_integrity=True,
         )
     else:
-        cell_data.index.name = "Cell"
-    cell_data.columns.name = "Feature"
-    return cell_data
+        data.index.name = "Object"
+    data.columns.name = "Feature"
+    return data
 
 
-def write_cell_data(
-    cell_data: pd.DataFrame,
-    cell_data_file: Union[str, PathLike],
+def write_data(
+    data: pd.DataFrame,
+    data_file: Union[str, PathLike],
     combined: bool = False,
 ) -> Path:
     if combined:
-        cell_data.index.names = ["Image", "Cell"]
-        cell_data = cell_data.reset_index()
+        data.index.names = ["Image", "Object"]
+        data = data.reset_index()
     else:
-        cell_data.index.name = "Cell"
-    cell_data.columns.name = "Feature"
-    cell_data_file = Path(cell_data_file).with_suffix(".csv")
-    cell_data.to_csv(cell_data_file, index=not combined)
-    return cell_data_file
+        data.index.name = "Object"
+    data.columns.name = "Feature"
+    data_file = Path(data_file).with_suffix(".csv")
+    data.to_csv(data_file, index=not combined)
+    return data_file
 
 
-def list_cell_dists(cell_dists_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(cell_dists_dir).rglob("*.csv"))
+def list_distances(distances_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(distances_dir).rglob("*.csv"))
 
 
-def read_cell_dists(cell_dists_file: Union[str, PathLike]) -> pd.DataFrame:
-    cell_dists_file = Path(cell_dists_file).with_suffix(".csv")
-    cell_dists = pd.read_csv(cell_dists_file, index_col=0)
-    cell_dists.index.name = "Cell"
-    cell_dists.index = cell_dists.index.astype(np.uint16)
-    cell_dists.columns.name = "Cell"
-    cell_dists.columns = cell_dists.columns.astype(np.uint16)
-    return cell_dists
+def read_distances(distances_file: Union[str, PathLike]) -> pd.DataFrame:
+    distances_file = Path(distances_file).with_suffix(".csv")
+    d = pd.read_csv(distances_file, index_col=0)
+    d.index.name = "Object"
+    d.index = d.index.astype(np.uint16)
+    d.columns.name = "Object"
+    d.columns = d.columns.astype(np.uint16)
+    return d
 
 
-def write_cell_dists(
-    cell_dists: pd.DataFrame,
-    cell_dists_file: Union[str, PathLike],
+def write_distances(
+    d: pd.DataFrame,
+    distances_file: Union[str, PathLike],
 ) -> Path:
-    cell_dists.index.name = "Cell"
-    cell_dists.index = cell_dists.index.astype(np.uint16)
-    cell_dists.columns.name = "Cell"
-    cell_dists.columns = cell_dists.columns.astype(np.uint16)
-    cell_dists_file = Path(cell_dists_file).with_suffix(".csv")
-    cell_dists.to_csv(cell_dists_file)
-    return cell_dists_file
+    d.index.name = "Object"
+    d.index = d.index.astype(np.uint16)
+    d.columns.name = "Object"
+    d.columns = d.columns.astype(np.uint16)
+    distances_file = Path(distances_file).with_suffix(".csv")
+    d.to_csv(distances_file)
+    return distances_file
 
 
-def list_cell_graphs(cell_graph_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(cell_graph_dir).rglob("*.csv"))
+def list_graphs(graph_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(graph_dir).rglob("*.csv"))
 
 
-def read_cell_graph(cell_graph_file: Union[str, PathLike]) -> pd.DataFrame:
-    cell_graph_file = Path(cell_graph_file).with_suffix(".csv")
+def read_graph(graph_file: Union[str, PathLike]) -> pd.DataFrame:
+    graph_file = Path(graph_file).with_suffix(".csv")
     return pd.read_csv(
-        cell_graph_file,
-        usecols=["Cell1", "Cell2"],
+        graph_file,
+        usecols=["Object1", "Object2"],
         dtype=np.uint16,
     )
 
 
-def write_cell_graph(
-    cell_graph: pd.DataFrame,
-    cell_graph_file: Union[str, PathLike],
+def write_graph(
+    graph: pd.DataFrame,
+    graph_file: Union[str, PathLike],
 ) -> Path:
-    cell_graph = cell_graph.astype(np.uint16)
-    cell_graph.columns = ["Cell1", "Cell2"]
-    cell_graph.reset_index(drop=True, inplace=True)
-    cell_graph_file = Path(cell_graph_file).with_suffix(".csv")
-    cell_graph.to_csv(cell_graph_file, index=False)
-    return cell_graph_file
+    graph = graph.astype(np.uint16)
+    graph.columns = ["Object1", "Object2"]
+    graph.reset_index(drop=True, inplace=True)
+    graph_file = Path(graph_file).with_suffix(".csv")
+    graph.to_csv(graph_file, index=False)
+    return graph_file
