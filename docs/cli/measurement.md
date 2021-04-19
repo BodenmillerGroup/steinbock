@@ -1,58 +1,58 @@
 # Measurement
 
-In this step, cell-level data will be extracted from segmented images.
+In this step, object-level (e.g., single-cell) data will be extracted from segmented images.
 
 Various types of data can be extracted, each of which is described in the following.
 
-## Single-cell data
+## Object data
 
-To extract mean cell intensities per channel (`cell_intensities`):
+To extract mean object intensities per channel (`intensities`):
 
-    steinbock measure cells intensities
+    steinbock measure objects intensities
 
-To extract default spatial cell properties ("region properties", `cell_regionprops`):
+To extract default spatial object properties ("region properties", `regionprops`):
 
-    steinbock measure cells regionprops
+    steinbock measure objects regionprops
 
-The above commands will create cell tables in CSV format (see [file types](../specs/file-types.md#single-cell-data), one file per image). The default destination directory paths are mentioned in brackets above.
+The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
-To collect all cell data from all images into a single file:
+To collect all object data from all images into a single file:
 
-    steinbock measure collect cell_intensities cell_regionprops
+    steinbock measure collect intensities regionprops
 
-This will create a single cell table in CSV format with the first (additional) column indicating the source image (see [file types](../specs/file-types.md#single-cell-data)). The default destination file is `cells.csv`. The arguments to the `collect` command are the directories from where to collect the cell data.
+This will create a single object data table in CSV format with the first column indicating the source image (see [file types](../specs/file-types.md#object-data)). The default destination file is `objects.csv`. The arguments to the `collect` command are the directories from where to collect the object data.
 
-## Cell-cell distances
+## Object distances
 
-To measure the pairwise Euclidean distances between cell centroids:
+To measure the pairwise Euclidean distances between object centroids:
 
-    steinbock measure dists centroid
+    steinbock measure distances centroid
 
-To measure the pairwise Euclidean distances between cell borders:
+To measure the pairwise Euclidean distances between object borders:
 
-    steinbock measure dists border
+    steinbock measure distances border
 
-The above commands will create symmetric cell pixel distance matrices in CSV format (see [file types](../specs/file-types.md#cell-cell-distances), one file per image). The default destination directory is `cell_distances`.
+The above commands will create symmetric object pixel distance matrices in CSV format (see [file types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `distances`.
 
 !!! danger "Computational complexity"
-    For `n` cells, the operations in this section require the computation and storage of `n choose 2` distances.
+    For `n` objects, the operations in this section require the computation and storage of `n choose 2` distances.
 
     In particular, computing the pairwise Euclidean distances between cell borders is computationally expensive.
 
-## Spatial cell graphs
+## Spatial object graphs
 
 !!! note "Distance requirements"
-    The commands in this section require cell-cell distances to be pre-computed (see previous section).
+    The commands in this section require object distances to be pre-computed (see previous section).
 
-To construct spatial cell graphs by thresholding on cell-cell distances (undirected):
+To construct spatial object graphs by thresholding on object distances (undirected):
 
     steinbock measure graphs dist --thres 4
 
-To construct spatial k-nearest neighbor (kNN) cell graphs (directed):
+To construct spatial k-nearest neighbor (kNN) object graphs (directed):
 
     steinbock measure graphs knn --k 5
 
-The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-cell-graphs), one file per image). The default destination directory is `cell_graphs`.
+The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `graphs`.
 
 ## CellProfiler (legacy)
 
