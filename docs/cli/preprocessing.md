@@ -30,4 +30,7 @@ After image extraction, if the `--hpf` option is specified, the images will be f
 
 Finally, the images and a *steinbock* panel file will be stored at the specified destination paths (defaults to the `img` directory and the `panel.csv` file in the *steinbock* data/working directory).
 
+!!! note "Panel files"
+    The *steinbock* panel file is different from the original panel file in that it is ordered (i.e., the channel order in the panel matches the channel order in the images), only contains entries for channels present in the preprocessed images, and only requires a `name` column (but allows for arbitrary columns, see [file types](../specs/file-types.md#panel)). Therefore, the *steinbock* panel generated from the original IMC panel as shown here will "pass through" all columns except the `full` column.
+
 [^1]: Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).

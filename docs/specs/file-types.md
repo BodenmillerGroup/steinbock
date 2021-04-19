@@ -13,6 +13,8 @@ Comma-separated values (CSV) file with column headers and no index
 | `name` | Channel name (e.g., antibody target) | Text | yes |
 | `ilastik` | Use this channel for pixel classification using Ilastik | Boolean (0/1) | no |
 
+The *steinbock* panel allows for further arbitrary columns.
+
 ## Images
 
 File extension: `.tiff`

@@ -20,6 +20,13 @@ panel_name_col = "Target"
 panel_enable_col = "full"
 panel_ilastik_col = "ilastik"
 
+required_panel_cols = (
+    panel_metal_col,
+    panel_name_col,
+    panel_enable_col,
+    panel_ilastik_col,
+)
+
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.mcd"))
@@ -32,25 +39,24 @@ def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
 def preprocess_panel(
     panel_file: Union[str, Path],
 ) -> Tuple[pd.DataFrame, Sequence[str]]:
-    panel = pd.read_csv(
-        panel_file,
-        usecols=[
-            panel_metal_col,
-            panel_name_col,
-            panel_enable_col,
-            panel_ilastik_col,
-        ],
-    )
-    panel = panel[panel[panel_enable_col].astype(bool)]
+    panel = pd.read_csv(panel_file)
+    for col in required_panel_cols:
+        if col not in panel:
+            raise ValueError(f"Missing column in IMC panel: {col}")
+    panel = panel.loc[panel[panel_enable_col].astype(bool), :]
     panel.drop(columns=panel_enable_col, inplace=True)
-    dest_panel = pd.DataFrame(
-        data={
-            io.panel_name_col: panel[panel_name_col].tolist(),
-            ilastik.panel_ilastik_col: panel[panel_ilastik_col].tolist(),
-        }
+    panel.rename(
+        columns={
+            panel_name_col: io.panel_name_col,
+            panel_ilastik_col: ilastik.panel_ilastik_col,
+        },
+        inplace=True,
     )
+    col_order = panel.columns.tolist()
+    col_order.insert(0, col_order.pop(io.panel_name_col))
+    col_order.insert(1, col_order.pop(ilastik.panel_ilastik_col))
     metal_order = panel[panel_metal_col].tolist()
-    return dest_panel, metal_order
+    return panel.loc[:, col_order], metal_order
 
 
 def preprocess_images(
