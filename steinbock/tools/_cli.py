@@ -8,7 +8,8 @@ from steinbock._env import (
     cellprofiler_binary,
     cellprofiler_plugin_dir,
 )
-from steinbock.tools.mosaic._cli import mosaic_cmd
+from steinbock.tools.masks._cli import masks_cmd
+from steinbock.tools.mosaics._cli import mosaics_cmd
 from steinbock.utils import cli, system
 
 
@@ -21,9 +22,13 @@ def tools():
     pass
 
 
+tools.add_command(masks_cmd)
+tools.add_command(mosaics_cmd)
+
+
 @tools.command(
     context_settings={"ignore_unknown_options": True},
-    help="Run the Ilastik application (GUI mode requires X11)",
+    help="Run Ilastik (GUI requires X11)",
     add_help_option=False,
 )
 @click.argument(
@@ -42,7 +47,7 @@ def ilastik(ilastik_args):
 
 @tools.command(
     context_settings={"ignore_unknown_options": True},
-    help="Run the CellProfiler application (GUI mode requires X11)",
+    help="Run CellProfiler (GUI requires X11)",
     add_help_option=False,
 )
 @click.argument(
@@ -59,6 +64,3 @@ def cellprofiler(cellprofiler_args):
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     result = system.run_captured(args)
     sys.exit(result.returncode)
-
-
-tools.add_command(mosaic_cmd)

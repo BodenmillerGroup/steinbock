@@ -9,39 +9,45 @@ from steinbock.utils import io
 
 
 def construct_knn_graphs(
-    cell_dists_files: Sequence[Union[str, PathLike]],
+    distances_files: Sequence[Union[str, PathLike]],
     k: int,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
-    for cell_dists_file in cell_dists_files:
-        cell_dists = io.read_cell_dists(cell_dists_file)
-        cells1 = []
-        cells2 = []
-        for cell_id in cell_dists.index.values:
-            nb_dists = cell_dists.loc[cell_id, :].values
-            nb_col_indices = np.argpartition(nb_dists, k + 1)[: k + 1]
-            for neighbor_cell_id in cell_dists.columns[nb_col_indices].values:
-                if neighbor_cell_id != cell_id:
-                    cells1.append(cell_id)
-                    cells2.append(neighbor_cell_id)
-        cell_graph = pd.DataFrame(
+    for distances_file in distances_files:
+        d = io.read_distances(distances_file)
+        source_object_ids = []
+        target_object_ids = []
+        for object_id in d.index.values:
+            d_neighbors = d.loc[object_id, :].values
+            neighbor_col_ind = np.argpartition(d_neighbors, k + 1)[: k + 1]
+            neighbor_object_ids = d.columns[neighbor_col_ind].values
+            for neighbor_object_id in neighbor_object_ids:
+                if neighbor_object_id != object_id:
+                    source_object_ids.append(object_id)
+                    target_object_ids.append(neighbor_object_id)
+        g = pd.DataFrame(
             data={
-                "Cells1": np.array(cells1, dtype=np.uint16),
-                "Cells2": np.array(cells2, dtype=np.uint16),
+                "Object1": np.array(source_object_ids, dtype=np.uint16),
+                "Object2": np.array(target_object_ids, dtype=np.uint16),
             }
         )
-        yield cell_dists_file, cell_graph
-        del cell_graph
+        yield distances_file, g
+        del g
 
 
-def construct_dist_graphs(
-    cell_dists_files: Sequence[Union[str, PathLike]],
-    cell_dist_thres: float,
+def construct_distance_graphs(
+    distances_files: Sequence[Union[str, PathLike]],
+    distance_threshold: float,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
-    for cell_dists_file in cell_dists_files:
-        cell_dists = io.read_cell_dists(cell_dists_file)
-        indices = np.argwhere(cell_dists.values < cell_dist_thres)
-        cells1 = cell_dists.index[indices[:, 0]].values.astype(np.uint16)
-        cells2 = cell_dists.columns[indices[:, 1]].values.astype(np.uint16)
-        cell_graph = pd.DataFrame(data={"Cells1": cells1, "Cells2": cells2})
-        yield cell_dists_file, cell_graph
-        del cell_graph
+    for distances_file in distances_files:
+        d = io.read_distances(distances_file)
+        indices = np.argwhere(d.values < distance_threshold)
+        source_object_ids = d.index[indices[:, 0]].values
+        target_object_ids = d.columns[indices[:, 1]].values
+        g = pd.DataFrame(
+            data={
+                "Object1": source_object_ids.astype(np.uint16),
+                "Object2": target_object_ids.astype(np.uint16),
+            }
+        )
+        yield distances_file, g
+        del g

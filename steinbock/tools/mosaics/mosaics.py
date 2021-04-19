@@ -23,9 +23,9 @@ def extract_tiles(
 
 
 def combine_tiles(
-    img_tile_info: Dict[str, Sequence[TileInfo]],
+    tile_groups: Dict[str, Sequence[TileInfo]],
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
-    for img_file_stem, tile_info in img_tile_info.items():
+    for img_file_stem, tile_info in tile_groups.items():
         first_tile = io.read_image(tile_info[0][0], ignore_dtype=True)
         img_width = max(x + w for _, x, y, w, h in tile_info)
         img_height = max(y + h for _, x, y, w, h in tile_info)
