@@ -36,7 +36,7 @@ Adapt the path to your *steinbock* data/working directory (`C:\data` in the comm
 
 Create an alias for running the *steinbock* Docker container:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.3.1"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.3.1"
 
 Adapt the path to your *steinbock* data/working directory (`/mnt/data` in the command above) and the *steinbock* Docker container version (`0.3.1` in the command above) as needed.
 

@@ -31,7 +31,7 @@ The above commands will create object data tables in CSV format (see [file types
 
 To collect all object data from all images into a single file:
 
-    steinbock measure collect intensities regionprops
+    steinbock measure objects collect intensities regionprops
 
 This will create a single object data table in CSV format with the first column indicating the source image (see [file types](../specs/file-types.md#object-data)). The default destination file is `objects.csv`. The arguments to the `collect` command are the directories from where to collect the object data.
 
