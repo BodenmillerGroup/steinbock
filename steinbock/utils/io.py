@@ -34,13 +34,17 @@ def read_image(
     ignore_dtype: bool = False,
 ) -> np.ndarray:
     img_file = Path(img_file).with_suffix(".tiff")
-    img = tifffile.imread(img_file).squeeze()
-    if not ignore_dtype:
-        img = img.astype(np.float32)
+    img = tifffile.imread(img_file)
+    while img.ndim > 3 and img.shape[0] == 1:
+        img = img.sqeeze(axis=0)
+    while img.ndim > 3 and img.shape[-1] == 1:
+        img = img.sqeeze(axis=img.ndim - 1)
     if img.ndim == 2:
         img = img[np.newaxis, :, :]
     elif img.ndim != 3:
         raise ValueError(f"Unsupported number of image dimensions: {img_file}")
+    if not ignore_dtype:
+        img = img.astype(np.float32)
     return img
 
 
@@ -65,7 +69,11 @@ def list_masks(mask_dir: Union[str, PathLike]) -> List[Path]:
 
 def read_mask(mask_file: Union[str, PathLike]) -> np.ndarray:
     mask_file = Path(mask_file).with_suffix(".tiff")
-    mask = tifffile.imread(mask_file).squeeze().astype(np.uint16)
+    mask = tifffile.imread(mask_file).astype(np.uint16)
+    while mask.ndim > 2 and mask.shape[0] == 1:
+        mask = mask.sqeeze(axis=0)
+    while mask.ndim > 2 and mask.shape[-1] == 1:
+        mask = mask.sqeeze(axis=mask.ndim - 1)
     if mask.ndim != 2:
         raise ValueError(f"Unsupported number of mask dimensions: {mask_file}")
     return mask
