@@ -10,9 +10,22 @@ To extract mean object intensities per channel (`intensities`):
 
     steinbock measure objects intensities
 
-To extract default spatial object properties ("region properties", `regionprops`):
+To extract spatial object properties ("region properties", `regionprops`):
 
     steinbock measure objects regionprops
+
+!!! note "Region properties"
+    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be extracted:
+
+      - `area`
+      - `centroid`
+      - `major_axis_length`
+      - `minor_axis_length`
+      - `eccentricity`
+
+    An alternative selection of [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) can be specified in the `regionprops` command, e.g.:
+
+        steinbock measure objects regionprops area convex_area perimeter
 
 The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
