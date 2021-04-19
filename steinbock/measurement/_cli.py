@@ -9,7 +9,7 @@ from steinbock.utils import cli
 
 @click.group(
     cls=cli.OrderedClickGroup,
-    help="Extract data from segmented objects",
+    help="Extract object data from segmented images",
 )
 def measure():
     pass

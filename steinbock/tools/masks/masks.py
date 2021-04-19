@@ -15,19 +15,24 @@ def match(
     for mask_file1, mask_file2 in zip(mask_files1, mask_files2):
         mask1 = io.read_mask(mask_file1)
         mask2 = io.read_mask(mask_file2)
-        nonzero1 = mask1 != 0
-        nonzero2 = mask2 != 0
-        cell_ids1 = []
-        cell_ids2 = []
-        for cell_id1 in np.unique(mask1[nonzero1]):
-            for cell_id2 in np.unique(mask2[nonzero2 & (mask1 == cell_id1)]):
-                cell_ids1.append(cell_id1)
-                cell_ids2.append(cell_id2)
-        for cell_id2 in np.unique(mask2[nonzero2]):
-            for cell_id1 in np.unique(mask1[nonzero1 & (mask2 == cell_id2)]):
-                cell_ids1.append(cell_id1)
-                cell_ids2.append(cell_id2)
-        table = pd.DataFrame(data={"First": cell_ids1, "Second": cell_ids2})
+        nz1 = mask1 != 0
+        nz2 = mask2 != 0
+        object_ids1 = []
+        object_ids2 = []
+        for object_id1 in np.unique(mask1[nz1]):
+            for object_id2 in np.unique(mask2[nz2 & (mask1 == object_id1)]):
+                object_ids1.append(object_id1)
+                object_ids2.append(object_id2)
+        for object_id2 in np.unique(mask2[nz2]):
+            for object_id1 in np.unique(mask1[nz1 & (mask2 == object_id2)]):
+                object_ids1.append(object_id1)
+                object_ids2.append(object_id2)
+        table = pd.DataFrame(
+            data={
+                "Object1": object_ids1,
+                "Object2": object_ids2,
+            }
+        )
         table.drop_duplicates(inplace=True, ignore_index=True)
         yield mask_file1, mask_file2, table
         del table

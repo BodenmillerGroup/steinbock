@@ -73,7 +73,7 @@ def read_mask(mask_file: Union[str, PathLike]) -> np.ndarray:
 
 def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> Path:
     mask_file = Path(mask_file).with_suffix(".tiff")
-    tifffile.imwrite(mask_file, data=mask, dtype=np.uint16, imagej=True)
+    tifffile.imwrite(mask_file, data=mask, dtype=np.uint16)
     return mask_file
 
 
@@ -85,36 +85,24 @@ def read_data(
     data_file: Union[str, PathLike],
     combined: bool = False,
 ) -> pd.DataFrame:
-    data_file = Path(data_file).with_suffix(".csv")
-    data = pd.read_csv(
-        data_file,
-        index_col=None if combined else 0,
+    return pd.read_csv(
+        Path(data_file).with_suffix(".csv"),
+        index_col=["Image", "Object"] if combined else "Object",
     )
-    if combined:
-        data.set_index(
-            ["Image", "Object"],
-            inplace=True,
-            verify_integrity=True,
-        )
-    else:
-        data.index.name = "Object"
-    data.columns.name = "Feature"
-    return data
 
 
 def write_data(
     data: pd.DataFrame,
     data_file: Union[str, PathLike],
     combined: bool = False,
+    copy: bool = False,
 ) -> Path:
-    if combined:
-        data.index.names = ["Image", "Object"]
+    if copy:
         data = data.reset_index()
     else:
-        data.index.name = "Object"
-    data.columns.name = "Feature"
+        data.reset_index(inplace=True)
     data_file = Path(data_file).with_suffix(".csv")
-    data.to_csv(data_file, index=not combined)
+    data.to_csv(data_file, index=False)
     return data_file
 
 
@@ -135,7 +123,10 @@ def read_distances(distances_file: Union[str, PathLike]) -> pd.DataFrame:
 def write_distances(
     d: pd.DataFrame,
     distances_file: Union[str, PathLike],
+    copy: bool = False,
 ) -> Path:
+    if copy:
+        d = d.copy()
     d.index.name = "Object"
     d.index = d.index.astype(np.uint16)
     d.columns.name = "Object"
@@ -150,21 +141,18 @@ def list_graphs(graph_dir: Union[str, PathLike]) -> List[Path]:
 
 
 def read_graph(graph_file: Union[str, PathLike]) -> pd.DataFrame:
-    graph_file = Path(graph_file).with_suffix(".csv")
     return pd.read_csv(
-        graph_file,
+        Path(graph_file).with_suffix(".csv"),
         usecols=["Object1", "Object2"],
         dtype=np.uint16,
     )
 
 
 def write_graph(
-    graph: pd.DataFrame,
+    g: pd.DataFrame,
     graph_file: Union[str, PathLike],
 ) -> Path:
-    graph = graph.astype(np.uint16)
-    graph.columns = ["Object1", "Object2"]
-    graph.reset_index(drop=True, inplace=True)
+    g = g[["Object1", "Object2"]].astype(np.uint16)
     graph_file = Path(graph_file).with_suffix(".csv")
-    graph.to_csv(graph_file, index=False)
+    g.to_csv(g, index=False)
     return graph_file

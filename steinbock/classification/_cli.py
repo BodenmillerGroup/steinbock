@@ -6,7 +6,7 @@ from steinbock.utils import cli
 
 @click.group(
     cls=cli.OrderedClickGroup,
-    help="Perform pixel classification to create probability images",
+    help="Perform pixel classification to extract probabilities",
 )
 def classify():
     pass
