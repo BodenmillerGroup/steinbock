@@ -52,11 +52,11 @@ def preprocess_panel(
         },
         inplace=True,
     )
-    col_order = panel.columns.tolist()
-    col_order.insert(0, col_order.pop(io.panel_name_col))
-    col_order.insert(1, col_order.pop(ilastik.panel_ilastik_col))
+    cols = panel.columns.tolist()
+    cols.insert(0, cols.pop(cols.index(io.panel_name_col)))
+    cols.insert(1, cols.pop(cols.index(ilastik.panel_ilastik_col)))
     metal_order = panel[panel_metal_col].tolist()
-    return panel.loc[:, col_order], metal_order
+    return panel.loc[:, cols], metal_order
 
 
 def preprocess_images(
