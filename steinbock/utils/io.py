@@ -152,7 +152,7 @@ def write_graph(
     g: pd.DataFrame,
     graph_file: Union[str, PathLike],
 ) -> Path:
-    g = g[["Object1", "Object2"]].astype(np.uint16)
+    g = g.loc[:, ["Object1", "Object2"]].astype(np.uint16)
     graph_file = Path(graph_file).with_suffix(".csv")
-    g.to_csv(g, index=False)
+    g.to_csv(graph_file, index=False)
     return graph_file
