@@ -10,9 +10,6 @@ Various approaches are supported by *steinbock*, each of which is described in t
 
 [Ilastik](https://www.ilastik.org) is an application for interactive learning and segmentation. Here, the semantic [pixel classification](https://www.ilastik.org/documentation/pixelclassification/pixelclassification) workflow of Ilastik is used to perform pixel classification using random forests.
 
-!!! note "Random forests"
-    Random forest are an ensemble learning method known for excellent its generalization properties.
-
 ### Data preparation
 
 In a first step, input data are prepared for processing with Ilastik:
@@ -28,7 +25,9 @@ This will:
 In above list, the default destination file/directory paths are shown in brackets. 
 
 !!! note "Ilastik image data"
-    All generated image data will be saved in *steinbock* Ilastik HDF5 format (undocumented). If an `ilastik` column is present in the *steinbock* panel file, only channels enabled in that column will be included in the images. In addition, the mean of all channels will be prepended to the images as an additional channel, unless `--no-mean` is specified.
+    All generated image data will be saved in *steinbock* Ilastik HDF5 format (undocumented). If an `ilastik` column is present in the *steinbock* panel file, only channels enabled in that column will be included in the images. In addition, the mean of all channels will be prepended to the images as an additional channel, unless `--no-mean` is specified. 
+    
+    Furthermore, all generated image data is scaled two-fold in x and y, unless specified otherwise using the `--scale` command-line option. This helps with more accurately identifying cell borders in images of relatively low resolution (e.g., Imaging Mass Cytometry). In applications with higher resolution (e.g., sequential immunofluorescence), it is recommended to not scale the image data, i.e., specify `--scale 1`.
 
 ### Training the classifier
 
@@ -67,9 +66,11 @@ After training the pixel classifier on the image crops (or providing and patchin
 
     steinbock classify ilastik run
 
-This will create probability images of the same x/y dimensions as the input images, with one color per class encoding the probability of pixels belonging to that class (see [file types](../specs/file-types.md#probabilities)). The default destination directory for these images is `ilastik_probabilities`.
+By default, this will create probability images in `ilastik_probabilities`, with one color per class encoding the probability of pixels belonging to that class (see [file types](../specs/file-types.md#probabilities)).
 
-!!! note "Viewing probability images"
+!!! note "Probability images"
+    The size of the generated probability images will be equal to the size of the Ilastik input images, i.e., scaled by a user-specified factor (default: 2, see above). Make sure to adapt the downstream segmentation workflow accordingly to create cell masks matching the original (i.e., unscaled) image data.
+
     If the default three-class structure is used, the probability images will be RGB images with the following color code:
 
       - <span style="color: red;">R</span>: Nuclei

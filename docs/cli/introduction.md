@@ -36,9 +36,11 @@ The input and output files and directories of all *steinbock* commands can be co
     |
     ├── ilastik_img
     ├── ilastik_crops
-    ├── ilastik_probabilities
     ├── pixel_classifier.ilp
+    ├── ilastik_probabilities
+    |
     ├── cell_segmentation.cppipe
+    |
     ├── masks
     |
     ├── cell_intensities

@@ -24,9 +24,6 @@ This will create a single cell table in CSV format with the first (additional) c
 
 ## Cell-cell distances
 
-!!! note "Computational complexity"
-    For `n` cells, the operations in this section require the computation and storage of `n choose 2` distances
-
 To measure the pairwise Euclidean distances between cell centroids:
 
     steinbock measure dists centroid
@@ -35,10 +32,12 @@ To measure the pairwise Euclidean distances between cell borders:
 
     steinbock measure dists border
 
-!!! danger "Computational complexity"
-    Computing the pairwise Euclidean distances between cell borders is computationally expensive.
-
 The above commands will create symmetric cell pixel distance matrices in CSV format (see [file types](../specs/file-types.md#cell-cell-distances), one file per image). The default destination directory is `cell_distances`.
+
+!!! danger "Computational complexity"
+    For `n` cells, the operations in this section require the computation and storage of `n choose 2` distances.
+
+    In particular, computing the pairwise Euclidean distances between cell borders is computationally expensive.
 
 ## Spatial cell graphs
 
@@ -68,7 +67,7 @@ To prepare a CellProfiler measurement pipeline:
 
 By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks into the `cellprofiler_input` directory.
 
-!!! note "The CellProfiler pipeline"
+!!! note "CellProfiler plugins"
     The generated CellProfiler pipeline makes use of [custom plugins for multi-channel images](https://github.com/BodenmillerGroup/ImcPluginsCP), which are pre-installed in the *steinbock* Docker container. It can be inspected using CellProfiler as described in the following section.
 
 ### Modifying the pipeline

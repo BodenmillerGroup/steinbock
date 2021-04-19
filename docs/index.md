@@ -24,12 +24,12 @@ At its core, pixel classification-based image segmentation comprises the followi
 !!! note "Semantic cell segmentation"
     This workflow describes a *semantic segmentation* approach. Unlike *instance segmentation*, the classification step does not inherently separate instances (e.g., cells) and therefore needs a segmentation step for instance separation.
 
-!!! note "Segmenting arbitrary regions"
-    While this documentation assumes the task of cell segmentation, the presented concepts can be generalized to arbitrary definitions of regions ("segments") by replacing the terminology where necessary (e.g., "cell" --> "region").
-
 Currently, the following workflows are implemented:
 
   - **[Standard workflow]** Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
+
+!!! note "Segmenting arbitrary regions"
+    While this documentation assumes the task of cell segmentation, the presented concepts can be generalized to arbitrary definitions of regions ("segments") by replacing the terminology where necessary (e.g., "cell" --> "region").
 
 ## Resources
 
