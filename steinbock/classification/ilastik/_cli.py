@@ -1,5 +1,4 @@
 import click
-import numpy as np
 import shutil
 import sys
 
@@ -107,21 +106,20 @@ def prepare(
     prepend_mean,
     seed,
 ):
-    enabled_channel_indices = None
+    channel_groups = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
         if ilastik.panel_ilastik_col in panel:
-            channels_enabled = panel[ilastik.panel_ilastik_col].values
-            enabled_channel_indices = np.flatnonzero(channels_enabled)
+            channel_groups = panel[ilastik.panel_ilastik_col].values
     src_img_files = io.list_images(src_img_dir)
     img_files = []
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
     for src_img_file, img in ilastik.create_images(
         src_img_files,
-        img_scale=img_scale,
-        channel_indices=enabled_channel_indices,
+        channel_groups=channel_groups,
         prepend_mean=prepend_mean,
+        img_scale=img_scale,
     ):
         img_file = ilastik.write_image(
             img,

@@ -1,6 +1,6 @@
 # Object segmentation
 
-In this step, given the probabilities from pixel classification, objects are segmented. This will result in grayscale *object masks* of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#object-masks)).
+In this step, given the probabilities from pixel classification, objects are segmented. This will result in grayscale *object masks* of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)).
 
 Various approaches are supported by steinbock, each of which is described in the following.
 
@@ -33,7 +33,7 @@ More detailed instructions on how to create CellProfiler pipelines can be found 
     In particular, the generated pipeline is configured to down-size the probability images by a factor of two, to account for the default scaling applied in the [Ilastik pixel classification workflow](classification.md#ilastik). If a different classification workflow or scale factor has been used to generate the probability images, the down-scale factor must be adjusted accordingly.
 
 !!! note "CellProfiler output"
-    By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x/y dimensions as the input images (see [file types](../specs/file-types.md#object-masks)). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.
+    By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x/y dimensions as the input images (see [file types](../specs/file-types.md#masks)). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.
 
 ### Batch processing
 
@@ -41,4 +41,4 @@ After the pipeline has been configured, it can be applied to a batch of probabil
 
     steinbock segment cellprofiler run
 
-This will create grayscale object masks of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#object-masks)). The default destination directory for these images is `masks`.
+This will create grayscale object masks of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)). The default destination directory for these images is `masks`.

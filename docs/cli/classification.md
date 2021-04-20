@@ -16,12 +16,12 @@ In a first step, input data are prepared for processing with Ilastik:
 
 With default desination file/directory paths shown in brackets, this will:
 
-  - scale images and convert them to the *steinbock* Ilastik format for processing (`ilastik_img`)
+  - aggregate, scale and convert images to *steinbock* Ilastik format (`ilastik_img`)
   - extract and save one random crop of 50x50 pixels per image for training (`ilastik_crops`)
   - create a default *steinbock* Ilastik pixel classification project file (`pixel_classifier.ilp`)
 
 !!! note "Ilastik image data"
-    All generated image data will be saved in *steinbock* Ilastik HDF5 format (undocumented). If an `ilastik` column is present in the *steinbock* panel file, only channels enabled in that column will be included in the images. In addition, the mean of all channels will be prepended to the images as an additional channel, unless `--no-mean` is specified. 
+    All generated image data is saved in *steinbock* Ilastik HDF5 format (undocumented). If an `ilastik` column is present in the *steinbock* panel file, channels are sorted and grouped according to that column. For each image, each group of channels is aggregated by computing the mean along the channel axis ("mean channel image"); channels without a group label are ignored. The generated images contain one channel per group. In addition, the mean of all included channels is prepended to the generated images as an additional channel, unless `--no-mean` is specified.
     
     Furthermore, all generated image data is scaled two-fold in x and y, unless specified otherwise using the `--scale` command-line option. This helps with more accurately identifying object borders in segmentation workflows for images of relatively low resolution (e.g., Imaging Mass Cytometry). In applications with higher resolution (e.g., sequential immunofluorescence), it is recommended to not scale the image data, i.e., specify `--scale 1`.
 
@@ -65,9 +65,9 @@ After training the pixel classifier on the image crops (or providing and patchin
 By default, this will create probability images in `ilastik_probabilities`, with one color per class encoding the probability of pixels belonging to that class (see [file types](../specs/file-types.md#probabilities)).
 
 !!! note "Probability images"
-    The size of the generated probability images will be equal to the size of the Ilastik input images, i.e., scaled by a user-specified factor that defaults to two (see above). Make sure to adapt downstream segmentation workflows accordingly to create object masks matching the original (i.e., unscaled) images.
+    The size of the generated probability images are equal to the size of the Ilastik input images, i.e., scaled by a user-specified factor that defaults to two (see above). Make sure to adapt downstream segmentation workflows accordingly to create object masks matching the original (i.e., unscaled) images.
 
-    If the default three-class structure is used, the probability images will be RGB images with the following color code:
+    If the default three-class structure is used, the probability images are RGB images with the following color code:
 
       - <span style="color: red;">R</span>: Nuclei
       - <span style="color: green;">G</span>: Cytoplasm

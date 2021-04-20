@@ -11,7 +11,7 @@ Comma-separated values (CSV) file with column headers and no index
 | Column | Description | Type | Required? |
 | --- | --- | --- | --- |
 | `name` | Channel name (e.g., antibody target) | Text | yes |
-| `ilastik` | Use this channel for pixel classification using Ilastik | Boolean (0/1) | no |
+| `ilastik` | Channel group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik) | Numeric or empty | no |
 
 The *steinbock* panel allows for further arbitrary columns.
 
@@ -37,7 +37,7 @@ Color images, with one color per class encoding the probability of pixels belong
 !!! danger "Probability image size"
     The size of probability images may be different from the original images (see [Ilastik pixel classification workflow](../cli/classification.md#ilastik)).
 
-## Object masks
+## Masks
 
 File extension: `.tiff`
 

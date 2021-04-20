@@ -26,10 +26,10 @@ The following command will, for each mask pair, identify overlapping (i.e., *int
 
     steinbock tools masks match -o object_mappings cell_masks tumor_masks
 
-Here, `cell_masks` and `tumor_masks` are path to directories containing masks. Masks from both directories will be matched by name. This will generate tables in CSV format (undocumented, one file per mask pair), with each row indicating IDs from overlapping objects in both masks.
+Here, `cell_masks` and `tumor_masks` are path to directories containing masks. Masks from both directories are matched by name. This will generate tables in CSV format (undocumented, one file per mask pair), with each row indicating IDs from overlapping objects in both masks.
 
 !!! note "Usage example"
-    Identifying overlapping objects can be useful in multi-segmentation contexts. For example, one could be interested in cells from tumor regions only, in which case two segmentation workflows will be followed sequentially:
+    Identifying overlapping objects can be useful in multi-segmentation contexts. For example, one may be interested in cells from tumor regions only, in which case two segmentation workflows would be followed sequentially:
     
       - "Global" tumor/stroma segmentation
       - "Local" cell segmentation

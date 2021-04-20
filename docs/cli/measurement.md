@@ -1,6 +1,6 @@
 # Measurement
 
-In this step, object-level (e.g., single-cell) data will be extracted from segmented images.
+In this step, object-level (e.g., single-cell) data are extracted from segmented images.
 
 Various types of data can be extracted, each of which is described in the following.
 
@@ -15,7 +15,7 @@ To extract spatial object properties ("region properties", `regionprops`):
     steinbock measure objects regionprops
 
 !!! note "Region properties"
-    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be extracted:
+    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) are extracted:
 
       - `area`
       - `centroid`

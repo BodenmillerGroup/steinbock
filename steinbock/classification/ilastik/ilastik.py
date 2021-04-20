@@ -55,15 +55,22 @@ def list_crops(crop_dir: Union[str, PathLike]) -> List[Path]:
 
 def create_images(
     src_img_files: Sequence[Union[str, PathLike]],
-    channel_indices: Optional[Sequence[int]] = None,
+    channel_groups: Optional[np.ndarray] = None,
     prepend_mean: bool = True,
     img_scale: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for src_img_file in src_img_files:
         src_img_file = Path(src_img_file)
         img = io.read_image(src_img_file)
-        if channel_indices is not None:
-            img = img[channel_indices, :, :]
+        if channel_groups is not None:
+            img = np.stack(
+                [
+                    np.mean(img[channel_groups == channel_group, :, :], axis=0)
+                    for channel_group in np.unique(
+                        channel_groups[~np.isnan(channel_groups)]
+                    )
+                ],
+            )
         if prepend_mean:
             mean_img = img.mean(axis=0, keepdims=True)
             img = np.concatenate((mean_img, img))
