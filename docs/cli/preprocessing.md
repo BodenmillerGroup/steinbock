@@ -20,6 +20,9 @@ To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixe
 
 This will extract images from .mcd files (one image per acquisition, channels sorted by mass). For corrupted .mcd files, it will try to locate the matching .txt files from which to recover the missing acquisition. In a second step, images from *unmatched* .txt files are extracted as well.
 
+!!! note "ZIP archives"
+    If .zip archives are found in the raw data directory, contained .txt/.mcd files will be automatically extracted to a temporary directory, unless disabled using the `--no-unzip` command-line option. After image extraction, this temporary directory and its contents will be removed.
+
 !!! note "IMC file matching"
     Matching of .txt files to .mcd files is performed by file name: If a .txt file name starts with the file name of an .mcd file (without extension) AND ends with `_{acquisition}.txt`, where `{acquisition}` is an existing acquisition ID, it is considered matching that particular acquisition from the .mcd file.
 
