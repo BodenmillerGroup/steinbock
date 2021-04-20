@@ -1,6 +1,6 @@
 # Object segmentation
 
-In this step, given the probabilities from pixel classification, objects are segmented. This will result in grayscale *object masks* of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)).
+In this step, given the probabilities from pixel classification, objects will be segmented. This will result in grayscale *object masks* of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)).
 
 Various approaches are supported by steinbock, each of which is described in the following.
 

@@ -4,7 +4,7 @@ Various applications and tools are exposed via *steinbock*'s `tools` command.
 
 ## Ilastik
 
-To run the Ilastik application:
+To run Ilastik:
 
     steinbock tools ilastik
 
@@ -12,7 +12,7 @@ Without additional arguments, this will start the graphical user interface of Il
 
 ## CellProfiler
 
-To run the CellProfiler application:
+To run CellProfiler:
 
     steinbock tools cellprofiler
 

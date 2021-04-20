@@ -1,6 +1,6 @@
-# Measurement
+# Object measurement
 
-In this step, object-level (e.g., single-cell) data are extracted from segmented images.
+In this step, object-level (e.g., single-cell) data will be extracted from segmented images.
 
 Various types of data can be extracted, each of which is described in the following.
 
@@ -14,8 +14,10 @@ To extract spatial object properties ("region properties", `regionprops`):
 
     steinbock measure objects regionprops
 
+The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
+
 !!! note "Region properties"
-    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) are extracted:
+    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be computed:
 
       - `area`
       - `centroid`
@@ -26,8 +28,6 @@ To extract spatial object properties ("region properties", `regionprops`):
     An alternative selection of [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) can be specified in the `regionprops` command, e.g.:
 
         steinbock measure objects regionprops area convex_area perimeter
-
-The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
 To collect all object data from all images into a single file:
 

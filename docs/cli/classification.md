@@ -1,6 +1,6 @@
 # Pixel classification
 
-In this step, for each image, the probabilities of pixels belonging to a given class (e.g., Nucleus, Cytoplasm, Background) is determined. This will result in *probability images* with one color per class encoding the probability of pixels belonging to that class (see [file types](../specs/file-types.md#probabilities)).
+In this step, for each image, the probabilities of pixels belonging to a given class (e.g., Nucleus, Cytoplasm, Background) will be determined. This will result in *probability images* with one color per class encoding the probability of pixels belonging to that class (see [file types](../specs/file-types.md#probabilities)).
 
 Various approaches are supported by *steinbock*, each of which is described in the following.
 
@@ -21,7 +21,9 @@ With default desination file/directory paths shown in brackets, this will:
   - create a default *steinbock* Ilastik pixel classification project file (`pixel_classifier.ilp`)
 
 !!! note "Ilastik image data"
-    All generated image data is saved in *steinbock* Ilastik HDF5 format (undocumented). If an `ilastik` column is present in the *steinbock* panel file, channels are sorted and grouped according to that column. For each image, each group of channels is aggregated by computing the mean along the channel axis ("mean channel image"); channels without a group label are ignored. The generated images contain one channel per group. In addition, the mean of all included channels is prepended to the generated images as an additional channel, unless `--no-mean` is specified.
+    All generated image data are saved in *steinbock* Ilastik HDF5 format (undocumented). 
+    
+    If an `ilastik` column is present in the *steinbock* panel file, channels are sorted and grouped according to the corresponding values in that column: For each image, each group of channels is aggregated by computing the mean along the channel axis ("mean channel image"); channels without a group label are ignored. The generated images consist of one channel per group. In addition, the mean of all included channels is prepended to the generated images as an additional channel, unless `--no-mean` is specified.
     
     Furthermore, all generated image data is scaled two-fold in x and y, unless specified otherwise using the `--scale` command-line option. This helps with more accurately identifying object borders in segmentation workflows for images of relatively low resolution (e.g., Imaging Mass Cytometry). In applications with higher resolution (e.g., sequential immunofluorescence), it is recommended to not scale the image data, i.e., specify `--scale 1`.
 

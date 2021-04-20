@@ -32,7 +32,7 @@ File extension: `.tiff`
 
 Color images, with one color per class encoding the probability of pixels belonging to that class
 
-16-bit unsigned integer TIFF images in YXS dimension order, same YX shape as source image
+16-bit unsigned integer TIFF images in YXS dimension order, same YX ratio as source image
 
 !!! danger "Probability image size"
     The size of probability images may be different from the original images (see [Ilastik pixel classification workflow](../cli/classification.md#ilastik)).
