@@ -1,0 +1,106 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{hyperref}
+\usepackage{minted}
+
+\title{steinbock}
+\subtitle{A dockerized multi-channel image segmentation and measurement framework}
+\date{April 20, 2021}
+\author{Jonas Windhager}
+
+\usetheme{bblab}
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}{The \texttt{steinbock} framework}
+	
+	Framework for pixel classification-based image segmentation and data extraction
+	
+	\bigskip
+	
+	Components:
+	\begin{itemize}
+		\item Python package with integrated command-line interface (CLI)
+		\item Docker container exposing the CLI, with third-party software pre-installed
+	\end{itemize}
+
+	\bigskip
+
+	Implemented workflows:
+	\begin{itemize}
+		\item {[``Standard'' workflow]} Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017.
+	\end{itemize}
+
+	\bigskip
+	
+	\href{https://bodenmillergroup.github.io/steinbock}{https://bodenmillergroup.github.io/steinbock}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]{Installation}
+
+\begin{enumerate}
+	\item Install Docker
+	\bigskip
+	\item Pull \texttt{steinbock} Docker image:\\
+\begin{minted}{bash}
+docker pull jwindhager/steinbock:0.3.2
+\end{minted}
+	\bigskip
+	\item Configure system to enable the \texttt{steinbock} command
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Usage}
+	
+\begin{minted}[fontsize=\scriptsize]{bash}
+> steinbock --help
+
+Usage: steinbock [OPTIONS] COMMAND [ARGS]...
+
+Options:
+--help  Show this message and exit.
+
+Commands:
+preprocess  Extract and preprocess images from raw data
+classify    Perform pixel classification to extract probabilities
+segment     Perform image segmentation to create object masks
+measure     Extract object data from segmented images
+tools       Various tools and applications
+\end{minted}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]{Example}
+	
+\begin{minted}[fontsize=\scriptsize]{bash}
+steinbock preprocess imc --hpf 50          # optional
+
+steinbock classify ilastik prepare
+steinbock tools ilastik
+steinbock classify ilastik run
+
+steinbock segment cellprofiler prepare
+steinbock tools cellprofiler
+steinbock segment cellprofiler run
+
+steinbock measure objects intensities      # regionprops, ...
+steinbock measure distances border         # centroid, ...
+steinbock measure graphs dist --thres 4    # knn, ...
+
+\end{minted}
+	
+\end{frame}
+
+
+\end{document}
