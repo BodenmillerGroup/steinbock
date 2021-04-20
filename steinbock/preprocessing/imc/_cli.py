@@ -76,13 +76,13 @@ def imc_cmd(mcd_dir, txt_dir, panel_file, hpf, img_dir, dest_panel_file):
                 file=sys.stderr,
             )
         unique_txt_file_stems.append(txt_file.stem)
-    dest_panel, metal_order = imc.preprocess_panel(panel_file)
+    dest_panel = imc.preprocess_panel(panel_file)
     dest_panel_file = io.write_panel(dest_panel, dest_panel_file)
     Path(img_dir).mkdir(exist_ok=True)
     for mcd_txt_file, acquisition_id, img in imc.preprocess_images(
         mcd_files,
         txt_files,
-        metal_order,
+        dest_panel[imc.panel_metal_col].tolist(),
         hpf=hpf,
     ):
         img_file_stem = mcd_txt_file.stem

@@ -38,13 +38,18 @@ def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
 
 def preprocess_panel(
     panel_file: Union[str, Path],
-) -> Tuple[pd.DataFrame, Sequence[str]]:
+) -> pd.DataFrame:
+
     panel = pd.read_csv(panel_file)
     for col in required_panel_cols:
         if col not in panel:
             raise ValueError(f"Missing column in IMC panel: {col}")
     panel = panel.loc[panel[panel_enable_col].astype(bool), :]
     panel.drop(columns=panel_enable_col, inplace=True)
+    panel.sort_values(
+        panel_metal_col,
+        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
+    )
     panel.rename(
         columns={
             panel_name_col: io.panel_name_col,
@@ -52,11 +57,12 @@ def preprocess_panel(
         },
         inplace=True,
     )
-    cols = panel.columns.tolist()
-    cols.insert(0, cols.pop(cols.index(io.panel_name_col)))
-    cols.insert(1, cols.pop(cols.index(ilastik.panel_ilastik_col)))
-    metal_order = panel[panel_metal_col].tolist()
-    return panel.loc[:, cols], metal_order
+    col_order = panel.columns.tolist()
+    col_order.remove(io.panel_name_col)
+    col_order.remove(ilastik.panel_ilastik_col)
+    col_order.insert(0, io.panel_name_col)
+    col_order.insert(1, ilastik.panel_ilastik_col)
+    return panel.loc[:, col_order]
 
 
 def preprocess_images(
