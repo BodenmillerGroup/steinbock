@@ -49,7 +49,11 @@ def preprocess_panel(
     panel.sort_values(
         panel_metal_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
+        inplace=True,
     )
+    m = panel[panel_ilastik_col].astype(bool)
+    panel[panel_ilastik_col] = pd.Series(dtype=pd.UInt8Dtype())
+    panel.loc[m, panel_ilastik_col] = range(1, m.sum() + 1)
     panel.rename(
         columns={
             panel_name_col: io.panel_name_col,
