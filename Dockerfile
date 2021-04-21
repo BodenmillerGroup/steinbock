@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+ARG UID=1000
+ARG GID=1000
 ARG TZ=Europe/Zurich
 
 ARG ILASTIK_BINARY=ilastik-1.3.3post3-Linux.tar.bz2
@@ -60,6 +62,10 @@ RUN pip3 install -r /app/requirements.txt
 COPY . /app
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 
-RUN mkdir /data
+RUN addgroup --gid "${GID}" steinbock && \
+    adduser --uid "${UID}" --gid "${GID}" --disabled-password --gecos "" steinbock && \
+    mkdir /data && chown steinbock:steinbock /data
+
+USER steinbock
 WORKDIR /data
 ENTRYPOINT ["python3", "-m", "steinbock"]
