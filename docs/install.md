@@ -55,11 +55,15 @@ Check whether *steinbock* runs:
 
       - **[Beginner]** After creating files with *steinbock*, change their ownership to your account
 
-      - **[Advanced]** Linux only: Mount `/etc/passwd` and run the Docker container with an existing user 
+      - **[Linux only]** Mount `/etc/passwd` and run the Docker container with a user existing on the host: 
 
             docker run -v /etc/passwd:/etc/passwd:ro -u $(id -u):$(id -g) ...
+
+      - **[Advanced]** Run the *steinbock* Docker container using [singularity](https://sylabs.io/singularity/) (see [here](https://sylabs.io/guides/3.0/user-guide/singularity_and_docker.html)) to minimize abstraction
 
 
       - **[Administrator]** Re-build the *steinbock* Docker container from scratch with matching UID/GID ([Dockerfile](https://github.com/BodenmillerGroup/steinbock/blob/main/Dockerfile))
 
       - **[Developer]** If you would like to provide a workaround for this inconvenience (e.g., automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request!
+
+    The data/working directory must be writable by the `steinbock` user from within the *steinbock* Docker container.
