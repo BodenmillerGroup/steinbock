@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.3] - 2021-04-21
+
+New functionality, bug fixes, documentation improvements
+
+Added:
+
+  - ZIP archive support for IMC data (closes [#2](https://github.com/BodenmillerGroup/steinbock/issues/2))
+  - Ilastik channel ordering & grouping (closes [#3](https://github.com/BodenmillerGroup/steinbock/issues/3))
+  - Run container as non-privileged user (fixes [#4](https://github.com/BodenmillerGroup/steinbock/issues/4))
+
+
 ## [0.3.2] - 2021-04-19
 
 New functionality, bug fixes, documentation improvements
@@ -47,6 +58,7 @@ Added:
 Initial release for beta testing
 
 
+[0.3.3]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.2.0...v0.3.0
