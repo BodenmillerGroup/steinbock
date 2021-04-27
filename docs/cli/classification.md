@@ -38,6 +38,9 @@ More detailed instructions on how to use Ilastik for training a pixel classifier
 !!! note "Class labels"
     By default, the Ilastik pixel classification project is configured for training three classes (Nucleus, Cytoplasm, Background) for cell segmentation workflows. Different numbers of classes and class labels may be preferred for other use cases (e.g., two classes for Tumor/Stroma-segmentation). While the number and order of classes is arbitrary and can be changed by the user, it needs to be compatible with downstream [segmentation steps](segmentation.md).
 
+!!! note "Feature selection"
+    The choice of features in Ilastik's feature selection step depends on the input data. For relatively small IMC datasets, the selection of all default features greater than or equal to 1 pixel is recommended (see [here](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/blob/main/scripts/imc_preprocessing.ipynb)).
+
 ### Existing training data
 
 !!! danger "Experimental feature"
