@@ -100,48 +100,48 @@ def read_data(
 
 
 def write_data(
-    data: pd.DataFrame,
+    df: pd.DataFrame,
     data_file: Union[str, PathLike],
     combined: bool = False,
     copy: bool = False,
 ) -> Path:
     if copy:
-        data = data.reset_index()
+        df = df.reset_index()
     else:
-        data.reset_index(inplace=True)
+        df.reset_index(inplace=True)
     data_file = Path(data_file).with_suffix(".csv")
-    data.to_csv(data_file, index=False)
+    df.to_csv(data_file, index=False)
     return data_file
 
 
-def list_distances(distances_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(distances_dir).rglob("*.csv"))
+def list_distances(dists_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(dists_dir).rglob("*.csv"))
 
 
-def read_distances(distances_file: Union[str, PathLike]) -> pd.DataFrame:
-    distances_file = Path(distances_file).with_suffix(".csv")
-    d = pd.read_csv(distances_file, index_col=0)
-    d.index.name = "Object"
-    d.index = d.index.astype(np.uint16)
-    d.columns.name = "Object"
-    d.columns = d.columns.astype(np.uint16)
-    return d
+def read_distances(dists_file: Union[str, PathLike]) -> pd.DataFrame:
+    dists_file = Path(dists_file).with_suffix(".csv")
+    df = pd.read_csv(dists_file, index_col=0)
+    df.index.name = "Object"
+    df.index = df.index.astype(np.uint16)
+    df.columns.name = "Object"
+    df.columns = df.columns.astype(np.uint16)
+    return df
 
 
 def write_distances(
-    d: pd.DataFrame,
-    distances_file: Union[str, PathLike],
+    df: pd.DataFrame,
+    dists_file: Union[str, PathLike],
     copy: bool = False,
 ) -> Path:
     if copy:
-        d = d.copy()
-    d.index.name = "Object"
-    d.index = d.index.astype(np.uint16)
-    d.columns.name = "Object"
-    d.columns = d.columns.astype(np.uint16)
-    distances_file = Path(distances_file).with_suffix(".csv")
-    d.to_csv(distances_file)
-    return distances_file
+        df = df.copy()
+    df.index.name = "Object"
+    df.index = df.index.astype(np.uint16)
+    df.columns.name = "Object"
+    df.columns = df.columns.astype(np.uint16)
+    dists_file = Path(dists_file).with_suffix(".csv")
+    df.to_csv(dists_file)
+    return dists_file
 
 
 def list_graphs(graph_dir: Union[str, PathLike]) -> List[Path]:
@@ -157,10 +157,10 @@ def read_graph(graph_file: Union[str, PathLike]) -> pd.DataFrame:
 
 
 def write_graph(
-    g: pd.DataFrame,
+    df: pd.DataFrame,
     graph_file: Union[str, PathLike],
 ) -> Path:
-    g = g.loc[:, ["Object1", "Object2"]].astype(np.uint16)
+    df = df.loc[:, ["Object1", "Object2"]].astype(np.uint16)
     graph_file = Path(graph_file).with_suffix(".csv")
-    g.to_csv(graph_file, index=False)
+    df.to_csv(graph_file, index=False)
     return graph_file

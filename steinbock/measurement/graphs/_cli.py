@@ -20,9 +20,9 @@ def graphs_cmd():
 )
 @click.option(
     "--dists",
-    "distances_dir",
+    "dists_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=cli.default_distances_dir,
+    default=cli.default_dists_dir,
     show_default=True,
     help="Path to the object distances directory",
 )
@@ -41,13 +41,13 @@ def graphs_cmd():
     show_default=True,
     help="Path to the object graph output directory",
 )
-def knn(distances_dir, k, graph_dir):
+def knn(dists_dir, k, graph_dir):
     graph_dir = Path(graph_dir)
     graph_dir.mkdir(exist_ok=True)
-    distances_files = io.list_distances(distances_dir)
-    it = graphs.construct_knn_graphs(distances_files, k)
-    for distances_file, g in it:
-        graph_file = io.write_graph(g, graph_dir / Path(distances_file).stem)
+    dists_files = io.list_distances(dists_dir)
+    it = graphs.construct_knn_graphs(dists_files, k)
+    for dists_file, g in it:
+        graph_file = io.write_graph(g, graph_dir / Path(dists_file).stem)
         click.echo(graph_file)
         del g
 
@@ -57,15 +57,15 @@ def knn(distances_dir, k, graph_dir):
 )
 @click.option(
     "--dists",
-    "distances_dir",
+    "dists_dir",
     type=click.Path(exists=True, file_okay=False),
-    default=cli.default_distances_dir,
+    default=cli.default_dists_dir,
     show_default=True,
     help="Path to the object distances directory",
 )
 @click.option(
     "--thres",
-    "distance_threshold",
+    "dist_thres",
     type=click.FLOAT,
     required=True,
     help="Object distance threshold",
@@ -78,12 +78,12 @@ def knn(distances_dir, k, graph_dir):
     show_default=True,
     help="Path to the object graph output directory",
 )
-def dist(distances_dir, distance_threshold, graph_dir):
+def dist(dists_dir, dist_thres, graph_dir):
     graph_dir = Path(graph_dir)
     graph_dir.mkdir(exist_ok=True)
-    distances_files = io.list_distances(distances_dir)
-    it = graphs.construct_distance_graphs(distances_files, distance_threshold)
-    for distances_file, g in it:
-        graph_file = io.write_graph(g, graph_dir / Path(distances_file).stem)
+    dists_files = io.list_distances(dists_dir)
+    it = graphs.construct_distance_graphs(dists_files, dist_thres)
+    for dists_file, g in it:
+        graph_file = io.write_graph(g, graph_dir / Path(dists_file).stem)
         click.echo(graph_file)
         del g

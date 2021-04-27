@@ -8,6 +8,7 @@ from steinbock._env import (
     cellprofiler_binary,
     cellprofiler_plugin_dir,
 )
+from steinbock.tools.data._cli import data_cmd
 from steinbock.tools.masks._cli import masks_cmd
 from steinbock.tools.mosaics._cli import mosaics_cmd
 from steinbock.utils import cli, system
@@ -22,6 +23,7 @@ def tools():
     pass
 
 
+tools.add_command(data_cmd)
 tools.add_command(masks_cmd)
 tools.add_command(mosaics_cmd)
 

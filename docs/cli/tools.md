@@ -1,26 +1,20 @@
-# Tools
+# Tools and applications
 
-Various applications and tools are exposed via *steinbock*'s `tools` command.
+Various tools and applications are exposed via *steinbock*'s `tools` command.
 
-## Ilastik
+## Data
 
-To run Ilastik:
+### Data collection
 
-    steinbock tools ilastik
+To collect all object data from all images into a single file:
 
-Without additional arguments, this will start the graphical user interface of Ilastik.
+    steinbock tools data collect object_intensities object_regionprops
 
-## CellProfiler
-
-To run CellProfiler:
-
-    steinbock tools cellprofiler
-
-Without additional arguments, this will start the graphical user interface of CellProfiler.
+This will create a single object data table in CSV format with the first column indicating the source image (see [file types](../specs/file-types.md#object-data)). The default destination file is `objects.csv`. The arguments to the `collect` command are the directories from where to collect the object data.
 
 ## Masks
 
-### Matching
+### Mask matching
 
 The following command will, for each mask pair, identify overlapping (i.e., *intersecting*) objects:
 
@@ -43,7 +37,7 @@ This *steinbock* tool for tiling and stitching images allows the processing of l
 !!! note "Data type"
     Unlike other *steinbock* operations, all `mosaic` commands load and save images in their original data type.
 
-### Tiling
+### Tiling images
 
 The following command will split all images in `img_full` into tiles of 4096x4096 pixels (the recommended maximum image size for *steinbock* on local installations) and save them to `img`:
 
@@ -53,8 +47,24 @@ The created image tiles will have the following file name, where `{IMG}` is the 
 
     {IMG}_tx{X}_ty{Y}_tw{W}_th{H}.tiff
 
-### Stitching
+### Stitching mosaics
 
 The following command will stitch all mask tiles in `masks` (following the file conventions above) to assemble masks of original size and save them to `masks_full`:
 
     steinbock tools mosaics stitch -o masks_full masks
+
+## Ilastik
+
+To run Ilastik:
+
+    steinbock tools ilastik
+
+Without additional arguments, this will start the graphical user interface of Ilastik.
+
+## CellProfiler
+
+To run CellProfiler:
+
+    steinbock tools cellprofiler
+
+Without additional arguments, this will start the graphical user interface of CellProfiler.

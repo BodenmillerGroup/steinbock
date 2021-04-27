@@ -5,11 +5,11 @@ from collections import OrderedDict
 default_img_dir = "img"
 default_mask_dir = "masks"
 default_panel_file = "panel.csv"
+default_dists_dir = "object_dists"
+default_graph_dir = "object_graphs"
+default_intensities_dir = "object_intensities"
+default_regionprops_dir = "object_regionprops"
 default_combined_data_file = "objects.csv"
-default_intensities_dir = "intensities"
-default_regionprops_dir = "regionprops"
-default_distances_dir = "distances"
-default_graph_dir = "graphs"
 
 
 class OrderedClickGroup(click.Group):

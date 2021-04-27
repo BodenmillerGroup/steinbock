@@ -6,18 +6,16 @@ Various types of data can be extracted, each of which is described in the follow
 
 ## Object data
 
-To extract mean object intensities per channel (`intensities`):
+To extract mean object intensities per channel (`object_intensities`):
 
-    steinbock measure objects intensities
+    steinbock measure intensities
 
-To extract spatial object properties ("region properties", `regionprops`):
+To extract spatial object properties ("region properties", `object_regionprops`):
 
-    steinbock measure objects regionprops
-
-The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
+    steinbock measure regionprops
 
 !!! note "Region properties"
-    By default, the following [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be computed:
+    By default, the following [scikit-image region properties](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be computed:
 
       - `area`
       - `centroid`
@@ -25,27 +23,26 @@ The above commands will create object data tables in CSV format (see [file types
       - `minor_axis_length`
       - `eccentricity`
 
-    An alternative selection of [scikit-image regionprops](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) can be specified in the `regionprops` command, e.g.:
+    An alternative selection of [scikit-image region properties](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) can be specified in the `regionprops` command, e.g.:
 
-        steinbock measure objects regionprops area convex_area perimeter
+        steinbock measure regionprops area convex_area perimeter
 
-To collect all object data from all images into a single file:
+The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
-    steinbock measure objects collect intensities regionprops
-
-This will create a single object data table in CSV format with the first column indicating the source image (see [file types](../specs/file-types.md#object-data)). The default destination file is `objects.csv`. The arguments to the `collect` command are the directories from where to collect the object data.
+!!! note "Collecting object data"
+    To collect all object data from all images into a single file, see [data collection](tools.md#data-collection).
 
 ## Object distances
 
 To measure the pairwise Euclidean distances between object centroids:
 
-    steinbock measure distances centroid
+    steinbock measure dists centroid
 
 To measure the pairwise Euclidean distances between object borders:
 
-    steinbock measure distances border
+    steinbock measure dists border
 
-The above commands will create symmetric object pixel distance matrices in CSV format (see [file types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `distances`.
+The above commands will create symmetric object pixel distance matrices in CSV format (see [file types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `object_dists`.
 
 !!! danger "Computational complexity"
     For `n` objects, the operations in this section require the computation and storage of `n choose 2` distances.
@@ -65,7 +62,7 @@ To construct spatial k-nearest neighbor (kNN) object graphs (directed):
 
     steinbock measure graphs knn --k 5
 
-The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `graphs`.
+The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `object_graphs`.
 
 ## CellProfiler (legacy)
 

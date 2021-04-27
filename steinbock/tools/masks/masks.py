@@ -8,7 +8,7 @@ from typing import Generator, Sequence, Tuple, Union
 from steinbock.utils import io
 
 
-def match(
+def match_masks(
     mask_files1: Sequence[Union[str, PathLike]],
     mask_files2: Sequence[Union[str, PathLike]],
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
@@ -27,12 +27,12 @@ def match(
             for object_id1 in np.unique(mask1[nz1 & (mask2 == object_id2)]):
                 object_ids1.append(object_id1)
                 object_ids2.append(object_id2)
-        table = pd.DataFrame(
+        df = pd.DataFrame(
             data={
                 "Object1": object_ids1,
                 "Object2": object_ids2,
             }
         )
-        table.drop_duplicates(inplace=True, ignore_index=True)
-        yield mask_file1, mask_file2, table
-        del table
+        df.drop_duplicates(inplace=True, ignore_index=True)
+        yield mask_file1, mask_file2, df
+        del df

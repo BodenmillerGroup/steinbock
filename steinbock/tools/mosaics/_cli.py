@@ -10,7 +10,7 @@ from steinbock.utils import cli, io
 @click.group(
     name="mosaics",
     cls=cli.OrderedClickGroup,
-    help="Tile/stitch images",
+    help="Mosaic tiling/stitching",
 )
 def mosaics_cmd():
     pass

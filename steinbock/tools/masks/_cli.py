@@ -9,7 +9,7 @@ from steinbock.utils import cli, io
 @click.group(
     name="masks",
     cls=cli.OrderedClickGroup,
-    help="Process masks",
+    help="Mask processing tools",
 )
 def masks_cmd():
     pass
@@ -44,9 +44,10 @@ def match(masks1, masks2, table_dir):
         mask_files2 = io.list_masks(masks2)
     table_dir = Path(table_dir)
     table_dir.mkdir(exist_ok=True)
-    for mask_file1, mask_file2, table in masks.match(mask_files1, mask_files2):
+    it = masks.match_masks(mask_files1, mask_files2)
+    for mask_file1, mask_file2, df in it:
         table_file = table_dir / mask_file1.with_suffix(".csv").name
-        table.columns = [Path(masks1).name, Path(masks2).name]
-        table.to_csv(table_file, index=False)
+        df.columns = [Path(masks1).name, Path(masks2).name]
+        df.to_csv(table_file, index=False)
         click.echo(table_file)
-        del table
+        del df

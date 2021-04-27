@@ -5,7 +5,7 @@ from os import PathLike
 from pathlib import Path
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import distance
-from skimage import measure
+from skimage.measure import regionprops
 from typing import Generator, Sequence, Tuple, Union
 
 from steinbock.utils import io
@@ -17,20 +17,20 @@ def measure_centroid_distances(
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
         mask = io.read_mask(mask_file)
-        properties = measure.regionprops(mask)
+        properties = regionprops(mask)
         object_ids = np.array([p.label for p in properties])
         object_centroids = np.array([p.centroid for p in properties])
         d_data = distance.squareform(
             distance.pdist(object_centroids, metric=metric),
             checks=False,
         )
-        d = pd.DataFrame(
+        df = pd.DataFrame(
             data=d_data,
             index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
             columns=pd.Index(object_ids, dtype=np.uint16, name="Object"),
         )
-        yield Path(mask_file), d
-        del d
+        yield Path(mask_file), df
+        del df
 
 
 def measure_euclidean_border_distances(
@@ -46,10 +46,10 @@ def measure_euclidean_border_distances(
                 np.amin(dist_img[mask == neighbor_object_id])
                 for neighbor_object_id in object_ids[i + 1 :]
             ]
-        d = pd.DataFrame(
+        df = pd.DataFrame(
             data=d_data,
             index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
             columns=pd.Index(object_ids, dtype=np.uint16, name="Object"),
         )
-        yield Path(mask_file), d
-        del d
+        yield Path(mask_file), df
+        del df
