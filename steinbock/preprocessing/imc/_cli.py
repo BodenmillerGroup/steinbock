@@ -121,7 +121,7 @@ def imc_cmd(
         ):
             img_file_stem = mcd_txt_file.stem
             if acquisition_id is not None:
-                img_file_stem += f"_{acquisition_id}"
+                img_file_stem += f"_{acquisition_id:02d}"
             img_file = io.write_image(img, Path(img_dir) / img_file_stem)
             click.echo(img_file)
             del img
