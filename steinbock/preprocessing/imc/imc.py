@@ -2,6 +2,7 @@ import logging
 import numpy as np
 import pandas as pd
 
+from imctools.data.acquisition import Acquisition
 from imctools.io.mcd.mcdparser import McdParser
 from imctools.io.txt.txtparser import TxtParser
 from os import PathLike
@@ -15,16 +16,16 @@ from steinbock.utils import io
 
 logger = logging.getLogger(__name__)
 
-panel_metal_col = "Metal Tag"
-panel_name_col = "Target"
-panel_enable_col = "full"
-panel_ilastik_col = "ilastik"
+imc_panel_metal_col = "Metal Tag"
+imc_panel_name_col = "Target"
+imc_panel_enable_col = "full"
+imc_panel_ilastik_col = "ilastik"
 
-required_panel_cols = (
-    panel_metal_col,
-    panel_name_col,
-    panel_enable_col,
-    panel_ilastik_col,
+required_imc_panel_cols = (
+    imc_panel_metal_col,
+    imc_panel_name_col,
+    imc_panel_enable_col,
+    imc_panel_ilastik_col,
 )
 
 
@@ -36,28 +37,28 @@ def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.txt"))
 
 
-def preprocess_panel(
-    panel_file: Union[str, Path],
-) -> pd.DataFrame:
+def parse_imc_panel(
+    imc_panel_file: Union[str, Path],
+) -> Tuple[pd.DataFrame, List[str]]:
 
-    panel = pd.read_csv(panel_file)
-    for col in required_panel_cols:
-        if col not in panel:
-            raise ValueError(f"Missing column in IMC panel: {col}")
-    panel = panel.loc[panel[panel_enable_col].astype(bool), :]
-    panel.drop(columns=panel_enable_col, inplace=True)
+    imc_panel = pd.read_csv(imc_panel_file)
+    for imc_panel_col in required_imc_panel_cols:
+        if imc_panel_col not in imc_panel:
+            raise ValueError(f"Missing column in IMC panel: {imc_panel_col}")
+    panel = imc_panel.loc[imc_panel[imc_panel_enable_col].astype(bool), :]
+    panel.drop(columns=imc_panel_enable_col, inplace=True)
     panel.sort_values(
-        panel_metal_col,
+        imc_panel_metal_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
-    m = panel[panel_ilastik_col].astype(bool)
-    panel[panel_ilastik_col] = pd.Series(dtype=pd.UInt8Dtype())
-    panel.loc[m, panel_ilastik_col] = range(1, m.sum() + 1)
+    m = panel[imc_panel_ilastik_col].astype(bool)
+    panel[imc_panel_ilastik_col] = pd.Series(dtype=pd.UInt8Dtype())
+    panel.loc[m, imc_panel_ilastik_col] = range(1, m.sum() + 1)
     panel.rename(
         columns={
-            panel_name_col: io.panel_name_col,
-            panel_ilastik_col: ilastik.panel_ilastik_col,
+            imc_panel_name_col: io.panel_name_col,
+            imc_panel_ilastik_col: ilastik.panel_ilastik_col,
         },
         inplace=True,
     )
@@ -66,13 +67,52 @@ def preprocess_panel(
     col_order.remove(ilastik.panel_ilastik_col)
     col_order.insert(0, io.panel_name_col)
     col_order.insert(1, ilastik.panel_ilastik_col)
-    return panel.loc[:, col_order]
+    metal_order = panel[imc_panel_metal_col].tolist()
+    return panel.loc[:, col_order], metal_order
+
+
+def create_panel_from_mcd(
+    mcd_file: Union[str, Path],
+) -> Tuple[pd.DataFrame, List[str]]:
+    with McdParser(mcd_file) as mcd_parser:
+        acquisition = next(iter(mcd_parser.session.acquisitions.values()))
+        return create_panel_from_acquisition(acquisition)
+
+
+def create_panel_from_txt(
+    txt_file: Union[str, Path],
+) -> Tuple[pd.DataFrame, List[str]]:
+    with TxtParser(txt_file) as txt_parser:
+        acquisition = txt_parser.get_acquisition_data().acquisition
+        return create_panel_from_acquisition(acquisition)
+
+
+def create_panel_from_acquisition(
+    acquisition: Acquisition,
+) -> Tuple[pd.DataFrame, List[str]]:
+    channels = sorted(
+        acquisition.channels.values(),
+        key=lambda channel: channel.order_number,
+    )
+    panel = pd.DataFrame(
+        data={
+            io.panel_name_col: [channel.label for channel in channels],
+            ilastik.panel_ilastik_col: range(1, len(channels) + 1),
+            "metal": [channel.name for channel in channels],
+        }
+    )
+    panel.sort_values(
+        "metal",
+        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
+        inplace=True,
+    )
+    return panel, panel["metal"].tolist()
 
 
 def preprocess_images(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
-    metal_order: Sequence[str],
+    metal_order: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
 ) -> Generator[Tuple[Path, Optional[int], np.ndarray], None, None]:
     remaining_txt_files = list(txt_files)
@@ -100,7 +140,9 @@ def preprocess_images(
                         ) as txt_parser:
                             data = txt_parser.get_acquisition_data()
                 if data.image_data is not None and data.is_valid:
-                    img = data.get_image_stack_by_names(metal_order)
+                    img = data.image_data
+                    if metal_order is not None:
+                        img = data.get_image_stack_by_names(metal_order)
                     img = preprocess_image(img, hpf=hpf)
                     yield mcd_file, acquisition.id, img
                     del img
@@ -108,8 +150,10 @@ def preprocess_images(
         txt_file = Path(remaining_txt_files.pop(0))
         with TxtParser(txt_file) as txt_parser:
             data = txt_parser.get_acquisition_data()
-        if data.is_valid:
-            img = data.get_image_stack_by_names(metal_order)
+        if data.image_data is not None and data.is_valid:
+            img = data.image_data
+            if metal_order is not None:
+                img = data.get_image_stack_by_names(metal_order)
             img = preprocess_image(img, hpf=hpf)
             yield txt_file, None, img
             del img

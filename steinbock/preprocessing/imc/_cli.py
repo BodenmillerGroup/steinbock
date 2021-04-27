@@ -43,8 +43,8 @@ def _extract_zips(path, suffix, dest):
 )
 @click.option(
     "--panel",
-    "panel_file",
-    type=click.Path(exists=True, dir_okay=False),
+    "imc_panel_file",
+    type=click.Path(dir_okay=False),
     default=str(Path("raw", "panel.csv")),
     show_default=True,
     help="Path to the IMC panel file",
@@ -72,7 +72,7 @@ def _extract_zips(path, suffix, dest):
 )
 @click.option(
     "--paneldest",
-    "dest_panel_file",
+    "panel_file",
     type=click.Path(dir_okay=False),
     default=cli.default_panel_file,
     show_default=True,
@@ -81,11 +81,11 @@ def _extract_zips(path, suffix, dest):
 def imc_cmd(
     mcd_dir,
     txt_dir,
-    panel_file,
+    imc_panel_file,
     hpf,
     unzip,
     img_dir,
-    dest_panel_file,
+    panel_file,
 ):
     with TemporaryDirectory() as temp_dir:
         mcd_files = imc.list_mcd_files(mcd_dir)
@@ -110,18 +110,25 @@ def imc_cmd(
                     file=sys.stderr,
                 )
             unique_txt_file_stems.append(txt_file.stem)
-        dest_panel = imc.preprocess_panel(panel_file)
-        dest_panel_file = io.write_panel(dest_panel, dest_panel_file)
+        panel, metal_order = None, None
+        if Path(imc_panel_file).exists():
+            panel, metal_order = imc.parse_imc_panel(imc_panel_file)
+        elif len(mcd_files) > 0:
+            panel, metal_order = imc.create_panel_from_mcd(mcd_files[0])
+        elif len(txt_files) > 0:
+            panel, metal_order = imc.create_panel_from_txt(txt_files[0])
+        if panel is not None:
+            panel_file = io.write_panel(panel, panel_file)
         Path(img_dir).mkdir(exist_ok=True)
         for mcd_txt_file, acquisition_id, img in imc.preprocess_images(
             mcd_files,
             txt_files,
-            dest_panel[imc.panel_metal_col].tolist(),
+            metal_order=metal_order,
             hpf=hpf,
         ):
             img_file_stem = mcd_txt_file.stem
             if acquisition_id is not None:
-                img_file_stem += f"_{acquisition_id:02d}"
+                img_file_stem += f"_{acquisition_id}"
             img_file = io.write_image(img, Path(img_dir) / img_file_stem)
             click.echo(img_file)
             del img

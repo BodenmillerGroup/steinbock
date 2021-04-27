@@ -31,9 +31,13 @@ After image extraction, if the `--hpf` option is specified, the images are filte
 !!! note "Hot pixel filtering"
     Hot pixel filtering works by comparing each pixel to its 8-neighborhood (i.e., neighboring pixels at a [Chebyshev distance](https://en.wikipedia.org/wiki/Chebyshev_distance) of 1). If the difference between the pixel and any of its 8 neighbor pixels exceeds the *hot pixel filtering threshold*, the pixel is set to the maximum neighbor pixel value ("hot pixel-filtered").
 
-Finally, the images and a *steinbock* panel file are stored at the specified destination paths (defaults to the `img` directory and the `panel.csv` file in the *steinbock* data/working directory).
+Finally, the images are saved (default: `img`) and a *steinbock* panel file is created as follows: 
+
+  1. If an IMC panel file exists at the specified location (default: `raw/panel.csv`), it is converted to the [*steinbock* panel format](../specs/file-types.md#panel) and saved at the specified location (default: `panel.csv`).
+  2. If no such file exists, the panel is created based on the first acquisition in the first .mcd file. 
+  3. If no .mcd file was found, the panel is created based on the first .txt file.
 
 !!! note "Panel files"
-    The *steinbock* panel file is different from the original panel file in that it is ordered (i.e., the channel order in the panel matches the channel order in the images), only contains entries for channels present in the preprocessed images, and only requires a `name` column (but allows for arbitrary columns, see [file types](../specs/file-types.md#panel)). Therefore, the *steinbock* panel generated from the original IMC panel as shown here will "pass through" all columns except the `full` column.
+    The *steinbock* panel file is different from the IMC panel file used in the original IMC segmentation pipeline in that it is ordered (i.e., the channel order in the panel matches the channel order in the images), only contains entries for channels present in the preprocessed images, and only requires a `name` column. As the *steinbock* panel format allows for further arbitrary columns (see [file types](../specs/file-types.md#panel)), a *steinbock* panel generated from an original IMC panel will contain all original columns ("column pass-through") except the `full` column.
 
 [^1]: Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
