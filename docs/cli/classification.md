@@ -33,6 +33,9 @@ To interactively train a new classifier, open the pixel classification project i
 
     steinbock tools ilastik
 
+!!! note "Data/working directory"
+    Within the container, your data/working directory containing the Ilastik project file is accessible under `/data`.
+
 More detailed instructions on how to use Ilastik for training a pixel classifier can be found [here](https://www.ilastik.org/documentation/pixelclassification/pixelclassification).
 
 !!! note "Class labels"
@@ -74,6 +77,6 @@ By default, this will create probability images in `ilastik_probabilities`, with
 
     If the default three-class structure is used, the probability images are RGB images with the following color code:
 
-      - <span style="color: red;">R</span>: Nuclei
-      - <span style="color: green;">G</span>: Cytoplasm
-      - <span style="color: blue;">B</span>: Background
+      - <span style="color: rgb(230, 25, 75);">Red</span>: Nuclei
+      - <span style="color: rgb(255, 225, 25);">Yellow</span>: Cytoplasm
+      - <span style="color: rgb(0, 130, 200);">Blue</span>: Background

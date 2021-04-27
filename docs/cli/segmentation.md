@@ -25,6 +25,9 @@ To interactively inspect, modify and run the pipeline, open it in CellProfiler (
 
     steinbock tools cellprofiler
 
+!!! note "Data/working directory"
+    Within the container, your data/working directory containing the CellProfiler pipeline is accessible under `/data`.
+
 More detailed instructions on how to create CellProfiler pipelines can be found [here](https://cellprofiler-manual.s3.amazonaws.com/CellProfiler-4.1.3/help/pipelines_building.html).
 
 !!! note "Segmentation parameters"

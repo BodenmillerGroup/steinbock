@@ -75,6 +75,9 @@ To prepare a CellProfiler measurement pipeline:
 
     steinbock measure cellprofiler prepare
 
+!!! note "Data/working directory"
+    Within the container, your data/working directory containing the CellProfiler pipeline is accessible under `/data`.
+
 By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks into the `cellprofiler_input` directory.
 
 !!! note "CellProfiler plugins"
