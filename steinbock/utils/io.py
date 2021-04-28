@@ -6,16 +6,43 @@ from os import PathLike
 from pathlib import Path
 from typing import List, Union
 
+panel_metal_col = "metal"
 panel_name_col = "name"
+panel_keep_col = "keep"
 
 
-def read_panel(panel_file: Union[str, PathLike]) -> pd.DataFrame:
+def read_panel(
+    panel_file: Union[str, PathLike],
+    kept_only: bool = True,
+) -> pd.DataFrame:
     panel_file = Path(panel_file).with_suffix(".csv")
-    panel = pd.read_csv(panel_file)
-    if panel_name_col not in panel:
-        raise ValueError(f"Missing {panel_name_col} in panel {panel_file}")
-    if panel[panel_name_col].isna().any():
-        raise ValueError(f"Incomplete channel names in panel {panel_file}")
+    panel = pd.read_csv(
+        panel_file,
+        dtype={
+            panel_metal_col: pd.StringDtype(),
+            panel_name_col: pd.StringDtype(),
+            panel_keep_col: pd.BooleanDtype(),
+        },
+        true_values=["1"],
+        false_values=["0"],
+    )
+    for required_col in (panel_name_col,):
+        if required_col not in panel:
+            raise ValueError(
+                f"Missing '{required_col}' column in panel {panel_file}",
+            )
+    for notnan_col in (panel_metal_col, panel_name_col, panel_keep_col):
+        if notnan_col in panel and panel[notnan_col].isna().any():
+            raise ValueError(
+                f"Missing values for '{notnan_col}' in panel {panel_file}",
+            )
+    for unique_col in (panel_metal_col, panel_name_col):
+        if unique_col in panel and panel[unique_col].duplicated().any():
+            raise ValueError(
+                f"Duplicated values for '{unique_col}' in panel {panel_file}",
+            )
+    if kept_only and panel_keep_col in panel:
+        panel = panel.loc[panel[panel_keep_col], :]
     return panel
 
 

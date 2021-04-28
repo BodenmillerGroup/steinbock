@@ -18,15 +18,8 @@ logger = logging.getLogger(__name__)
 
 imc_panel_metal_col = "Metal Tag"
 imc_panel_name_col = "Target"
-imc_panel_enable_col = "full"
+imc_panel_keep_col = "full"
 imc_panel_ilastik_col = "ilastik"
-
-required_imc_panel_cols = (
-    imc_panel_metal_col,
-    imc_panel_name_col,
-    imc_panel_enable_col,
-    imc_panel_ilastik_col,
-)
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -37,76 +30,99 @@ def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.txt"))
 
 
-def parse_imc_panel(
-    imc_panel_file: Union[str, Path],
-) -> Tuple[pd.DataFrame, List[str]]:
-
-    imc_panel = pd.read_csv(imc_panel_file)
-    for imc_panel_col in required_imc_panel_cols:
-        if imc_panel_col not in imc_panel:
-            raise ValueError(f"Missing column in IMC panel: {imc_panel_col}")
-    panel = imc_panel.loc[imc_panel[imc_panel_enable_col].astype(bool), :]
-    panel.drop(columns=imc_panel_enable_col, inplace=True)
-    panel.sort_values(
+def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
+    imc_panel = pd.read_csv(
+        imc_panel_file,
+        dtype={
+            imc_panel_metal_col: pd.StringDtype(),
+            imc_panel_name_col: pd.StringDtype(),
+            imc_panel_keep_col: pd.BooleanDtype(),
+            imc_panel_ilastik_col: pd.BooleanDtype(),
+        },
+        true_values=["1"],
+        false_values=["0"],
+    )
+    for required_col in (imc_panel_metal_col, imc_panel_name_col):
+        if required_col not in imc_panel:
+            raise ValueError(f"Missing '{required_col}' column in IMC panel")
+    for notnan_col in (
         imc_panel_metal_col,
+        imc_panel_name_col,
+        imc_panel_keep_col,
+        imc_panel_ilastik_col,
+    ):
+        if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
+            raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
+    for unique_col in (imc_panel_metal_col, imc_panel_name_col):
+        if unique_col in imc_panel:
+            if imc_panel[unique_col].duplicated().any():
+                raise ValueError(
+                    f"Duplicated values for '{unique_col}' in IMC panel",
+                )
+    panel = imc_panel.rename(
+        columns={
+            imc_panel_metal_col: io.panel_metal_col,
+            imc_panel_name_col: io.panel_name_col,
+            imc_panel_keep_col: io.panel_keep_col,
+            imc_panel_ilastik_col: ilastik.panel_ilastik_col,
+        },
+    )
+    panel.sort_values(
+        io.panel_metal_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
-    m = panel[imc_panel_ilastik_col].astype(bool)
-    panel[imc_panel_ilastik_col] = pd.Series(dtype=pd.UInt8Dtype())
-    panel.loc[m, imc_panel_ilastik_col] = range(1, m.sum() + 1)
-    panel.rename(
-        columns={
-            imc_panel_name_col: io.panel_name_col,
-            imc_panel_ilastik_col: ilastik.panel_ilastik_col,
-        },
-        inplace=True,
-    )
+    if ilastik.panel_ilastik_col in panel:
+        m = panel[ilastik.panel_ilastik_col].astype(bool)
+        panel[ilastik.panel_ilastik_col] = pd.Series(dtype=pd.UInt8Dtype())
+        panel.loc[m, ilastik.panel_ilastik_col] = range(1, m.sum() + 1)
     col_order = panel.columns.tolist()
-    col_order.remove(io.panel_name_col)
-    col_order.remove(ilastik.panel_ilastik_col)
-    col_order.insert(0, io.panel_name_col)
-    col_order.insert(1, ilastik.panel_ilastik_col)
-    metal_order = panel[imc_panel_metal_col].tolist()
-    return panel.loc[:, col_order], metal_order
+    next_col_index = 0
+    for col in (
+        io.panel_metal_col,
+        io.panel_name_col,
+        io.panel_keep_col,
+        ilastik.panel_ilastik_col,
+    ):
+        if col in col_order:
+            col_order.remove(col)
+            col_order.insert(next_col_index, col)
+            next_col_index += 1
+    panel = panel.loc[:, col_order]
+    return panel
 
 
-def create_panel_from_mcd(
-    mcd_file: Union[str, Path],
-) -> Tuple[pd.DataFrame, List[str]]:
+def create_panel_from_mcd(mcd_file: Union[str, Path]) -> pd.DataFrame:
     with McdParser(mcd_file) as mcd_parser:
         acquisition = next(iter(mcd_parser.session.acquisitions.values()))
         return create_panel_from_acquisition(acquisition)
 
 
-def create_panel_from_txt(
-    txt_file: Union[str, Path],
-) -> Tuple[pd.DataFrame, List[str]]:
+def create_panel_from_txt(txt_file: Union[str, Path]) -> pd.DataFrame:
     with TxtParser(txt_file) as txt_parser:
         acquisition = txt_parser.get_acquisition_data().acquisition
         return create_panel_from_acquisition(acquisition)
 
 
-def create_panel_from_acquisition(
-    acquisition: Acquisition,
-) -> Tuple[pd.DataFrame, List[str]]:
+def create_panel_from_acquisition(acquisition: Acquisition) -> pd.DataFrame:
     channels = sorted(
         acquisition.channels.values(),
         key=lambda channel: channel.order_number,
     )
     panel = pd.DataFrame(
         data={
+            io.panel_metal_col: [channel.name for channel in channels],
             io.panel_name_col: [channel.label for channel in channels],
+            io.panel_keep_col: 1,
             ilastik.panel_ilastik_col: range(1, len(channels) + 1),
-            "metal": [channel.name for channel in channels],
         }
     )
     panel.sort_values(
-        "metal",
+        io.panel_metal_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
-    return panel, panel["metal"].tolist()
+    return panel
 
 
 def preprocess_images(
