@@ -80,7 +80,7 @@ def intensities(
     aggr_function = getattr(np, aggr_function_name)
     img_files = io.list_images(img_dir)
     panel = io.read_panel(panel_file)
-    channel_names = panel[io.channel_label_col].tolist()
+    channel_names = panel[io.channel_name_col].tolist()
     intensities_dir = Path(intensities_dir)
     intensities_dir.mkdir(exist_ok=True)
     for img_file, mask_file, df in measure_intensities(
@@ -144,7 +144,7 @@ def regionprops(
 ):
     img_files = io.list_images(img_dir)
     panel = io.read_panel(panel_file)
-    channel_names = panel[io.channel_label_col].tolist()
+    channel_names = panel[io.channel_name_col].tolist()
     regionprops_dir = Path(regionprops_dir)
     regionprops_dir.mkdir(exist_ok=True)
     if not skimage_regionprops:

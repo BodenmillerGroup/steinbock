@@ -61,7 +61,7 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     panel = imc_panel.rename(
         columns={
             channel_metal_col: io.channel_id_col,
-            channel_target_col: io.channel_label_col,
+            channel_target_col: io.channel_name_col,
             keep_channel_col: io.keep_channel_col,
             ilastik_col: ilastik.panel_ilastik_col,
         },
@@ -79,7 +79,7 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     next_col_index = 0
     for col in (
         io.channel_id_col,
-        io.channel_label_col,
+        io.channel_name_col,
         io.keep_channel_col,
         ilastik.panel_ilastik_col,
     ):
@@ -111,7 +111,7 @@ def create_panel_from_acquisition(acquisition: Acquisition) -> pd.DataFrame:
     panel = pd.DataFrame(
         data={
             io.channel_id_col: [channel.name for channel in channels],
-            io.channel_label_col: [channel.label for channel in channels],
+            io.channel_name_col: [channel.label for channel in channels],
             io.keep_channel_col: 1,
             ilastik.panel_ilastik_col: range(1, len(channels) + 1),
         }

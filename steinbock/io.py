@@ -6,8 +6,8 @@ from os import PathLike
 from pathlib import Path
 from typing import List, Union
 
-channel_id_col = "id"
-channel_label_col = "label"
+channel_id_col = "channel"
+channel_name_col = "name"
 keep_channel_col = "keep"
 
 
@@ -20,13 +20,13 @@ def read_panel(
         panel_file,
         dtype={
             channel_id_col: pd.StringDtype(),
-            channel_label_col: pd.StringDtype(),
+            channel_name_col: pd.StringDtype(),
             keep_channel_col: pd.BooleanDtype(),
         },
         true_values=["1"],
         false_values=["0"],
     )
-    for required_col in (channel_id_col, channel_label_col,):
+    for required_col in (channel_id_col, channel_name_col,):
         if required_col not in panel:
             raise ValueError(
                 f"Missing '{required_col}' column in {panel_file}",
@@ -36,7 +36,7 @@ def read_panel(
             raise ValueError(
                 f"Missing values for '{notnan_col}' in {panel_file}",
             )
-    for unique_col in (channel_id_col, channel_label_col):
+    for unique_col in (channel_id_col, channel_name_col):
         if unique_col in panel:
             if panel[unique_col].dropna().duplicated().any():
                 raise ValueError(
