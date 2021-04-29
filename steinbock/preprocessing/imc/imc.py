@@ -16,10 +16,10 @@ from steinbock.classification.ilastik import ilastik
 
 logger = logging.getLogger(__name__)
 
-imc_panel_metal_col = "Metal Tag"
-imc_panel_name_col = "Target"
-imc_panel_keep_col = "full"
-imc_panel_ilastik_col = "ilastik"
+channel_metal_col = "Metal Tag"
+channel_target_col = "Target"
+keep_channel_col = "full"
+ilastik_col = "ilastik"
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -34,41 +34,40 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     imc_panel = pd.read_csv(
         imc_panel_file,
         dtype={
-            imc_panel_metal_col: pd.StringDtype(),
-            imc_panel_name_col: pd.StringDtype(),
-            imc_panel_keep_col: pd.BooleanDtype(),
-            imc_panel_ilastik_col: pd.BooleanDtype(),
+            channel_metal_col: pd.StringDtype(),
+            channel_target_col: pd.StringDtype(),
+            keep_channel_col: pd.BooleanDtype(),
+            ilastik_col: pd.BooleanDtype(),
         },
         true_values=["1"],
         false_values=["0"],
     )
-    for required_col in (imc_panel_metal_col, imc_panel_name_col):
+    for required_col in (channel_metal_col, channel_target_col):
         if required_col not in imc_panel:
             raise ValueError(f"Missing '{required_col}' column in IMC panel")
     for notnan_col in (
-        imc_panel_metal_col,
-        imc_panel_name_col,
-        imc_panel_keep_col,
-        imc_panel_ilastik_col,
+        channel_metal_col,
+        keep_channel_col,
+        ilastik_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
-    for unique_col in (imc_panel_metal_col, imc_panel_name_col):
+    for unique_col in (channel_metal_col, channel_target_col):
         if unique_col in imc_panel:
-            if imc_panel[unique_col].duplicated().any():
+            if imc_panel[unique_col].dropna().duplicated().any():
                 raise ValueError(
                     f"Duplicated values for '{unique_col}' in IMC panel",
                 )
     panel = imc_panel.rename(
         columns={
-            imc_panel_metal_col: io.panel_metal_col,
-            imc_panel_name_col: io.panel_name_col,
-            imc_panel_keep_col: io.panel_keep_col,
-            imc_panel_ilastik_col: ilastik.panel_ilastik_col,
+            channel_metal_col: io.channel_id_col,
+            channel_target_col: io.channel_label_col,
+            keep_channel_col: io.keep_channel_col,
+            ilastik_col: ilastik.panel_ilastik_col,
         },
     )
     panel.sort_values(
-        io.panel_metal_col,
+        io.channel_id_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
@@ -79,9 +78,9 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     col_order = panel.columns.tolist()
     next_col_index = 0
     for col in (
-        io.panel_metal_col,
-        io.panel_name_col,
-        io.panel_keep_col,
+        io.channel_id_col,
+        io.channel_label_col,
+        io.keep_channel_col,
         ilastik.panel_ilastik_col,
     ):
         if col in col_order:
@@ -111,14 +110,14 @@ def create_panel_from_acquisition(acquisition: Acquisition) -> pd.DataFrame:
     )
     panel = pd.DataFrame(
         data={
-            io.panel_metal_col: [channel.name for channel in channels],
-            io.panel_name_col: [channel.label for channel in channels],
-            io.panel_keep_col: 1,
+            io.channel_id_col: [channel.name for channel in channels],
+            io.channel_label_col: [channel.label for channel in channels],
+            io.keep_channel_col: 1,
             ilastik.panel_ilastik_col: range(1, len(channels) + 1),
         }
     )
     panel.sort_values(
-        io.panel_metal_col,
+        io.channel_id_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )

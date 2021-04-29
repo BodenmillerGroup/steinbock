@@ -10,10 +10,10 @@ Comma-separated values (CSV) file with column headers and no index
 
 | Column | Description | Type | Required? |
 | --- | --- | --- | --- |
-| `metal` | Metal isotope name (e.g., `Ir191`) | Text | yes for IMC,<br> no otherwise |
-| `name` | Channel name (e.g., antibody target) | Text | yes |
-| `keep` | Whether the channel is included in the images<br> (if column is not present, all channels are included) | Boolean (`0` or `1`) | no |
-| `ilastik` | Group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik)<br> (if column is not present, all channels are included) | Numeric or empty | no |
+| `id` | Unique channel ID, e.g. metal isotope | Text | yes |
+| `label` | Unique channel label, e.g., antibody target<br>(can be empty only for rows with `keep=0`) | Text or empty | yes |
+| `keep` | Whether the channel is present in preprocessed images<br>(if column is absent, all channels are assumed present) | Boolean (`0` or `1`) | no |
+| `ilastik` | Group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 
 The *steinbock* panel allows for further arbitrary columns.
 

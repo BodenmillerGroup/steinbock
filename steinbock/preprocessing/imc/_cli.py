@@ -164,9 +164,10 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
 )
 def images(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
     metal_order = None
-    panel = io.read_panel(panel_file)
-    if io.panel_metal_col in panel:
-        metal_order = panel[io.panel_metal_col].tolist()
+    if Path(panel_file).exists():
+        panel = io.read_panel(panel_file)
+        if io.channel_id_col in panel:
+            metal_order = panel[io.channel_id_col].tolist()
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
         mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
         txt_files = _collect_txt_files(txt_dir, unzip_dir=temp_dir)
