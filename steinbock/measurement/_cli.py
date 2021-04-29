@@ -89,7 +89,8 @@ def intensities(
         channel_names,
         aggr_function,
     ):
-        intensities_file = io.write_data(df, intensities_dir / img_file.stem)
+        intensities_file = intensities_dir / img_file.stem
+        intensities_file = io.write_data(df, intensities_file, copy=False)
         click.echo(intensities_file)
         del df
 
@@ -155,7 +156,7 @@ def regionprops(
         skimage_regionprops,
     ):
         regionprops_file = regionprops_dir / img_file.stem
-        regionprops_file = io.write_data(df, regionprops_file)
+        regionprops_file = io.write_data(df, regionprops_file, copy=False)
         click.echo(regionprops_file)
         del df
 

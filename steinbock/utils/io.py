@@ -48,6 +48,10 @@ def read_panel(
 
 def write_panel(panel: pd.DataFrame, panel_file: Union[str, PathLike]) -> Path:
     panel_file = Path(panel_file).with_suffix(".csv")
+    panel = panel.copy()
+    for col in panel.columns:
+        if panel[col].convert_dtypes().dtype == pd.BooleanDtype():
+            panel[col] = panel[col].astype(pd.UInt8Dtype())
     panel.to_csv(panel_file, index=False)
     return panel_file
 
@@ -147,10 +151,8 @@ def list_distances(dists_dir: Union[str, PathLike]) -> List[Path]:
 
 def read_distances(dists_file: Union[str, PathLike]) -> pd.DataFrame:
     dists_file = Path(dists_file).with_suffix(".csv")
-    df = pd.read_csv(dists_file, index_col=0)
-    df.index.name = "Object"
+    df = pd.read_csv(dists_file, index_col="Object")
     df.index = df.index.astype(np.uint16)
-    df.columns.name = "Object"
     df.columns = df.columns.astype(np.uint16)
     return df
 
@@ -160,8 +162,7 @@ def write_distances(
     dists_file: Union[str, PathLike],
     copy: bool = False,
 ) -> Path:
-    if copy:
-        df = df.copy()
+    df = df.astype(np.float32, copy=copy)
     df.index.name = "Object"
     df.index = df.index.astype(np.uint16)
     df.columns.name = "Object"

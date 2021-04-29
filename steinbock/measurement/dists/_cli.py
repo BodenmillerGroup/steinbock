@@ -51,10 +51,11 @@ def centroid(mask_dir, metric, dists_dir):
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
     it = dists.measure_centroid_distances(mask_files, metric)
-    for mask_file, d in it:
-        dists_file = io.write_distances(d, dists_dir / mask_file.stem)
+    for mask_file, df in it:
+        dists_file = dists_dir / mask_file.stem
+        dists_file = io.write_distances(df, dists_file, copy=False)
         click.echo(dists_file)
-        del d
+        del df
 
 
 @dists_cmd.command(
@@ -81,7 +82,8 @@ def border(mask_dir, dists_dir):
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
     it = dists.measure_euclidean_border_distances(mask_files)
-    for mask_file, d in it:
-        dists_file = io.write_distances(d, dists_dir / mask_file.stem)
+    for mask_file, df in it:
+        dists_file = dists_dir / mask_file.stem
+        dists_file = io.write_distances(df, dists_file, copy=False)
         click.echo(dists_file)
-        del d
+        del df

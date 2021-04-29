@@ -23,7 +23,7 @@ def _extract_zips(path, suffix, dest):
     return extracted_files
 
 
-def _collect_mcd_files(mcd_dir, unzip_dir):
+def _collect_mcd_files(mcd_dir, unzip_dir=None):
     mcd_files = imc.list_mcd_files(mcd_dir)
     if unzip_dir is not None:
         mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
@@ -55,6 +55,7 @@ def _collect_txt_files(txt_dir, unzip_dir=None):
 
 @click.group(
     name="imc",
+    cls=cli.OrderedClickGroup,
     help="Preprocess Imaging Mass Cytometry (IMC) data",
 )
 def imc_cmd():
