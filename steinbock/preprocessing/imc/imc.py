@@ -10,8 +10,8 @@ from pathlib import Path
 from scipy.ndimage import maximum_filter
 from typing import Generator, List, Optional, Sequence, Tuple, Union
 
+from steinbock import io
 from steinbock.classification.ilastik import ilastik
-from steinbock.utils import io
 
 
 logger = logging.getLogger(__name__)

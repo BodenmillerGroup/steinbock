@@ -1,7 +1,7 @@
 import click
 
+from steinbock import cli
 from steinbock.classification.ilastik._cli import ilastik_cmd
-from steinbock.utils import cli
 
 
 @click.group(

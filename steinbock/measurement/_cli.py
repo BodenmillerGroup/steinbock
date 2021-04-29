@@ -3,12 +3,12 @@ import numpy as np
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock.measurement.dists._cli import dists_cmd
 from steinbock.measurement.graphs._cli import graphs_cmd
 from steinbock.measurement.intensities import measure_intensities
 from steinbock.measurement.regionprops import measure_regionprops
 from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
-from steinbock.utils import cli, io
 
 default_skimage_regionprops = [
     "area",

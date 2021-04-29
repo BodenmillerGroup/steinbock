@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Dict, Generator, List, Optional, Sequence, Tuple, Union
 from uuid import uuid1
 
-from steinbock.utils import io, system
+from steinbock import io, utils
 
 
 class VigraAxisInfo(IntEnum):
@@ -163,7 +163,7 @@ def classify_pixels(
             env["LAZYFLOW_THREADS"] = num_threads
         if memory_limit is not None:
             env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
-    result = system.run_captured(args, env=env)
+    result = utils.run_captured(args, env=env)
     probabilities_files = probabilities_dir.rglob(f"*-{img_dataset_path}.tiff")
     for probabilities_file in sorted(probabilities_files):
         probabilities_file.rename(

@@ -3,8 +3,8 @@ import re
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock.tools.mosaics import mosaics
-from steinbock.utils import cli, io
 
 
 @click.group(

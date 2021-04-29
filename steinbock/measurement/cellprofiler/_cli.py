@@ -5,9 +5,9 @@ import sys
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.measurement.cellprofiler import cellprofiler
-from steinbock.utils import cli, io
 
 default_measurement_pipeline_file = "cell_measurement.cppipe"
 default_input_dir = "cellprofiler_input"

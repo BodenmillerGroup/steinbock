@@ -2,8 +2,8 @@ import click
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock.measurement.graphs import graphs
-from steinbock.utils import cli, io
 
 
 @click.group(

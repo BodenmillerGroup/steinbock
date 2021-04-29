@@ -5,7 +5,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Callable, Generator, Sequence, Tuple, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 
 def measure_intensities(

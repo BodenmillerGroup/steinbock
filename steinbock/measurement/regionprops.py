@@ -6,7 +6,7 @@ from pathlib import Path
 from skimage.measure import regionprops_table
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 
 def measure_regionprops(

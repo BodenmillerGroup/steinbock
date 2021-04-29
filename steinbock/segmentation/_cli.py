@@ -1,7 +1,7 @@
 import click
 
+from steinbock import cli
 from steinbock.segmentation.cellprofiler._cli import cellprofiler_cmd
-from steinbock.utils import cli
 
 
 @click.group(

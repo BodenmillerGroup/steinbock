@@ -2,8 +2,8 @@ import click
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock.tools.masks import masks
-from steinbock.utils import cli, io
 
 
 @click.group(

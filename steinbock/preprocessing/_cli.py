@@ -1,7 +1,7 @@
 import click
 
+from steinbock import cli
 from steinbock.preprocessing.imc._cli import imc_cmd
-from steinbock.utils import cli
 
 
 @click.group(

@@ -6,8 +6,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
+from steinbock import cli, io
 from steinbock.preprocessing.imc import imc
-from steinbock.utils import cli, io
 
 
 def _extract_zips(path, suffix, dest):

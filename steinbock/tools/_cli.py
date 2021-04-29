@@ -1,6 +1,7 @@
 import click
 import sys
 
+from steinbock import cli, utils
 from steinbock._env import (
     check_x11,
     ilastik_binary,
@@ -11,7 +12,6 @@ from steinbock._env import (
 from steinbock.tools.data._cli import data_cmd
 from steinbock.tools.masks._cli import masks_cmd
 from steinbock.tools.mosaics._cli import mosaics_cmd
-from steinbock.utils import cli, system
 
 
 @click.group(
@@ -43,7 +43,7 @@ def ilastik(ilastik_args):
     if x11_warning_message is not None:
         click.echo(x11_warning_message, file=sys.stderr)
     args = [ilastik_binary] + list(ilastik_args)
-    result = system.run_captured(args, env=get_ilastik_env())
+    result = utils.run_captured(args, env=get_ilastik_env())
     sys.exit(result.returncode)
 
 
@@ -64,5 +64,5 @@ def cellprofiler(cellprofiler_args):
     args = [cellprofiler_binary] + list(cellprofiler_args)
     if not any(arg.startswith("--plugins-directory") for arg in args):
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
-    result = system.run_captured(args)
+    result = utils.run_captured(args)
     sys.exit(result.returncode)

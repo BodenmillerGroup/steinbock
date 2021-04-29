@@ -4,7 +4,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Dict, Generator, Sequence, Tuple, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 TileInfo = Tuple[Union[str, PathLike], int, int, int, int]
 

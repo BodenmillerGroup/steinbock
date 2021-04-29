@@ -3,9 +3,9 @@ import sys
 
 from pathlib import Path
 
+from steinbock import cli
 from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.segmentation.cellprofiler import cellprofiler
-from steinbock.utils import cli
 
 default_segmentation_pipeline_file = "cell_segmentation.cppipe"
 

@@ -2,8 +2,8 @@ import click
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock.tools.data import data
-from steinbock.utils import cli, io
 
 default_collect_data_dirs = [
     cli.default_intensities_dir,

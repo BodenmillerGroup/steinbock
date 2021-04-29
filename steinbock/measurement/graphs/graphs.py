@@ -5,7 +5,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 
 def construct_knn_graphs(

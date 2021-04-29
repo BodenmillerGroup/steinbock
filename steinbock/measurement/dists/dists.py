@@ -8,7 +8,7 @@ from scipy.spatial import distance
 from skimage.measure import regionprops
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 
 def measure_centroid_distances(

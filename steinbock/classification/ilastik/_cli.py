@@ -4,9 +4,9 @@ import sys
 
 from pathlib import Path
 
+from steinbock import cli, io
 from steinbock._env import ilastik_binary, get_ilastik_env
 from steinbock.classification.ilastik import ilastik
-from steinbock.utils import cli, io
 
 default_img_dir = "ilastik_img"
 default_crop_dir = "ilastik_crops"

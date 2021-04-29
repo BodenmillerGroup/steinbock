@@ -4,7 +4,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Sequence, Union
 
-from steinbock.utils import io
+from steinbock import io
 
 
 def collect_data(data_dirs: Sequence[Union[str, PathLike]]) -> pd.DataFrame:
