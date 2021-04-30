@@ -228,7 +228,7 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show
     Append a suffix to the image file name?:No
     Text to append to the image name:
     Saved file format:tiff
-    Output file location:Default Output Folder|/root
+    Output file location:Default Output Folder|/home/steinbock
     Image bit depth:16-bit integer
     Overwrite existing files without warning?:Yes
     When to save:Every cycle
