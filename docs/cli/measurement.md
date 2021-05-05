@@ -56,13 +56,16 @@ The above commands will create symmetric object pixel distance matrices in CSV f
 
 To construct spatial object graphs by thresholding on object distances (undirected):
 
-    steinbock measure graphs dist --thres 4
+    steinbock measure graphs --dmax 4
 
 To construct spatial k-nearest neighbor (kNN) object graphs (directed):
 
-    steinbock measure graphs knn --k 5
+    steinbock measure graphs --kmax 5
 
 The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `object_graphs`.
+
+!!! note "Distance-thresholded kNN graphs"
+    The options `--dmax` and `--kmax` can be combined to construct distance-thresholded kNN graphs.
 
 ## CellProfiler (legacy)
 

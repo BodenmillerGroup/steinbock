@@ -4,11 +4,11 @@ import numpy as np
 from pathlib import Path
 
 from steinbock import cli, io
+from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
 from steinbock.measurement.dists._cli import dists_cmd
-from steinbock.measurement.graphs._cli import graphs_cmd
+from steinbock.measurement.graphs import construct_graphs
 from steinbock.measurement.intensities import measure_intensities
 from steinbock.measurement.regionprops import measure_regionprops
-from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
 
 default_skimage_regionprops = [
     "area",
@@ -162,5 +162,47 @@ def regionprops(
 
 
 measure.add_command(dists_cmd)
-measure.add_command(graphs_cmd)
+
+
+@measure.command(
+    help="Construct spatial object neighborhood graphs",
+)
+@click.option(
+    "--dists",
+    "dists_dir",
+    type=click.Path(exists=True, file_okay=False),
+    default=cli.default_dists_dir,
+    show_default=True,
+    help="Path to the object distances directory",
+)
+@click.option(
+    "--dmax",
+    "dmax",
+    type=click.FLOAT,
+    help="Maximum distance between objects",
+)
+@click.option(
+    "--kmax",
+    "kmax",
+    type=click.INT,
+    help="Maximum number of neighbors per object",
+)
+@click.option(
+    "--dest",
+    "graph_dir",
+    type=click.Path(file_okay=False),
+    default=cli.default_graph_dir,
+    show_default=True,
+    help="Path to the object graph output directory",
+)
+def graphs(dists_dir, dmax, kmax, graph_dir):
+    graph_dir = Path(graph_dir)
+    graph_dir.mkdir(exist_ok=True)
+    dists_files = io.list_distances(dists_dir)
+    for dists_file, g in construct_graphs(dists_files, dmax=dmax, kmax=kmax):
+        graph_file = io.write_graph(g, graph_dir / Path(dists_file).stem)
+        click.echo(graph_file)
+        del g
+
+
 measure.add_command(cellprofiler_cmd)
