@@ -56,11 +56,9 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/Bodenmille
 
 # steinbock
 
-COPY requirements.txt /app/
-RUN pip3 install -r /app/requirements.txt
-
-COPY . /app
-ENV PYTHONPATH="${PYTHONPATH}:/app"
+COPY . steinbock
+RUN pip3 install ./steinbock[IMC] && \
+    rm -r steinbock
 
 RUN addgroup --gid "${GID}" steinbock && \
     adduser --uid "${UID}" --gid "${GID}" --disabled-password --gecos "" steinbock && \

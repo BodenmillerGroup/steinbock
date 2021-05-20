@@ -1,8 +1,0 @@
-click
-h5py
-imctools
-numpy
-pandas
-scikit-image
-scipy
-tifffile
