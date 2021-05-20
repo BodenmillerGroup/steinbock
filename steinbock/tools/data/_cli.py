@@ -3,6 +3,7 @@ import click
 from pathlib import Path
 
 from steinbock import cli, io
+from steinbock._env import check_version
 from steinbock.tools.data import data
 
 default_collect_data_dirs = [
@@ -36,6 +37,7 @@ def data_cmd():
     show_default=True,
     help="Path to the combined object data output file",
 )
+@check_version
 def collect(data_dirs, combined_data_file):
     if not data_dirs:
         data_dirs = [

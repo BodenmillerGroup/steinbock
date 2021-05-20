@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 from steinbock import cli, io
-from steinbock._env import ilastik_binary, get_ilastik_env
+from steinbock._env import check_version, ilastik_binary, ilastik_env
 from steinbock.classification.ilastik import ilastik
 
 default_img_dir = "ilastik_img"
@@ -95,6 +95,7 @@ def ilastik_cmd():
     type=click.INT,
     help="Random seed",
 )
+@check_version
 def prepare(
     src_img_dir,
     panel_file,
@@ -153,7 +154,7 @@ def prepare(
             del crop
         else:
             click.echo(
-                f"Image too small for crop size: {img_file}",
+                f"WARNING: Image {img_file} too small for crop size",
                 file=sys.stderr,
             )
     ilastik.create_project(crop_files, project_file)
@@ -198,12 +199,15 @@ def prepare(
     type=click.IntRange(min=0),
     help="Memory limit (in megabytes)",
 )
+@check_version
+@ilastik_env
 def run(
     project_file,
     img_dir,
     probabilities_dir,
     num_threads,
     memory_limit,
+    env,
 ):
     Path(probabilities_dir).mkdir(exist_ok=True)
     result = ilastik.classify_pixels(
@@ -213,7 +217,7 @@ def run(
         probabilities_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
-        ilastik_env=get_ilastik_env(),
+        ilastik_env=env,
     )
     sys.exit(result.returncode)
 
@@ -258,6 +262,7 @@ def run(
     type=click.STRING,
     help="Axis order of the existing crops (e.g., zyxc)",
 )
+@check_version
 def fix(
     project_file,
     crop_dir,
@@ -271,13 +276,13 @@ def fix(
         project_bak_file = project_file.with_name(project_file.name + ".bak")
         if project_bak_file.exists():
             return click.echo(
-                "Ilastik project backup file exists",
+                "ERROR: Ilastik project backup file exists",
                 file=sys.stderr,
             )
         crop_bak_dir = crop_dir.with_name(crop_dir.name + ".bak")
         if crop_bak_dir.exists():
             return click.echo(
-                "Ilastik crop backup directory exists",
+                "ERROR: Ilastik crop backup directory exists",
                 file=sys.stderr,
             )
         shutil.copyfile(project_file, project_bak_file)
@@ -293,7 +298,7 @@ def fix(
     ):
         if last_transpose_axes not in (None, transpose_axes):
             return click.echo(
-                "Inconsistent axis orders across crops",
+                "ERROR: Inconsistent axis orders across crops",
                 file=sys.stderr,
             )
         crop_file = ilastik.write_image(

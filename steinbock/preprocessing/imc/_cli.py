@@ -7,6 +7,7 @@ from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
 from steinbock import cli, io
+from steinbock._env import check_version
 from steinbock.preprocessing.imc import imc
 
 
@@ -31,7 +32,7 @@ def _collect_mcd_files(mcd_dir, unzip_dir=None):
     for mcd_file in mcd_files:
         if mcd_file.stem in unique_mcd_file_stems:
             return click.echo(
-                f"Duplicated file stem: {mcd_file.stem}",
+                f"ERROR: Duplicated file stem {mcd_file.stem}",
                 file=sys.stderr,
             )
         unique_mcd_file_stems.append(mcd_file.stem)
@@ -46,7 +47,7 @@ def _collect_txt_files(txt_dir, unzip_dir=None):
     for txt_file in txt_files:
         if txt_file.stem in unique_txt_file_stems:
             return click.echo(
-                f"Duplicated file stem: {txt_file.stem}",
+                f"ERROR: Duplicated file stem {txt_file.stem}",
                 file=sys.stderr,
             )
         unique_txt_file_stems.append(txt_file.stem)
@@ -97,6 +98,7 @@ def imc_cmd():
     show_default=True,
     help="Path to the panel output file",
 )
+@check_version
 def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
     panel = None
     if Path(imc_panel_file).exists():
@@ -110,7 +112,10 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt(txt_files[0])
     if panel is None:
-        return click.echo("No panel/.mcd/.txt file found", file=sys.stderr)
+        return click.echo(
+            "ERROR: No panel/.mcd/.txt file found",
+            file=sys.stderr,
+        )
     io.write_panel(panel, panel_file)
 
 
@@ -162,6 +167,7 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
     show_default=True,
     help="Path to the image output directory",
 )
+@check_version
 def images(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
     metal_order = None
     if Path(panel_file).exists():

@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 
 from steinbock import cli, io
+from steinbock._env import check_version
 from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
 from steinbock.measurement.dists._cli import dists_cmd
 from steinbock.measurement.graphs import construct_graphs
@@ -70,6 +71,7 @@ def measure():
     show_default=True,
     help="Path to the object intensities output directory",
 )
+@check_version
 def intensities(
     img_dir,
     mask_dir,
@@ -135,6 +137,7 @@ def intensities(
     show_default=True,
     help="Path to the object region properties output directory",
 )
+@check_version
 def regionprops(
     img_dir,
     mask_dir,
@@ -195,6 +198,7 @@ measure.add_command(dists_cmd)
     show_default=True,
     help="Path to the object graph output directory",
 )
+@check_version
 def graphs(dists_dir, dmax, kmax, graph_dir):
     graph_dir = Path(graph_dir)
     graph_dir.mkdir(exist_ok=True)

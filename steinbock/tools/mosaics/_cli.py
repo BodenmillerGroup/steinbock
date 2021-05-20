@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from steinbock import cli, io
+from steinbock._env import check_version
 from steinbock.tools.mosaics import mosaics
 
 
@@ -38,6 +39,7 @@ def mosaics_cmd():
     required=True,
     help="Path to the tile output directory",
 )
+@check_version
 def tile(images, tile_size, tile_dir):
     img_files = []
     for image in images:
@@ -72,6 +74,7 @@ def tile(images, tile_size, tile_dir):
     required=True,
     help="Path to the tile output directory",
 )
+@check_version
 def stitch(tiles, img_dir):
     tile_files = []
     for tile in tiles:

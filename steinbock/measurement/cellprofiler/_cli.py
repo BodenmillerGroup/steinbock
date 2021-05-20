@@ -6,7 +6,11 @@ import sys
 from pathlib import Path
 
 from steinbock import cli, io
-from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
+from steinbock._env import (
+    cellprofiler_binary,
+    cellprofiler_plugin_dir,
+    check_version,
+)
 from steinbock.measurement.cellprofiler import cellprofiler
 
 default_measurement_pipeline_file = "cell_measurement.cppipe"
@@ -73,6 +77,7 @@ def cellprofiler_cmd():
     show_default=True,
     help="Use symbolic links instead of copying files",
 )
+@check_version
 def prepare(
     img_dir,
     mask_dir,
@@ -129,6 +134,7 @@ def prepare(
     show_default=True,
     help="Path to the CellProfiler output directory",
 )
+@check_version
 def run(
     measurement_pipeline_file,
     input_dir,

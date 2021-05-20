@@ -3,11 +3,12 @@ import sys
 
 from steinbock import cli, utils
 from steinbock._env import (
-    check_x11,
-    ilastik_binary,
-    get_ilastik_env,
     cellprofiler_binary,
     cellprofiler_plugin_dir,
+    check_version,
+    check_x11,
+    ilastik_binary,
+    ilastik_env,
 )
 from steinbock.tools.data._cli import data_cmd
 from steinbock.tools.masks._cli import masks_cmd
@@ -38,12 +39,12 @@ tools.add_command(mosaics_cmd)
     nargs=-1,
     type=click.UNPROCESSED,
 )
-def ilastik(ilastik_args):
-    x11_warning_message = check_x11()
-    if x11_warning_message is not None:
-        click.echo(x11_warning_message, file=sys.stderr)
+@check_version
+@check_x11
+@ilastik_env
+def ilastik(ilastik_args, env):
     args = [ilastik_binary] + list(ilastik_args)
-    result = utils.run_captured(args, env=get_ilastik_env())
+    result = utils.run_captured(args, env=env)
     sys.exit(result.returncode)
 
 
@@ -57,10 +58,9 @@ def ilastik(ilastik_args):
     nargs=-1,
     type=click.UNPROCESSED,
 )
+@check_version
+@check_x11
 def cellprofiler(cellprofiler_args):
-    x11_warning_message = check_x11()
-    if x11_warning_message is not None:
-        click.echo(x11_warning_message, file=sys.stderr)
     args = [cellprofiler_binary] + list(cellprofiler_args)
     if not any(arg.startswith("--plugins-directory") for arg in args):
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")

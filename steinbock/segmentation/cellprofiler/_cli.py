@@ -4,7 +4,11 @@ import sys
 from pathlib import Path
 
 from steinbock import cli
-from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
+from steinbock._env import (
+    cellprofiler_binary,
+    cellprofiler_plugin_dir,
+    check_version,
+)
 from steinbock.segmentation.cellprofiler import cellprofiler
 
 default_segmentation_pipeline_file = "cell_segmentation.cppipe"
@@ -30,6 +34,7 @@ def cellprofiler_cmd():
     show_default=True,
     help="Path to the CellProfiler segmentation pipeline output file",
 )
+@check_version
 def prepare(segmentation_pipeline_file):
     cellprofiler.create_segmentation_pipeline(segmentation_pipeline_file)
 
@@ -61,6 +66,7 @@ def prepare(segmentation_pipeline_file):
     show_default=True,
     help="Path to the mask output directory",
 )
+@check_version
 def run(
     segmentation_pipeline_file,
     probabilities_dir,
@@ -68,7 +74,7 @@ def run(
 ):
     if probabilities_dir not in ("ilastik_probabilities",):
         click.echo(
-            "When using probabilities originating from unknown sources, "
+            "WARNING: When using custom probabilities from unknown origins, "
             "make sure to adapt the CellProfiler pipeline accordingly",
             file=sys.stderr,
         )

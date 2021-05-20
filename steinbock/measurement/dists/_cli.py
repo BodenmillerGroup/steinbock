@@ -3,6 +3,7 @@ import click
 from pathlib import Path
 
 from steinbock import cli, io
+from steinbock._env import check_version
 from steinbock.measurement.dists import dists
 
 
@@ -46,6 +47,7 @@ def dists_cmd():
     show_default=True,
     help="Path to the object distances output directory",
 )
+@check_version
 def centroid(mask_dir, metric, dists_dir):
     mask_files = io.list_masks(mask_dir)
     dists_dir = Path(dists_dir)
@@ -77,6 +79,7 @@ def centroid(mask_dir, metric, dists_dir):
     show_default=True,
     help="Path to the object distances output directory",
 )
+@check_version
 def border(mask_dir, dists_dir):
     mask_files = io.list_masks(mask_dir)
     dists_dir = Path(dists_dir)
