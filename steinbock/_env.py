@@ -28,7 +28,7 @@ def check_x11(func):
                 f"WARNING: X11 required; did you mount {x11_path}?",
                 file=sys.stderr,
             )
-        xauth_path = Path("~/.Xauthority")
+        xauth_path = Path("~/.Xauthority").expanduser()
         if not xauth_path.exists():
             click.echo(
                 f"WARNING: X11 required; did you mount {xauth_path}?",
