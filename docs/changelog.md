@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.7] - 2021-05-20
+
+  - Automatic SCM versioning
+  - Steinbock version file checks
+  - Renamed steinbock panel columns
+  - Improved Docker container Python package setup
+  - Combined kNN/distance-thresholded graph generation
+
+
 ## [0.3.6] - 2021-04-29
 
   - Make panel channel label values optional
@@ -78,6 +87,7 @@ Added:
 Initial release for beta testing
 
 
+[0.3.7]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.3...v0.3.4
