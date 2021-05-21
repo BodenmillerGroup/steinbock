@@ -14,6 +14,7 @@ Comma-separated values (CSV) file with column headers and no index
 | `name` | Unique channel name, e.g., antibody target<br>(can be empty only for rows with `keep=0`) | Text or empty | yes |
 | `keep` | Whether the channel is present in preprocessed images<br>(if column is absent, all channels are assumed present) | Boolean (`0` or `1`) | no |
 | `ilastik` | Group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
+| `deepcell` | Group label for [DeepCell segmentation](../cli/classification.md#deepcell)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 
 The *steinbock* panel allows for further arbitrary columns.
 

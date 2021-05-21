@@ -45,3 +45,22 @@ After the pipeline has been configured, it can be applied to a batch of probabil
     steinbock segment cellprofiler run
 
 This will create grayscale object masks of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)). The default destination directory for these images is `masks`.
+
+## DeepCell
+
+!!! danger "Experimental workflow"
+    This workflow is experimental and the documentation is incomplete.
+
+!!! note "End-to-end cell segmentation"
+    This workflow operates directly on image intensities and does not require a preceding pixel classification step.
+
+To segment cells using Mesmer:
+
+    steinbock segment deepcell --app mesmer --zscore --type whole-cell
+
+To segment nuclei using Mesmer:
+
+    steinbock segment deepcell --app mesmer --zscore --type nuclei
+
+!!! note "GPU support"
+    Currently, DeepCell segmentation using GPUs is not supported. If you need GPU support, consider using GPU-enabled Docker containers provided by DeepCell.

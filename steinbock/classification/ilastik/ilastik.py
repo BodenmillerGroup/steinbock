@@ -65,10 +65,8 @@ def create_images(
         if channel_groups is not None:
             img = np.stack(
                 [
-                    np.mean(img[channel_groups == channel_group, :, :], axis=0)
-                    for channel_group in np.unique(
-                        channel_groups[~np.isnan(channel_groups)]
-                    )
+                    np.nanmean(img[channel_groups == cg, :, :], axis=0)
+                    for cg in np.unique(channel_groups) if not np.isnan(cg)
                 ],
             )
         if prepend_mean:
