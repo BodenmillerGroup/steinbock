@@ -53,7 +53,7 @@ File extension: `.csv`
 
 Object measurements (e.g., mean intensities, morphological features)
 
-CSV file with feature/channel name as column and object IDs as index
+CSV file with object IDs as index (`Object` column) and feature/channel names as columns
 
 !!! note "Combined object data"
     For data containing measurements from multiple images, a combined index of image name and object ID is used.
@@ -64,7 +64,7 @@ File extension: `.csv`
 
 Pixel distances between objects (e.g., Euclidean centroid distances)
 
-Symmetric CSV file (one per image) with object IDs as both column and index
+Symmetric CSV file (one per image) with object IDs as both index (`Object` column) and columns
 
 ## Spatial object graphs
 
@@ -72,7 +72,7 @@ File extension: `.csv`
 
 List of directed edges defining a spatial object neighborhood graph
 
-CSV file (one per image) with two columns (`Object1`, `Object2`) and no index
+CSV file (one per image) with no index and two columns (`Object1`, `Object2`)
 
 Each row defines an edge from object with ID `Object1` to object with ID `Object2`
 
