@@ -36,7 +36,9 @@ def cellprofiler_cmd():
 )
 @check_version
 def prepare(segmentation_pipeline_file):
-    cellprofiler.create_segmentation_pipeline(segmentation_pipeline_file)
+    cellprofiler.create_and_save_segmentation_pipeline(
+        segmentation_pipeline_file
+    )
 
 
 @cellprofiler_cmd.command(
@@ -79,7 +81,7 @@ def run(
             file=sys.stderr,
         )
     Path(mask_dir).mkdir(exist_ok=True)
-    result = cellprofiler.segment_objects(
+    result = cellprofiler.run_object_segmentation(
         cellprofiler_binary,
         segmentation_pipeline_file,
         probabilities_dir,

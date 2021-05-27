@@ -87,12 +87,12 @@ def prepare(
     use_symlinks,
 ):
     panel = io.read_panel(panel_file)
-    num_channels = len(panel.index)
-    img_files = io.list_images(img_dir)
-    mask_files = io.list_masks(mask_dir)
     input_dir = Path(input_dir)
     input_dir.mkdir(exist_ok=True)
-    for img_file, mask_file in zip(img_files, mask_files):
+    for img_file, mask_file in zip(
+        io.list_image_files(img_dir),
+        io.list_mask_files(mask_dir),
+    ):
         img_name = img_file.name
         mask_name = f"{mask_file.stem}_mask{mask_file.suffix}"
         if use_symlinks:
@@ -101,9 +101,9 @@ def prepare(
         else:
             shutil.copyfile(img_file, input_dir / img_name)
             shutil.copyfile(mask_file, input_dir / mask_name)
-    cellprofiler.create_measurement_pipeline(
+    cellprofiler.create_and_save_measurement_pipeline(
         measurement_pipeline_file,
-        num_channels,
+        len(panel.index),
     )
 
 
@@ -141,7 +141,7 @@ def run(
     output_dir,
 ):
     Path(output_dir).mkdir(exist_ok=True)
-    result = cellprofiler.measure_objects(
+    result = cellprofiler.run_object_measurement(
         cellprofiler_binary,
         measurement_pipeline_file,
         input_dir,

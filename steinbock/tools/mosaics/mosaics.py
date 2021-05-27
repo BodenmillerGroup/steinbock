@@ -20,12 +20,13 @@ def extract_tiles(
                 tile = img[:, y : (y + tile_size), x : (x + tile_size)]
                 yield Path(img_file), x, y, tile.shape[2], tile.shape[1], tile
                 del tile
+        del img
 
 
 def combine_tiles(
-    tile_groups: Dict[str, Sequence[TileInfo]],
+    tile_info_groups: Dict[str, Sequence[TileInfo]],
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
-    for img_file_stem, tile_info in tile_groups.items():
+    for img_file_stem, tile_info in tile_info_groups.items():
         first_tile = io.read_image(tile_info[0][0], ignore_dtype=True)
         img_width = max(x + w for _, x, y, w, h in tile_info)
         img_height = max(y + h for _, x, y, w, h in tile_info)
@@ -33,7 +34,7 @@ def combine_tiles(
             (first_tile.shape[0], img_height, img_width),
             dtype=first_tile.dtype,
         )
-        for i, (tile_file, x, y, w, h) in enumerate(tile_info):
+        for tile_file, x, y, w, h in tile_info:
             img[:, y : (y + h), x : (x + w)] = io.read_image(
                 tile_file,
                 ignore_dtype=True,

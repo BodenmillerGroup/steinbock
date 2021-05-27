@@ -8,15 +8,15 @@ from steinbock.measurement.dists import dists
 
 
 @click.group(
-    name="dists",
+    name="distances",
     help="Measure spatial distances between objects",
     cls=cli.OrderedClickGroup,
 )
-def dists_cmd():
+def distances_cmd():
     pass
 
 
-@dists_cmd.command(
+@distances_cmd.command(
     help="Measure distances between object centroids",
 )
 @click.option(
@@ -49,18 +49,19 @@ def dists_cmd():
 )
 @check_version
 def centroid(mask_dir, metric, dists_dir):
-    mask_files = io.list_masks(mask_dir)
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
-    it = dists.measure_centroid_distances(mask_files, metric)
-    for mask_file, df in it:
+    for mask_file, df in dists.measure_centroid_distances_from_disk(
+        io.list_mask_files(mask_dir),
+        metric,
+    ):
         dists_file = dists_dir / mask_file.stem
         dists_file = io.write_distances(df, dists_file, copy=False)
         click.echo(dists_file)
         del df
 
 
-@dists_cmd.command(
+@distances_cmd.command(
     help="Measure Euclidean distances between object borders",
 )
 @click.option(
@@ -81,11 +82,11 @@ def centroid(mask_dir, metric, dists_dir):
 )
 @check_version
 def border(mask_dir, dists_dir):
-    mask_files = io.list_masks(mask_dir)
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
-    it = dists.measure_euclidean_border_distances(mask_files)
-    for mask_file, df in it:
+    for mask_file, df in dists.measure_euclidean_border_distances_from_disk(
+        io.list_mask_files(mask_dir),
+    ):
         dists_file = dists_dir / mask_file.stem
         dists_file = io.write_distances(df, dists_file, copy=False)
         click.echo(dists_file)

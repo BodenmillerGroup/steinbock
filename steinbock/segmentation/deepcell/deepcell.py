@@ -5,7 +5,7 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from tensorflow.keras.models import Model
-from typing import Generator, Optional, Sequence, Tuple, Union
+from typing import Generator, Optional, Tuple, Union
 
 from steinbock import io
 
@@ -31,13 +31,15 @@ def _mesmer_app(model=None):
             raise ValueError("Unknown pixel size")
         if segmentation_type is None:
             raise ValueError("Unknown segmentation type")
-        return app.predict(
-            np.expand_dims(img, 0),
+        mask = app.predict(
+            np.expand_dims(np.moveaxis(img, 0, -1), 0),
             batch_size=1,
             image_mpp=pixel_size_um,
             compartment=segmentation_type,
             **kwargs,
-        )[0]
+        )[0, :, :, 0]
+        assert mask.shape == img.shape[1:]
+        return mask
 
     return app, predict
 
@@ -47,8 +49,8 @@ _apps = {
 }
 
 
-def segment_objects(
-    img_files: Sequence[Union[str, PathLike]],
+def run_object_segmentation(
+    img_dir: Union[str, PathLike],
     application: Application,
     model: Optional[Model] = None,
     channelwise_minmax: bool = False,
@@ -57,8 +59,7 @@ def segment_objects(
     **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = _apps[application](model=model)
-    for img_file in img_files:
-        img_file = Path(img_file)
+    for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file)
         if channelwise_minmax:
             channel_mins = np.nanmin(img, axis=(1, 2), keepdims=True)
@@ -69,7 +70,7 @@ def segment_objects(
             channel_stds = np.nanstd(img, axis=(1, 2), keepdims=True)
             img = (img - channel_means) / channel_stds
         if channel_groups is not None:
-            img = img = np.stack(
+            img = np.stack(
                 [
                     np.nanmean(img[channel_groups == cg, :, :], axis=0)
                     for cg in np.unique(channel_groups)
@@ -77,4 +78,6 @@ def segment_objects(
                 ],
             )
         mask = predict(img, **predict_kwargs)
-        yield img_file, mask
+        del img
+        yield Path(img_file), mask
+        del mask

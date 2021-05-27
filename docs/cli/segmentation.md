@@ -44,23 +44,32 @@ After the pipeline has been configured, it can be applied to a batch of probabil
 
     steinbock segment cellprofiler run
 
-This will create grayscale object masks of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)). The default destination directory for these images is `masks`.
+This will create grayscale object masks of the same x/y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [file types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
 
 ## DeepCell
 
-!!! danger "Experimental workflow"
-    This workflow is experimental and the documentation is incomplete.
+[DeepCell](https://github.com/vanvalenlab/deepcell-tf) is a deep learning library for single-cell analysis of biological images. Here, pre-trained DeepCell models are used for cell/nuclei segmentation from raw image data.
 
 !!! note "End-to-end cell segmentation"
     This workflow operates directly on image intensities and does not require a preceding pixel classification step.
 
-To segment cells using Mesmer:
+To segment cells using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model) and the pre-trained MultiplexSegmentation dataset (cached):
 
-    steinbock segment deepcell --app mesmer --zscore --type whole-cell
+    steinbock segment deepcell --app Mesmer --model MultiplexSegmentation --minmax
 
-To segment nuclei using Mesmer:
+To segment nuclei using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model) and the pre-trained MultiplexSegmentation dataset (cached):
 
-    steinbock segment deepcell --app mesmer --zscore --type nuclei
+    steinbock segment deepcell --app Mesmer --model MultiplexSegmentation --minmax --type nuclei
+
+This will create grayscale cell/nuclear masks of the same x/y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [file types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
+
+!!! note "DeepCell image data"
+    Depending on the application, DeepCell requires images of specific shapes. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g., DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g., E-Cadherin).
+
+    If a `deepcell` column is present in the *steinbock* panel file, channels are sorted and grouped according to the corresponding values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis ("mean channel image"); channels without a group label are ignored. If no `deepcell` column is present, images are expected to be in the correct format already.
+
+!!! note "Channel-wise image normalization"
+    If enabled, features (i.e., channels) are [scaled](https://en.wikipedia.org/wiki/Feature_scaling) for each image and each channel independently. Specify `--minmax` to enable min-max normalization and `--zscore` to enable z-score normalization.
 
 !!! note "GPU support"
-    Currently, DeepCell segmentation using GPUs is not supported. If you need GPU support, consider using GPU-enabled Docker containers provided by DeepCell.
+    For Docker compatibility reasons, DeepCell segmentation using GPUs is not supported. If GPU support is required, consider using GPU-enabled Docker containers provided by DeepCell.

@@ -6,10 +6,10 @@ from pathlib import Path
 from steinbock import cli, io
 from steinbock._env import check_version
 from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
-from steinbock.measurement.dists._cli import dists_cmd
-from steinbock.measurement.graphs import construct_graphs
-from steinbock.measurement.intensities import measure_intensities
-from steinbock.measurement.regionprops import measure_regionprops
+from steinbock.measurement.dists._cli import distances_cmd
+from steinbock.measurement.graphs import construct_graphs_from_disk
+from steinbock.measurement.intensities import measure_intensities_from_disk
+from steinbock.measurement.regionprops import measure_regionprops_from_disk
 
 default_skimage_regionprops = [
     "area",
@@ -79,22 +79,24 @@ def intensities(
     aggr_function_name,
     intensities_dir,
 ):
-    aggr_function = getattr(np, aggr_function_name)
-    img_files = io.list_images(img_dir)
     panel = io.read_panel(panel_file)
     channel_names = panel[io.channel_name_col].tolist()
+    aggr_function = getattr(np, aggr_function_name)
     intensities_dir = Path(intensities_dir)
     intensities_dir.mkdir(exist_ok=True)
-    for img_file, mask_file, df in measure_intensities(
-        img_files,
-        io.list_masks(mask_dir),
+    for img_file, mask_file, intensities in measure_intensities_from_disk(
+        io.list_image_files(img_dir),
+        io.list_mask_files(mask_dir),
         channel_names,
         aggr_function,
     ):
-        intensities_file = intensities_dir / img_file.stem
-        intensities_file = io.write_data(df, intensities_file, copy=False)
+        intensities_file = io.write_data(
+            intensities,
+            intensities_dir / img_file.stem,
+            copy=False,
+        )
         click.echo(intensities_file)
-        del df
+        del intensities
 
 
 @measure.command(
@@ -116,14 +118,6 @@ def intensities(
     show_default=True,
     help="Path to the mask directory",
 )
-@click.option(
-    "--panel",
-    "panel_file",
-    type=click.Path(exists=True, dir_okay=False),
-    default=cli.default_panel_file,
-    show_default=True,
-    help="Path to the panel file",
-)
 @click.argument(
     "skimage_regionprops",
     nargs=-1,
@@ -141,30 +135,28 @@ def intensities(
 def regionprops(
     img_dir,
     mask_dir,
-    panel_file,
     skimage_regionprops,
     regionprops_dir,
 ):
-    img_files = io.list_images(img_dir)
-    panel = io.read_panel(panel_file)
-    channel_names = panel[io.channel_name_col].tolist()
     regionprops_dir = Path(regionprops_dir)
     regionprops_dir.mkdir(exist_ok=True)
     if not skimage_regionprops:
         skimage_regionprops = default_skimage_regionprops
-    for img_file, mask_file, df in measure_regionprops(
-        img_files,
-        io.list_masks(mask_dir),
-        channel_names,
+    for img_file, mask_file, regionprops in measure_regionprops_from_disk(
+        io.list_image_files(img_dir),
+        io.list_mask_files(mask_dir),
         skimage_regionprops,
     ):
-        regionprops_file = regionprops_dir / img_file.stem
-        regionprops_file = io.write_data(df, regionprops_file, copy=False)
+        regionprops_file = io.write_data(
+            regionprops,
+            regionprops_dir / img_file.stem,
+            copy=False
+        )
         click.echo(regionprops_file)
-        del df
+        del regionprops
 
 
-measure.add_command(dists_cmd)
+measure.add_command(distances_cmd)
 
 
 @measure.command(
@@ -202,11 +194,14 @@ measure.add_command(dists_cmd)
 def graphs(dists_dir, dmax, kmax, graph_dir):
     graph_dir = Path(graph_dir)
     graph_dir.mkdir(exist_ok=True)
-    dists_files = io.list_distances(dists_dir)
-    for dists_file, g in construct_graphs(dists_files, dmax=dmax, kmax=kmax):
-        graph_file = io.write_graph(g, graph_dir / Path(dists_file).stem)
+    for dists_file, graph in construct_graphs_from_disk(
+        io.list_distances_files(dists_dir),
+        dmax=dmax,
+        kmax=kmax,
+    ):
+        graph_file = io.write_graph(graph, graph_dir / Path(dists_file).stem)
         click.echo(graph_file)
-        del g
+        del graph
 
 
 measure.add_command(cellprofiler_cmd)

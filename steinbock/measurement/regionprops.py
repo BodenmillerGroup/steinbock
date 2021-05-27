@@ -10,9 +10,25 @@ from steinbock import io
 
 
 def measure_regionprops(
+    img: np.ndarray,
+    mask: np.ndarray,
+    skimage_regionprops: Sequence[str],
+) -> pd.DataFrame:
+    regionprops_data = regionprops_table(
+        mask,
+        intensity_image=np.moveaxis(img, 0, -1),
+        properties=skimage_regionprops,
+    )
+    object_ids = regionprops_data.pop("label")
+    return pd.DataFrame(
+        data=regionprops_data,
+        index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+    )
+
+
+def measure_regionprops_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
-    channel_names: Sequence[str],
     skimage_regionprops: Sequence[str],
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     skimage_regionprops = list(skimage_regionprops)
@@ -21,15 +37,7 @@ def measure_regionprops(
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
-        data = regionprops_table(
-            mask,
-            intensity_image=np.moveaxis(img, 0, -1),
-            properties=skimage_regionprops,
-        )
-        object_ids = data.pop("label")
-        df = pd.DataFrame(
-            data=data,
-            index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
-        )
-        yield Path(img_file), Path(mask_file), df
-        del df
+        regionprops = measure_regionprops(img, mask, skimage_regionprops)
+        del img, mask
+        yield Path(img_file), Path(mask_file), regionprops
+        del regionprops

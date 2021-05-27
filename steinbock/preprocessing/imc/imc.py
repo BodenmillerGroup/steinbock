@@ -12,6 +12,7 @@ from typing import Generator, List, Optional, Sequence, Tuple, Union
 
 from steinbock import io
 from steinbock.classification.ilastik import ilastik
+from steinbock.segmentation.deepcell import deepcell
 
 
 logger = logging.getLogger(__name__)
@@ -45,11 +46,7 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     for required_col in (channel_metal_col, channel_target_col):
         if required_col not in imc_panel:
             raise ValueError(f"Missing '{required_col}' column in IMC panel")
-    for notnan_col in (
-        channel_metal_col,
-        keep_channel_col,
-        ilastik_col,
-    ):
+    for notnan_col in (channel_metal_col, keep_channel_col, ilastik_col):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
     for unique_col in (channel_metal_col, channel_target_col):
@@ -66,6 +63,7 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
             ilastik_col: ilastik.panel_ilastik_col,
         },
     )
+    panel[deepcell.panel_deepcell_col] = np.nan
     panel.sort_values(
         io.channel_id_col,
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
@@ -82,6 +80,7 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
         io.channel_name_col,
         io.keep_channel_col,
         ilastik.panel_ilastik_col,
+        deepcell.panel_deepcell_col,
     ):
         if col in col_order:
             col_order.remove(col)
@@ -91,13 +90,13 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     return panel
 
 
-def create_panel_from_mcd(mcd_file: Union[str, Path]) -> pd.DataFrame:
+def create_panel_from_mcd_file(mcd_file: Union[str, Path]) -> pd.DataFrame:
     with McdParser(mcd_file) as mcd_parser:
         acquisition = next(iter(mcd_parser.session.acquisitions.values()))
         return create_panel_from_acquisition(acquisition)
 
 
-def create_panel_from_txt(txt_file: Union[str, Path]) -> pd.DataFrame:
+def create_panel_from_txt_file(txt_file: Union[str, Path]) -> pd.DataFrame:
     with TxtParser(txt_file) as txt_parser:
         acquisition = txt_parser.get_acquisition_data().acquisition
         return create_panel_from_acquisition(acquisition)
@@ -122,6 +121,26 @@ def create_panel_from_acquisition(acquisition: Acquisition) -> pd.DataFrame:
         inplace=True,
     )
     return panel
+
+
+def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
+    kernel = np.ones((1, 3, 3), dtype=np.uint8)
+    kernel[0, 1, 1] = 0
+    max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
+    return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
+
+
+def preprocess_image(
+    img: np.ndarray,
+    channel_indices: Optional[Sequence[int]] = None,
+    hpf: Optional[float] = None,
+) -> np.ndarray:
+    if channel_indices is not None:
+        img = img[channel_indices, :, :]
+    img = img.astype(np.float32)
+    if hpf is not None:
+        img = filter_hot_pixels(img, hpf)
+    return img
 
 
 def preprocess_images(
@@ -172,23 +191,3 @@ def preprocess_images(
             img = preprocess_image(img, hpf=hpf)
             yield txt_file, None, img
             del img
-
-
-def preprocess_image(
-    img: np.ndarray,
-    channel_indices: Optional[Sequence[int]] = None,
-    hpf: Optional[float] = None,
-) -> np.ndarray:
-    if channel_indices is not None:
-        img = img[channel_indices, :, :]
-    img = img.astype(np.float32)
-    if hpf is not None:
-        img = filter_hot_pixels(img, hpf)
-    return img
-
-
-def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
-    kernel = np.ones((1, 3, 3), dtype=np.uint8)
-    kernel[0, 1, 1] = 0
-    max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
-    return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)

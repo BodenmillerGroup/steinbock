@@ -57,7 +57,7 @@ def write_panel(panel: pd.DataFrame, panel_file: Union[str, PathLike]) -> Path:
     return panel_file
 
 
-def list_images(img_dir: Union[str, PathLike]) -> List[Path]:
+def list_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(img_dir).rglob("*.tiff"))
 
 
@@ -95,7 +95,7 @@ def write_image(
     return img_file
 
 
-def list_masks(mask_dir: Union[str, PathLike]) -> List[Path]:
+def list_mask_files(mask_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mask_dir).rglob("*.tiff"))
 
 
@@ -117,7 +117,7 @@ def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> Path:
     return mask_file
 
 
-def list_data(data_dir: Union[str, PathLike]) -> List[Path]:
+def list_data_files(data_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(data_dir).rglob("*.csv"))
 
 
@@ -132,48 +132,48 @@ def read_data(
 
 
 def write_data(
-    df: pd.DataFrame,
+    data: pd.DataFrame,
     data_file: Union[str, PathLike],
     combined: bool = False,
     copy: bool = False,
 ) -> Path:
     if copy:
-        df = df.reset_index()
+        data = data.reset_index()
     else:
-        df.reset_index(inplace=True)
+        data.reset_index(inplace=True)
     data_file = Path(data_file).with_suffix(".csv")
-    df.to_csv(data_file, index=False)
+    data.to_csv(data_file, index=False)
     return data_file
 
 
-def list_distances(dists_dir: Union[str, PathLike]) -> List[Path]:
+def list_distances_files(dists_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(dists_dir).rglob("*.csv"))
 
 
 def read_distances(dists_file: Union[str, PathLike]) -> pd.DataFrame:
     dists_file = Path(dists_file).with_suffix(".csv")
-    df = pd.read_csv(dists_file, index_col="Object")
-    df.index = df.index.astype(np.uint16)
-    df.columns = df.columns.astype(np.uint16)
-    return df
+    dists = pd.read_csv(dists_file, index_col="Object")
+    dists.index = dists.index.astype(np.uint16)
+    dists.columns = dists.columns.astype(np.uint16)
+    return dists
 
 
 def write_distances(
-    df: pd.DataFrame,
+    dists: pd.DataFrame,
     dists_file: Union[str, PathLike],
     copy: bool = False,
 ) -> Path:
-    df = df.astype(np.float32, copy=copy)
-    df.index.name = "Object"
-    df.index = df.index.astype(np.uint16)
-    df.columns.name = "Object"
-    df.columns = df.columns.astype(np.uint16)
+    dists = dists.astype(np.float32, copy=copy)
+    dists.index.name = "Object"
+    dists.index = dists.index.astype(np.uint16)
+    dists.columns.name = "Object"
+    dists.columns = dists.columns.astype(np.uint16)
     dists_file = Path(dists_file).with_suffix(".csv")
-    df.to_csv(dists_file)
+    dists.to_csv(dists_file)
     return dists_file
 
 
-def list_graphs(graph_dir: Union[str, PathLike]) -> List[Path]:
+def list_graph_files(graph_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(graph_dir).rglob("*.csv"))
 
 
@@ -186,10 +186,10 @@ def read_graph(graph_file: Union[str, PathLike]) -> pd.DataFrame:
 
 
 def write_graph(
-    df: pd.DataFrame,
+    graph: pd.DataFrame,
     graph_file: Union[str, PathLike],
 ) -> Path:
-    df = df.loc[:, ["Object1", "Object2"]].astype(np.uint16)
+    graph = graph.loc[:, ["Object1", "Object2"]].astype(np.uint16)
     graph_file = Path(graph_file).with_suffix(".csv")
-    df.to_csv(graph_file, index=False)
+    graph.to_csv(graph_file, index=False)
     return graph_file

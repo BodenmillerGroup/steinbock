@@ -8,7 +8,27 @@ from typing import Callable, Generator, Sequence, Tuple, Union
 from steinbock import io
 
 
-def measure_intensities(
+def measure_intensites(
+    img: np.ndarray,
+    mask: np.ndarray,
+    channel_names: Sequence[str],
+    aggr: Callable[[np.ndarray], float],
+) -> pd.DataFrame:
+    object_ids = np.unique(mask[mask != 0])
+    intensities_data = {
+        channel_name: [
+            aggr(img[channel_index, mask == object_id])
+            for object_id in object_ids
+        ]
+        for channel_index, channel_name in enumerate(channel_names)
+    }
+    return pd.DataFrame(
+        data=intensities_data,
+        index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+    )
+
+
+def measure_intensities_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     channel_names: Sequence[str],
@@ -17,17 +37,12 @@ def measure_intensities(
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file)
         mask = io.read_mask(mask_file)
-        object_ids = np.unique(mask[mask != 0])
-        data = {
-            channel_name: [
-                aggr_function(img[channel_index, mask == object_id])
-                for object_id in object_ids
-            ]
-            for channel_index, channel_name in enumerate(channel_names)
-        }
-        df = pd.DataFrame(
-            data=data,
-            index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+        intensities = measure_intensites(
+            img,
+            mask,
+            channel_names,
+            aggr_function,
         )
-        yield Path(img_file), Path(mask_file), df
-        del df
+        del img, mask
+        yield Path(img_file), Path(mask_file), intensities
+        del intensities
