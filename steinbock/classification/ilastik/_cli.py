@@ -112,12 +112,11 @@ def prepare(
         panel = io.read_panel(panel_file)
         if ilastik.panel_ilastik_col in panel:
             channel_groups = panel[ilastik.panel_ilastik_col].values
-    src_img_files = io.list_images(src_img_dir)
     img_files = []
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
-    for src_img_file, img in ilastik.create_images(
-        src_img_files,
+    for src_img_file, img in ilastik.create_images_from_disk(
+        io.list_image_files(src_img_dir),
         channel_groups=channel_groups,
         prepend_mean=prepend_mean,
         img_scale=img_scale,
@@ -133,7 +132,7 @@ def prepare(
     crop_files = []
     crop_dir = Path(crop_dir)
     crop_dir.mkdir(exist_ok=True)
-    for img_file, x_start, y_start, crop in ilastik.create_crops(
+    for img_file, x_start, y_start, crop in ilastik.create_crops_from_disk(
         img_files,
         crop_size=crop_size,
         seed=seed,
@@ -157,7 +156,7 @@ def prepare(
                 f"WARNING: Image {img_file} too small for crop size",
                 file=sys.stderr,
             )
-    ilastik.create_project(crop_files, project_file)
+    ilastik.create_and_save_project(crop_files, project_file)
 
 
 @ilastik_cmd.command(
@@ -210,10 +209,10 @@ def run(
     env,
 ):
     Path(probabilities_dir).mkdir(exist_ok=True)
-    result = ilastik.classify_pixels(
+    result = ilastik.run_pixel_classification(
         ilastik_binary,
         project_file,
-        ilastik.list_images(img_dir),
+        ilastik.list_image_files(img_dir),
         probabilities_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
@@ -287,13 +286,12 @@ def fix(
             )
         shutil.copyfile(project_file, project_bak_file)
         crop_bak_dir.mkdir()
-        for crop_file in ilastik.list_crops(crop_dir):
+        for crop_file in ilastik.list_crop_files(crop_dir):
             shutil.copyfile(crop_file, crop_bak_dir / crop_file.name)
     crop_shapes = {}
     last_transpose_axes = None
-    crop_files = ilastik.list_crops(crop_dir)
-    for crop_file, transpose_axes, crop in ilastik.fix_crops_inplace(
-        crop_files,
+    for crop_file, transpose_axes, crop in ilastik.read_and_fix_crops(
+        ilastik.list_crop_files(crop_dir),
         axis_order=axis_order,
     ):
         if last_transpose_axes not in (None, transpose_axes):
@@ -310,7 +308,7 @@ def fix(
         last_transpose_axes = transpose_axes
         click.echo(crop_file)
         del crop
-    ilastik.fix_project_inplace(
+    ilastik.fix_project_file_inplace(
         project_file,
         crop_dir,
         probabilities_dir,

@@ -45,43 +45,96 @@ _data_dir = Path(__file__).parent / "data"
 _project_file_template = _data_dir / "pixel_classifier.ilp"
 
 
-def list_images(img_dir: Union[str, PathLike]) -> List[Path]:
+def list_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(img_dir).rglob("*.h5"))
 
 
-def list_crops(crop_dir: Union[str, PathLike]) -> List[Path]:
+def list_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(crop_dir).rglob("*.h5"))
 
 
-def create_images(
+def read_image(
+    img_file: Union[str, PathLike],
+    dataset_path: Union[str, PathLike],
+) -> np.ndarray:
+    img_file = Path(img_file).with_suffix(".h5")
+    with h5py.File(img_file, mode="r") as f:
+        return f[str(dataset_path)][()]
+
+
+def write_image(
+    img: np.ndarray,
+    img_file: Union[str, PathLike],
+    dataset_path: Union[str, PathLike],
+) -> Path:
+    img_file = Path(img_file).with_suffix(".h5")
+    with h5py.File(img_file, mode="w") as f:
+        dataset = f.create_dataset(str(dataset_path), data=img)
+        dataset.attrs["display_mode"] = _steinbock_display_mode.encode("ascii")
+        dataset.attrs["axistags"] = _steinbock_axis_tags.encode("ascii")
+        dataset.attrs["steinbock"] = True
+    return img_file
+
+
+def create_image(
+    src_img: np.ndarray,
+    channel_groups: Optional[np.ndarray] = None,
+    prepend_mean: bool = True,
+    img_scale: int = 1,
+) -> np.ndarray:
+    img = src_img
+    if channel_groups is not None:
+        img = np.stack(
+            [
+                np.nanmean(img[channel_groups == cg, :, :], axis=0)
+                for cg in np.unique(channel_groups) if not np.isnan(cg)
+            ],
+        )
+    if prepend_mean:
+        mean_img = img.mean(axis=0, keepdims=True)
+        img = np.concatenate((mean_img, img))
+    if img_scale > 1:
+        img = img.repeat(img_scale, axis=1)
+        img = img.repeat(img_scale, axis=2)
+    return img
+
+
+def create_images_from_disk(
     src_img_files: Sequence[Union[str, PathLike]],
     channel_groups: Optional[np.ndarray] = None,
     prepend_mean: bool = True,
     img_scale: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for src_img_file in src_img_files:
-        src_img_file = Path(src_img_file)
-        img = io.read_image(src_img_file)
-        if channel_groups is not None:
-            img = np.stack(
-                [
-                    np.mean(img[channel_groups == channel_group, :, :], axis=0)
-                    for channel_group in np.unique(
-                        channel_groups[~np.isnan(channel_groups)]
-                    )
-                ],
-            )
-        if prepend_mean:
-            mean_img = img.mean(axis=0, keepdims=True)
-            img = np.concatenate((mean_img, img))
-        if img_scale > 1:
-            img = img.repeat(img_scale, axis=1)
-            img = img.repeat(img_scale, axis=2)
-        yield src_img_file, img
+        src_img = io.read_image(src_img_file)
+        img = create_image(
+            src_img,
+            channel_groups=channel_groups,
+            prepend_mean=prepend_mean,
+            img_scale=img_scale,
+        )
+        del src_img
+        yield Path(src_img_file), img
         del img
 
 
-def create_crops(
+def create_crop(
+    img: np.ndarray,
+    crop_size: int,
+    rng: np.random.Generator,
+) -> Tuple[Optional[int], Optional[int], Optional[np.ndarray]]:
+    yx_shape = img.shape[1:]
+    if all(shape >= crop_size for shape in yx_shape):
+        x_start = rng.integers(img.shape[2] - crop_size)
+        x_end = x_start + crop_size
+        y_start = rng.integers(img.shape[1] - crop_size)
+        y_end = y_start + crop_size
+        crop = img[:, y_start:y_end, x_start:x_end]
+        return x_start, y_start, crop
+    return None, None, None
+
+
+def create_crops_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     crop_size: int,
     seed=None,
@@ -90,22 +143,14 @@ def create_crops(
 ]:
     rng = np.random.default_rng(seed=seed)
     for img_file in img_files:
-        img_file = Path(img_file)
         img = read_image(img_file, img_dataset_path)
-        yx_shape = img.shape[1:]
-        if all(shape >= crop_size for shape in yx_shape):
-            x_start = rng.integers(img.shape[2] - crop_size)
-            x_end = x_start + crop_size
-            y_start = rng.integers(img.shape[1] - crop_size)
-            y_end = y_start + crop_size
-            crop = img[:, y_start:y_end, x_start:x_end]
-            yield img_file, x_start, y_start, crop
-            del crop
-        else:
-            yield img_file, None, None, None
+        x_start, y_start, crop = create_crop(img, crop_size, rng)
+        del img
+        yield Path(img_file), x_start, y_start, crop
+        del crop
 
 
-def create_project(
+def create_and_save_project(
     crop_files: Sequence[Union[str, PathLike]],
     project_file: Union[str, PathLike],
 ):
@@ -130,7 +175,7 @@ def create_project(
             )
 
 
-def classify_pixels(
+def run_pixel_classification(
     ilastik_binary: Union[str, PathLike],
     project_file: Union[str, PathLike],
     img_files: Sequence[Union[str, PathLike]],
@@ -174,7 +219,7 @@ def classify_pixels(
     return result
 
 
-def fix_crops_inplace(
+def read_and_fix_crops(
     crop_files: Sequence[Union[str, PathLike]],
     axis_order: Optional[str] = None,
 ) -> Generator[Tuple[Path, Tuple[int, ...], np.ndarray], None, None]:
@@ -223,11 +268,11 @@ def fix_crops_inplace(
         crop = np.transpose(crop, axes=transpose_axes)
         crop = np.reshape(crop, crop.shape[:3])
         crop = crop.astype(np.float32)
-        yield crop_file, transpose_axes, crop
+        yield Path(crop_file), transpose_axes, crop
         del crop
 
 
-def fix_project_inplace(
+def fix_project_file_inplace(
     project_file: Union[str, PathLike],
     crop_dir: Union[str, PathLike],
     probabilities_dir: Union[str, PathLike],
@@ -315,7 +360,7 @@ def _fix_project_prediction_export_inplace(
     rel_probabilities_dir: Path,
 ):
     prediction_export_group.clear()
-    logger.warn(
+    logger.warning(
         "When exporting data from the graphical user interface of Ilastik, "
         "please manually edit the export image settings and enable "
         "renormalizing [min, max] from [0.0, 1.0] to [0, 65535]"
@@ -366,36 +411,6 @@ def _fix_project_prediction_export_inplace(
         dtype=h5py.string_dtype("utf-8"),
         data="0.1".encode("utf-8"),
     )
-
-
-def _get_hdf5_file(path: Union[str, PathLike]) -> Optional[Path]:
-    path = Path(path)
-    while path is not None and path.suffix != ".h5":
-        path = path.parent
-    return path
-
-
-def read_image(
-    img_file: Union[str, PathLike],
-    dataset_path: Union[str, PathLike],
-) -> np.ndarray:
-    img_file = Path(img_file).with_suffix(".h5")
-    with h5py.File(img_file, mode="r") as f:
-        return f[str(dataset_path)][()]
-
-
-def write_image(
-    img: np.ndarray,
-    img_file: Union[str, PathLike],
-    dataset_path: Union[str, PathLike],
-) -> Path:
-    img_file = Path(img_file).with_suffix(".h5")
-    with h5py.File(img_file, mode="w") as f:
-        dataset = f.create_dataset(str(dataset_path), data=img)
-        dataset.attrs["display_mode"] = _steinbock_display_mode.encode("ascii")
-        dataset.attrs["axistags"] = _steinbock_axis_tags.encode("ascii")
-        dataset.attrs["steinbock"] = True
-    return img_file
 
 
 def _init_project_raw_data_group(
@@ -452,3 +467,10 @@ def _init_project_raw_data_group(
         "shape",
         data=np.array(shape, dtype=np.int64),
     )
+
+
+def _get_hdf5_file(path: Union[str, PathLike]) -> Optional[Path]:
+    path = Path(path)
+    while path is not None and path.suffix != ".h5":
+        path = path.parent
+    return path

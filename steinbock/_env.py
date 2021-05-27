@@ -10,6 +10,7 @@ from steinbock.version import version
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 cellprofiler_binary = "cellprofiler"
 cellprofiler_plugin_dir = "/opt/cellprofiler_plugins"
+keras_models_dir = str(Path.home() / ".keras" / "models")
 version_file = ".steinbock_version"
 
 

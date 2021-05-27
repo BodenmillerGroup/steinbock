@@ -8,7 +8,7 @@ _data_dir = Path(__file__).parent / "data"
 _measurement_pipeline_file_template = _data_dir / "cell_measurement.cppipe"
 
 
-def create_measurement_pipeline(
+def create_and_save_measurement_pipeline(
     measurement_pipeline_file: Union[str, PathLike],
     num_channels: int,
 ):
@@ -20,7 +20,7 @@ def create_measurement_pipeline(
         f.write(s)
 
 
-def measure_objects(
+def run_object_measurement(
     cellprofiler_binary: str,
     measurement_pipeline_file: Union[str, PathLike],
     input_dir: Union[str, PathLike],

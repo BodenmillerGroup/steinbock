@@ -46,8 +46,10 @@ def match(masks1, masks2, table_dir):
         mask_files2 = io.list_masks(masks2)
     table_dir = Path(table_dir)
     table_dir.mkdir(exist_ok=True)
-    it = masks.match_masks(mask_files1, mask_files2)
-    for mask_file1, mask_file2, df in it:
+    for mask_file1, mask_file2, df in masks.match_masks_from_disk(
+        mask_files1,
+        mask_files2,
+    ):
         table_file = table_dir / mask_file1.with_suffix(".csv").name
         df.columns = [Path(masks1).name, Path(masks2).name]
         df.to_csv(table_file, index=False)

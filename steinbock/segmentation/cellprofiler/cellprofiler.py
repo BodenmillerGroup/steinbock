@@ -10,7 +10,7 @@ _data_dir = Path(__file__).parent / "data"
 _segmentation_pipeline_file_template = _data_dir / "cell_segmentation.cppipe"
 
 
-def create_segmentation_pipeline(
+def create_and_save_segmentation_pipeline(
     segmentation_pipeline_file: Union[str, PathLike],
 ):
     shutil.copyfile(
@@ -19,7 +19,7 @@ def create_segmentation_pipeline(
     )
 
 
-def segment_objects(
+def run_object_segmentation(
     cellprofiler_binary: Union[str, PathLike],
     segmentation_pipeline_file: Union[str, PathLike],
     probabilities_dir: Union[str, PathLike],

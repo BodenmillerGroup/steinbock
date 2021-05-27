@@ -8,6 +8,16 @@ from steinbock._env import check_version
 from steinbock.tools.mosaics import mosaics
 
 
+def _collect_image_files(img_files_or_dirs):
+    img_files = []
+    for img_file_or_dir in img_files_or_dirs:
+        if Path(img_file_or_dir).is_file():
+            img_files.append(Path(img_file_or_dir))
+        else:
+            img_files += io.list_image_files(img_file_or_dir)
+    return img_files
+
+
 @click.group(
     name="mosaics",
     cls=cli.OrderedClickGroup,
@@ -41,12 +51,7 @@ def mosaics_cmd():
 )
 @check_version
 def tile(images, tile_size, tile_dir):
-    img_files = []
-    for image in images:
-        if Path(image).is_dir():
-            img_files += io.list_images(image)
-        else:
-            img_files.append(Path(image))
+    img_files = _collect_image_files(images)
     tile_dir = Path(tile_dir)
     tile_dir.mkdir(exist_ok=True)
     for img_file, x, y, w, h, tile in mosaics.extract_tiles(
@@ -76,25 +81,20 @@ def tile(images, tile_size, tile_dir):
 )
 @check_version
 def stitch(tiles, img_dir):
-    tile_files = []
-    for tile in tiles:
-        if Path(tile).is_dir():
-            tile_files += io.list_images(tile)
-        else:
-            tile_files.append(Path(tile))
-    tile_groups = {}
+    tile_info_groups = {}
+    tile_files = _collect_image_files(tiles)
     pattern = re.compile(r"(.*)_tx(\d*)_ty(\d*)_tw(\d*)_th(\d*)")
     for tile_file in tile_files:
         match = pattern.match(tile_file.stem)
         if match:
             img_file_stem = match.group(1)
             x, y, w, h = [int(g) for g in match.group(2, 3, 4, 5)]
-            if img_file_stem not in tile_groups:
-                tile_groups[img_file_stem] = []
-            tile_groups[img_file_stem].append((tile_file, x, y, w, h))
+            if img_file_stem not in tile_info_groups:
+                tile_info_groups[img_file_stem] = []
+            tile_info_groups[img_file_stem].append((tile_file, x, y, w, h))
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
-    for img_file_stem, img in mosaics.combine_tiles(tile_groups):
+    for img_file_stem, img in mosaics.combine_tiles(tile_info_groups):
         img_file = img_dir / img_file_stem
         img_file = io.write_image(img, img_file, ignore_dtype=True)
         click.echo(img_file)

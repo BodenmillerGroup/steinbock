@@ -106,11 +106,11 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
     if panel is None:
         mcd_files = _collect_mcd_files(mcd_dir)
         if len(mcd_files) > 0:
-            panel = imc.create_panel_from_mcd(mcd_files[0])
+            panel = imc.create_panel_from_mcd_file(mcd_files[0])
     if panel is None:
         txt_files = _collect_txt_files(txt_dir)
         if len(txt_files) > 0:
-            panel = imc.create_panel_from_txt(txt_files[0])
+            panel = imc.create_panel_from_txt_file(txt_files[0])
     if panel is None:
         return click.echo(
             "ERROR: No panel/.mcd/.txt file found",
@@ -175,12 +175,10 @@ def images(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
         if io.channel_id_col in panel:
             metal_order = panel[io.channel_id_col].tolist()
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
-        mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
-        txt_files = _collect_txt_files(txt_dir, unzip_dir=temp_dir)
         Path(img_dir).mkdir(exist_ok=True)
         for mcd_txt_file, acquisition_id, img in imc.preprocess_images(
-            mcd_files,
-            txt_files,
+            _collect_mcd_files(mcd_dir, unzip_dir=temp_dir),
+            _collect_txt_files(txt_dir, unzip_dir=temp_dir),
             metal_order=metal_order,
             hpf=hpf,
         ):
