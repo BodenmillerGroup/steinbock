@@ -5,8 +5,8 @@ from pathlib import Path
 
 from steinbock import cli, io
 from steinbock._env import check_version
-from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd
-from steinbock.measurement.dists._cli import distances_cmd
+from steinbock.measurement.cellprofiler._cli import cellprofiler_cmd_group
+from steinbock.measurement.dists._cli import distances_cmd_group
 from steinbock.measurement.graphs import construct_graphs_from_disk
 from steinbock.measurement.intensities import measure_intensities_from_disk
 from steinbock.measurement.regionprops import measure_regionprops_from_disk
@@ -21,14 +21,16 @@ default_skimage_regionprops = [
 
 
 @click.group(
+    name="measure",
     cls=cli.OrderedClickGroup,
     help="Extract object data from segmented images",
 )
-def measure():
+def measure_cmd_group():
     pass
 
 
-@measure.command(
+@measure_cmd_group.command(
+    name="intensities",
     help="Measure object intensities",
 )
 @click.option(
@@ -72,7 +74,7 @@ def measure():
     help="Path to the object intensities output directory",
 )
 @check_version
-def intensities(
+def intensities_cmd(
     img_dir,
     mask_dir,
     panel_file,
@@ -98,7 +100,8 @@ def intensities(
         del intensities
 
 
-@measure.command(
+@measure_cmd_group.command(
+    name="regionprops",
     help="Measure object region properties",
 )
 @click.option(
@@ -131,7 +134,7 @@ def intensities(
     help="Path to the object region properties output directory",
 )
 @check_version
-def regionprops(
+def regionprops_cmd(
     img_dir,
     mask_dir,
     skimage_regionprops,
@@ -155,10 +158,11 @@ def regionprops(
         del regionprops
 
 
-measure.add_command(distances_cmd)
+measure_cmd_group.add_command(distances_cmd_group)
 
 
-@measure.command(
+@measure_cmd_group.command(
+    name="graphs",
     help="Construct spatial object neighborhood graphs",
 )
 @click.option(
@@ -190,7 +194,7 @@ measure.add_command(distances_cmd)
     help="Path to the object graph output directory",
 )
 @check_version
-def graphs(dists_dir, dmax, kmax, graph_dir):
+def graphs_cmd(dists_dir, dmax, kmax, graph_dir):
     graph_dir = Path(graph_dir)
     graph_dir.mkdir(exist_ok=True)
     for dists_file, graph in construct_graphs_from_disk(
@@ -203,4 +207,4 @@ def graphs(dists_dir, dmax, kmax, graph_dir):
         del graph
 
 
-measure.add_command(cellprofiler_cmd)
+measure_cmd_group.add_command(cellprofiler_cmd_group)

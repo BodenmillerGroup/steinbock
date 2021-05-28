@@ -12,11 +12,12 @@ from steinbock.measurement.dists import dists
     help="Measure spatial distances between objects",
     cls=cli.OrderedClickGroup,
 )
-def distances_cmd():
+def distances_cmd_group():
     pass
 
 
-@distances_cmd.command(
+@distances_cmd_group.command(
+    name="centroids",
     help="Measure distances between object centroids",
 )
 @click.option(
@@ -48,7 +49,7 @@ def distances_cmd():
     help="Path to the object distances output directory",
 )
 @check_version
-def centroid(mask_dir, metric, dists_dir):
+def centroids_cmd(mask_dir, metric, dists_dir):
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
     for mask_file, df in dists.measure_centroid_distances_from_disk(
@@ -61,7 +62,8 @@ def centroid(mask_dir, metric, dists_dir):
         del df
 
 
-@distances_cmd.command(
+@distances_cmd_group.command(
+    name="borders",
     help="Measure Euclidean distances between object borders",
 )
 @click.option(
@@ -81,7 +83,7 @@ def centroid(mask_dir, metric, dists_dir):
     help="Path to the object distances output directory",
 )
 @check_version
-def border(mask_dir, dists_dir):
+def borders_cmd(mask_dir, dists_dir):
     dists_dir = Path(dists_dir)
     dists_dir.mkdir(exist_ok=True)
     for mask_file, df in dists.measure_euclidean_border_distances_from_disk(

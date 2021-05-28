@@ -59,11 +59,12 @@ def _collect_txt_files(txt_dir, unzip_dir=None):
     cls=cli.OrderedClickGroup,
     help="Preprocess Imaging Mass Cytometry (IMC) data",
 )
-def imc_cmd():
+def imc_cmd_group():
     pass
 
 
-@imc_cmd.command(
+@imc_cmd_group.command(
+    name="panel",
     help="Create a panel from IMC panel/image data",
 )
 @click.option(
@@ -99,7 +100,7 @@ def imc_cmd():
     help="Path to the panel output file",
 )
 @check_version
-def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
+def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
     panel = None
     if Path(imc_panel_file).exists():
         panel = imc.parse_imc_panel(imc_panel_file)
@@ -119,7 +120,8 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
     io.write_panel(panel, panel_file)
 
 
-@imc_cmd.command(
+@imc_cmd_group.command(
+    name="images",
     help="Extract Imaging Mass Cytometry (IMC) images",
 )
 @click.option(
@@ -168,7 +170,7 @@ def panel(imc_panel_file, mcd_dir, txt_dir, panel_file):
     help="Path to the image output directory",
 )
 @check_version
-def images(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
+def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
     metal_order = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)

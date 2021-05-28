@@ -20,11 +20,12 @@ default_probabilities_dir = "ilastik_probabilities"
     cls=cli.OrderedClickGroup,
     help="Perform supervised pixel classification using Ilastik",
 )
-def ilastik_cmd():
+def ilastik_cmd_group():
     pass
 
 
-@ilastik_cmd.command(
+@ilastik_cmd_group.command(
+    name="prepare",
     help="Prepare an Ilastik project file, images and crops",
 )
 @click.option(
@@ -105,7 +106,7 @@ def ilastik_cmd():
     help="Random seed",
 )
 @check_version
-def prepare(
+def prepare_cmd(
     project_file,
     src_img_dir,
     panel_file,
@@ -171,7 +172,8 @@ def prepare(
     ilastik.create_and_save_project(crop_files, project_file)
 
 
-@ilastik_cmd.command(
+@ilastik_cmd_group.command(
+    name="run",
     help="Run a pixel classification batch using Ilastik",
 )
 @click.option(
@@ -212,7 +214,7 @@ def prepare(
 )
 @check_version
 @ilastik_env
-def run(
+def run_cmd(
     project_file,
     img_dir,
     probabilities_dir,
@@ -233,7 +235,8 @@ def run(
     sys.exit(result.returncode)
 
 
-@ilastik_cmd.command(
+@ilastik_cmd_group.command(
+    name="fix",
     help="Fix existing Ilastik training data (experimental)",
 )
 @click.option(
@@ -274,7 +277,7 @@ def run(
     help="Axis order of the existing crops (e.g., zyxc)",
 )
 @check_version
-def fix(
+def fix_cmd(
     project_file,
     crop_dir,
     probabilities_dir,

@@ -12,11 +12,12 @@ from steinbock.tools.masks import masks
     cls=cli.OrderedClickGroup,
     help="Mask processing tools",
 )
-def masks_cmd():
+def masks_cmd_group():
     pass
 
 
-@masks_cmd.command(
+@masks_cmd_group.command(
+    name="match",
     help="Match objects from multiple masks",
 )
 @click.argument(
@@ -37,7 +38,7 @@ def masks_cmd():
     help="Path to the object table output directory",
 )
 @check_version
-def match(masks1, masks2, table_dir):
+def match_cmd(masks1, masks2, table_dir):
     if Path(masks1).is_file() and Path(masks2).is_file():
         mask_files1 = [Path(masks1)]
         mask_files2 = [Path(masks2)]

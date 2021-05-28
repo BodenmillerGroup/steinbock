@@ -7,7 +7,7 @@ from typing import Sequence, Union
 from steinbock import io
 
 
-def collect_data(
+def collect_data_from_disk(
     data_dirs: Sequence[Union[str, PathLike]],
 ) -> pd.DataFrame:
     img_file_names = []

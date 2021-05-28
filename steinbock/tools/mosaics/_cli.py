@@ -23,11 +23,12 @@ def _collect_image_files(img_files_or_dirs):
     cls=cli.OrderedClickGroup,
     help="Mosaic tiling/stitching",
 )
-def mosaics_cmd():
+def mosaics_cmd_group():
     pass
 
 
-@mosaics_cmd.command(
+@mosaics_cmd_group.command(
+    name="tile",
     help="Extract tiles from images",
 )
 @click.argument(
@@ -50,7 +51,7 @@ def mosaics_cmd():
     help="Path to the tile output directory",
 )
 @check_version
-def tile(images, tile_size, tile_dir):
+def tile_cmd(images, tile_size, tile_dir):
     img_files = _collect_image_files(images)
     tile_dir = Path(tile_dir)
     tile_dir.mkdir(exist_ok=True)
@@ -64,7 +65,8 @@ def tile(images, tile_size, tile_dir):
         del tile
 
 
-@mosaics_cmd.command(
+@mosaics_cmd_group.command(
+    name="stitch",
     help="Combine tiles into images",
 )
 @click.argument(
@@ -80,7 +82,7 @@ def tile(images, tile_size, tile_dir):
     help="Path to the tile output directory",
 )
 @check_version
-def stitch(tiles, img_dir):
+def stitch_cmd(tiles, img_dir):
     tile_info_groups = {}
     tile_files = _collect_image_files(tiles)
     pattern = re.compile(r"(.*)_tx(\d*)_ty(\d*)_tw(\d*)_th(\d*)")

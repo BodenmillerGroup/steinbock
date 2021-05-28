@@ -19,11 +19,12 @@ default_segmentation_pipeline_file = "cell_segmentation.cppipe"
     cls=cli.OrderedClickGroup,
     help="Segment objects in probability images using CellProfiler",
 )
-def cellprofiler_cmd():
+def cellprofiler_cmd_group():
     pass
 
 
-@cellprofiler_cmd.command(
+@cellprofiler_cmd_group.command(
+    name="prepare",
     help="Prepare a CellProfiler segmentation pipeline",
 )
 @click.option(
@@ -35,13 +36,14 @@ def cellprofiler_cmd():
     help="Path to the CellProfiler segmentation pipeline output file",
 )
 @check_version
-def prepare(segmentation_pipeline_file):
+def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(
         segmentation_pipeline_file
     )
 
 
-@cellprofiler_cmd.command(
+@cellprofiler_cmd_group.command(
+    name="run",
     help="Run a object segmentation batch using CellProfiler",
 )
 @click.option(
@@ -69,7 +71,7 @@ def prepare(segmentation_pipeline_file):
     help="Path to the mask output directory",
 )
 @check_version
-def run(
+def run_cmd(
     segmentation_pipeline_file,
     probabilities_dir,
     mask_dir,

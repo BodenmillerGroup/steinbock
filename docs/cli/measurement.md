@@ -36,11 +36,11 @@ The above commands will create object data tables in CSV format (see [file types
 
 To measure the pairwise Euclidean distances between object centroids:
 
-    steinbock measure distances centroid
+    steinbock measure distances centroids
 
 To measure the pairwise Euclidean distances between object borders:
 
-    steinbock measure distances border
+    steinbock measure distances borders
 
 The above commands will create symmetric object pixel distance matrices in CSV format (see [file types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `object_dists`.
 

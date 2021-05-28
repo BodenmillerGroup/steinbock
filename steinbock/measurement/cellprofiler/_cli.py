@@ -23,11 +23,12 @@ default_output_dir = "cellprofiler_output"
     cls=cli.OrderedClickGroup,
     help="Run a CellProfiler measurement pipeline (legacy)",
 )
-def cellprofiler_cmd():
+def cellprofiler_cmd_group():
     pass
 
 
-@cellprofiler_cmd.command(
+@cellprofiler_cmd_group.command(
+    name="prepare",
     help="Prepare a CellProfiler measurement pipeline",
 )
 @click.option(
@@ -78,7 +79,7 @@ def cellprofiler_cmd():
     help="Use symbolic links instead of copying files",
 )
 @check_version
-def prepare(
+def prepare_cmd(
     img_dir,
     mask_dir,
     panel_file,
@@ -107,7 +108,8 @@ def prepare(
     )
 
 
-@cellprofiler_cmd.command(
+@cellprofiler_cmd_group.command(
+    name="run",
     help="Run an object measurement batch using CellProfiler",
 )
 @click.option(
@@ -135,7 +137,7 @@ def prepare(
     help="Path to the CellProfiler output directory",
 )
 @check_version
-def run(
+def run_cmd(
     measurement_pipeline_file,
     input_dir,
     output_dir,

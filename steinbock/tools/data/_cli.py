@@ -17,12 +17,13 @@ default_collect_data_dirs = [
     cls=cli.OrderedClickGroup,
     help="Data processing tools",
 )
-def data_cmd():
+def data_cmd_group():
     pass
 
 
-@data_cmd.command(
-    help="Combine object data into a single file",
+@data_cmd_group.command(
+    name="collect",
+    help="Collect object data into a single file",
 )
 @click.argument(
     "data_dirs",
@@ -38,12 +39,12 @@ def data_cmd():
     help="Path to the combined object data output file",
 )
 @check_version
-def collect(data_dirs, combined_data_file):
+def collect_cmd(data_dirs, combined_data_file):
     if not data_dirs:
         data_dirs = [
             data_dir
             for data_dir in default_collect_data_dirs
             if Path(data_dir).exists()
         ]
-    combined_data = data.collect_data(data_dirs)
+    combined_data = data.collect_data_from_disk(data_dirs)
     io.write_data(combined_data, combined_data_file, combined=True)

@@ -1,20 +1,23 @@
 import click
 
 from steinbock import cli
-from steinbock.preprocessing._cli import preprocess
-from steinbock.classification._cli import classify
-from steinbock.segmentation._cli import segment
-from steinbock.measurement._cli import measure
-from steinbock.tools._cli import tools
+from steinbock.preprocessing._cli import preprocess_cmd_group
+from steinbock.classification._cli import classify_cmd_group
+from steinbock.segmentation._cli import segment_cmd_group
+from steinbock.measurement._cli import measure_cmd_group
+from steinbock.tools._cli import tools_cmd_group
 
 
-@click.group(cls=cli.OrderedClickGroup)
-def steinbock():
+@click.group(
+    name="steinbock",
+    cls=cli.OrderedClickGroup,
+)
+def steinbock_cmd_group():
     pass
 
 
-steinbock.add_command(preprocess)
-steinbock.add_command(classify)
-steinbock.add_command(segment)
-steinbock.add_command(measure)
-steinbock.add_command(tools)
+steinbock_cmd_group.add_command(preprocess_cmd_group)
+steinbock_cmd_group.add_command(classify_cmd_group)
+steinbock_cmd_group.add_command(segment_cmd_group)
+steinbock_cmd_group.add_command(measure_cmd_group)
+steinbock_cmd_group.add_command(tools_cmd_group)
