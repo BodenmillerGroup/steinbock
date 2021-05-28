@@ -1,4 +1,5 @@
 import click
+import numpy as np
 
 from pathlib import Path
 
@@ -55,6 +56,14 @@ _models = {x.name: x for x in Path(keras_models_dir).iterdir()}
     help="Path to the panel file",
 )
 @click.option(
+    "--aggr",
+    "aggr_func_name",
+    type=click.STRING,
+    default="mean",
+    show_default=True,
+    help="Numpy function for aggregating channel pixels",
+)
+@click.option(
     "--minmax/--no-minmax",
     "minmax",
     default=False,
@@ -99,6 +108,7 @@ def deepcell_cmd(
     model_name,
     img_dir,
     panel_file,
+    aggr_func_name,
     minmax,
     zscore,
     pixel_size_um,
@@ -110,6 +120,7 @@ def deepcell_cmd(
         panel = io.read_panel(panel_file)
         if deepcell.panel_deepcell_col in panel:
             channel_groups = panel[deepcell.panel_deepcell_col].values
+    aggr_func = getattr(np, aggr_func_name)
     application = deepcell.Application(application_name)
     model = None
     if model_name is not None:
@@ -123,6 +134,7 @@ def deepcell_cmd(
         channelwise_minmax=minmax,
         channelwise_zscore=zscore,
         channel_groups=channel_groups,
+        aggr_func=aggr_func,
         pixel_size_um=pixel_size_um,
         segmentation_type=segmentation_type,
     ):

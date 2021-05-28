@@ -9,7 +9,16 @@ import subprocess
 from enum import IntEnum
 from os import PathLike
 from pathlib import Path
-from typing import Dict, Generator, List, Optional, Sequence, Tuple, Union
+from typing import (
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 from uuid import uuid1
 
 from steinbock import io, utils
@@ -79,6 +88,7 @@ def write_image(
 def create_image(
     src_img: np.ndarray,
     channel_groups: Optional[np.ndarray] = None,
+    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
     prepend_mean: bool = True,
     img_scale: int = 1,
 ) -> np.ndarray:
@@ -86,8 +96,13 @@ def create_image(
     if channel_groups is not None:
         img = np.stack(
             [
-                np.nanmean(img[channel_groups == cg, :, :], axis=0)
-                for cg in np.unique(channel_groups) if not np.isnan(cg)
+                np.apply_along_axis(
+                    aggr_func,
+                    0,
+                    img[channel_groups == channel_group],
+                )
+                for channel_group in np.unique(channel_groups)
+                if not np.isnan(channel_group)
             ],
         )
     if prepend_mean:
@@ -102,6 +117,7 @@ def create_image(
 def create_images_from_disk(
     src_img_files: Sequence[Union[str, PathLike]],
     channel_groups: Optional[np.ndarray] = None,
+    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
     prepend_mean: bool = True,
     img_scale: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
@@ -110,6 +126,7 @@ def create_images_from_disk(
         img = create_image(
             src_img,
             channel_groups=channel_groups,
+            aggr_func=aggr_func,
             prepend_mean=prepend_mean,
             img_scale=img_scale,
         )

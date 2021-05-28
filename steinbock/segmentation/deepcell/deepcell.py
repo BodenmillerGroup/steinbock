@@ -5,7 +5,7 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from tensorflow.keras.models import Model
-from typing import Generator, Optional, Tuple, Union
+from typing import Callable, Generator, Optional, Tuple, Union
 
 from steinbock import io
 
@@ -56,6 +56,7 @@ def run_object_segmentation(
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
+    aggr_func: Callable[[np.ndarray], np.ndarray] = np.nanmean,
     **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = _apps[application](model=model)
@@ -72,9 +73,13 @@ def run_object_segmentation(
         if channel_groups is not None:
             img = np.stack(
                 [
-                    np.nanmean(img[channel_groups == cg, :, :], axis=0)
-                    for cg in np.unique(channel_groups)
-                    if not np.isnan(cg)
+                    np.apply_along_axis(
+                        aggr_func,
+                        0,
+                        img[channel_groups == channel_group],
+                    )
+                    for channel_group in np.unique(channel_groups)
+                    if not np.isnan(channel_group)
                 ],
             )
         mask = predict(img, **predict_kwargs)

@@ -57,11 +57,11 @@ def measure():
 )
 @click.option(
     "--aggr",
-    "aggr_function_name",
+    "aggr_func_name",
     type=click.STRING,
     default="mean",
     show_default=True,
-    help="Numpy function for aggregating pixels",
+    help="Numpy function for aggregating cell pixels",
 )
 @click.option(
     "--dest",
@@ -76,19 +76,18 @@ def intensities(
     img_dir,
     mask_dir,
     panel_file,
-    aggr_function_name,
+    aggr_func_name,
     intensities_dir,
 ):
     panel = io.read_panel(panel_file)
-    channel_names = panel[io.channel_name_col].tolist()
-    aggr_function = getattr(np, aggr_function_name)
+    aggr_func = getattr(np, aggr_func_name)
     intensities_dir = Path(intensities_dir)
     intensities_dir.mkdir(exist_ok=True)
     for img_file, mask_file, intensities in measure_intensities_from_disk(
         io.list_image_files(img_dir),
         io.list_mask_files(mask_dir),
-        channel_names,
-        aggr_function,
+        panel[io.channel_name_col].tolist(),
+        aggr_func,
     ):
         intensities_file = io.write_data(
             intensities,

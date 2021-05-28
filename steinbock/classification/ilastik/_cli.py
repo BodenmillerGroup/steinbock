@@ -1,4 +1,5 @@
 import click
+import numpy as np
 import shutil
 import sys
 
@@ -43,6 +44,14 @@ def ilastik_cmd():
     help="Path to the panel file",
 )
 @click.option(
+    "--aggr",
+    "aggr_func_name",
+    type=click.STRING,
+    default="mean",
+    show_default=True,
+    help="Numpy function for aggregating channel pixels",
+)
+@click.option(
     "--dest",
     "project_file",
     type=click.Path(dir_okay=False),
@@ -67,7 +76,7 @@ def ilastik_cmd():
     help="Path to the Ilastik crop output directory",
 )
 @click.option(
-    "--imgscale",
+    "--scale",
     "img_scale",
     type=click.INT,
     default=2,
@@ -99,6 +108,7 @@ def ilastik_cmd():
 def prepare(
     src_img_dir,
     panel_file,
+    aggr_func_name,
     project_file,
     img_dir,
     crop_dir,
@@ -112,12 +122,14 @@ def prepare(
         panel = io.read_panel(panel_file)
         if ilastik.panel_ilastik_col in panel:
             channel_groups = panel[ilastik.panel_ilastik_col].values
+    aggr_func = getattr(np, aggr_func_name)
     img_files = []
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
     for src_img_file, img in ilastik.create_images_from_disk(
         io.list_image_files(src_img_dir),
         channel_groups=channel_groups,
+        aggr_func=aggr_func,
         prepend_mean=prepend_mean,
         img_scale=img_scale,
     ):
