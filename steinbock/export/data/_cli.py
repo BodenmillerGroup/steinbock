@@ -4,7 +4,7 @@ from pathlib import Path
 
 from steinbock import cli, io
 from steinbock._env import check_version
-from steinbock.tools.data import data
+from steinbock.export.data import data
 
 default_collect_data_dirs = [
     cli.default_intensities_dir,
@@ -15,15 +15,15 @@ default_collect_data_dirs = [
 @click.group(
     name="data",
     cls=cli.OrderedClickGroup,
-    help="Data processing tools",
+    help="Object data export",
 )
 def data_cmd_group():
     pass
 
 
 @data_cmd_group.command(
-    name="collect",
-    help="Collect object data into a single file",
+    name="csv",
+    help="Collect object data into a single comma-separated values (CSV) file",
 )
 @click.argument(
     "data_dirs",
@@ -39,7 +39,7 @@ def data_cmd_group():
     help="Path to the combined object data output file",
 )
 @check_version
-def collect_cmd(data_dirs, combined_data_file):
+def csv_cmd(data_dirs, combined_data_file):
     if not data_dirs:
         data_dirs = [
             data_dir

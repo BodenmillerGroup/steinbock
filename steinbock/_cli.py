@@ -37,6 +37,7 @@ steinbock_cmd_group.add_command(tools_cmd_group)
 @steinbock_cmd_group.group(
     name="apps",
     cls=cli.OrderedClickGroup,
+    help="Third-party applications",
 )
 def apps_cmd_group():
     pass

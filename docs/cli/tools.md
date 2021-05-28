@@ -8,7 +8,7 @@ Various tools and applications are exposed via *steinbock*'s `tools` command.
 
 To collect all object data from all images into a single file:
 
-    steinbock tools data collect object_intensities object_regionprops
+    steinbock export data csv object_intensities object_regionprops
 
 This will create a single object data table in CSV format with the first column indicating the source image (see [file types](../specs/file-types.md#object-data)). The default destination file is `objects.csv`. The arguments to the `collect` command are the directories from where to collect the object data.
 
