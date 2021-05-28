@@ -60,8 +60,8 @@ def run_object_segmentation(
     **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = _apps[application](model=model)
-    for img_file in io.list_image_files(img_dir):
-        img = io.read_image(img_file)
+    for img_file in io.list_img_files(img_dir):
+        img = io.read_img(img_file)
         if channelwise_minmax:
             channel_mins = np.nanmin(img, axis=(1, 2), keepdims=True)
             channel_maxs = np.nanmax(img, axis=(1, 2), keepdims=True)

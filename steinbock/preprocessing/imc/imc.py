@@ -130,7 +130,7 @@ def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
     return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
 
 
-def preprocess_image(
+def preprocess_img(
     img: np.ndarray,
     channel_indices: Optional[Sequence[int]] = None,
     hpf: Optional[float] = None,
@@ -143,7 +143,7 @@ def preprocess_image(
     return img
 
 
-def preprocess_images(
+def preprocess_imgs(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
     metal_order: Optional[Sequence[str]] = None,
@@ -177,7 +177,7 @@ def preprocess_images(
                     img = data.image_data
                     if metal_order is not None:
                         img = data.get_image_stack_by_names(metal_order)
-                    img = preprocess_image(img, hpf=hpf)
+                    img = preprocess_img(img, hpf=hpf)
                     yield mcd_file, acquisition.id, img
                     del img
     while len(remaining_txt_files) > 0:
@@ -188,6 +188,6 @@ def preprocess_images(
             img = data.image_data
             if metal_order is not None:
                 img = data.get_image_stack_by_names(metal_order)
-            img = preprocess_image(img, hpf=hpf)
+            img = preprocess_img(img, hpf=hpf)
             yield txt_file, None, img
             del img

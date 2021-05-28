@@ -8,13 +8,13 @@ from steinbock._env import check_version
 from steinbock.tools.mosaics import mosaics
 
 
-def _collect_image_files(img_files_or_dirs):
+def _collect_img_files(img_files_or_dirs):
     img_files = []
     for img_file_or_dir in img_files_or_dirs:
         if Path(img_file_or_dir).is_file():
             img_files.append(Path(img_file_or_dir))
         else:
-            img_files += io.list_image_files(img_file_or_dir)
+            img_files += io.list_img_files(img_file_or_dir)
     return img_files
 
 
@@ -52,7 +52,7 @@ def mosaics_cmd_group():
 )
 @check_version
 def tile_cmd(images, tile_size, tile_dir):
-    img_files = _collect_image_files(images)
+    img_files = _collect_img_files(images)
     tile_dir = Path(tile_dir)
     tile_dir.mkdir(exist_ok=True)
     for img_file, x, y, w, h, tile in mosaics.extract_tiles(
@@ -60,7 +60,7 @@ def tile_cmd(images, tile_size, tile_dir):
         tile_size,
     ):
         tile_file = tile_dir / f"{img_file.stem}_tx{x}_ty{y}_tw{w}_th{h}"
-        tile_file = io.write_image(tile, tile_file, ignore_dtype=True)
+        tile_file = io.write_img(tile, tile_file, ignore_dtype=True)
         click.echo(tile_file)
         del tile
 
@@ -84,7 +84,7 @@ def tile_cmd(images, tile_size, tile_dir):
 @check_version
 def stitch_cmd(tiles, img_dir):
     tile_info_groups = {}
-    tile_files = _collect_image_files(tiles)
+    tile_files = _collect_img_files(tiles)
     pattern = re.compile(r"(.*)_tx(\d*)_ty(\d*)_tw(\d*)_th(\d*)")
     for tile_file in tile_files:
         match = pattern.match(tile_file.stem)
@@ -98,6 +98,6 @@ def stitch_cmd(tiles, img_dir):
     img_dir.mkdir(exist_ok=True)
     for img_file_stem, img in mosaics.combine_tiles(tile_info_groups):
         img_file = img_dir / img_file_stem
-        img_file = io.write_image(img, img_file, ignore_dtype=True)
+        img_file = io.write_img(img, img_file, ignore_dtype=True)
         click.echo(img_file)
         del img

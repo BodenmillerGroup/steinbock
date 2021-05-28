@@ -178,7 +178,7 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
             metal_order = panel[io.channel_id_col].tolist()
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
         Path(img_dir).mkdir(exist_ok=True)
-        for mcd_txt_file, acquisition_id, img in imc.preprocess_images(
+        for mcd_txt_file, acquisition_id, img in imc.preprocess_imgs(
             _collect_mcd_files(mcd_dir, unzip_dir=temp_dir),
             _collect_txt_files(txt_dir, unzip_dir=temp_dir),
             metal_order=metal_order,
@@ -187,6 +187,6 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
             img_file_stem = mcd_txt_file.stem
             if acquisition_id is not None:
                 img_file_stem += f"_{acquisition_id}"
-            img_file = io.write_image(img, Path(img_dir) / img_file_stem)
+            img_file = io.write_img(img, Path(img_dir) / img_file_stem)
             click.echo(img_file)
             del img

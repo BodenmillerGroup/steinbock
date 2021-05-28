@@ -23,7 +23,7 @@ By default, this will create a CellProfiler pipeline `cell_segmentation.cppipe` 
 
 To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
 
-    steinbock tools cellprofiler
+    steinbock apps cellprofiler
 
 !!! note "Data/working directory"
     Within the container, your data/working directory containing the CellProfiler pipeline is accessible under `/data`.

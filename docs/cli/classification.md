@@ -31,7 +31,7 @@ With default desination file/directory paths shown in brackets, this will:
 
 To interactively train a new classifier, open the pixel classification project in Ilastik (see [tools](tools.md#ilastik)):
 
-    steinbock tools ilastik
+    steinbock apps ilastik
 
 !!! note "Data/working directory"
     Within the container, your data/working directory containing the Ilastik project file is accessible under `/data`.

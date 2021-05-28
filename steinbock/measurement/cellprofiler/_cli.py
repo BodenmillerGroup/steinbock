@@ -91,7 +91,7 @@ def prepare_cmd(
     input_dir = Path(input_dir)
     input_dir.mkdir(exist_ok=True)
     for img_file, mask_file in zip(
-        io.list_image_files(img_dir),
+        io.list_img_files(img_dir),
         io.list_mask_files(mask_dir),
     ):
         img_name = img_file.name

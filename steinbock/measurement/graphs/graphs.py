@@ -46,7 +46,7 @@ def construct_graphs_from_disk(
     kmax: Optional[float] = None,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for dists_file in dists_files:
-        dists = io.read_distances(dists_file)
+        dists = io.read_dists(dists_file)
         graph = construct_graph(dists, dmax=dmax, kmax=kmax)
         del dists
         yield Path(dists_file), graph

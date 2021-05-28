@@ -90,7 +90,7 @@ By default, this will create a CellProfiler pipeline file `cell_measurement.cppi
 
 To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
 
-    steinbock tools cellprofiler
+    steinbock apps cellprofiler
 
 More detailed instructions on how to create CellProfiler pipelines can be found [here](https://cellprofiler-manual.s3.amazonaws.com/CellProfiler-4.1.3/help/pipelines_building.html).
 

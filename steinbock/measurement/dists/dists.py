@@ -11,7 +11,7 @@ from typing import Generator, Sequence, Tuple, Union
 from steinbock import io
 
 
-def measure_centroid_distances(mask: np.ndarray, metric: str) -> pd.DataFrame:
+def measure_centroid_dists(mask: np.ndarray, metric: str) -> pd.DataFrame:
     properties = regionprops(mask)
     object_ids = np.array([p.label for p in properties])
     object_centroids = np.array([p.centroid for p in properties])
@@ -26,19 +26,19 @@ def measure_centroid_distances(mask: np.ndarray, metric: str) -> pd.DataFrame:
     )
 
 
-def measure_centroid_distances_from_disk(
+def measure_centroid_dists_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
     metric: str,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
         mask = io.read_mask(mask_file)
-        dists = measure_centroid_distances(mask, metric)
+        dists = measure_centroid_dists(mask, metric)
         del mask
         yield Path(mask_file), dists
         del dists
 
 
-def measure_euclidean_border_distances(mask: np.ndarray) -> pd.DataFrame:
+def measure_euclidean_border_dists(mask: np.ndarray) -> pd.DataFrame:
     object_ids = np.unique(mask[mask != 0])
     dists_data = np.zeros((len(object_ids), len(object_ids)))
     for i, object_id in enumerate(object_ids):
@@ -54,12 +54,12 @@ def measure_euclidean_border_distances(mask: np.ndarray) -> pd.DataFrame:
     )
 
 
-def measure_euclidean_border_distances_from_disk(
+def measure_euclidean_border_dists_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
         mask = io.read_mask(mask_file)
-        dists = measure_euclidean_border_distances(mask)
+        dists = measure_euclidean_border_dists(mask)
         del mask
         yield Path(mask_file), dists
         del dists

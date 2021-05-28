@@ -35,7 +35,7 @@ def measure_regionprops_from_disk(
     if "label" not in skimage_regionprops:
         skimage_regionprops.insert(0, "label")
     for img_file, mask_file in zip(img_files, mask_files):
-        img = io.read_image(img_file)
+        img = io.read_img(img_file)
         mask = io.read_mask(mask_file)
         regionprops = measure_regionprops(img, mask, skimage_regionprops)
         del img, mask

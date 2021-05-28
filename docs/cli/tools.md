@@ -57,7 +57,7 @@ The following command will stitch all mask tiles in `masks` (following the file 
 
 To run Ilastik:
 
-    steinbock tools ilastik
+    steinbock apps ilastik
 
 Without additional arguments, this will start the graphical user interface of Ilastik.
 
@@ -65,6 +65,6 @@ Without additional arguments, this will start the graphical user interface of Il
 
 To run CellProfiler:
 
-    steinbock tools cellprofiler
+    steinbock apps cellprofiler
 
 Without additional arguments, this will start the graphical user interface of CellProfiler.

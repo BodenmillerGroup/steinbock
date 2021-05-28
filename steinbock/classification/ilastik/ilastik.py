@@ -54,7 +54,7 @@ _data_dir = Path(__file__).parent / "data"
 _project_file_template = _data_dir / "pixel_classifier.ilp"
 
 
-def list_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
+def list_img_files(img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(img_dir).rglob("*.h5"))
 
 
@@ -62,7 +62,7 @@ def list_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(crop_dir).rglob("*.h5"))
 
 
-def read_image(
+def read_img(
     img_file: Union[str, PathLike],
     dataset_path: Union[str, PathLike],
 ) -> np.ndarray:
@@ -71,7 +71,7 @@ def read_image(
         return f[str(dataset_path)][()]
 
 
-def write_image(
+def write_img(
     img: np.ndarray,
     img_file: Union[str, PathLike],
     dataset_path: Union[str, PathLike],
@@ -85,7 +85,7 @@ def write_image(
     return img_file
 
 
-def create_image(
+def create_img(
     src_img: np.ndarray,
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
@@ -114,7 +114,7 @@ def create_image(
     return img
 
 
-def create_images_from_disk(
+def create_imgs_from_disk(
     src_img_files: Sequence[Union[str, PathLike]],
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
@@ -122,8 +122,8 @@ def create_images_from_disk(
     img_scale: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for src_img_file in src_img_files:
-        src_img = io.read_image(src_img_file)
-        img = create_image(
+        src_img = io.read_img(src_img_file)
+        img = create_img(
             src_img,
             channel_groups=channel_groups,
             aggr_func=aggr_func,
@@ -160,7 +160,7 @@ def create_crops_from_disk(
 ]:
     rng = np.random.default_rng(seed=seed)
     for img_file in img_files:
-        img = read_image(img_file, img_dataset_path)
+        img = read_img(img_file, img_dataset_path)
         x_start, y_start, crop = create_crop(img, crop_size, rng)
         del img
         yield Path(img_file), x_start, y_start, crop

@@ -127,14 +127,14 @@ def prepare_cmd(
     img_files = []
     img_dir = Path(img_dir)
     img_dir.mkdir(exist_ok=True)
-    for src_img_file, img in ilastik.create_images_from_disk(
-        io.list_image_files(src_img_dir),
+    for src_img_file, img in ilastik.create_imgs_from_disk(
+        io.list_img_files(src_img_dir),
         channel_groups=channel_groups,
         aggr_func=aggr_func,
         prepend_mean=prepend_mean,
         img_scale=img_scale,
     ):
-        img_file = ilastik.write_image(
+        img_file = ilastik.write_img(
             img,
             img_dir / f"{src_img_file.stem}",
             ilastik.img_dataset_path,
@@ -156,7 +156,7 @@ def prepare_cmd(
                 f"_x{x_start}_y{y_start}"
                 f"_w{crop_size}_h{crop_size}"
             )
-            crop_file = ilastik.write_image(
+            crop_file = ilastik.write_img(
                 crop,
                 crop_dir / crop_file_stem,
                 ilastik.crop_dataset_path,
@@ -226,7 +226,7 @@ def run_cmd(
     result = ilastik.run_pixel_classification(
         ilastik_binary,
         project_file,
-        ilastik.list_image_files(img_dir),
+        ilastik.list_img_files(img_dir),
         probabilities_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
@@ -314,7 +314,7 @@ def fix_cmd(
                 "ERROR: Inconsistent axis orders across crops",
                 file=sys.stderr,
             )
-        crop_file = ilastik.write_image(
+        crop_file = ilastik.write_img(
             crop,
             crop_file,
             ilastik.crop_dataset_path,

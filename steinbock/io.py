@@ -57,11 +57,11 @@ def write_panel(panel: pd.DataFrame, panel_file: Union[str, PathLike]) -> Path:
     return panel_file
 
 
-def list_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
+def list_img_files(img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(img_dir).rglob("*.tiff"))
 
 
-def read_image(
+def read_img(
     img_file: Union[str, PathLike],
     ignore_dtype: bool = False,
 ) -> np.ndarray:
@@ -80,7 +80,7 @@ def read_image(
     return img
 
 
-def write_image(
+def write_img(
     img: np.ndarray,
     img_file: Union[str, PathLike],
     ignore_dtype: bool = False,
@@ -146,11 +146,11 @@ def write_data(
     return data_file
 
 
-def list_distances_files(dists_dir: Union[str, PathLike]) -> List[Path]:
+def list_dists_files(dists_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(dists_dir).rglob("*.csv"))
 
 
-def read_distances(dists_file: Union[str, PathLike]) -> pd.DataFrame:
+def read_dists(dists_file: Union[str, PathLike]) -> pd.DataFrame:
     dists_file = Path(dists_file).with_suffix(".csv")
     dists = pd.read_csv(dists_file, index_col="Object")
     dists.index = dists.index.astype(np.uint16)
@@ -158,7 +158,7 @@ def read_distances(dists_file: Union[str, PathLike]) -> pd.DataFrame:
     return dists
 
 
-def write_distances(
+def write_dists(
     dists: pd.DataFrame,
     dists_file: Union[str, PathLike],
     copy: bool = False,
