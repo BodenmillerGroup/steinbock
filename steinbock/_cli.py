@@ -15,12 +15,14 @@ from steinbock.classification._cli import classify_cmd_group
 from steinbock.segmentation._cli import segment_cmd_group
 from steinbock.measurement._cli import measure_cmd_group
 from steinbock.tools._cli import tools_cmd_group
+from steinbock.version import version
 
 
 @click.group(
     name="steinbock",
     cls=cli.OrderedClickGroup,
 )
+@click.version_option(version)
 def steinbock_cmd_group():
     pass
 
