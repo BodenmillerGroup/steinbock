@@ -39,7 +39,7 @@ def cellprofiler_cmd():
     help="Path to the image directory",
 )
 @click.option(
-    "--masks",
+    "--mask",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
     default=cli.default_mask_dir,
@@ -63,7 +63,7 @@ def cellprofiler_cmd():
     help="Path to the CellProfiler measurement pipeline output file",
 )
 @click.option(
-    "--destdir",
+    "--cpin",
     "input_dir",
     type=click.Path(file_okay=False),
     default=default_input_dir,
@@ -119,7 +119,7 @@ def prepare(
     help="Path to the CellProfiler measurement pipeline file",
 )
 @click.option(
-    "--input",
+    "--cpin",
     "input_dir",
     type=click.Path(exists=True, file_okay=False),
     default=default_input_dir,
@@ -127,7 +127,7 @@ def prepare(
     help="Path to the CellProfiler input directory",
 )
 @click.option(
-    "--dest",
+    "--cpout",
     "output_dir",
     type=click.Path(file_okay=False),
     default=default_output_dir,

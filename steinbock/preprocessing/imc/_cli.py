@@ -67,7 +67,7 @@ def imc_cmd():
     help="Create a panel from IMC panel/image data",
 )
 @click.option(
-    "--panel",
+    "--imcpanel",
     "imc_panel_file",
     type=click.Path(dir_okay=False),
     default=str(Path("raw", "panel.csv")),

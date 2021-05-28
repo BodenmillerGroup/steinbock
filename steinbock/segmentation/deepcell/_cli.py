@@ -48,6 +48,20 @@ _models = {x.name: x for x in Path(keras_models_dir).iterdir()}
     help="Path to the image directory",
 )
 @click.option(
+    "--minmax/--no-minmax",
+    "channelwise_minmax",
+    default=False,
+    show_default=True,
+    help="Channel-wise min-max normalization",
+)
+@click.option(
+    "--zscore/--no-zscore",
+    "channelwise_zscore",
+    default=False,
+    show_default=True,
+    help="Channel-wise z-score normalization",
+)
+@click.option(
     "--panel",
     "panel_file",
     type=click.Path(exists=True, dir_okay=False),
@@ -62,20 +76,6 @@ _models = {x.name: x for x in Path(keras_models_dir).iterdir()}
     default="mean",
     show_default=True,
     help="Numpy function for aggregating channel pixels",
-)
-@click.option(
-    "--minmax/--no-minmax",
-    "minmax",
-    default=False,
-    show_default=True,
-    help="Channel-wise min-max normalization",
-)
-@click.option(
-    "--zscore/--no-zscore",
-    "zscore",
-    default=False,
-    show_default=True,
-    help="Channel-wise z-score normalization",
 )
 @click.option(
     "--pixelsize",
@@ -107,10 +107,10 @@ def deepcell_cmd(
     application_name,
     model_name,
     img_dir,
+    channelwise_minmax,
+    channelwise_zscore,
     panel_file,
     aggr_func_name,
-    minmax,
-    zscore,
     pixel_size_um,
     segmentation_type,
     mask_dir,
@@ -131,8 +131,8 @@ def deepcell_cmd(
         img_dir,
         application,
         model=model,
-        channelwise_minmax=minmax,
-        channelwise_zscore=zscore,
+        channelwise_minmax=channelwise_minmax,
+        channelwise_zscore=channelwise_zscore,
         channel_groups=channel_groups,
         aggr_func=aggr_func,
         pixel_size_um=pixel_size_um,

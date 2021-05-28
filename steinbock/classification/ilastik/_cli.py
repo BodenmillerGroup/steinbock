@@ -28,6 +28,14 @@ def ilastik_cmd():
     help="Prepare an Ilastik project file, images and crops",
 )
 @click.option(
+    "--dest",
+    "project_file",
+    type=click.Path(dir_okay=False),
+    default=default_project_file,
+    show_default=True,
+    help="Path to the Ilastik project output file",
+)
+@click.option(
     "--img",
     "src_img_dir",
     type=click.Path(exists=True, file_okay=False),
@@ -52,12 +60,19 @@ def ilastik_cmd():
     help="Numpy function for aggregating channel pixels",
 )
 @click.option(
-    "--dest",
-    "project_file",
-    type=click.Path(dir_okay=False),
-    default=default_project_file,
+    "--mean/--no-mean",
+    "prepend_mean",
+    default=True,
     show_default=True,
-    help="Path to the Ilastik project output file",
+    help="Prepend mean of all channels as a new channel",
+)
+@click.option(
+    "--imgscale",
+    "img_scale",
+    type=click.INT,
+    default=2,
+    show_default=True,
+    help="Ilastik image scale factor",
 )
 @click.option(
     "--imgdest",
@@ -68,22 +83,6 @@ def ilastik_cmd():
     help="Path to the Ilastik image output directory",
 )
 @click.option(
-    "--cropdest",
-    "crop_dir",
-    type=click.Path(file_okay=False),
-    default=default_crop_dir,
-    show_default=True,
-    help="Path to the Ilastik crop output directory",
-)
-@click.option(
-    "--scale",
-    "img_scale",
-    type=click.INT,
-    default=2,
-    show_default=True,
-    help="Ilastik image scale factor",
-)
-@click.option(
     "--cropsize",
     "crop_size",
     type=click.INT,
@@ -92,11 +91,12 @@ def ilastik_cmd():
     help="Ilastik crop size (in pixels)",
 )
 @click.option(
-    "--mean/--no-mean",
-    "prepend_mean",
-    default=True,
+    "--cropdest",
+    "crop_dir",
+    type=click.Path(file_okay=False),
+    default=default_crop_dir,
     show_default=True,
-    help="Prepend mean of all channels as a new channel",
+    help="Path to the Ilastik crop output directory",
 )
 @click.option(
     "--seed",
@@ -106,15 +106,15 @@ def ilastik_cmd():
 )
 @check_version
 def prepare(
+    project_file,
     src_img_dir,
     panel_file,
     aggr_func_name,
-    project_file,
-    img_dir,
-    crop_dir,
-    img_scale,
-    crop_size,
     prepend_mean,
+    img_scale,
+    img_dir,
+    crop_size,
+    crop_dir,
     seed,
 ):
     channel_groups = None
@@ -245,7 +245,7 @@ def run(
     help="Path to the Ilastik project file",
 )
 @click.option(
-    "--crops",
+    "--crop",
     "crop_dir",
     type=click.Path(exists=True, file_okay=False),
     default=default_crop_dir,
