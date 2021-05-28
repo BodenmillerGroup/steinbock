@@ -2,9 +2,6 @@ import logging
 import numpy as np
 import pandas as pd
 
-from imctools.data.acquisition import Acquisition
-from imctools.io.mcd.mcdparser import McdParser
-from imctools.io.txt.txtparser import TxtParser
 from os import PathLike
 from pathlib import Path
 from scipy.ndimage import maximum_filter
@@ -13,6 +10,17 @@ from typing import Generator, List, Optional, Sequence, Tuple, Union
 from steinbock import io
 from steinbock.classification.ilastik import ilastik
 from steinbock.segmentation.deepcell import deepcell
+
+try:
+    available = True
+    from imctools.data.acquisition import Acquisition
+    from imctools.io.mcd.mcdparser import McdParser
+    from imctools.io.txt.txtparser import TxtParser
+except:
+    available = False
+    Acquisition = None
+    McdParser = None
+    TxtParser = None
 
 
 logger = logging.getLogger(__name__)

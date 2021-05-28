@@ -1,6 +1,7 @@
 import click
 
 from steinbock import cli
+from steinbock.preprocessing.imc import imc
 from steinbock.preprocessing.imc._cli import imc_cmd_group
 
 
@@ -13,4 +14,5 @@ def preprocess_cmd_group():
     pass
 
 
-preprocess_cmd_group.add_command(imc_cmd_group)
+if imc.available:
+    preprocess_cmd_group.add_command(imc_cmd_group)
