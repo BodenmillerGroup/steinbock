@@ -6,3 +6,4 @@ pandas~=1.2.4
 scikit-image~=0.18.1
 scipy~=1.6.3
 tifffile==2021.4.8
+xtiff==0.7.5

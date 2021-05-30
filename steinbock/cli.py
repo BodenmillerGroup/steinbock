@@ -10,6 +10,7 @@ default_graph_dir = "object_graphs"
 default_intensities_dir = "object_intensities"
 default_regionprops_dir = "object_regionprops"
 default_combined_data_file = "objects.csv"
+default_ome_dir = "ome"
 
 
 class OrderedClickGroup(click.Group):
