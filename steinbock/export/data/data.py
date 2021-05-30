@@ -7,9 +7,7 @@ from typing import Sequence, Union
 from steinbock import io
 
 
-def collect_data_from_disk(
-    data_dirs: Sequence[Union[str, PathLike]],
-) -> pd.DataFrame:
+def collect_data(data_dirs: Sequence[Union[str, PathLike]]) -> pd.DataFrame:
     img_file_names = []
     merged_data_objs = []
     data_file_groups = (io.list_data_files(data_dir) for data_dir in data_dirs)

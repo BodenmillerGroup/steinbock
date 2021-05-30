@@ -46,5 +46,5 @@ def csv_cmd(data_dirs, combined_data_file):
             for data_dir in default_collect_data_dirs
             if Path(data_dir).exists()
         ]
-    combined_data = data.collect_data_from_disk(data_dirs)
+    combined_data = data.collect_data(data_dirs)
     io.write_data(combined_data, combined_data_file, combined=True)
