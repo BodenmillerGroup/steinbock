@@ -39,7 +39,7 @@ def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.txt"))
 
 
-def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
+def parse_imc_panel(imc_panel_file: Union[str, PathLike]) -> pd.DataFrame:
     imc_panel = pd.read_csv(
         imc_panel_file,
         dtype={
@@ -98,13 +98,13 @@ def parse_imc_panel(imc_panel_file: Union[str, Path]) -> pd.DataFrame:
     return panel
 
 
-def create_panel_from_mcd_file(mcd_file: Union[str, Path]) -> pd.DataFrame:
+def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
     with McdParser(mcd_file) as mcd_parser:
         acquisition = next(iter(mcd_parser.session.acquisitions.values()))
         return create_panel_from_acquisition(acquisition)
 
 
-def create_panel_from_txt_file(txt_file: Union[str, Path]) -> pd.DataFrame:
+def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
     with TxtParser(txt_file) as txt_parser:
         acquisition = txt_parser.get_acquisition_data().acquisition
         return create_panel_from_acquisition(acquisition)

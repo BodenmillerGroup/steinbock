@@ -20,7 +20,7 @@ _models = {x.name: x for x in Path(keras_models_dir).iterdir()}
     "application_name",
     type=click.Choice(
         [deepcell.Application.MESMER.value],
-        case_sensitive=False,
+        case_sensitive=True,
     ),
     required=True,
     show_choices=True,
