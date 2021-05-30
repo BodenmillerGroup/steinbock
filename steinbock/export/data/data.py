@@ -1,5 +1,6 @@
 import pandas as pd
 
+from fcswrite import write_fcs
 from os import PathLike
 from pathlib import Path
 from typing import Sequence, Union
@@ -7,7 +8,9 @@ from typing import Sequence, Union
 from steinbock import io
 
 
-def collect_data(data_dirs: Sequence[Union[str, PathLike]]) -> pd.DataFrame:
+def collect_data_from_disk(
+    data_dirs: Sequence[Union[str, PathLike]],
+) -> pd.DataFrame:
     img_file_names = []
     merged_data_objs = []
     data_file_groups = (io.list_data_files(data_dir) for data_dir in data_dirs)
@@ -28,3 +31,28 @@ def collect_data(data_dirs: Sequence[Union[str, PathLike]]) -> pd.DataFrame:
         keys=img_file_names,
         names=["Image", "Object"]
     )
+
+
+def write_combined_data_csv(
+    combined_data: pd.DataFrame,
+    combined_data_csv_file: Union[str, Path],
+    copy: bool = True,
+) -> Path:
+    if copy:
+        combined_data = combined_data.reset_index()
+    else:
+        combined_data.reset_index(inplace=True)
+    combined_data.to_csv(combined_data_csv_file, index=False)
+    return Path(combined_data_csv_file)
+
+
+def write_combined_data_fcs(
+    combined_data: pd.DataFrame,
+    combined_data_fcs_file: Union[str, Path],
+) -> Path:
+    write_fcs(
+        str(combined_data_fcs_file),
+        combined_data.columns.names,
+        combined_data.values
+    )
+    return Path(combined_data_fcs_file)

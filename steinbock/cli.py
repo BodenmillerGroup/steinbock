@@ -9,7 +9,8 @@ default_dists_dir = "object_dists"
 default_graph_dir = "object_graphs"
 default_intensities_dir = "object_intensities"
 default_regionprops_dir = "object_regionprops"
-default_combined_data_file = "objects.csv"
+default_combined_data_csv_file = "objects.csv"
+default_combined_data_fcs_file = "objects.fcs"
 default_ome_dir = "ome"
 
 

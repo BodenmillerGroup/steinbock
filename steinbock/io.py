@@ -121,21 +121,15 @@ def list_data_files(data_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(data_dir).rglob("*.csv"))
 
 
-def read_data(
-    data_file: Union[str, PathLike],
-    combined: bool = False,
-) -> pd.DataFrame:
-    return pd.read_csv(
-        Path(data_file).with_suffix(".csv"),
-        index_col=["Image", "Object"] if combined else "Object",
-    )
+def read_data(data_file: Union[str, PathLike]) -> pd.DataFrame:
+    data_file = Path(data_file).with_suffix(".csv")
+    return pd.read_csv(data_file, index_col="Object")
 
 
 def write_data(
     data: pd.DataFrame,
     data_file: Union[str, PathLike],
-    combined: bool = False,
-    copy: bool = False,
+    copy: bool = True,
 ) -> Path:
     if copy:
         data = data.reset_index()
