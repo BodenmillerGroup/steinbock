@@ -9,7 +9,7 @@ from steinbock import io
 TileInfo = Tuple[Union[str, PathLike], int, int, int, int]
 
 
-def extract_tiles(
+def extract_tiles_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     tile_size: int,
 ) -> Generator[Tuple[Path, int, int, int, int, np.ndarray], None, None]:
@@ -23,7 +23,7 @@ def extract_tiles(
         del img
 
 
-def combine_tiles(
+def stitch_tiles_from_disk(
     tile_info_groups: Dict[str, Sequence[TileInfo]],
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
     for img_file_stem, tile_info in tile_info_groups.items():
