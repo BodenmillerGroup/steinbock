@@ -99,7 +99,7 @@ def fcs_cmd(data_dirs, combined_data_fcs_file):
 )
 @click.option(
     "--format",
-    "file_format",
+    "anndata_format",
     type=click.Choice(["h5ad", "loom", "zarr"], case_sensitive=False),
     default="h5ad",
     show_default=True,
@@ -113,7 +113,7 @@ def fcs_cmd(data_dirs, combined_data_fcs_file):
     show_default=True,
     help="Path to the AnnData output directory",
 )
-def anndata_cmd(intensities_dir, regionprops_dir, anndata_dir, file_format):
+def anndata_cmd(intensities_dir, regionprops_dir, anndata_dir, anndata_format):
     intensities_files = io.list_data_files(intensities_dir)
     regionprops_files = None
     if regionprops_dir is not None and Path(regionprops_dir).exists():
@@ -125,9 +125,13 @@ def anndata_cmd(intensities_dir, regionprops_dir, anndata_dir, file_format):
         regionprops_files
     ):
         ad_file = anndata_dir / intensities_file.name
-        if file_format.lower() == "h5ad":
-            ad.write_h5ad(ad_file.with_suffix(".h5ad"))
-        elif file_format.lower() == "loom":
-            ad.write_loom(ad_file.with_suffix(".loom"))
-        elif file_format.lower() == "zarr":
-            ad.write_zarr(ad_file.with_suffix(".zarr"))
+        if anndata_format.lower() == "h5ad":
+            ad_file = ad_file.with_suffix(".h5ad")
+            ad.write_h5ad(ad_file)
+        elif anndata_format.lower() == "loom":
+            ad_file = ad_file.with_suffix(".loom")
+            ad.write_loom(ad_file)
+        elif anndata_format.lower() == "zarr":
+            ad_file = ad_file.with_suffix(".zarr")
+            ad.write_zarr(ad_file)
+        click.echo(ad_file)
