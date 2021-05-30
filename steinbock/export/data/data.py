@@ -1,9 +1,9 @@
 import pandas as pd
 
-from fcswrite import write_fcs
+from anndata import AnnData
 from os import PathLike
 from pathlib import Path
-from typing import Sequence, Union
+from typing import Generator, Optional, Sequence, Tuple, Union
 
 from steinbock import io
 
@@ -33,26 +33,24 @@ def collect_data_from_disk(
     )
 
 
-def write_combined_data_csv(
-    combined_data: pd.DataFrame,
-    combined_data_csv_file: Union[str, Path],
-    copy: bool = True,
-) -> Path:
-    if copy:
-        combined_data = combined_data.reset_index()
-    else:
-        combined_data.reset_index(inplace=True)
-    combined_data.to_csv(combined_data_csv_file, index=False)
-    return Path(combined_data_csv_file)
+def to_anndata(
+    intensities: pd.DataFrame,
+    regionprops: Optional[pd.DataFrame] = None,
+) -> AnnData:
+    return AnnData(X=intensities, obs=regionprops)
 
 
-def write_combined_data_fcs(
-    combined_data: pd.DataFrame,
-    combined_data_fcs_file: Union[str, Path],
-) -> Path:
-    write_fcs(
-        str(combined_data_fcs_file),
-        combined_data.columns.names,
-        combined_data.values
-    )
-    return Path(combined_data_fcs_file)
+def to_anndata_from_disk(
+    intensities_files: Sequence[Union[str, PathLike]],
+    regionprops_files: Optional[Sequence[Union[str, PathLike]]] = None,
+) -> Generator[Tuple[Path, Optional[Path], AnnData], None, None]:
+    for i, intensities_data_file in enumerate(intensities_files):
+        intensities = io.read_data(intensities_data_file)
+        regionprops = None
+        regionprops_file = None
+        if regionprops_files is not None:
+            regionprops_file = regionprops_files[i]
+            regionprops = io.read_data(regionprops_file)
+        ad = to_anndata(intensities, regionprops=regionprops)
+        yield intensities_data_file, regionprops_file, ad
+        del intensities, regionprops, ad

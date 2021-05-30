@@ -1,10 +1,10 @@
 import click
 
 from pathlib import Path
+from xtiff import to_tiff
 
 from steinbock import cli, io
 from steinbock._env import check_version
-from steinbock.export.images import images
 
 
 @click.group(
@@ -53,6 +53,6 @@ def ometiff_cmd(img_dir, panel_file, ome_dir):
     for img_file in sorted(Path(img_dir).iterdir()):
         img = io.read_img(img_file)
         ome_file = ome_dir / img_file.with_suffix('.ome.tiff').name
-        images.write_ome_tiff(img, ome_file, channel_names=channel_names)
+        to_tiff(img, ome_file, channel_names=channel_names)
         click.echo(ome_file.name)
         del img
