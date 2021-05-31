@@ -2,14 +2,6 @@ site_name: steinbock
 
 plugins:
   - mkdocstrings:
-      handlers:
-        python:
-          selection:
-            filters:
-              - "!^_"
-          rendering:
-            show_root_toc_entry: no
-            show_if_no_docstring: yes
       watch:
         - steinbock
 

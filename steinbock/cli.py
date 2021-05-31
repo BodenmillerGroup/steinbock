@@ -23,4 +23,5 @@ class OrderedClickGroup(click.Group):
         self.commands = commands or OrderedDict()
 
     def list_commands(self, ctx):
+        """"""
         return self.commands

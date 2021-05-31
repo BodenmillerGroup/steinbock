@@ -13,6 +13,7 @@ panel_deepcell_col = "deepcell"
 
 
 class Application(Enum):
+    """"""
     MESMER = "Mesmer"
 
 

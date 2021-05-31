@@ -25,6 +25,7 @@ from steinbock import io, utils
 
 
 class VigraAxisInfo(IntEnum):
+    """"""
     Channels = 1
     Space = 2
     Angle = 4
