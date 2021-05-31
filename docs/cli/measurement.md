@@ -30,7 +30,7 @@ To extract spatial object properties ("region properties", `object_regionprops`)
 The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
 
 !!! note "Collecting object data"
-    To collect all object data from all images into a single file, see [data collection](tools.md#data-collection).
+    To collect all object data from all images into a single file, see [data collection](utils.md#data-collection).
 
 ## Object distances
 
@@ -88,7 +88,7 @@ By default, this will create a CellProfiler pipeline file `cell_measurement.cppi
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
+To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](utils.md#cellprofiler)):
 
     steinbock apps cellprofiler
 

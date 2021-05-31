@@ -21,7 +21,7 @@ By default, this will create a CellProfiler pipeline `cell_segmentation.cppipe` 
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](tools.md#cellprofiler)):
+To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](utils.md#cellprofiler)):
 
     steinbock apps cellprofiler
 

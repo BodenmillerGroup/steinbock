@@ -29,7 +29,7 @@ With default desination file/directory paths shown in brackets, this will:
 
 ### Training the classifier
 
-To interactively train a new classifier, open the pixel classification project in Ilastik (see [tools](tools.md#ilastik)):
+To interactively train a new classifier, open the pixel classification project in Ilastik (see [tools](utils.md#ilastik)):
 
     steinbock apps ilastik
 
