@@ -15,7 +15,7 @@ theme:
     - navigation.tabs
 
 extra_css:
-  - stylesheet.css
+  - mkdocstrings.css
 
 nav:
   - Home:
