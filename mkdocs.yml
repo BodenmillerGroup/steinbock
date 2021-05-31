@@ -1,27 +1,49 @@
 site_name: steinbock
 
-theme:
-  name: material
-  features:
-    - navigation.tabs
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            filters:
+              - "!^_"
+          rendering:
+            show_root_toc_entry: no
+            show_if_no_docstring: yes
+      watch:
+        - steinbock
 
 markdown_extensions:
   - admonition
   - footnotes
 
+theme:
+  name: material
+  features:
+    - navigation.tabs
+
+extra_css:
+  - stylesheet.css
+
 nav:
   - Home:
     - index.md
-    - install.md
+    - install-docker.md
+    - install-python.md
     - changelog.md
     - license.md
   - CLI usage:
-    - cli/introduction.md
+    - cli/intro.md
     - cli/preprocessing.md
     - cli/classification.md
     - cli/segmentation.md
     - cli/measurement.md
-    - cli/tools.md
+    - cli/export.md
+    - cli/utils.md
+    - cli/apps.md
+  - Python usage:
+    - python/intro.md
+    - python/api.md
   - Specifications:
     - specs/file-types.md
 

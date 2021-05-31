@@ -1,4 +1,4 @@
-# Installation
+# Installation (Docker)
 
 Here, the installation and configuration of the *steinbock* Docker container is described.
 
