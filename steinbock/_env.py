@@ -1,17 +1,34 @@
 import click
 import os
+import subprocess
 import sys
 
 from functools import wraps
 from pathlib import Path
 
-from steinbock.version import version
+from steinbock.version import version as steinbock_version
 
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 cellprofiler_binary = "cellprofiler"
 cellprofiler_plugin_dir = "/opt/cellprofiler_plugins"
 keras_models_dir = str(Path.home() / ".keras" / "models")
-version_file = ".steinbock_version"
+
+
+def run_captured(args, *popen_args, file=sys.stdout, **popen_kwargs):
+    with subprocess.Popen(
+        args,
+        *popen_args,
+        bufsize=0,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        **popen_kwargs,
+    ) as process:
+        for c in iter(lambda: process.stdout.read(1), b""):
+            file.buffer.write(c)
+        process.wait()
+    return subprocess.CompletedProcess(
+        process.args, process.returncode, process.stdout, process.stderr
+    )
 
 
 def check_x11(func):
@@ -40,33 +57,36 @@ def check_x11(func):
     return check_x11_wrapper
 
 
-def ilastik_env(func):
+def use_ilastik_env(func):
     @wraps(func)
-    def ilastik_env_wrapper(*args, **kwargs):
+    def use_ilastik_env_wrapper(*args, **kwargs):
         if "env" not in kwargs:
             kwargs["env"] = os.environ.copy()
         kwargs["env"].pop("PYTHONPATH", None)
         kwargs["env"].pop("PYTHONHOME", None)
         return func(*args, **kwargs)
 
-    return ilastik_env_wrapper
+    return use_ilastik_env_wrapper
 
 
-def check_version(func):
+def check_steinbock_version(func):
     @wraps(func)
-    def check_version_wrapper(*args, **kwargs):
-        if Path(version_file).exists():
-            saved_version = Path(version_file).read_text(encoding="utf-8")
-            if saved_version != version:
+    def check_steinbock_version_wrapper(*args, **kwargs):
+        if Path(".steinbock_version").exists():
+            saved_steinbock_version = Path(".steinbock_version").read_text(
+                encoding="utf-8"
+            )
+            if saved_steinbock_version != steinbock_version:
                 click.echo(
                     "WARNING: steinbock version change detected!\n"
-                    f"    previous: {saved_version}\n"
-                    f"    current: {version}\n"
-                    f"To disable this warning, edit the {version_file} file.",
+                    f"    previous: {saved_steinbock_version}\n"
+                    f"    current: {steinbock_version}",
                     file=sys.stderr,
                 )
         else:
-            Path(version_file).write_text(version, encoding="utf-8")
+            Path(".steinbock_version").write_text(
+                steinbock_version, encoding="utf-8"
+            )
         return func(*args, **kwargs)
 
-    return check_version_wrapper
+    return check_steinbock_version_wrapper
