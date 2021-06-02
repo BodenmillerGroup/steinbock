@@ -2,7 +2,7 @@
 
 ## Panel
 
-File extension: `.csv`
+File extension: .csv
 
 User-provided list of channels present in the images (in order)
 
@@ -20,7 +20,7 @@ The *steinbock* panel allows for further arbitrary columns.
 
 ## Images
 
-File extension: `.tiff`
+File extension: .tiff
 
 Multi-channel images, where each channel corresponds to a panel entry
 
@@ -31,18 +31,18 @@ Tag Image File Format (TIFF) images of any data type in CYX dimension order
 
 ## Probabilities
 
-File extension: `.tiff`
+File extension: .tiff
 
 Color images, with one color per class encoding the probability of pixels belonging to that class
 
 16-bit unsigned integer TIFF images in YXS dimension order, same YX ratio as source image
 
 !!! danger "Probability image size"
-    The size of probability images may be different from the original images (see [Ilastik pixel classification workflow](../cli/classification.md#ilastik)).
+    The size of probability images may be different from the original images (see [Ilastik pixel classification](../cli/classification.md#ilastik)).
 
 ## Masks
 
-File extension: `.tiff`
+File extension: .tiff
 
 Grayscale image, with one unique value per object ("object ID", 0 for background)
 
@@ -50,7 +50,7 @@ Grayscale image, with one unique value per object ("object ID", 0 for background
 
 ## Object data
 
-File extension: `.csv`
+File extension: .csv
 
 Object measurements (e.g., mean intensities, morphological features)
 
@@ -61,7 +61,7 @@ CSV file with object IDs as index (`Object` column) and feature/channel names as
 
 ## Object distances
 
-File extension: `.csv`
+File extension: .csv
 
 Pixel distances between objects (e.g., Euclidean centroid distances)
 
@@ -69,7 +69,7 @@ Symmetric CSV file (one per image) with object IDs as both index (`Object` colum
 
 ## Spatial object graphs
 
-File extension: `.csv`
+File extension: .csv
 
 List of directed edges defining a spatial object neighborhood graph
 

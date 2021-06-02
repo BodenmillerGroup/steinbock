@@ -1,36 +1,31 @@
 # Welcome
 
-*steinbock* is a framework for multi-channel image segmentation and data extraction.
-
-## Overview
+*steinbock* is a framework for multi-channel image processing
 
 The *steinbock* framework comprises the following components:
 
-- The [*steinbock* Python package](https://github.com/BodenmillerGroup/steinbock) with the integrated *steinbock* command-line interface
-- The [*steinbock* Docker container](https://hub.docker.com/r/jwindhager/steinbock) exposing the *steinbock* command-line interface (CLI), with supported third-party software (e.g., Ilastik, CellProfiler) pre-installed
+- The [*steinbock* Python package](https://github.com/BodenmillerGroup/steinbock) with the integrated *steinbock* command-line interface (CLI)
+- The [*steinbock* Docker container](https://hub.docker.com/r/jwindhager/steinbock) interactively exposing the *steinbock* command-line interface, with supported third-party software (e.g., Ilastik, CellProfiler) pre-installed
 
-It is extensible and supports any **pixel classification-based image segmentation** workflow.
+!!! note "Modes of usage"
+    *steinbock* can be used both [interactively](cli/intro.md) and [programmatically](python/intro.md) from within Python scripts.
 
-At its core, pixel classification-based image segmentation comprises the following steps:
+## Overview
 
-  1. **Preprocessing**: extract images from raw data for processing
+At its core, *steinbock* provides the following functionality:
 
-  2. **Pixel classification**: probabilistically assign a class (e.g., "Nucleus") to each pixel
+  - Image preprocessing, including tools tiling/stitching images
+  - Pixel classification, to enable pixel classification-based image segmentation
+  - Image segmentation, to identify objects (e.g., cells or other regions of interest)
+  - Object measurement, to extract single-cell data, spatial cell graphs, etc.
+  - Data export, to facilitate downstream data analysis
 
-  3. **Object segmentation**: use the assigned class probabilities to detect objects (e.g., cells)
+While all *steinbock* functionality can be used in a modular fashion, the framework was designed for - and explicitly supports - the following image segmentation workflows:
 
-  4. **Measurement**: extract object features and higher-order data from segmented images
+ - **[Pixel classification-based object segmentation]** Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
+ - **[Deep learning-based cell segmentation]** Greenwald et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. bioRxiv, 2021. DOI: [10.1101/2021.03.01.431313](https://doi.org/10.1101/2021.03.01.431313).
 
-!!! note "Semantic cell segmentation"
-    This workflow describes a *semantic segmentation* approach. Unlike *instance segmentation*, the classification step does not inherently separate objects (e.g., cells) and therefore needs a segmentation step for instance separation.
-
-Currently, the following pixel classification-based workflows are implemented:
-
-  - **[Standard workflow]** Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
-
-In addition, the following end-to-end image segmentation workflows are available:
-
-  - **[Experimental workflow]** Greenwald et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. bioRxiv, 2021. DOI: [10.1101/2021.03.01.431313](https://doi.org/10.1101/2021.03.01.431313).
+ The *steinbock* framework is extensible and support for further workflows may be added in the future. If you are missing support for a workflow, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
 ## Resources
 
@@ -42,12 +37,12 @@ Issue tracker: [https://github.com/BodenmillerGroup/steinbock/issues](https://gi
 
 DockerHub repository: [https://hub.docker.com/r/jwindhager/steinbock](https://hub.docker.com/r/jwindhager/steinbock)
 
-## Authors
-
-- [Jonas Windhager](mailto:jonas.windhager@uzh.ch) (main author)
-
 ## Contributing
 
 Pull requests are welcome. Please make sure to update documentation as appropriate.
 
 For major changes, please open an issue first to discuss what you would like to change.
+
+## Authors
+
+- [Jonas Windhager](mailto:jonas.windhager@uzh.ch) (main author)

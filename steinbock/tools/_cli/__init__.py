@@ -24,7 +24,7 @@ def tools_cmd_group():
     "masks2", nargs=1, type=click.Path(exists=True, file_okay=False)
 )
 @click.option(
-    "--dest",
+    "-o",
     "table_dir",
     type=click.Path(file_okay=False),
     required=True,

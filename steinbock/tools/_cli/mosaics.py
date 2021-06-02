@@ -36,7 +36,7 @@ def mosaics_cmd_group():
     help="Tile size (in pixels)",
 )
 @click.option(
-    "--dest",
+    "-o",
     "tile_dir",
     type=click.Path(file_okay=False),
     required=True,
@@ -58,7 +58,7 @@ def tile_cmd(images, tile_size, tile_dir):
 @mosaics_cmd_group.command(name="stitch", help="Combine tiles into images")
 @click.argument("tiles", nargs=-1, type=click.Path(exists=True))
 @click.option(
-    "--dest",
+    "-o",
     "img_dir",
     type=click.Path(file_okay=False),
     required=True,

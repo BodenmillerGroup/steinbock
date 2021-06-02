@@ -2,6 +2,14 @@ site_name: steinbock
 
 plugins:
   - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            show_root_toc_entry: no
+            show_if_no_docstring: yes
+          selection:
+            filters:
+              - "!^_"
       watch:
         - steinbock
 
@@ -13,6 +21,7 @@ theme:
   name: material
   features:
     - navigation.tabs
+    - navigation.top
 
 extra_css:
   - mkdocstrings.css
@@ -20,8 +29,9 @@ extra_css:
 nav:
   - Home:
     - index.md
-    - install-docker.md
-    - install-python.md
+    - Installation:
+      - install/docker.md
+      - install/python.md
     - changelog.md
     - license.md
   - CLI usage:
@@ -31,11 +41,18 @@ nav:
     - cli/segmentation.md
     - cli/measurement.md
     - cli/export.md
-    - cli/utils.md
+    - cli/tools.md
     - cli/apps.md
   - Python usage:
     - python/intro.md
-    - python/api.md
+    - API documentation:
+      - python/api/steinbock.preprocessing.md
+      - python/api/steinbock.classification.md
+      - python/api/steinbock.segmentation.md
+      - python/api/steinbock.measurement.md
+      - python/api/steinbock.export.md
+      - python/api/steinbock.tools.md
+      - python/api/steinbock.io.md
   - Specifications:
     - specs/file-types.md
-
+    - specs/directory-structure.md

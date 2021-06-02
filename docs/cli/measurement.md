@@ -6,15 +6,27 @@ Various types of data can be extracted, each of which is described in the follow
 
 ## Object data
 
+The commands below will create object data tables in CSV format (see [File types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets.
+
+!!! note "Collecting object data"
+    To collect all object data from all images into a single file, see [Data export](export.md#object-data).
+
+### Intensities
+
 To extract mean object intensities per channel (`object_intensities`):
 
     steinbock measure intensities
+
+!!! note "Pixel aggregation"
+    By default, pixels belonging to an object are aggregated by taking the mean. To specify a different [numpy](https://numpy.org) function for aggregation, use the `--aggr` option (e.g., specify `--aggr median` to measure "median object intensities").
+
+### Region properties
 
 To extract spatial object properties ("region properties", `object_regionprops`):
 
     steinbock measure regionprops
 
-!!! note "Region properties"
+!!! note "Region property selection"
     By default, the following [scikit-image region properties](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be computed:
 
       - `area`
@@ -23,14 +35,9 @@ To extract spatial object properties ("region properties", `object_regionprops`)
       - `minor_axis_length`
       - `eccentricity`
 
-    An alternative selection of [scikit-image region properties](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) can be specified in the `regionprops` command, e.g.:
+    An alternative selection of scikit-image region properties can be specified in the `regionprops` command, e.g.:
 
         steinbock measure regionprops area convex_area perimeter
-
-The above commands will create object data tables in CSV format (see [file types](../specs/file-types.md#object-data), one file per image). The default destination directory paths are mentioned in brackets above.
-
-!!! note "Collecting object data"
-    To collect all object data from all images into a single file, see [data collection](utils.md#data-collection).
 
 ## Object distances
 
@@ -42,12 +49,12 @@ To measure the pairwise Euclidean distances between object borders:
 
     steinbock measure distances borders
 
-The above commands will create symmetric object pixel distance matrices in CSV format (see [file types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `object_dists`.
+The above commands will create symmetric object pixel distance matrices in CSV format (see [File types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `object_distances`.
 
 !!! danger "Computational complexity"
     For `n` objects, the operations in this section require the computation and storage of `n choose 2` distances.
 
-    In particular, computing the pairwise Euclidean distances between cell borders is computationally expensive.
+    Computationally, calculating the pairwise Euclidean distances between cell borders is particularly expensive.
 
 ## Spatial object graphs
 
@@ -62,7 +69,7 @@ To construct spatial k-nearest neighbor (kNN) object graphs (directed):
 
     steinbock measure graphs --kmax 5
 
-The above commands will create directed edge lists in CSV format (see [file types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `object_graphs`.
+The above commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `object_graphs`.
 
 !!! note "Distance-thresholded kNN graphs"
     The options `--dmax` and `--kmax` can be combined to construct distance-thresholded kNN graphs.
@@ -70,7 +77,7 @@ The above commands will create directed edge lists in CSV format (see [file type
 ## CellProfiler (legacy)
 
 !!! danger "Legacy operation"
-    The output of this operation will not be actively supported by future downstream analysis workflows.
+    The output of this operation is not actively supported by downstream processing steps.
 
 ### Pipeline preparation
 
@@ -81,14 +88,14 @@ To prepare a CellProfiler measurement pipeline:
 !!! note "Data/working directory"
     Within the container, your data/working directory containing the CellProfiler pipeline is accessible under `/data`.
 
-By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks into the `cellprofiler_input` directory.
+By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks into the `cellprofiler_input` directory (specify the `--symlinks` option to use symbolic links to avoid data duplication).
 
 !!! note "CellProfiler plugins"
     The generated CellProfiler pipeline makes use of [custom plugins for multi-channel images](https://github.com/BodenmillerGroup/ImcPluginsCP), which are pre-installed in the *steinbock* Docker container. It can be inspected using CellProfiler as described in the following section.
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [tools](utils.md#cellprofiler)):
+To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [Apps](apps.md#cellprofiler)):
 
     steinbock apps cellprofiler
 

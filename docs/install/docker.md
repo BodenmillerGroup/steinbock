@@ -1,6 +1,8 @@
-# Installation (Docker)
+# Docker
 
-Here, the installation and configuration of the *steinbock* Docker container is described.
+The *steinbock* framework can be used interactively using the *steinbock* Docker container.
+
+In this section, the installation and configuration of the *steinbock* Docker container is described.
 
 ## Requirements
 
@@ -18,35 +20,42 @@ For reproducibility, it is recommended to always pull a specific release, e.g.:
 
 ## Configuration
 
+In principle, the *steinbock* Docker container can be run on any Docker-enabled platform:
+
+    docker run jwindhager/steinbock:0.4.0
+
+However, commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) may require further system configuration and additional arguments to `docker run`. To simplify the use of the *steinbock* command-line interface, it is therefore recommended to create a `steinbock` alias for the command shown above, as explained in the following sections.
+
 ### Windows
 
-!!! danger "Experimental feature"
-    Running *steinbock* on Windows platforms is not recommended.
+To create a `steinbock` command alias for running the *steinbock* Docker container:
 
-In the following instructions, instead of calling `steinbock`, type:
+    doskey steinbock=docker run -v "C:\data":/data jwindhager/steinbock:0.4.0 $*
 
-    docker run -v "C:\data":/data jwindhager/steinbock:0.4.0
+In the command above, adapt the path to your *steinbock* data/working directory (`C:\data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` without typing the full Docker command.
 
-In the command above, adapt the path to your *steinbock* data/working directory (`C:\data`) and the *steinbock* Docker container version (`0.4.0`) as needed.
+To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
+
+    steinbock --version
 
 !!! note "Graphical user interfaces on Windows hosts"
     Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host, if graphical user interfaces are required.
 
 ### Linux/MacOS
 
-Create an alias for running the *steinbock* Docker container:
+To create a `steinbock` command alias for running the *steinbock* Docker container:
 
     alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.4.0"
 
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` without typing the full Docker command everytime.
+In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` without typing the full Docker command.
 
-If necessary, allow the Docker container to run graphical user interfaces:
+To allow the *steinbock* Docker container to run graphical user interfaces, if necessary:
 
     xhost +local:root
 
-Check whether *steinbock* runs:
+To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
 
-    steinbock
+    steinbock --version
 
 !!! note "File permissions"
     By default, the *steinbock* Docker container internally runs as `steinbock` user with user ID (UID) `1000` and group ID (GID) `1000`. Files created from within the container will therefore be owned by the host system user/group matching these IDs. On most Linux systems, by default, this will map to the standard user (e.g., `ubuntu`). 
@@ -67,3 +76,7 @@ Check whether *steinbock* runs:
       - **[Developer]** If you would like to provide a workaround for this inconvenience (e.g., automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request!
 
     The data/working directory must be writable by the `steinbock` user from within the *steinbock* Docker container.
+
+## Usage
+
+Please refer to [CLI usage](../cli/intro.md) for usage instructions.
