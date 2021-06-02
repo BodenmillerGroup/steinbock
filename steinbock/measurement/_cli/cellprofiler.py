@@ -1,5 +1,4 @@
 import click
-import os
 import shutil
 import sys
 
@@ -67,13 +66,6 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler input directory",
 )
-@click.option(
-    "--symlinks/--no-symlinks",
-    "use_symlinks",
-    default=False,
-    show_default=True,
-    help="Use symbolic links instead of copying files",
-)
 @check_steinbock_version
 def prepare_cmd(
     img_dir,
@@ -81,7 +73,6 @@ def prepare_cmd(
     panel_file,
     measurement_pipeline_file,
     input_dir,
-    use_symlinks,
 ):
     panel = io.read_panel(panel_file)
     img_files = io.list_image_files(img_dir)
@@ -89,12 +80,8 @@ def prepare_cmd(
     Path(input_dir).mkdir(exist_ok=True)
     for img_file, mask_file in zip(img_files, mask_files):
         mask_name = f"{mask_file.stem}_mask{mask_file.suffix}"
-        if use_symlinks:
-            os.symlink(img_file, Path(input_dir) / img_file.name)
-            os.symlink(mask_file, Path(input_dir) / mask_name)
-        else:
-            shutil.copyfile(img_file, Path(input_dir) / img_file.name)
-            shutil.copyfile(mask_file, Path(input_dir) / mask_name)
+        shutil.copyfile(img_file, Path(input_dir) / img_file.name)
+        shutil.copyfile(mask_file, Path(input_dir) / mask_name)
     cellprofiler.create_and_save_measurement_pipeline(
         measurement_pipeline_file, len(panel.index)
     )
