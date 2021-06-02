@@ -30,15 +30,15 @@ def to_anndata_from_disk(
 ) -> Generator[Tuple[Path, AnnData], None, None]:
     for i, x_file in enumerate(x_files):
         x = io.read_data(x_file)
-        obs = None
+        merged_obs = None
         if len(obs_file_lists) > 0:
-            obs = io.read_data(obs_file_lists[0][i])
-            for arg in obs_file_lists[1:]:
-                obs = pd.merge(
-                    obs,
-                    io.read_data(arg[i]),
+            merged_obs = io.read_data(obs_file_lists[0][i])
+            for obs_files in obs_file_lists[1:]:
+                merged_obs = pd.merge(
+                    merged_obs,
+                    io.read_data(obs_files[i]),
                     left_index=True,
                     right_index=True,
                 )
-        yield Path(x_file), AnnData(X=x, obs=obs)
-        del x, obs
+        yield Path(x_file), AnnData(X=x, obs=merged_obs)
+        del x, merged_obs

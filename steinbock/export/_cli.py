@@ -75,16 +75,14 @@ def ome_cmd(img_dir, panel_file, xtiff_dir):
 @check_steinbock_version
 def csv_cmd(data_dirs, table_file):
     if not data_dirs:
-        data_dirs = filter(
-            lambda x: Path(x).exists(),
-            ["object_intensities.csv", "object_regionprops.csv"],
-        )
+        data_dirs = ["object_intensities.csv", "object_regionprops.csv"]
+        data_dirs = [x for x in data_dirs if Path(x).exists()]
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = []
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.to_table_from_disk(data_file_lists)
+    table = data.to_table_from_disk(*data_file_lists)
     table.reset_index(inplace=True)
     table.to_csv(table_file, index=False)
 
@@ -106,17 +104,15 @@ def csv_cmd(data_dirs, table_file):
 @check_steinbock_version
 def fcs_cmd(data_dirs, table_file):
     if not data_dirs:
-        data_dirs = filter(
-            lambda x: Path(x).exists(),
-            ["object_intensities.csv", "object_regionprops.csv"],
-        )
+        data_dirs = ["object_intensities.csv", "object_regionprops.csv"]
+        data_dirs = [x for x in data_dirs if Path(x).exists()]
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = []
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.to_table_from_disk(data_file_lists)
-    write_fcs(table_file, table.columns.names, table.values)
+    table = data.to_table_from_disk(*data_file_lists)
+    write_fcs(table_file, table.columns.values, table.values)
 
 
 @export_cmd_group.command(
@@ -126,7 +122,7 @@ def fcs_cmd(data_dirs, table_file):
     "--x",
     "x_data_dir",
     type=click.Path(exists=True, file_okay=False),
-    default="object_intensities.csv",
+    default="object_intensities",
     show_default=True,
     help="Path to the main data directory",
 )
@@ -207,7 +203,7 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
     "--dest",
     "networkx_dir",
     type=click.Path(file_okay=False),
-    default="graphs_export",
+    default="graphs",
     show_default=True,
     help="Path to the networkx output directory",
 )

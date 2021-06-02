@@ -54,7 +54,7 @@ To export spatial object graphs with object data as node attributes:
 
     steinbock export graphs --data object_intensities
 
-By default, this will generate one .graphml file per graph using the [networkx](https://networkx.org) Python package, with object intensities as node attributes. The default destination directory is `graphs_export`.
+By default, this will generate one .graphml file per graph using the [networkx](https://networkx.org) Python package, with object intensities as node attributes. The default destination directory is `graphs`.
 
 !!! note "NetworkX file format"
     To export the graphs as .gexf or .gml, specify `--format gexf` or `--format gml`, respectively.

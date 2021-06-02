@@ -186,9 +186,9 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
         ) in imc.preprocess_images_from_disk(
             mcd_files, txt_files, metal_order=metal_order, hpf=hpf
         ):
-            img_stem = Path(img_dir) / Path(mcd_txt_file).stem
+            img_file_stem = Path(mcd_txt_file).stem
             if acquisition_id is not None:
-                img_stem.name += f"_{acquisition_id}"
-            img_file = io.write_image(img, img_stem)
+                img_file_stem += f"_{acquisition_id}"
+            img_file = io.write_image(img, Path(img_dir) / img_file_stem)
             click.echo(img_file)
             del img

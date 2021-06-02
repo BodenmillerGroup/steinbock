@@ -66,16 +66,16 @@ RUN pip3 install -r requirements.txt && \
 ENV TF_CPP_MIN_LOG_LEVEL="2" \
     NO_AT_BRIDGE="1"
 
-COPY . steinbock
-RUN pip3 install ./steinbock[IMC,DeepCell] && \
-    rm -r steinbock
-
 RUN wget -q https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-7.tar.gz && \
     mkdir -p /home/steinbock/.keras/models && \
     tar -xzf MultiplexSegmentation-7.tar.gz -C /home/steinbock/.keras/models && \
     rm /home/steinbock/.keras/models/._MultiplexSegmentation && \
     chown -R steinbock:steinbock /home/steinbock/.keras && \
     rm MultiplexSegmentation-7.tar.gz
+
+COPY . steinbock
+RUN pip3 install ./steinbock[IMC,DeepCell] && \
+    rm -r steinbock
 
 USER steinbock
 WORKDIR /data

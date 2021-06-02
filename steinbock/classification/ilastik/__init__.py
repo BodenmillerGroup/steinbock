@@ -111,13 +111,14 @@ def create_ilastik_image(
         def aggr(channel_img):
             return np.apply_along_axis(aggr_func, 0, channel_img)
 
-        ilastik_img = np.stack(
-            [
-                aggr(ilastik_img[channel_groups == channel_group])
-                for channel_group in np.unique(channel_groups)
-                if not np.isnan(channel_group)
-            ]
-        )
+        ilastik_img = [
+            aggr(ilastik_img[channel_groups == channel_group])
+            for channel_group in np.unique(channel_groups)
+            if not np.isnan(channel_group)
+        ]
+        if len(ilastik_img) == 0:
+            raise ValueError("No channels selected for ilastik")
+        ilastik_img = np.stack(ilastik_img)
     if prepend_mean:
         mean_img = ilastik_img.mean(axis=0, keepdims=True)
         ilastik_img = np.concatenate((mean_img, ilastik_img))
@@ -172,9 +173,7 @@ def create_ilastik_crops_from_disk(
     rng = np.random.default_rng(seed=seed)
     for ilastik_img_file in ilastik_img_files:
         x_start, y_start, ilastik_crop = create_ilastik_crop(
-            read_ilastik_image(ilastik_img_file, _img_dataset_path),
-            crop_size,
-            rng,
+            read_ilastik_image(ilastik_img_file), crop_size, rng,
         )
         yield Path(ilastik_img_file), x_start, y_start, ilastik_crop
         del ilastik_crop
@@ -214,7 +213,7 @@ def run_pixel_classification(
     memory_limit: Optional[int] = None,
     ilastik_env: Optional[Dict[str, str]] = None,
 ) -> subprocess.CompletedProcess:
-    output_filename_format = Path(ilastik_probab_dir) / "{{nickname}}.tiff"
+    output_filename_format = Path(ilastik_probab_dir) / "{nickname}.tiff"
     args = [
         str(ilastik_binary),
         "--headless",
