@@ -67,7 +67,7 @@ ENV TF_CPP_MIN_LOG_LEVEL="2" \
     NO_AT_BRIDGE="1"
 
 COPY . steinbock
-RUN pip3 install ./steinbock[IMC] && \
+RUN pip3 install ./steinbock[IMC,DeepCell] && \
     rm -r steinbock
 
 RUN wget -q https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-7.tar.gz && \

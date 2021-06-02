@@ -2,11 +2,17 @@ import click
 import numpy as np
 
 from pathlib import Path
-from tensorflow.keras.models import load_model
 
 from steinbock import io
 from steinbock._env import check_steinbock_version, keras_models_dir
 from steinbock.segmentation import deepcell
+
+deepcell_cli_available = deepcell.deepcell_available
+if deepcell_cli_available:
+    try:
+        from tensorflow.keras.models import load_model
+    except:
+        deepcell_cli_available = False
 
 
 _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}

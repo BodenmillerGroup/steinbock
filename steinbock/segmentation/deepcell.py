@@ -1,13 +1,19 @@
 import numpy as np
 
-from deepcell.applications import Mesmer
 from enum import Enum
 from os import PathLike
 from pathlib import Path
-from tensorflow.keras.models import Model
 from typing import Callable, Generator, Optional, Sequence, Tuple, Union
 
 from steinbock import io
+
+try:
+    from deepcell.applications import Mesmer
+    from tensorflow.keras.models import Model
+
+    deepcell_available = True
+except:
+    deepcell_available = False
 
 
 class DeepcellApplication(Enum):

@@ -2,7 +2,10 @@ import click
 
 from steinbock._cli.utils import OrderedClickGroup
 from steinbock.segmentation._cli.cellprofiler import cellprofiler_cmd_group
-from steinbock.segmentation._cli.deepcell import deepcell_cmd
+from steinbock.segmentation._cli.deepcell import (
+    deepcell_cli_available,
+    deepcell_cmd,
+)
 
 
 @click.group(
@@ -15,4 +18,5 @@ def segment_cmd_group():
 
 
 segment_cmd_group.add_command(cellprofiler_cmd_group)
-segment_cmd_group.add_command(deepcell_cmd)
+if deepcell_cli_available:
+    segment_cmd_group.add_command(deepcell_cmd)
