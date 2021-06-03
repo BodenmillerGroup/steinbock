@@ -2,8 +2,8 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "docker-build",
 			"label": "docker-build",
+			"type": "docker-build",
 			"platform": "python",
 			"dockerBuild": {
 				"tag": "steinbock:latest",
@@ -13,19 +13,18 @@
 			}
 		},
 		{
-			"type": "docker-run",
 			"label": "docker-run: debug",
+			"type": "docker-run",
 			"dependsOn": [
 				"docker-build"
 			],
 			"python": {
-				"module": "steinbock",
-				"args": []
+				"module": "steinbock"
 			}
 		},
 		{
-			"type": "shell",
 			"label": "compose-up: debug",
+			"type": "shell",
 			"dependsOn": [
 				"docker-build"
 			],
