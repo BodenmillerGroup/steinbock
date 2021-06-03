@@ -8,31 +8,32 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 [Install Docker](https://docs.docker.com/get-docker/)
 
-## Installation
+!!! note "Adding a user to the `docker-users` group on Windows hosts"
+    On Windows hosts, to add a user to the `docker-users` group using the Command Prompt (as administrator):
 
-Pull the latest version of the *steinbock* Docker container:
+        net localgroup /add docker-users <username>
+		
+	Replace `<username>` with the name of the user (for domain accounts, use the `<domain>\<username>` format).
 
-    docker pull jwindhager/steinbock
-
-For reproducibility, it is recommended to always pull a specific release, e.g.:
-
-    docker pull jwindhager/steinbock:0.4.0
-
-## Configuration
+## Usage
 
 In principle, the *steinbock* Docker container can be run on any Docker-enabled platform:
 
+    docker run jwindhager/steinbock
+
+For reproducibility, it is recommended to always pull a specific release, e.g.:
+
     docker run jwindhager/steinbock:0.4.0
 
-However, commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) may require further system configuration and additional arguments to `docker run`. To simplify the use of the *steinbock* command-line interface, it is therefore recommended to create a `steinbock` alias for the command shown above, as explained in the following sections.
+Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) may require further system configuration and additional arguments to `docker run`. To simplify the use of the *steinbock* command-line interface, it is therefore recommended to use a `steinbock` alias for the `docker run` command, as explained in the following.
 
 ### Windows
 
-To create a `steinbock` command alias for running the *steinbock* Docker container:
+On the Command Prompt, to create a `steinbock` command alias for running *steinbock*:
 
-    doskey steinbock=docker run -v "C:\data":/data jwindhager/steinbock:0.4.0 $*
+    doskey steinbock=docker run -v "C:\Data":/data jwindhager/steinbock:0.4.0 $*
 
-In the command above, adapt the path to your *steinbock* data/working directory (`C:\data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` without typing the full Docker command.
+In the command above, adapt the path to your *steinbock* data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` from the current Command Prompt without typing the full Docker command.
 
 To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
 
@@ -43,11 +44,11 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 
 ### Linux/MacOS
 
-To create a `steinbock` command alias for running the *steinbock* Docker container:
+On the terminal, to create a `steinbock` command alias for running *steinbock*:
 
     alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.4.0"
 
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` without typing the full Docker command.
+In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.4.0`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
 
 To allow the *steinbock* Docker container to run graphical user interfaces, if necessary:
 
