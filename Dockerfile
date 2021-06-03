@@ -61,7 +61,8 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/Bodenmille
 # steinbock
 
 COPY ./requirements.txt .
-RUN pip3 install -r requirements.txt && \
+RUN pip3 install numpy==1.20.3 && \
+    pip3 install -r requirements.txt && \
     rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" \
     NO_AT_BRIDGE="1"
