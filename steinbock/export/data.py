@@ -40,5 +40,6 @@ def to_anndata_from_disk(
                     left_index=True,
                     right_index=True,
                 )
-        yield Path(x_file), AnnData(X=x, obs=merged_obs)
+            merged_obs.index = merged_obs.index.astype(str)
+        yield Path(x_file), AnnData(X=x.values, obs=merged_obs)
         del x, merged_obs
