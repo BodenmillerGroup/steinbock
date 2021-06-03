@@ -121,7 +121,7 @@ def deepcell_cmd(
     channel_groups = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
-        if "deepcell" in panel:
+        if "deepcell" in panel and panel["deepcell"].notna().any():
             channel_groups = panel["deepcell"].values
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)

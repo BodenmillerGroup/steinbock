@@ -75,8 +75,7 @@ def ome_cmd(img_dir, panel_file, xtiff_dir):
 @check_steinbock_version
 def csv_cmd(data_dirs, table_file):
     if not data_dirs:
-        data_dirs = ["object_intensities.csv", "object_regionprops.csv"]
-        data_dirs = [x for x in data_dirs if Path(x).exists()]
+        return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = []
     for data_dir in data_dirs[1:]:
@@ -104,8 +103,7 @@ def csv_cmd(data_dirs, table_file):
 @check_steinbock_version
 def fcs_cmd(data_dirs, table_file):
     if not data_dirs:
-        data_dirs = ["object_intensities.csv", "object_regionprops.csv"]
-        data_dirs = [x for x in data_dirs if Path(x).exists()]
+        return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = []
     for data_dir in data_dirs[1:]:

@@ -81,14 +81,13 @@ def run_object_segmentation(
             def aggr(channel_img):
                 return np.apply_along_axis(aggr_func, 0, channel_img)
 
-            img = [
-                aggr(img[channel_groups == channel_group])
-                for channel_group in np.unique(channel_groups)
-                if not np.isnan(channel_group)
-            ]
-            if len(img) == 0:
-                raise ValueError("No channels selected for deepcell")
-            img = np.stack(img)
+            img = np.stack(
+                [
+                    aggr(img[channel_groups == channel_group])
+                    for channel_group in np.unique(channel_groups)
+                    if not np.isnan(channel_group)
+                ]
+            )
         mask = predict(img, **predict_kwargs)
         yield Path(img_file), mask
         del img, mask

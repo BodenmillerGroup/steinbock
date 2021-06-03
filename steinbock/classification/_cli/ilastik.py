@@ -115,7 +115,7 @@ def prepare_cmd(
     channel_groups = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
-        if "ilastik" in panel:
+        if "ilastik" in panel and panel["ilastik"].notna().any():
             channel_groups = panel["ilastik"].values
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)

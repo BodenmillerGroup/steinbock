@@ -111,14 +111,13 @@ def create_ilastik_image(
         def aggr(channel_img):
             return np.apply_along_axis(aggr_func, 0, channel_img)
 
-        ilastik_img = [
-            aggr(ilastik_img[channel_groups == channel_group])
-            for channel_group in np.unique(channel_groups)
-            if not np.isnan(channel_group)
-        ]
-        if len(ilastik_img) == 0:
-            raise ValueError("No channels selected for ilastik")
-        ilastik_img = np.stack(ilastik_img)
+        ilastik_img = np.stack(
+            [
+                aggr(ilastik_img[channel_groups == channel_group])
+                for channel_group in np.unique(channel_groups)
+                if not np.isnan(channel_group)
+            ]
+        )
     if prepend_mean:
         mean_img = ilastik_img.mean(axis=0, keepdims=True)
         ilastik_img = np.concatenate((mean_img, ilastik_img))
