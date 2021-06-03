@@ -73,9 +73,9 @@ RUN wget -q https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/Multip
     chown -R steinbock:steinbock /home/steinbock/.keras && \
     rm MultiplexSegmentation-7.tar.gz
 
-COPY . steinbock
-RUN pip3 install ./steinbock[IMC,DeepCell] && \
-    rm -r steinbock
+RUN mkdir /app
+COPY . /app/steinbock
+RUN pip3 install -e /app/steinbock[IMC,DeepCell]
 
 USER steinbock
 WORKDIR /data

@@ -9,7 +9,7 @@
                 "pathMappings": [
                     {
                         "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app"
+                        "remoteRoot": "/app/steinbock"
                     }
                 ],
                 "projectType": "general"
@@ -27,9 +27,10 @@
             "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/app"
+                    "remoteRoot": "/app/steinbock"
                 }
-            ]
+            ],
+            "justMyCode": false
         }
     ]
 }
