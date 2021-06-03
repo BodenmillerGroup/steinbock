@@ -11,7 +11,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ~/.Xauthority:/home/steinbock/.Xauthority:ro
     entrypoint: /bin/bash
-    command: ["-c", "pip3 install debugpy -t /tmp && python3 /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 /app/steinbock/__main__.py"]
+    command: ["-c", "pip3 install debugpy -t /tmp && python3 /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m steinbock"]
     ports:
       - 5678:5678
     environment:

@@ -19,7 +19,8 @@
 				"docker-build"
 			],
 			"python": {
-				"file": "/app/steinbock/__main__.py"
+				"module": "steinbock",
+				"args": []
 			}
 		},
 		{
@@ -29,7 +30,6 @@
 				"docker-build"
 			],
 			"command": "docker-compose -f docker-compose.yml up -d"
-		  }
-		  
+		}
 	]
 }
