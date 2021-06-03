@@ -1,19 +1,25 @@
 import numpy as np
 
 from enum import Enum
+from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
-from typing import Callable, Generator, Optional, Sequence, Tuple, Union
+from typing import (
+    Callable,
+    Generator,
+    Optional,
+    Sequence,
+    Tuple,
+    TYPE_CHECKING,
+    Union,
+)
 
 from steinbock import io
 
-try:
-    from deepcell.applications import Mesmer
+if TYPE_CHECKING:
     from tensorflow.keras.models import Model
 
-    deepcell_available = True
-except:
-    deepcell_available = False
+deepcell_available = find_spec("deepcell") is not None
 
 
 class DeepcellApplication(Enum):
@@ -23,6 +29,8 @@ class DeepcellApplication(Enum):
 
 
 def _mesmer_app(model=None):
+    from deepcell.applications import Mesmer
+
     app = Mesmer(model=model)
 
     def predict(
@@ -58,7 +66,7 @@ _apps = {
 def run_object_segmentation(
     img_files: Sequence[Union[str, PathLike]],
     application: DeepcellApplication,
-    model: Optional[Model] = None,
+    model: Optional["Model"] = None,
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,

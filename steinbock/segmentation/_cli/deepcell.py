@@ -8,12 +8,6 @@ from steinbock._env import check_steinbock_version, keras_models_dir
 from steinbock.segmentation import deepcell
 
 deepcell_cli_available = deepcell.deepcell_available
-if deepcell_cli_available:
-    try:
-        from tensorflow.keras.models import load_model
-    except:
-        deepcell_cli_available = False
-
 
 _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
 
@@ -128,6 +122,8 @@ def deepcell_cmd(
     application = deepcell.DeepcellApplication(application_name)
     model = None
     if model_path_or_name is not None:
+        from tensorflow.keras.models import load_model
+
         if Path(model_path_or_name).exists():
             model = load_model(model_path_or_name)
         else:
