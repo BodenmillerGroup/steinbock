@@ -1,5 +1,6 @@
 import click
 import numpy as np
+import yaml
 
 from pathlib import Path
 
@@ -80,7 +81,7 @@ _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
     type=click.FLOAT,
     default=1.0,
     show_default=True,
-    help="Pixel size in micrometers (Mesmer only)",
+    help="[Mesmer] Pixel size in micrometers",
 )
 @click.option(
     "--type",
@@ -89,7 +90,19 @@ _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
     default="whole-cell",
     show_default=True,
     show_choices=True,
-    help="Segmentation type (Mesmer only)",
+    help="[Mesmer] Segmentation type",
+)
+@click.option(
+    "--preprocess",
+    "preprocess_file",
+    type=click.Path(exists=True, dir_okay=False),
+    help="[Mesmer] Preprocessing parameters (YAML file)",
+)
+@click.option(
+    "--postprocess",
+    "postprocess_file",
+    type=click.Path(exists=True, dir_okay=False),
+    help="[Mesmer] Postprocessing parameters (YAML file)",
 )
 @click.option(
     "--dest",
@@ -110,6 +123,8 @@ def deepcell_cmd(
     aggr_func_name,
     pixel_size_um,
     segmentation_type,
+    preprocess_file,
+    postprocess_file,
     mask_dir,
 ):
     channel_groups = None
@@ -128,6 +143,14 @@ def deepcell_cmd(
             model = load_model(model_path_or_name)
         else:
             model = load_model(_model_paths[model_path_or_name])
+    preprocess_kwargs = None
+    if preprocess_file is not None:
+        with Path(preprocess_file).open() as f:
+            preprocess_kwargs = yaml.load(f)
+    postprocess_kwargs = None
+    if postprocess_file is not None:
+        with Path(postprocess_file).open() as f:
+            postprocess_kwargs = yaml.load(f)
     Path(mask_dir).mkdir(exist_ok=True)
     for img_file, mask in deepcell.run_object_segmentation(
         img_files,
@@ -139,6 +162,8 @@ def deepcell_cmd(
         aggr_func=aggr_func,
         pixel_size_um=pixel_size_um,
         segmentation_type=segmentation_type,
+        preprocess_kwargs=preprocess_kwargs,
+        postprocess_kwargs=postprocess_kwargs,
     ):
         mask_stem = Path(mask_dir) / img_file.stem
         mask_file = io.write_mask(mask, mask_stem)

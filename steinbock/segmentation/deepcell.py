@@ -5,7 +5,9 @@ from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
 from typing import (
+    Any,
     Callable,
+    Dict,
     Generator,
     Optional,
     Sequence,
@@ -38,7 +40,8 @@ def _mesmer_app(model=None):
         *,
         pixel_size_um: Optional[float] = None,
         segmentation_type: Optional[str] = None,
-        **kwargs
+        preprocess_kwargs: Optional[Dict[str, Any]] = None,
+        postprocess_kwargs: Optional[Dict[str, Any]] = None,
     ) -> np.ndarray:
         assert img.ndim == 3
         if pixel_size_um is None:
@@ -50,7 +53,9 @@ def _mesmer_app(model=None):
             batch_size=1,
             image_mpp=pixel_size_um,
             compartment=segmentation_type,
-            **kwargs
+            preprocess_kwargs=preprocess_kwargs or {},
+            postprocess_kwargs_whole_cell=postprocess_kwargs or {},
+            postprocess_kwargs_nuclear=postprocess_kwargs or {},
         )[0, :, :, 0]
         assert mask.shape == img.shape[1:]
         return mask
