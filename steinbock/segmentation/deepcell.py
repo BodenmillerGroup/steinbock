@@ -42,7 +42,6 @@ def _mesmer_app(model=None):
         segmentation_type: Optional[str] = None,
         preprocess_kwargs: Optional[Dict[str, Any]] = None,
         postprocess_kwargs: Optional[Dict[str, Any]] = None,
-        **kwargs,
     ) -> np.ndarray:
         assert img.ndim == 3
         if pixel_size_um is None:

@@ -84,9 +84,6 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
     
     Specify `--minmax` to enable min-max normalization and `--zscore` to enable z-score normalization.
 
-!!! note "Hyper-parameters"
-    To specify DeepCell application hyper-parameters, such as [the hyper-parameters for Mesmer](https://deepcell.readthedocs.io/en/stable/_modules/deepcell/applications/mesmer.html#Mesmer.predict), use the `--preprocess` and `--postprocess` options to specify YAML files containing the hyper-parameter values.
-
 !!! note "GPU support"
     For compatibility reasons, DeepCell segmentation using GPUs is not supported by the *steinbock* Docker container.
     
