@@ -45,11 +45,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 
 RUN wget -q https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
-    pip3 install numpy wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
+    pip3 install --upgrade numpy wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 
 RUN git clone -b "${CELLPROFILER_VERSION}" --depth 1 https://github.com/CellProfiler/CellProfiler.git && \
-    pip3 install --prefix=/usr/local ./CellProfiler && \
+    pip3 install --upgrade --prefix=/usr/local ./CellProfiler && \
     rm -r CellProfiler
 
 # cellprofiler plugins
@@ -61,7 +61,8 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/Bodenmille
 # steinbock
 
 COPY ./requirements.txt .
-RUN pip3 install -r requirements.txt && \
+RUN pip3 install --upgrade deepcell==0.9.0 && \
+    pip3 install --upgrade -r requirements.txt && \
     rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" \
     NO_AT_BRIDGE="1"
@@ -75,7 +76,7 @@ RUN wget -q https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/Multip
 
 RUN mkdir /app
 COPY . /app/steinbock
-RUN pip3 install -e /app/steinbock[IMC,DeepCell]
+RUN pip3 install --upgrade -e /app/steinbock[IMC,DeepCell]
 
 USER steinbock
 WORKDIR /data
