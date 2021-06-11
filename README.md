@@ -19,6 +19,6 @@
     <img src="https://img.shields.io/docker/v/jwindhager/steinbock?label=docker%20version&sort=semver" />
 </a>
 
-Dockerized multi-channel image segmentation framework
+Dockerized multi-channel image processing framework
 
 Documentation is available at https://bodenmillergroup.github.io/steinbock
