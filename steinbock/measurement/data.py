@@ -1,27 +1,36 @@
 import numpy as np
 import pandas as pd
 
+from enum import Enum
 from os import PathLike
 from pathlib import Path
+from scipy.ndimage import measurements
 from skimage.measure import regionprops_table
-from typing import Callable, Generator, Sequence, Tuple, Union
+from typing import Generator, Sequence, Tuple, Union
 
 from steinbock import io
+
+
+class Measurement(Enum):
+    SUM = measurements.sum_labels
+    MIN = measurements.minimum
+    MAX = measurements.maximum
+    MEAN = measurements.mean
+    MEDIAN = measurements.median
+    STD = measurements.standard_deviation
+    VAR = measurements.variance
 
 
 def measure_intensites(
     img: np.ndarray,
     mask: np.ndarray,
     channel_names: Sequence[str],
-    aggr_func: Callable[[np.ndarray], float],
+    measurement: Measurement,
 ) -> pd.DataFrame:
     object_ids = np.unique(mask[mask != 0])
     data = {
-        channel_name: [
-            aggr_func(img[channel_index, mask == object_id])
-            for object_id in object_ids
-        ]
-        for channel_index, channel_name in enumerate(channel_names)
+        channel_name: measurement.value(img[i], labels=mask, index=object_ids)
+        for i, channel_name in enumerate(channel_names)
     }
     return pd.DataFrame(
         data=data, index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
@@ -32,14 +41,14 @@ def measure_intensities_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     channel_names: Sequence[str],
-    aggr_func: Callable[[np.ndarray], float],
+    measurement: Measurement,
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
         intensities = measure_intensites(
             io.read_image(img_file),
             io.read_mask(mask_file),
             channel_names,
-            aggr_func,
+            measurement,
         )
         yield Path(img_file), Path(mask_file), intensities
         del intensities
