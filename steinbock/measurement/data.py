@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from enum import Enum
+from functools import partial
 from os import PathLike
 from pathlib import Path
 from scipy.ndimage import measurements
@@ -14,13 +15,13 @@ from steinbock import io
 class Measurement(Enum):
     """"""
 
-    SUM = measurements.sum_labels
-    MIN = measurements.minimum
-    MAX = measurements.maximum
-    MEAN = measurements.mean
-    MEDIAN = measurements.median
-    STD = measurements.standard_deviation
-    VAR = measurements.variance
+    SUM = partial(measurements.sum_labels)
+    MIN = partial(measurements.minimum)
+    MAX = partial(measurements.maximum)
+    MEAN = partial(measurements.mean)
+    MEDIAN = partial(measurements.median)
+    STD = partial(measurements.standard_deviation)
+    VAR = partial(measurements.variance)
 
 
 def measure_intensites(

@@ -1,6 +1,7 @@
 import numpy as np
 
 from enum import Enum
+from functools import partial
 from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
@@ -60,7 +61,7 @@ def _mesmer_application(model=None):
 class Application(Enum):
     """"""
 
-    MESMER = _mesmer_application
+    MESMER = partial(_mesmer_application)
 
 
 def run_object_segmentation(
