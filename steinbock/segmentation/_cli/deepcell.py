@@ -12,6 +12,10 @@ deepcell_cli_available = deepcell.deepcell_available
 
 _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
 
+_applications = {
+    "mesmer": deepcell.Application.MESMER,
+}
+
 
 @click.command(
     name="deepcell", help="Run a object segmentation batch using DeepCell"
@@ -19,9 +23,7 @@ _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
 @click.option(
     "--app",
     "application_name",
-    type=click.Choice(
-        [deepcell.DeepcellApplication.MESMER.value], case_sensitive=True
-    ),
+    type=click.Choice(list(_applications.keys()), case_sensitive=True),
     required=True,
     show_choices=True,
     help="DeepCell application name",
@@ -30,7 +32,6 @@ _model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
     "--model",
     "model_path_or_name",
     type=click.STRING,
-    show_choices=True,
     help=(
         "Path to custom Keras model or name of Keras model stored in "
         f"{keras_models_dir} [{', '.join(_model_paths.keys())}]; "
@@ -134,7 +135,6 @@ def deepcell_cmd(
             channel_groups = panel["deepcell"].values
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)
-    application = deepcell.DeepcellApplication(application_name)
     model = None
     if model_path_or_name is not None:
         from tensorflow.keras.models import load_model
@@ -154,7 +154,7 @@ def deepcell_cmd(
     Path(mask_dir).mkdir(exist_ok=True)
     for img_file, mask in deepcell.run_object_segmentation(
         img_files,
-        application,
+        _applications[application_name],
         model=model,
         channelwise_minmax=channelwise_minmax,
         channelwise_zscore=channelwise_zscore,

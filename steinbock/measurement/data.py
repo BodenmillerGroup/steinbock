@@ -12,6 +12,8 @@ from steinbock import io
 
 
 class Measurement(Enum):
+    """"""
+
     SUM = measurements.sum_labels
     MIN = measurements.minimum
     MAX = measurements.maximum

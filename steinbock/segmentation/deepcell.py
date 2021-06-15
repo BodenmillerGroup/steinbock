@@ -24,13 +24,7 @@ if TYPE_CHECKING:
 deepcell_available = find_spec("deepcell") is not None
 
 
-class DeepcellApplication(Enum):
-    """"""
-
-    MESMER = "Mesmer"
-
-
-def _mesmer_app(model=None):
+def _mesmer_application(model=None):
     from deepcell.applications import Mesmer
 
     app = Mesmer(model=model)
@@ -63,22 +57,23 @@ def _mesmer_app(model=None):
     return app, predict
 
 
-_apps = {
-    DeepcellApplication.MESMER: _mesmer_app,
-}
+class Application(Enum):
+    """"""
+
+    MESMER = _mesmer_application
 
 
 def run_object_segmentation(
     img_files: Sequence[Union[str, PathLike]],
-    application: DeepcellApplication,
+    application: Application,
     model: Optional["Model"] = None,
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.nanmean,
-    **predict_kwargs
+    **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
-    app, predict = _apps[application](model=model)
+    app, predict = application.value(model=model)
     for img_file in img_files:
         img = io.read_image(img_file)
         if channelwise_minmax:
