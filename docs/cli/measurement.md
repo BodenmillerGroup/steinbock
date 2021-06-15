@@ -13,7 +13,7 @@ The commands below will create object data tables in CSV format (see [File types
 
 ### Intensities
 
-To extract mean object intensities per channel (`object_intensities`):
+To extract mean object intensities per channel (`intensities`):
 
     steinbock measure intensities
 
@@ -22,7 +22,7 @@ To extract mean object intensities per channel (`object_intensities`):
 
 ### Region properties
 
-To extract spatial object properties ("region properties", `object_regionprops`):
+To extract spatial object properties ("region properties", `regionprops`):
 
     steinbock measure regionprops
 
@@ -49,7 +49,7 @@ To measure the pairwise Euclidean distances between object borders:
 
     steinbock measure distances borders
 
-The above commands will create symmetric object pixel distance matrices in CSV format (see [File types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `object_distances`.
+The above commands will create symmetric object pixel distance matrices in CSV format (see [File types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `distances`.
 
 !!! danger "Computational complexity"
     For `n` objects, the operations in this section require the computation and storage of `n choose 2` distances.
@@ -69,7 +69,7 @@ To construct spatial k-nearest neighbor (kNN) object graphs (directed):
 
     steinbock measure graphs --kmax 5
 
-The above commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `object_graphs`.
+The above commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `graphs`.
 
 !!! note "Distance-thresholded kNN graphs"
     The options `--dmax` and `--kmax` can be combined to construct distance-thresholded kNN graphs.

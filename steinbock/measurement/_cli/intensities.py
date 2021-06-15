@@ -45,7 +45,7 @@ from steinbock.measurement import data
     "--dest",
     "intensities_dir",
     type=click.Path(file_okay=False),
-    default="object_intensities",
+    default="intensities",
     show_default=True,
     help="Path to the object intensities output directory",
 )

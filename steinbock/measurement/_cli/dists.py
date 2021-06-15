@@ -44,7 +44,7 @@ def distances_cmd_group():
     "--dest",
     "dists_dir",
     type=click.Path(file_okay=False),
-    default="object_distances",
+    default="distances",
     show_default=True,
     help="Path to the object distances output directory",
 )
@@ -76,7 +76,7 @@ def centroids_cmd(mask_dir, metric, dists_dir):
     "--dest",
     "dists_dir",
     type=click.Path(file_okay=False),
-    default="object_distances",
+    default="distances",
     show_default=True,
     help="Path to the object distances output directory",
 )

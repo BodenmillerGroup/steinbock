@@ -120,7 +120,7 @@ def fcs_cmd(data_dirs, table_file):
     "--x",
     "x_data_dir",
     type=click.Path(exists=True, file_okay=False),
-    default="object_intensities",
+    default="intensities",
     show_default=True,
     help="Path to the main data directory",
 )
@@ -178,7 +178,7 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
     "--graph",
     "graph_dir",
     type=click.Path(exists=True, file_okay=False),
-    default="object_graphs",
+    default="graphs",
     show_default=True,
     help="Path to the graph directory",
 )

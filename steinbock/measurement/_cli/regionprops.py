@@ -29,7 +29,7 @@ from steinbock.measurement import data
     "--dest",
     "regionprops_dir",
     type=click.Path(file_okay=False),
-    default="object_regionprops",
+    default="regionprops",
     show_default=True,
     help="Path to the object region properties output directory",
 )

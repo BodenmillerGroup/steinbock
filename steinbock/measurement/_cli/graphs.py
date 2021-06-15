@@ -14,7 +14,7 @@ from steinbock.measurement import graphs
     "--dists",
     "dists_dir",
     type=click.Path(exists=True, file_okay=False),
-    default="object_distances",
+    default="distances",
     show_default=True,
     help="Path to the object distances directory",
 )
@@ -31,7 +31,7 @@ from steinbock.measurement import graphs
     "--dest",
     "graph_dir",
     type=click.Path(file_okay=False),
-    default="object_graphs",
+    default="graphs",
     show_default=True,
     help="Path to the object graph output directory",
 )
