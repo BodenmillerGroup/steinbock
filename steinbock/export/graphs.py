@@ -26,7 +26,7 @@ def to_networkx(graph: pd.DataFrame, *data_list) -> nx.Graph:
                 merged_data, data, left_index=True, right_index=True
             )
         node_attributes = {
-            int(object_id): object_data.to_dist()
+            int(object_id): object_data.to_dict()
             for object_id, object_data in merged_data.iterrows()
         }
         nx.set_node_attributes(g, node_attributes)
