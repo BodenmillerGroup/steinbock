@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.2] - 2021-06-15
+
+  - Fix networkx node attribute export
+  - Remove `object_` prefix from default directory names
+  - Speed up intensity measurement (use scipy.ndimage for aggregation)
+
+
 ## [0.5.1] - 2021-06-10
 
   - Version bumps of tifffile, xtiff
@@ -111,6 +118,7 @@ Added:
 Initial release for beta testing
 
 
+[0.5.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.3.7...v0.4.0
