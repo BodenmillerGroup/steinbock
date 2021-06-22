@@ -77,7 +77,7 @@ def csv_cmd(data_dirs, table_file):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
-    data_file_lists = []
+    data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
@@ -105,7 +105,7 @@ def fcs_cmd(data_dirs, table_file):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
-    data_file_lists = []
+    data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
