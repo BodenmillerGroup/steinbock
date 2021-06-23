@@ -71,7 +71,7 @@ def run_object_segmentation(
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
-    aggr_func: Callable[[np.ndarray], np.ndarray] = np.nanmean,
+    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
     **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = application.value(model=model)
@@ -86,13 +86,9 @@ def run_object_segmentation(
             channel_stds = np.nanstd(img, axis=(1, 2), keepdims=True)
             img = (img - channel_means) / channel_stds
         if channel_groups is not None:
-
-            def aggr(channel_img):
-                return np.apply_along_axis(aggr_func, 0, channel_img)
-
             img = np.stack(
                 [
-                    aggr(img[channel_groups == channel_group])
+                    aggr_func(img[channel_groups == channel_group], axis=0)
                     for channel_group in np.unique(channel_groups)
                     if not np.isnan(channel_group)
                 ]

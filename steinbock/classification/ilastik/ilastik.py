@@ -107,13 +107,9 @@ def create_ilastik_image(
 ) -> np.ndarray:
     ilastik_img = img
     if channel_groups is not None:
-
-        def aggr(channel_img):
-            return np.apply_along_axis(aggr_func, 0, channel_img)
-
         ilastik_img = np.stack(
             [
-                aggr(ilastik_img[channel_groups == channel_group])
+                aggr_func(ilastik_img[channel_groups == channel_group], axis=0)
                 for channel_group in np.unique(channel_groups)
                 if not np.isnan(channel_group)
             ]
