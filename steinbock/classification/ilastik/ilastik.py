@@ -52,6 +52,7 @@ _dataset_axistags = json.dumps(
         ]
     }
 )
+_h5py_libver = "latest"
 
 
 def list_ilastik_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
@@ -64,13 +65,13 @@ def list_ilastik_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
 
 def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
-    with h5py.File(ilastik_img_file, mode="r") as f:
+    with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
         return f[str(_img_dataset_path)][()]
 
 
 def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
-    with h5py.File(ilastik_crop_file, mode="r") as f:
+    with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
         return f[str(_crop_dataset_path)][()]
 
 
@@ -78,7 +79,7 @@ def write_ilastik_image(
     ilastik_img: np.ndarray, ilastik_img_stem: Union[str, PathLike]
 ) -> Path:
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
-    with h5py.File(ilastik_img_file, mode="w") as f:
+    with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
         dataset = f.create_dataset(_img_dataset_path, data=ilastik_img)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
@@ -90,7 +91,7 @@ def write_ilastik_crop(
     ilastik_crop: np.ndarray, ilastik_crop_stem: Union[str, PathLike]
 ):
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
-    with h5py.File(ilastik_crop_file, mode="w") as f:
+    with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
         dataset = f.create_dataset(_crop_dataset_path, data=ilastik_crop)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
@@ -180,13 +181,15 @@ def create_and_save_ilastik_project(
 ):
     dataset_id = str(uuid1())
     shutil.copyfile(_project_file_template, ilastik_project_file)
-    with h5py.File(ilastik_project_file, mode="a") as f:
+    with h5py.File(ilastik_project_file, mode="a", libver=_h5py_libver) as f:
         infos = f["Input Data/infos"]
         for i, ilastik_crop_file in enumerate(ilastik_crop_files):
             rel_ilastik_crop_file = Path(ilastik_crop_file).relative_to(
                 Path(ilastik_project_file).parent
             )
-            with h5py.File(ilastik_crop_file, mode="r") as f_crop:
+            with h5py.File(
+                ilastik_crop_file, mode="r", libver=_h5py_libver
+            ) as f_crop:
                 crop_shape = f_crop[_crop_dataset_path].shape
             lane = infos.create_group(f"lane{i:04d}")
             lane.create_group("Prediction Mask")
@@ -249,7 +252,7 @@ def fix_ilastik_crops_from_disk(
     axis_order: Optional[str] = None,
 ) -> Generator[Tuple[Path, Tuple[int, ...], np.ndarray], None, None]:
     for ilastik_crop_file in ilastik_crop_files:
-        with h5py.File(ilastik_crop_file, mode="r") as f:
+        with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
             ilastik_crop_dataset = None
             if _crop_dataset_path in f:
                 ilastik_crop_dataset = f[_crop_dataset_path]
@@ -311,7 +314,7 @@ def fix_ilastik_project_file_inplace(
     rel_ilastik_probab_dir = Path(ilastik_probab_dir).relative_to(
         Path(ilastik_project_file).parent
     )
-    with h5py.File(ilastik_project_file, "a") as f:
+    with h5py.File(ilastik_project_file, "a", libver=_h5py_libver) as f:
         if "Input Data" in f:
             _fix_project_input_data_inplace(
                 f["Input Data"], rel_ilastik_crop_dir, ilastik_crop_shapes
