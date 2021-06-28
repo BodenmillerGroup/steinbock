@@ -42,7 +42,7 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 !!! note "Graphical user interfaces on Windows hosts"
     Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host, if graphical user interfaces are required.
 
-### Linux/MacOS
+### Linux
 
 On the terminal, to create a `steinbock` command alias for running *steinbock*:
 
@@ -58,6 +58,30 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 
     steinbock --version
 
+### MacOS
+
+To allow the *steinbock* Docker container to run graphical user interfaces, you will first need to install [XQuartz](https://www.xquartz.org/).
+
+Open *XQuartz* > *Preferences* and tick `Allow connections from network clients`.
+
+In the terminal run
+
+    xhost + ${hostname}
+    
+Next, setup a HOSTNAME environment variable via:
+
+    export HOSTNAME=`hostname`
+    
+Finally, on the terminal, to create a `steinbock` command alias for running *steinbock*:
+
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro --env "DISPLAY=${HOSTNAME}:0" jwindhager/steinbock:0.5.4"
+    
+In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.5.4`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
+
+To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
+
+    steinbock --version
+    
 !!! note "File permissions"
     By default, the *steinbock* Docker container internally runs as `steinbock` user with user ID (UID) `1000` and group ID (GID) `1000`. Files created from within the container will therefore be owned by the host system user/group matching these IDs. On most Linux systems, by default, this will map to the standard user (e.g., `ubuntu`). 
     
@@ -77,6 +101,7 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
       - **[Developer]** If you would like to provide a workaround for this inconvenience (e.g., automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request!
 
     The data/working directory must be writable by the `steinbock` user from within the *steinbock* Docker container.
+    
 
 ## Usage
 
