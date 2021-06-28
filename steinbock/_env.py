@@ -73,8 +73,8 @@ def check_steinbock_version(func):
     @wraps(func)
     def check_steinbock_version_wrapper(*args, **kwargs):
         if Path(".steinbock_version").exists():
-            saved_steinbock_version = Path(".steinbock_version").read_text(
-                encoding="utf-8"
+            saved_steinbock_version = (
+                Path(".steinbock_version").read_text(encoding="utf-8").strip()
             )
             if saved_steinbock_version != steinbock_version:
                 click.echo(

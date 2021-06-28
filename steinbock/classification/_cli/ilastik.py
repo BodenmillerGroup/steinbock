@@ -67,6 +67,14 @@ def ilastik_cmd_group():
     help="Prepend mean of all channels as a new channel",
 )
 @click.option(
+    "--meanfactor",
+    "mean_factor",
+    type=click.FLOAT,
+    default=100.0,
+    show_default=True,
+    help="Factor to multiply the channels mean with",
+)
+@click.option(
     "--scale",
     "scale_factor",
     type=click.INT,
@@ -106,6 +114,7 @@ def prepare_cmd(
     panel_file,
     aggr_func_name,
     prepend_mean,
+    mean_factor,
     scale_factor,
     crop_size,
     ilastik_img_dir,
@@ -126,6 +135,7 @@ def prepare_cmd(
         channel_groups=channel_groups,
         aggr_func=aggr_func,
         prepend_mean=prepend_mean,
+        mean_factor=mean_factor,
         scale_factor=scale_factor,
     ):
         ilastik_img_stem = Path(ilastik_img_dir) / f"{img_file.stem}"

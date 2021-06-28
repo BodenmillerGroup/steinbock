@@ -66,13 +66,13 @@ def list_ilastik_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
 def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
     with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
-        return f[str(_img_dataset_path)][()]
+        return f[str(_img_dataset_path)][()].astype(np.uint16)
 
 
 def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
     with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
-        return f[str(_crop_dataset_path)][()]
+        return f[str(_crop_dataset_path)][()].astype(np.uint16)
 
 
 def write_ilastik_image(
@@ -80,7 +80,9 @@ def write_ilastik_image(
 ) -> Path:
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(_img_dataset_path, data=ilastik_img)
+        dataset = f.create_dataset(
+            _img_dataset_path, data=ilastik_img.astype(np.uint16)
+        )
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
         dataset.attrs["steinbock"] = True
@@ -92,7 +94,9 @@ def write_ilastik_crop(
 ):
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(_crop_dataset_path, data=ilastik_crop)
+        dataset = f.create_dataset(
+            _crop_dataset_path, data=ilastik_crop.astype(np.uint16)
+        )
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
         dataset.attrs["steinbock"] = True
@@ -104,6 +108,7 @@ def create_ilastik_image(
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
     prepend_mean: bool = True,
+    mean_factor: float = 100.0,
     scale_factor: int = 1,
 ) -> np.ndarray:
     ilastik_img = img
@@ -116,7 +121,7 @@ def create_ilastik_image(
             ]
         )
     if prepend_mean:
-        mean_img = ilastik_img.mean(axis=0, keepdims=True)
+        mean_img = ilastik_img.mean(axis=0, keepdims=True) * mean_factor
         ilastik_img = np.concatenate((mean_img, ilastik_img))
     if scale_factor > 1:
         ilastik_img = ilastik_img.repeat(scale_factor, axis=1)
@@ -129,14 +134,16 @@ def create_ilastik_images_from_disk(
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
     prepend_mean: bool = True,
+    mean_factor: float = 100.0,
     scale_factor: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for img_file in img_files:
         ilastik_img = create_ilastik_image(
-            io.read_image(img_file),
+            io.read_image(img_file, ignore_dtype=True),
             channel_groups=channel_groups,
             aggr_func=aggr_func,
             prepend_mean=prepend_mean,
+            mean_factor=mean_factor,
             scale_factor=scale_factor,
         )
         yield Path(img_file), ilastik_img
@@ -296,7 +303,7 @@ def fix_ilastik_crops_from_disk(
         transpose_axes = [orig_axis_order.index(a) for a in new_axis_order]
         ilastik_crop = np.transpose(ilastik_crop, axes=transpose_axes)
         ilastik_crop = np.reshape(ilastik_crop, ilastik_crop.shape[:3])
-        ilastik_crop = ilastik_crop.astype(np.float32)
+        ilastik_crop = ilastik_crop.astype(np.uint16)
         yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
         del ilastik_crop
 
