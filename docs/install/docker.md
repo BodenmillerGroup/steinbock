@@ -80,8 +80,13 @@ In the command above, adapt the path to your *steinbock* data/working directory 
 
 To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
 
-    steinbock --version
-    
+    steinbock --version    
+
+
+## Usage
+
+Please refer to [CLI usage](../cli/intro.md) for usage instructions.
+
 !!! note "File permissions"
     By default, the *steinbock* Docker container internally runs as `steinbock` user with user ID (UID) `1000` and group ID (GID) `1000`. Files created from within the container will therefore be owned by the host system user/group matching these IDs. On most Linux systems, by default, this will map to the standard user (e.g., `ubuntu`). 
     
@@ -95,14 +100,8 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 
       - **[Advanced]** Run the *steinbock* Docker container using [singularity](https://sylabs.io/singularity/) (see [here](https://sylabs.io/guides/3.0/user-guide/singularity_and_docker.html)) to minimize abstraction
 
-
       - **[Administrator]** Re-build the *steinbock* Docker container from scratch with matching UID/GID ([Dockerfile](https://github.com/BodenmillerGroup/steinbock/blob/main/Dockerfile))
 
       - **[Developer]** If you would like to provide a workaround for this inconvenience (e.g., automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request!
 
     The data/working directory must be writable by the `steinbock` user from within the *steinbock* Docker container.
-    
-
-## Usage
-
-Please refer to [CLI usage](../cli/intro.md) for usage instructions.
