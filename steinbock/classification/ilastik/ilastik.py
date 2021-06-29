@@ -9,6 +9,7 @@ import subprocess
 from enum import IntEnum
 from os import PathLike
 from pathlib import Path
+from skimage.transform import resize
 from typing import (
     Callable,
     Dict,
@@ -66,23 +67,22 @@ def list_ilastik_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
 def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
     with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
-        return f[str(_img_dataset_path)][()].astype(np.uint16)
+        return io.to_dtype(f[str(_img_dataset_path)][()], io.img_dtype)
 
 
 def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
     with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
-        return f[str(_crop_dataset_path)][()].astype(np.uint16)
+        return io.to_dtype(f[str(_crop_dataset_path)][()], io.img_dtype)
 
 
 def write_ilastik_image(
     ilastik_img: np.ndarray, ilastik_img_stem: Union[str, PathLike]
 ) -> Path:
+    ilastik_img = io.to_dtype(ilastik_img, io.img_dtype)
     ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(
-            _img_dataset_path, data=ilastik_img.astype(np.uint16)
-        )
+        dataset = f.create_dataset(_img_dataset_path, data=ilastik_img)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
         dataset.attrs["steinbock"] = True
@@ -92,11 +92,10 @@ def write_ilastik_image(
 def write_ilastik_crop(
     ilastik_crop: np.ndarray, ilastik_crop_stem: Union[str, PathLike]
 ):
+    ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
     ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(
-            _crop_dataset_path, data=ilastik_crop.astype(np.uint16)
-        )
+        dataset = f.create_dataset(_crop_dataset_path, data=ilastik_crop)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
         dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
         dataset.attrs["steinbock"] = True
@@ -124,9 +123,16 @@ def create_ilastik_image(
         mean_img = ilastik_img.mean(axis=0, keepdims=True) * mean_factor
         ilastik_img = np.concatenate((mean_img, ilastik_img))
     if scale_factor > 1:
-        ilastik_img = ilastik_img.repeat(scale_factor, axis=1)
-        ilastik_img = ilastik_img.repeat(scale_factor, axis=2)
-    return ilastik_img
+        # bilinear resizing (for compatibility with IMC Segmentation Pipeline)
+        output_shape = (
+            ilastik_img.shape[0],
+            ilastik_img.shape[1] * scale_factor,
+            ilastik_img.shape[2] * scale_factor,
+        )
+        ilastik_img = resize(
+            ilastik_img, output_shape, order=1, mode="symmetric"
+        )
+    return io.to_dtype(ilastik_img, io.img_dtype)
 
 
 def create_ilastik_images_from_disk(
@@ -160,7 +166,7 @@ def create_ilastik_crop(
         y_start = rng.integers(ilastik_img.shape[1] - crop_size)
         y_end = y_start + crop_size
         ilastik_crop = ilastik_img[:, y_start:y_end, x_start:x_end]
-        return x_start, y_start, ilastik_crop
+        return x_start, y_start, io.to_dtype(ilastik_crop, io.img_dtype)
     return None, None, None
 
 
@@ -303,7 +309,7 @@ def fix_ilastik_crops_from_disk(
         transpose_axes = [orig_axis_order.index(a) for a in new_axis_order]
         ilastik_crop = np.transpose(ilastik_crop, axes=transpose_axes)
         ilastik_crop = np.reshape(ilastik_crop, ilastik_crop.shape[:3])
-        ilastik_crop = ilastik_crop.astype(np.uint16)
+        ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
         yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
         del ilastik_crop
 

@@ -36,7 +36,8 @@ def measure_intensites(
         for i, channel_name in enumerate(channel_names)
     }
     return pd.DataFrame(
-        data=data, index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+        data=data,
+        index=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
     )
 
 
@@ -67,7 +68,8 @@ def measure_regionprops(
     )
     object_ids = data.pop("label")
     return pd.DataFrame(
-        data=data, index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+        data=data,
+        index=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
     )
 
 

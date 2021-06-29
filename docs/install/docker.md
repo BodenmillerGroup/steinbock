@@ -23,7 +23,7 @@ In principle, the *steinbock* Docker container can be run on any Docker-enabled 
 
 For reproducibility, it is recommended to always pull a specific release, e.g.:
 
-    docker run jwindhager/steinbock:0.5.5
+    docker run jwindhager/steinbock:0.5.6
 
 Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) may require further system configuration and additional arguments to `docker run`. To simplify the use of the *steinbock* command-line interface, it is therefore recommended to use a `steinbock` alias for the `docker run` command, as explained in the following.
 
@@ -31,9 +31,9 @@ Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler
 
 On the Command Prompt, to create a `steinbock` command alias for running *steinbock*:
 
-    doskey steinbock=docker run -v "C:\Data":/data jwindhager/steinbock:0.5.5 $*
+    doskey steinbock=docker run -v "C:\Data":/data jwindhager/steinbock:0.5.6 $*
 
-In the command above, adapt the path to your *steinbock* data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.5.5`) as needed. The created alias enables running `steinbock` from the current Command Prompt without typing the full Docker command.
+In the command above, adapt the path to your *steinbock* data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.5.6`) as needed. The created alias enables running `steinbock` from the current Command Prompt without typing the full Docker command.
 
 To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
 
@@ -46,9 +46,9 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 
 On the terminal, to create a `steinbock` command alias for running *steinbock*:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.5.5"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY jwindhager/steinbock:0.5.6"
 
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.5.5`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
+In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.5.6`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
 
 To allow the *steinbock* Docker container to run graphical user interfaces, if necessary:
 
@@ -74,9 +74,9 @@ Next, setup a HOSTNAME environment variable via:
     
 Finally, on the terminal, to create a `steinbock` command alias for running *steinbock*:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro --env "DISPLAY=${HOSTNAME}:0" jwindhager/steinbock:0.5.5"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro --env "DISPLAY=${HOSTNAME}:0" jwindhager/steinbock:0.5.6"
     
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.5.5`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
+In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.5.6`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
 
 To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
 

@@ -33,8 +33,8 @@ def construct_graph(
             target_object_ids.append(target_object_id)
     return pd.DataFrame(
         data={
-            "Object1": np.asarray(source_object_ids, dtype=np.uint16),
-            "Object2": np.asarray(target_object_ids, dtype=np.uint16),
+            "Object1": np.asarray(source_object_ids, dtype=io.mask_dtype),
+            "Object2": np.asarray(target_object_ids, dtype=io.mask_dtype),
         }
     )
 

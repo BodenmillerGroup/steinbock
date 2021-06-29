@@ -17,8 +17,8 @@ def measure_centroid_distances(mask: np.ndarray, metric: str) -> pd.DataFrame:
     object_centroids = np.array([p.centroid for p in properties])
     return pd.DataFrame(
         data=squareform(pdist(object_centroids, metric=metric), checks=False),
-        index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
-        columns=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+        index=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
+        columns=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
     )
 
 
@@ -42,8 +42,8 @@ def measure_euclidean_border_distances(mask: np.ndarray) -> pd.DataFrame:
         ]
     return pd.DataFrame(
         data=data,
-        index=pd.Index(object_ids, dtype=np.uint16, name="Object"),
-        columns=pd.Index(object_ids, dtype=np.uint16, name="Object"),
+        index=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
+        columns=pd.Index(object_ids, dtype=io.mask_dtype, name="Object"),
     )
 
 

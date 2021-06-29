@@ -1,10 +1,35 @@
 import numpy as np
+import os
 import pandas as pd
 import tifffile
 
 from os import PathLike
 from pathlib import Path
 from typing import List, Optional, Sequence, Union
+
+
+img_dtype = np.dtype(os.environ.get("STEINBOCK_IMG_DTYPE", "float32"))
+mask_dtype = np.dtype(os.environ.get("STEINBOCK_MASK_DTYPE", "uint16"))
+
+
+def to_dtype(src: np.ndarray, dst_dtype: np.dtype) -> np.ndarray:
+    if src.dtype == dst_dtype:
+        return src
+    src_is_int = np.issubdtype(dst_dtype, np.integer)
+    dst_is_int = np.issubdtype(src.dtype, np.integer)
+    if src_is_int and not dst_is_int:
+        src = np.around(src)
+    if dst_is_int:
+        src_info = np.iinfo(src.dtype)
+    else:
+        src_info = np.finfo(src.dtype)
+    if src_is_int:
+        dst_info = np.iinfo(dst_dtype)
+    else:
+        dst_info = np.finfo(dst_dtype)
+    if src_info.min < dst_info.min or src_info.max > dst_info.max:
+        src = np.clip(src, dst_info.min, dst_info.max)
+    return src.astype(dst_dtype)
 
 
 def _list_related_files(
@@ -90,20 +115,17 @@ def read_image(
     elif img.ndim != 3:
         raise ValueError(f"Unsupported number of image dimensions: {img_file}")
     if not ignore_dtype:
-        img = img.astype(np.float32)
+        img = to_dtype(img, img_dtype)
     return img
 
 
 def write_image(
     img: np.ndarray, img_stem: Union[str, PathLike], ignore_dtype: bool = False
 ) -> Path:
+    if not ignore_dtype:
+        img = to_dtype(img, img_dtype)
     img_file = Path(img_stem).with_suffix(".tiff")
-    tifffile.imwrite(
-        img_file,
-        data=img,
-        dtype=np.float32 if not ignore_dtype else None,
-        imagej=True,
-    )
+    tifffile.imwrite(img_file, data=img, imagej=True)
     return img_file
 
 
@@ -118,19 +140,20 @@ def list_mask_files(
 
 def read_mask(mask_stem: Union[str, PathLike]) -> np.ndarray:
     mask_file = Path(mask_stem).with_suffix(".tiff")
-    mask = tifffile.imread(mask_file).astype(np.uint16)
+    mask = tifffile.imread(mask_file)
     while mask.ndim > 2 and mask.shape[0] == 1:
         mask = mask.sqeeze(axis=0)
     while mask.ndim > 2 and mask.shape[-1] == 1:
         mask = mask.sqeeze(axis=mask.ndim - 1)
     if mask.ndim != 2:
         raise ValueError(f"Unsupported number of mask dimensions: {mask_file}")
-    return mask
+    return to_dtype(mask, mask_dtype)
 
 
 def write_mask(mask: np.ndarray, mask_stem: Union[str, PathLike]) -> Path:
+    mask = to_dtype(mask, mask_dtype)
     mask_file = Path(mask_stem).with_suffix(".tiff")
-    tifffile.imwrite(mask_file, data=mask, dtype=np.uint16)
+    tifffile.imwrite(mask_file, data=mask, imagej=True)
     return mask_file
 
 
@@ -172,8 +195,8 @@ def list_distances_files(
 def read_distances(dists_stem: Union[str, PathLike]) -> pd.DataFrame:
     dists_file = Path(dists_stem).with_suffix(".csv")
     dists = pd.read_csv(dists_file, index_col="Object")
-    dists.index = dists.index.astype(np.uint16)
-    dists.columns = dists.columns.astype(np.uint16)
+    dists.index = dists.index.astype(mask_dtype)
+    dists.columns = dists.columns.astype(mask_dtype)
     return dists
 
 
@@ -181,11 +204,10 @@ def write_distances(
     dists: pd.DataFrame, dists_stem: Union[str, PathLike], copy: bool = False
 ) -> Path:
     dists_file = Path(dists_stem).with_suffix(".csv")
-    dists = dists.astype(np.float32, copy=copy)
     dists.index.name = "Object"
-    dists.index = dists.index.astype(np.uint16)
+    dists.index = dists.index.astype(mask_dtype)
     dists.columns.name = "Object"
-    dists.columns = dists.columns.astype(np.uint16)
+    dists.columns = dists.columns.astype(mask_dtype)
     dists.to_csv(dists_file)
     return dists_file
 
@@ -202,12 +224,12 @@ def list_graph_files(
 def read_graph(graph_stem: Union[str, PathLike]) -> pd.DataFrame:
     graph_file = Path(graph_stem).with_suffix(".csv")
     return pd.read_csv(
-        graph_file, usecols=["Object1", "Object2"], dtype=np.uint16,
+        graph_file, usecols=["Object1", "Object2"], dtype=mask_dtype,
     )
 
 
 def write_graph(graph: pd.DataFrame, graph_stem: Union[str, PathLike]) -> Path:
     graph_file = Path(graph_stem).with_suffix(".csv")
-    graph = graph.loc[:, ["Object1", "Object2"]].astype(np.uint16)
+    graph = graph.loc[:, ["Object1", "Object2"]].astype(mask_dtype)
     graph.to_csv(graph_file, index=False)
     return graph_file

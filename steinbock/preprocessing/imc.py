@@ -7,6 +7,8 @@ from pathlib import Path
 from scipy.ndimage import maximum_filter
 from typing import Generator, List, Optional, Sequence, Tuple, Union
 
+from steinbock import io
+
 try:
     from imctools.data.acquisition import Acquisition
     from imctools.io.mcd.mcdparser import McdParser
@@ -124,8 +126,8 @@ def create_panel_from_acquisition(acquisition: "Acquisition") -> pd.DataFrame:
 
 
 def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
-    kernel = np.ones((1, 3, 3), dtype=np.uint8)
-    kernel[0, 1, 1] = 0
+    kernel = np.ones((1, 3, 3), dtype=bool)
+    kernel[0, 1, 1] = False
     max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
     return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
 
@@ -177,6 +179,7 @@ def preprocess_images_from_disk(
                     if metal_order is not None:
                         img = data.get_image_stack_by_names(metal_order)
                     img = preprocess_image(img, hpf=hpf)
+                    img = io.to_dtype(img, io.img_dtype)
                     yield Path(mcd_file), acquisition.id, img
                     del img
     while len(remaining_txt_files) > 0:
@@ -188,5 +191,6 @@ def preprocess_images_from_disk(
             if metal_order is not None:
                 img = data.get_image_stack_by_names(metal_order)
             img = preprocess_image(img, hpf=hpf)
+            img = io.to_dtype(img, io.img_dtype)
             yield Path(txt_file), None, img
             del img
