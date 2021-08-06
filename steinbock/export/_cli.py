@@ -52,7 +52,9 @@ def ome_cmd(img_dir, panel_file, xtiff_dir):
     Path(xtiff_dir).mkdir(exist_ok=True)
     for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file)
-        xtiff_file = Path(xtiff_dir) / img_file.with_suffix(".ome.tiff").name
+        xtiff_file = io.as_path_with_suffix(
+            Path(xtiff_dir) / img_file.name, ".ome.tiff"
+        )
         to_tiff(img, xtiff_file, channel_names=channel_names)
         click.echo(xtiff_file.name)
         del img
@@ -158,15 +160,15 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
     for x_data_file, ad in data.to_anndata_from_disk(
         x_data_files, *obs_data_file_lists
     ):
-        anndata_stem = Path(anndata_dir) / x_data_file.stem
+        anndata_file = Path(anndata_dir) / x_data_file.name
         if anndata_format.lower() == "h5ad":
-            anndata_file = anndata_stem.with_suffix(".h5ad")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".h5ad")
             ad.write_h5ad(anndata_file)
         elif anndata_format.lower() == "loom":
-            anndata_file = anndata_stem.with_suffix(".loom")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".loom")
             ad.write_loom(anndata_file)
         elif anndata_format.lower() == "zarr":
-            anndata_file = anndata_stem.with_suffix(".zarr")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".zarr")
             ad.write_zarr(anndata_file)
         else:
             raise NotImplementedError()
@@ -216,15 +218,15 @@ def graphs_cmd(graph_dir, data_dirs, networkx_format, networkx_dir):
     for graph_file, g in graphs.to_networkx_from_disk(
         graph_files, *data_file_lists
     ):
-        networkx_stem = Path(networkx_dir) / graph_file.stem
+        networkx_file = Path(networkx_dir) / graph_file.name
         if networkx_format == "graphml":
-            networkx_file = networkx_stem.with_suffix(".graphml")
+            networkx_file = io.as_path_with_suffix(networkx_file, ".graphml")
             nx.write_graphml(g, str(networkx_file))
         elif networkx_format == "gexf":
-            networkx_file = networkx_stem.with_suffix(".gexf")
+            networkx_file = io.as_path_with_suffix(networkx_file, ".gexf")
             nx.write_gexf(g, str(networkx_file))
         elif networkx_format == "gml":
-            networkx_file = networkx_stem.with_suffix(".gml")
+            networkx_file = io.as_path_with_suffix(networkx_file, ".gml")
             nx.write_gml(g, str(networkx_file))
         else:
             raise NotImplementedError()

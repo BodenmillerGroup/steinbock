@@ -12,6 +12,15 @@ img_dtype = np.dtype(os.environ.get("STEINBOCK_IMG_DTYPE", "float32"))
 mask_dtype = np.dtype(os.environ.get("STEINBOCK_MASK_DTYPE", "uint16"))
 
 
+def as_path_with_suffix(
+    path: Union[str, PathLike], suffix: str, replace_ome_suffix: bool = True
+) -> Path:
+    path = Path(path)
+    if replace_ome_suffix and path.name.endswith(".ome.tiff"):
+        path = path.with_name(path.name[:-9] + ".tiff")
+    return path.with_suffix(suffix)
+
+
 def to_dtype(src: np.ndarray, dst_dtype: np.dtype) -> np.ndarray:
     if src.dtype == dst_dtype:
         return src
@@ -39,8 +48,9 @@ def _list_related_files(
 ) -> List[Path]:
     related_files = []
     for base_file in base_files:
-        related_file_name = Path(base_file).with_suffix(related_suffix).name
-        related_file = Path(related_dir) / related_file_name
+        related_file = as_path_with_suffix(
+            Path(related_dir) / Path(base_file).name, related_suffix
+        )
         if not related_file.exists():
             raise FileNotFoundError(related_file)
         related_files.append(related_file)
@@ -50,7 +60,7 @@ def _list_related_files(
 def read_panel(
     panel_stem: Union[str, PathLike], kept_only: bool = True
 ) -> pd.DataFrame:
-    panel_file = Path(panel_stem).with_suffix(".csv")
+    panel_file = as_path_with_suffix(panel_stem, ".csv")
     panel = pd.read_csv(
         panel_file,
         dtype={
@@ -83,7 +93,7 @@ def read_panel(
 
 
 def write_panel(panel: pd.DataFrame, panel_stem: Union[str, PathLike]) -> Path:
-    panel_file = Path(panel_stem).with_suffix(".csv")
+    panel_file = as_path_with_suffix(panel_stem, ".csv")
     panel = panel.copy()
     for col in panel.columns:
         if panel[col].convert_dtypes().dtype == pd.BooleanDtype():
@@ -104,7 +114,7 @@ def list_image_files(
 def read_image(
     img_stem: Union[str, PathLike], ignore_dtype: bool = False
 ) -> np.ndarray:
-    img_file = Path(img_stem).with_suffix(".tiff")
+    img_file = as_path_with_suffix(img_stem, ".tiff", replace_ome_suffix=False)
     img = tifffile.imread(img_file)
     while img.ndim > 3 and img.shape[0] == 1:
         img = img.sqeeze(axis=0)
@@ -124,7 +134,7 @@ def write_image(
 ) -> Path:
     if not ignore_dtype:
         img = to_dtype(img, img_dtype)
-    img_file = Path(img_stem).with_suffix(".tiff")
+    img_file = as_path_with_suffix(img_stem, ".tiff")
     tifffile.imwrite(img_file, data=img, imagej=True)
     return img_file
 
@@ -139,7 +149,7 @@ def list_mask_files(
 
 
 def read_mask(mask_stem: Union[str, PathLike]) -> np.ndarray:
-    mask_file = Path(mask_stem).with_suffix(".tiff")
+    mask_file = as_path_with_suffix(mask_stem, ".tiff")
     mask = tifffile.imread(mask_file)
     while mask.ndim > 2 and mask.shape[0] == 1:
         mask = mask.sqeeze(axis=0)
@@ -152,7 +162,7 @@ def read_mask(mask_stem: Union[str, PathLike]) -> np.ndarray:
 
 def write_mask(mask: np.ndarray, mask_stem: Union[str, PathLike]) -> Path:
     mask = to_dtype(mask, mask_dtype)
-    mask_file = Path(mask_stem).with_suffix(".tiff")
+    mask_file = as_path_with_suffix(mask_stem, ".tiff")
     tifffile.imwrite(mask_file, data=mask, imagej=True)
     return mask_file
 
@@ -167,14 +177,14 @@ def list_data_files(
 
 
 def read_data(data_stem: Union[str, PathLike]) -> pd.DataFrame:
-    data_file = Path(data_stem).with_suffix(".csv")
+    data_file = as_path_with_suffix(data_stem, ".csv")
     return pd.read_csv(data_file, index_col="Object")
 
 
 def write_data(
     data: pd.DataFrame, data_stem: Union[str, PathLike], copy: bool = True
 ) -> Path:
-    data_file = Path(data_stem).with_suffix(".csv")
+    data_file = as_path_with_suffix(data_stem, ".csv")
     if copy:
         data = data.reset_index()
     else:
@@ -193,7 +203,7 @@ def list_distances_files(
 
 
 def read_distances(dists_stem: Union[str, PathLike]) -> pd.DataFrame:
-    dists_file = Path(dists_stem).with_suffix(".csv")
+    dists_file = as_path_with_suffix(dists_stem, ".csv")
     dists = pd.read_csv(dists_file, index_col="Object")
     dists.index = dists.index.astype(mask_dtype)
     dists.columns = dists.columns.astype(mask_dtype)
@@ -203,7 +213,7 @@ def read_distances(dists_stem: Union[str, PathLike]) -> pd.DataFrame:
 def write_distances(
     dists: pd.DataFrame, dists_stem: Union[str, PathLike], copy: bool = False
 ) -> Path:
-    dists_file = Path(dists_stem).with_suffix(".csv")
+    dists_file = as_path_with_suffix(dists_stem, ".csv")
     dists.index.name = "Object"
     dists.index = dists.index.astype(mask_dtype)
     dists.columns.name = "Object"
@@ -222,14 +232,14 @@ def list_graph_files(
 
 
 def read_graph(graph_stem: Union[str, PathLike]) -> pd.DataFrame:
-    graph_file = Path(graph_stem).with_suffix(".csv")
+    graph_file = as_path_with_suffix(graph_stem, ".csv")
     return pd.read_csv(
         graph_file, usecols=["Object1", "Object2"], dtype=mask_dtype,
     )
 
 
 def write_graph(graph: pd.DataFrame, graph_stem: Union[str, PathLike]) -> Path:
-    graph_file = Path(graph_stem).with_suffix(".csv")
+    graph_file = as_path_with_suffix(graph_stem, ".csv")
     graph = graph.loc[:, ["Object1", "Object2"]].astype(mask_dtype)
     graph.to_csv(graph_file, index=False)
     return graph_file

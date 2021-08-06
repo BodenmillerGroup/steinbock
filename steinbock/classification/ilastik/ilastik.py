@@ -65,13 +65,13 @@ def list_ilastik_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
 
 
 def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
+    ilastik_img_file = io.as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
         return io.to_dtype(f[str(_img_dataset_path)][()], io.img_dtype)
 
 
 def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
+    ilastik_crop_file = io.as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
         return io.to_dtype(f[str(_crop_dataset_path)][()], io.img_dtype)
 
@@ -80,7 +80,7 @@ def write_ilastik_image(
     ilastik_img: np.ndarray, ilastik_img_stem: Union[str, PathLike]
 ) -> Path:
     ilastik_img = io.to_dtype(ilastik_img, io.img_dtype)
-    ilastik_img_file = Path(ilastik_img_stem).with_suffix(".h5")
+    ilastik_img_file = io.as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
         dataset = f.create_dataset(_img_dataset_path, data=ilastik_img)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
@@ -93,7 +93,7 @@ def write_ilastik_crop(
     ilastik_crop: np.ndarray, ilastik_crop_stem: Union[str, PathLike]
 ):
     ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
-    ilastik_crop_file = Path(ilastik_crop_stem).with_suffix(".h5")
+    ilastik_crop_file = io.as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
         dataset = f.create_dataset(_crop_dataset_path, data=ilastik_crop)
         dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
