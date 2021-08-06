@@ -5,7 +5,7 @@ ARG GID=1000
 ARG TZ=Europe/Zurich
 
 ARG ILASTIK_BINARY=ilastik-1.3.3post3-Linux.tar.bz2
-ARG CELLPROFILER_VERSION=v4.1.3
+ARG CELLPROFILER_VERSION=v4.2.1
 ARG CELLPROFILER_PLUGINS_VERSION=v4.2.1
 
 RUN apt-get update && apt-get install -y ca-certificates locales wget git build-essential python3-pip
@@ -61,8 +61,7 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/Bodenmille
 # steinbock
 
 COPY ./requirements.txt .
-RUN pip3 install --upgrade deepcell==0.9.0 && \
-    pip3 install --upgrade -r requirements.txt && \
+RUN pip3 install --upgrade -r requirements.txt && \
     rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" \
     NO_AT_BRIDGE="1"
