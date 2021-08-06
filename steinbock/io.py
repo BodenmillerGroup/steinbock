@@ -63,11 +63,13 @@ def read_panel(
     panel_file = as_path_with_suffix(panel_stem, ".csv")
     panel = pd.read_csv(
         panel_file,
+        sep=",|;",
         dtype={
             "channel": pd.StringDtype(),
             "name": pd.StringDtype(),
             "keep": pd.BooleanDtype(),
         },
+        engine="python",
         true_values=["1"],
         false_values=["0"],
     )

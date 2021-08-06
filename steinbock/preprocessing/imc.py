@@ -39,12 +39,14 @@ def create_panel_from_imc_panel(
 ) -> pd.DataFrame:
     imc_panel = pd.read_csv(
         imc_panel_file,
+        sep=",|;",
         dtype={
             _imc_panel_metal_col: pd.StringDtype(),
             _imc_panel_target_col: pd.StringDtype(),
             _imc_panel_keep_col: pd.BooleanDtype(),
             _imc_panel_ilastik_col: pd.BooleanDtype(),
         },
+        engine="python",
         true_values=["1"],
         false_values=["0"],
     )
