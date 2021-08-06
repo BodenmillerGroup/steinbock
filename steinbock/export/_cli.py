@@ -203,7 +203,7 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
     "--dest",
     "networkx_dir",
     type=click.Path(file_okay=False),
-    default="graphs",
+    default="graphs_export",
     show_default=True,
     help="Path to the networkx output directory",
 )
