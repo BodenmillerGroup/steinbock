@@ -74,7 +74,8 @@ def create_panel_from_imc_panel(
             _imc_panel_ilastik_col: "ilastik",
         }
     )
-    panel["deepcell"] = np.nan
+    if "deepcell" not in panel.columns:
+        panel["deepcell"] = np.nan
     panel.sort_values(
         "channel",
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
