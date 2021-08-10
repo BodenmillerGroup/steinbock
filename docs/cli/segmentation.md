@@ -65,7 +65,7 @@ To segment cells using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell
 
 To segment nuclei using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model) and the pre-trained `MultiplexSegmentation` dataset:
 
-    steinbock segment deepcell --app mesmer --minmax --type nuclei
+    steinbock segment deepcell --app mesmer --minmax --type nuclear
 
 This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [File types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
 
