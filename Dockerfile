@@ -8,17 +8,21 @@ ARG ILASTIK_BINARY=ilastik-1.3.3post3-Linux.tar.bz2
 ARG CELLPROFILER_VERSION=v4.2.1
 ARG CELLPROFILER_PLUGINS_VERSION=v4.2.1
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential git locales python3 python3-dev python3-venv wget
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential git locales python3 python3-dev python3-venv wget
 ENV PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:en" LC_ALL="en_US.UTF-8"
 
-RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && echo "${TZ}" > /etc/timezone
+RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && \
+    echo "${TZ}" > /etc/timezone
 
-RUN addgroup --gid "${GID}" steinbock && \
+RUN mkdir /data && \
+    addgroup --gid "${GID}" steinbock && \
     adduser --uid "${UID}" --gid "${GID}" --disabled-password --gecos "" steinbock && \
-    mkdir /data && chown steinbock:steinbock /data
+    chown steinbock:steinbock /data
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
