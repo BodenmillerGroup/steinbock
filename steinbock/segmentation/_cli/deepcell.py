@@ -10,7 +10,9 @@ from steinbock.segmentation import deepcell
 
 deepcell_cli_available = deepcell.deepcell_available
 
-_model_paths = {x.name: x for x in Path(keras_models_dir).iterdir()}
+_model_paths = {}
+if Path(keras_models_dir).is_dir():
+    _model_paths.update({x.name: x for x in Path(keras_models_dir).iterdir()})
 
 _applications = {
     "mesmer": deepcell.Application.MESMER,
