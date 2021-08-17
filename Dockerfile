@@ -50,7 +50,9 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/Bodenmille
 # steinbock
 
 COPY ./requirements.txt .
-RUN pip install --upgrade -r requirements.txt && rm requirements.txt
+RUN pip install --upgrade deepcell==0.9.2 && \
+    pip install --upgrade -r requirements.txt && \
+    rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
 RUN mkdir -p /home/steinbock/.keras/models && \
