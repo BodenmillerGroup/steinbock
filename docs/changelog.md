@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.6.1] - 2021-08-17
+
+  - Fixed data type conversion upon image loading
+
+
 ## [0.6.0] - 2021-08-17
 
   - Updated CellProfiler and other dependencies ([#22](https://github.com/BodenmillerGroup/steinbock/issues/22))
@@ -148,6 +153,7 @@ Added:
 Initial release for beta testing
 
 
+[0.6.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.6...v0.6.0
 [0.5.6]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.4...v0.5.5
