@@ -4,8 +4,8 @@
 
 The *steinbock* framework comprises the following components:
 
-- The [*steinbock* Python package](https://github.com/BodenmillerGroup/steinbock) with the integrated *steinbock* command-line interface (CLI)
-- The [*steinbock* Docker container](https://hub.docker.com/r/jwindhager/steinbock) interactively exposing the *steinbock* command-line interface, with supported third-party software (e.g., Ilastik, CellProfiler) pre-installed
+- The [*steinbock* Python package](https://pypi.org/project/steinbock) with the integrated *steinbock* command-line interface (CLI)
+- The [*steinbock* Docker container](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) interactively exposing the *steinbock* command-line interface, with supported third-party software (e.g., Ilastik, CellProfiler) pre-installed
 
 !!! note "Modes of usage"
     *steinbock* can be used both [interactively](cli/intro.md) and [programmatically](python/intro.md) from within Python scripts.
@@ -34,8 +34,6 @@ Code: [https://github.com/BodenmillerGroup/steinbock](https://github.com/Bodenmi
 Documentation: [https://bodenmillergroup.github.io/steinbock](https://bodenmillergroup.github.io/steinbock)
 
 Issue tracker: [https://github.com/BodenmillerGroup/steinbock/issues](https://github.com/BodenmillerGroup/steinbock/issues)
-
-DockerHub repository: [https://hub.docker.com/r/jwindhager/steinbock](https://hub.docker.com/r/jwindhager/steinbock)
 
 ## Contributing
 

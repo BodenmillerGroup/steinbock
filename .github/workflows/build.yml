@@ -1,4 +1,4 @@
-name: deploy
+name: build
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   pypi:
-    name: Deploy Python package to PyPI
+    name: Build Python package
     runs-on: ubuntu-latest
     if: contains(github.ref, 'tags')
     steps:
@@ -33,7 +33,7 @@ jobs:
           python setup.py sdist bdist_wheel
           twine upload dist/*
   ghcr:
-    name: Deploy Docker image to GHCR
+    name: Build Docker image
     runs-on: ubuntu-latest
     if: contains(github.ref, 'tags')
     steps:

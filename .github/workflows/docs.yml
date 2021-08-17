@@ -8,7 +8,7 @@ on:
 
 jobs:
   docs:
-    name: Deploy documentation to GitHub Pages
+    name: Build documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
