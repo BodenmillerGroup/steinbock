@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.6.0] - 2021-08-17
+
+  - Updated CellProfiler and other dependencies ([#22](https://github.com/BodenmillerGroup/steinbock/issues/22))
+  - Switch from Docker Hub to GitHub Container Registry ([#34](https://github.com/BodenmillerGroup/steinbock/issues/34))
+  - Various compatibility improvements and bugfixes ([#21](https://github.com/BodenmillerGroup/steinbock/issues/21), [#28](https://github.com/BodenmillerGroup/steinbock/issues/28), [#32](https://github.com/BodenmillerGroup/steinbock/issues/32), [#35](https://github.com/BodenmillerGroup/steinbock/issues/35))
+
+
 ## [0.5.6] - 2021-06-29
 
   - Switch to bilinear interpolation for Ilastik mean channel
@@ -141,6 +148,7 @@ Added:
 Initial release for beta testing
 
 
+[0.6.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.6...v0.6.0
 [0.5.6]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/BodenmillerGroup/steinbock/compare/v0.5.3...v0.5.4
