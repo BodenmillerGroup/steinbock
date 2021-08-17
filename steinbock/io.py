@@ -24,15 +24,15 @@ def as_path_with_suffix(
 def to_dtype(src: np.ndarray, dst_dtype: np.dtype) -> np.ndarray:
     if src.dtype == dst_dtype:
         return src
-    src_is_int = np.issubdtype(dst_dtype, np.integer)
-    dst_is_int = np.issubdtype(src.dtype, np.integer)
-    if src_is_int and not dst_is_int:
+    src_is_int = np.issubdtype(src.dtype, np.integer)
+    dst_is_int = np.issubdtype(dst_dtype, np.integer)
+    if not src_is_int and dst_is_int:
         src = np.around(src)
-    if dst_is_int:
+    if src_is_int:
         src_info = np.iinfo(src.dtype)
     else:
         src_info = np.finfo(src.dtype)
-    if src_is_int:
+    if dst_is_int:
         dst_info = np.iinfo(dst_dtype)
     else:
         dst_info = np.finfo(dst_dtype)
