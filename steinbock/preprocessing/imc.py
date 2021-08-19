@@ -23,6 +23,7 @@ _imc_panel_metal_col = "Metal Tag"
 _imc_panel_target_col = "Target"
 _imc_panel_keep_col = "full"
 _imc_panel_ilastik_col = "ilastik"
+_imc_panel_deepcell_col = "deepcell"
 _logger = logging.getLogger(__name__)
 
 
@@ -45,6 +46,7 @@ def create_panel_from_imc_panel(
             _imc_panel_target_col: pd.StringDtype(),
             _imc_panel_keep_col: pd.BooleanDtype(),
             _imc_panel_ilastik_col: pd.BooleanDtype(),
+            _imc_panel_deepcell_col: pd.BooleanDtype(),
         },
         engine="python",
         true_values=["1"],
@@ -57,34 +59,55 @@ def create_panel_from_imc_panel(
         _imc_panel_metal_col,
         _imc_panel_keep_col,
         _imc_panel_ilastik_col,
+        _imc_panel_deepcell_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
-    for unique_col in (_imc_panel_metal_col, _imc_panel_target_col):
-        if unique_col in imc_panel:
-            if imc_panel[unique_col].dropna().duplicated().any():
-                raise ValueError(
-                    f"Duplicated values for '{unique_col}' in IMC panel"
-                )
     panel = imc_panel.rename(
         columns={
             _imc_panel_metal_col: "channel",
             _imc_panel_target_col: "name",
             _imc_panel_keep_col: "keep",
             _imc_panel_ilastik_col: "ilastik",
+            _imc_panel_deepcell_col: "deepcell",
         }
     )
-    if "deepcell" not in panel.columns:
-        panel["deepcell"] = np.nan
+    for _, group in panel.groupby("channel"):
+        panel.loc[group.index, "name"] = "/".join(
+            group["name"].dropna().unique().tolist()
+        )
+        if "keep" in panel:
+            panel.loc[group.index, "keep"] = group["keep"].any()
+        if "ilastik" in panel:
+            panel.loc[group.index, "ilastik"] = group["ilastik"].any()
+        if "deepcell" in panel:
+            panel.loc[group.index, "deepcell"] = group["deepcell"].any()
+    panel = panel.groupby("channel").aggregate("first")
     panel.sort_values(
         "channel",
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
+    if "keep" not in panel:
+        panel["keep"] = pd.Series(True, dtype=pd.BooleanDtype())
     if "ilastik" in panel:
         ilastik_mask = panel["ilastik"].astype(bool)
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
+    else:
+        panel["ilastik"] = pd.Series(
+            range(1, len(panel.index) + 1), dtype=pd.UInt8Dtype()
+        )
+    if "deepcell" in panel:
+        deepcell_mask = panel["deepcell"].astype(bool)
+        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel.loc[deepcell_mask, "deepcell"] = range(
+            1, deepcell_mask.sum() + 1
+        )
+    else:
+        panel["deepcell"] = pd.Series(
+            range(1, len(panel.index) + 1), dtype=pd.UInt8Dtype()
+        )
     col_order = panel.columns.tolist()
     next_col_index = 0
     for col in ("channel", "name", "keep", "ilastik", "deepcell"):
