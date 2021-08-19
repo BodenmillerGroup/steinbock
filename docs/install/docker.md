@@ -8,14 +8,16 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 [Install Docker](https://docs.docker.com/get-docker/)
 
+Make Docker available to non-root users: Linux/MacOS users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group.
+
 !!! note "Adding a user to the `docker-users` group on Windows hosts"
-    On Windows hosts, to add a user to the `docker-users` group using the Command Prompt (as administrator):
+    On Windows hosts, to add a user to the `docker-users` group using the command line (as administrator):
 
         net localgroup /add docker-users <username>
 		
 	Replace `<username>` with the name of the user (for domain accounts, use the `<domain>\<username>` format).
 
-## Usage
+## Installation
 
 In principle, the *steinbock* Docker container can be run on any Docker-enabled platform:
 
@@ -25,17 +27,19 @@ For reproducibility, it is recommended to always pull a specific release, e.g.:
 
     docker run ghcr.io/bodenmillergroup/steinbock:0.6.1
 
-Commands that launch a graphical user interface (e.g., for Ilastik, CellProfiler) may require further system configuration and additional arguments to `docker run`. To simplify the use of the *steinbock* command-line interface, it is therefore recommended to use a `steinbock` alias for the `docker run` command, as explained in the following.
+[Bind mounts](https://docs.docker.com/storage/bind-mounts/) can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to `docker run` as outlined in the following.
 
 ### Windows
 
-On the Command Prompt, to create a `steinbock` command alias for running *steinbock*:
+On the command line, use the following command to run the *steinbock* Docker container:
+
+    docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.6.1
+
+In the command above, adapt the bind mount path to your data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.6.1`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
     doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.6.1 $*
 
-In the command above, adapt the path to your *steinbock* data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.6.1`) as needed. The created alias enables running `steinbock` from the current Command Prompt without typing the full Docker command.
-
-To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
+The created command alias is retained for the current session and enables running `steinbock` from the current command line without typing the full Docker command, for example:
 
     steinbock --version
 
@@ -44,44 +48,41 @@ To check whether *steinbock* runs (this should print the *steinbock* Docker cont
 
 ### Linux
 
-On the terminal, to create a `steinbock` command alias for running *steinbock*:
+On the terminal, use the following command to run the *steinbock* Docker container:
+
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.6.1
+
+In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.6.1`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
     alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.6.1"
 
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.6.1`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
-
-To allow the *steinbock* Docker container to run graphical user interfaces, if necessary:
-
-    xhost +local:root
-
-To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
+The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
     steinbock --version
 
+!!! note "Graphical user interfaces on Linux hosts"
+    To allow the *steinbock* Docker container to run graphical user interfaces, if necessary, allow the local root user (i.e., the user running the Docker daemon) to access the running X server:
+
+        xhost +local:root
+
 ### MacOS
 
-To allow the *steinbock* Docker container to run graphical user interfaces, you will first need to install [XQuartz](https://www.xquartz.org/).
+On the terminal, use the following command to run the *steinbock* Docker container:
 
-Open *XQuartz* > *Preferences* and tick `Allow connections from network clients`.
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.6.1
 
-In the terminal run
+In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.6.1`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    xhost + ${hostname}
-    
-Next, setup a HOSTNAME environment variable via:
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.6.1"
 
-    export HOSTNAME=`hostname`
-    
-Finally, on the terminal, to create a `steinbock` command alias for running *steinbock*:
+The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro --env "DISPLAY=${HOSTNAME}:0" ghcr.io/bodenmillergroup/steinbock:0.6.1"
-    
-In the command above, adapt the path to your *steinbock* data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.6.1`) as needed. The created alias enables running `steinbock` from the current terminal without typing the full Docker command.
+    steinbock --version
 
-To check whether *steinbock* runs (this should print the *steinbock* Docker container version):
+!!! note "Graphical user interfaces on MacOS hosts"
+    To allow the *steinbock* Docker container to run graphical user interfaces, first install and start [XQuartz](https://www.xquartz.org/). Then, open *XQuartz* > *Preferences* and tick *Allow connections from network clients*. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:
 
-    steinbock --version    
-
+        xhost + $(hostname)
 
 ## Usage
 
