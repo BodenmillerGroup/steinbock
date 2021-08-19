@@ -70,14 +70,14 @@ To segment nuclei using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcel
 This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [File types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
 
 !!! note "DeepCell image data"
-    Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g., DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g., E-Cadherin).
+    Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin).
 
     If a `deepcell` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
     
     If no `deepcell` column is present, images are expected to be in the correct format already.
 
 !!! note "Pre-trained models"
-    DeepCell uses pre-trained neural networks for object segmentation. To specify a pre-trained model, use the `--model` option. If not specified, the default training data for the selected application (e.g., Mesmer) is downloaded.
+    DeepCell uses pre-trained neural networks for object segmentation. To specify a pre-trained model, use the `--model` option. If not specified, the default training data for the selected application (e.g. Mesmer) is downloaded.
 
 !!! note "Channel-wise image normalization"
     If enabled, features (i.e., channels) are [scaled](https://en.wikipedia.org/wiki/Feature_scaling) for each image and each channel independently.

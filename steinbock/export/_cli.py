@@ -189,7 +189,7 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
     "data_dirs",
     multiple=True,
     type=click.STRING,
-    help="Object data (e.g., intensities, regionprops) to use as attributes",
+    help="Object data (e.g. intensities, regionprops) to use as attributes",
 )
 @click.option(
     "--format",

@@ -11,7 +11,7 @@ Comma-separated values (CSV) file with column headers and no index
 | Column | Description | Type | Required? |
 | --- | --- | --- | --- |
 | `channel` | Unique channel ID, e.g. metal isotope | Text | yes |
-| `name` | Unique channel name, e.g., antibody target<br>(can be empty only for rows with `keep=0`) | Text or empty | yes |
+| `name` | Unique channel name, e.g. antibody target<br>(can be empty only for rows with `keep=0`) | Text or empty | yes |
 | `keep` | Whether the channel is present in preprocessed images<br>(if column is absent, all channels are assumed present) | Boolean (`0` or `1`) | no |
 | `ilastik` | Group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 | `deepcell` | Group label for [DeepCell segmentation](../cli/segmentation.md#deepcell)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
@@ -52,7 +52,7 @@ Grayscale image, with one unique value per object ("object ID", 0 for background
 
 File extension: .csv
 
-Object measurements (e.g., mean intensities, morphological features)
+Object measurements (e.g. mean intensities, morphological features)
 
 CSV file with object IDs as index (`Object` column) and feature/channel names as columns
 
@@ -63,7 +63,7 @@ CSV file with object IDs as index (`Object` column) and feature/channel names as
 
 File extension: .csv
 
-Pixel distances between objects (e.g., Euclidean centroid distances)
+Pixel distances between objects (e.g. Euclidean centroid distances)
 
 Symmetric CSV file (one per image) with object IDs as both index (`Object` column) and columns
 

@@ -1,6 +1,6 @@
 # Object measurement
 
-In this step, object-level (e.g., single-cell) data will be extracted from segmented images.
+In this step, object-level (e.g. single-cell) data will be extracted from segmented images.
 
 Various types of data can be extracted, each of which is described in the following.
 
@@ -18,7 +18,7 @@ To extract mean object intensities per channel (`intensities`):
     steinbock measure intensities
 
 !!! note "Pixel aggregation"
-    By default, pixels belonging to an object are aggregated by taking the mean. To specify a different [numpy](https://numpy.org) function for aggregation, use the `--aggr` option (e.g., specify `--aggr median` to measure "median object intensities").
+    By default, pixels belonging to an object are aggregated by taking the mean. To specify a different [numpy](https://numpy.org) function for aggregation, use the `--aggr` option (e.g. specify `--aggr median` to measure "median object intensities").
 
 ### Region properties
 

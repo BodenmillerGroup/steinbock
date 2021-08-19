@@ -278,7 +278,7 @@ def run_cmd(
     "--axisorder",
     "axis_order",
     type=click.STRING,
-    help="Axis order of the existing crops (e.g., zyxc)",
+    help="Axis order of the existing crops (e.g. zyxc)",
 )
 @check_steinbock_version
 def fix_cmd(
