@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
     tags:
       - "v*"
   workflow_dispatch:
@@ -32,9 +31,6 @@ jobs:
       - name: Build and deploy documentation (latest)
         if: github.ref == 'refs/heads/main'
         run: mike deploy -p -u latest
-      - name: Build and deploy documentation (dev)
-        if: github.ref == 'refs/heads/develop'
-        run: mike deploy -p -u dev
       - name: Build and deploy documentation
         if: startsWith(github.ref, 'refs/tags/v')
         run: mike deploy -p -u ${GITHUB_REF#refs/tags/}
