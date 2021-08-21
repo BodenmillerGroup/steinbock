@@ -30,7 +30,13 @@ jobs:
           pip install --upgrade -e .
       - name: Build and deploy documentation (latest)
         if: github.ref == 'refs/heads/main'
-        run: mike deploy -p -u latest
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          mike deploy -p -u latest
       - name: Build and deploy documentation
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mike deploy -p -u ${GITHUB_REF#refs/tags/}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          mike deploy -p -u ${GITHUB_REF#refs/tags/}
