@@ -2,17 +2,13 @@ name: build
 
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
-  workflow_dispatch:
 
 jobs:
   pypi:
     name: Build Python package
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'tags')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -35,7 +31,6 @@ jobs:
   ghcr:
     name: Build Docker image
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'tags')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

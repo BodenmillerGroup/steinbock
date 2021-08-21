@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - develop
+    tags:
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -13,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -24,5 +29,12 @@ jobs:
           pip install --upgrade -r requirements.txt
           pip install --upgrade -r docs/requirements.txt
           pip install --upgrade -e .
+      - name: Build and deploy documentation (latest)
+        if: github.ref == 'refs/heads/main'
+        run: mike deploy -p -u latest
+      - name: Build and deploy documentation (dev)
+        if: github.ref == 'refs/heads/develop'
+        run: mike deploy -p -u dev
       - name: Build and deploy documentation
-        run: mkdocs gh-deploy --force
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: mike deploy -p -u ${GITHUB_REF#refs/tags/}
