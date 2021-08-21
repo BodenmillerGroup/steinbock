@@ -23,6 +23,8 @@ With default desination file/directory paths shown in brackets, this will:
   - extract and save one random crop of 50x50 pixels per image for training (`ilastik_crops`)
   - create a default *steinbock* Ilastik pixel classification project file (`pixel_classifier.ilp`)
 
+By specifying the `--seed` parameter, this command reproducibly extracts crops from the same pseudo-random locations when executed repeatedly.
+
 !!! note "Ilastik image data"
     All generated image data are saved in *steinbock* Ilastik HDF5 format (undocumented). 
     
