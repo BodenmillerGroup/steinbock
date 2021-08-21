@@ -12,6 +12,8 @@ plugins:
               - "!^_"
       watch:
         - steinbock
+  - mike:
+      version_selector: true
 
 markdown_extensions:
   - admonition
@@ -22,6 +24,10 @@ theme:
   features:
     - navigation.tabs
     - navigation.top
+
+extra:
+  version:
+    provider: mike
 
 extra_css:
   - mkdocstrings.css

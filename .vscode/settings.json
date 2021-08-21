@@ -9,5 +9,6 @@
         "--ignore=E203,W503,E722"
     ],
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.pythonPath": "/home/jonas/miniconda3/envs/steinbock/bin/python"
 }
