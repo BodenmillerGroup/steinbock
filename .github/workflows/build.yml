@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -25,7 +27,6 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
         run: |
-          git tag
           python setup.py sdist bdist_wheel
           twine upload dist/*
   ghcr:
@@ -34,6 +35,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
