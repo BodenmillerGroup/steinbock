@@ -39,40 +39,57 @@ To extract spatial object properties ("region properties", `regionprops`):
 
         steinbock measure regionprops area convex_area perimeter
 
-## Object distances
-
-To measure the pairwise Euclidean distances between object centroids:
-
-    steinbock measure distances centroids
-
-To measure the pairwise Euclidean distances between object borders:
-
-    steinbock measure distances borders
-
-The above commands will create symmetric object pixel distance matrices in CSV format (see [File types](../specs/file-types.md#object-distances), one file per image). The default destination directory is `distances`.
-
-!!! danger "Computational complexity"
-    For `n` objects, the operations in this section require the computation and storage of `n choose 2` distances.
-
-    Computationally, calculating the pairwise Euclidean distances between cell borders is particularly expensive.
-
 ## Spatial object graphs
 
-!!! note "Distance requirements"
-    The commands in this section require object distances to be pre-computed (see previous section).
+Spatial object graphs can be constructed based on distances between object centroids or object borders, or by pixel expansion. For distance-based graphs, the maximum distance and/or number of neighbors can be specified.
 
-To construct spatial object graphs by thresholding on object distances (undirected):
+The following commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#spatial-object-graphs), one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is `graphs`.
 
-    steinbock measure graphs --dmax 4
+### Centroid distances
 
-To construct spatial k-nearest neighbor (kNN) object graphs (directed):
+To construct object graphs by thresholding on distances between object centroids:
 
-    steinbock measure graphs --kmax 5
+    steinbock measure graphs --type centroid --dmax 15
 
-The above commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#spatial-object-graphs), one file per image). The default destination directory is `graphs`.
+To construct k-nearest neighbor (kNN) graphs based on object centroid distances:
+
+    steinbock measure graphs --type centroid --kmax 5
+
+!!! note "Distance metric"
+    By default, the Euclidean distance distance is used. Other metrics can be specified using the `--metric` option, e.g.:
+
+        steinbock measure graphs --type centroid --dmax 15 --metric cityblock
+
+    Available distance metrics are listed in the [documentation for scipy.spatial.distance.pdist](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html).
 
 !!! note "Distance-thresholded kNN graphs"
-    The options `--dmax` and `--kmax` can be combined to construct distance-thresholded kNN graphs.
+    The options `--dmax` and `--kmax` options can be combined to construct distance-thresholded kNN graphs, e.g.:
+    
+        steinbock measure graphs --type centroid --dmax 15 --kmax 5
+
+### Border distances
+
+To construct object graphs by thresholding on Euclidean distances between object borders:
+
+    steinbock measure graphs --type border --dmax 4
+
+To construct k-nearest neighbor (kNN) graphs based on Euclidean object border distances:
+
+    steinbock measure graphs --type border --kmax 5 --dmax 20
+
+!!! note "Computational complexity"
+    The construction of spatial kNN graphs based on Euclidean distances between object borders is computationally expensive. To speed up the computation, always specify a suitable `--dmax` value like in the example above.
+
+
+### Pixel expansion
+
+To construct spatial object graphs by pixel expansion (morphological dilation):
+
+    steinbock measure graphs --type expand --dmax 4
+
+!!! note "Pixel expansion versus border distance"
+    Graphs constructed by pixel expansion are a special case of spatial object graphs constructed from (non-Euclidean) object border distances, in which, after pixel expansion, only *touching* objects (i.e., objects within a 4-neighborhood) are considered neighbors.
+    
 
 ## CellProfiler (legacy)
 

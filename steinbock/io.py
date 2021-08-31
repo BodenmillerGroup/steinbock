@@ -195,35 +195,6 @@ def write_data(
     return data_file
 
 
-def list_distances_files(
-    dists_dir: Union[str, PathLike],
-    base_files: Optional[Sequence[Union[str, PathLike]]] = None,
-) -> List[Path]:
-    if base_files is not None:
-        return _list_related_files(base_files, dists_dir, ".csv")
-    return sorted(Path(dists_dir).rglob("*.csv"))
-
-
-def read_distances(dists_stem: Union[str, PathLike]) -> pd.DataFrame:
-    dists_file = as_path_with_suffix(dists_stem, ".csv")
-    dists = pd.read_csv(dists_file, index_col="Object")
-    dists.index = dists.index.astype(mask_dtype)
-    dists.columns = dists.columns.astype(mask_dtype)
-    return dists
-
-
-def write_distances(
-    dists: pd.DataFrame, dists_stem: Union[str, PathLike], copy: bool = False
-) -> Path:
-    dists_file = as_path_with_suffix(dists_stem, ".csv")
-    dists.index.name = "Object"
-    dists.index = dists.index.astype(mask_dtype)
-    dists.columns.name = "Object"
-    dists.columns = dists.columns.astype(mask_dtype)
-    dists.to_csv(dists_file)
-    return dists_file
-
-
 def list_graph_files(
     graph_dir: Union[str, PathLike],
     base_files: Optional[Sequence[Union[str, PathLike]]] = None,
@@ -236,12 +207,14 @@ def list_graph_files(
 def read_graph(graph_stem: Union[str, PathLike]) -> pd.DataFrame:
     graph_file = as_path_with_suffix(graph_stem, ".csv")
     return pd.read_csv(
-        graph_file, usecols=["Object1", "Object2"], dtype=mask_dtype,
+        graph_file,
+        usecols=["Object", "Neighbor", "Distance"],
+        dtype=mask_dtype,
     )
 
 
 def write_graph(graph: pd.DataFrame, graph_stem: Union[str, PathLike]) -> Path:
     graph_file = as_path_with_suffix(graph_stem, ".csv")
-    graph = graph.loc[:, ["Object1", "Object2"]].astype(mask_dtype)
+    graph = graph.loc[:, ["Object", "Neighbor", "Distance"]].astype(mask_dtype)
     graph.to_csv(graph_file, index=False)
     return graph_file

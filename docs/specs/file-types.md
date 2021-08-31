@@ -59,23 +59,13 @@ CSV file with object IDs as index (`Object` column) and feature/channel names as
 !!! note "Combined object data"
     For data containing measurements from multiple images, a combined index of image name and object ID is used.
 
-## Object distances
-
-File extension: .csv
-
-Pixel distances between objects (e.g. Euclidean centroid distances)
-
-Symmetric CSV file (one per image) with object IDs as both index (`Object` column) and columns
-
 ## Spatial object graphs
 
 File extension: .csv
 
 List of directed edges defining a spatial object neighborhood graph
 
-CSV file (one per image) with no index and two columns (`Object1`, `Object2`)
-
-Each row defines an edge from object with ID `Object1` to object with ID `Object2`
+CSV file (one per image) with no index and three columns (`Object`, `Neighbor`, `Distance`)
 
 !!! note "Undirected graphs"
     For undirected graphs, each edge appears twice (one edge per direction)
