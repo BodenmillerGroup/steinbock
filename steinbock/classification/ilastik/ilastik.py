@@ -393,7 +393,7 @@ def _fix_project_pixel_classification_inplace(
                 block_dataset = labels_group.create_dataset(
                     block_dataset_name, data=block
                 )
-                block_dataset.attrs["blockSlice"] = block_slice.encode("ascii")
+                block_dataset.attrs["blockSlice"] = block_slice
 
 
 def _fix_project_prediction_export_inplace(
