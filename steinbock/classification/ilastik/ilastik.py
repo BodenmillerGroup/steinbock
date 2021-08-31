@@ -182,7 +182,7 @@ def create_ilastik_crops_from_disk(
     rng = np.random.default_rng(seed=seed)
     for ilastik_img_file in ilastik_img_files:
         x_start, y_start, ilastik_crop = create_ilastik_crop(
-            read_ilastik_image(ilastik_img_file), crop_size, rng,
+            read_ilastik_image(ilastik_img_file), crop_size, rng
         )
         yield Path(ilastik_img_file), x_start, y_start, ilastik_crop
         del ilastik_crop
@@ -353,9 +353,11 @@ def _fix_project_input_data_inplace(
             raw_data_group = lane_group.get("Raw Data")
             if raw_data_group is not None:
                 ilastik_crop_file = _get_hdf5_file(
-                    raw_data_group["filePath"][()].decode("ascii")
+                    _try_decode(raw_data_group["filePath"][()], "ascii")
                 )
-                dataset_id = raw_data_group["datasetId"][()].decode("ascii")
+                dataset_id = _try_decode(
+                    raw_data_group["datasetId"][()], "ascii"
+                )
                 raw_data_group.clear()
                 _init_project_raw_data_group(
                     raw_data_group,
@@ -385,7 +387,9 @@ def _fix_project_pixel_classification_inplace(
                 block = block_dataset[()]
                 block = np.transpose(block, axes=transpose_axes)
                 block = np.reshape(block, block.shape[:3])
-                block_slice = block_dataset.attrs["blockSlice"]
+                block_slice = _try_decode(
+                    block_dataset.attrs["blockSlice"], "ascii"
+                )
                 block_slice = block_slice[1:-1].split(",")
                 block_slice = [block_slice[i] for i in transpose_axes[:3]]
                 block_slice = f"[{','.join(block_slice)}]"
@@ -393,7 +397,7 @@ def _fix_project_pixel_classification_inplace(
                 block_dataset = labels_group.create_dataset(
                     block_dataset_name, data=block
                 )
-                block_dataset.attrs["blockSlice"] = block_slice
+                block_dataset.attrs["blockSlice"] = block_slice.encode("ascii")
 
 
 def _fix_project_prediction_export_inplace(
@@ -505,3 +509,9 @@ def _get_hdf5_file(hdf5_path: Union[str, PathLike]) -> Optional[Path]:
     while hdf5_file is not None and Path(hdf5_file).suffix != ".h5":
         hdf5_file = Path(hdf5_file).parent
     return hdf5_file
+
+
+def _try_decode(x: Union[str, bytes], encoding: str) -> str:
+    if isinstance(x, bytes):
+        x = x.decode(encoding)
+    return x
