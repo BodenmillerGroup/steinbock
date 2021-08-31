@@ -74,7 +74,7 @@ def create_panel_from_imc_panel(
     )
     for _, group in panel.groupby("channel"):
         panel.loc[group.index, "name"] = "/".join(
-            group["name"].dropna().unique().tolist()
+            group["name"].dropna().unique()
         )
         if "keep" in panel:
             panel.loc[group.index, "keep"] = group["keep"].any()
@@ -82,7 +82,7 @@ def create_panel_from_imc_panel(
             panel.loc[group.index, "ilastik"] = group["ilastik"].any()
         if "deepcell" in panel:
             panel.loc[group.index, "deepcell"] = group["deepcell"].any()
-    panel = panel.groupby("channel").aggregate("first")
+    panel = panel.groupby(panel["channel"].values).aggregate("first")
     panel.sort_values(
         "channel",
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
