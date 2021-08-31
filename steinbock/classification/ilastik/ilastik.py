@@ -385,7 +385,7 @@ def _fix_project_pixel_classification_inplace(
                 block = block_dataset[()]
                 block = np.transpose(block, axes=transpose_axes)
                 block = np.reshape(block, block.shape[:3])
-                block_slice = block_dataset.attrs["blockSlice"].decode("ascii")
+                block_slice = block_dataset.attrs["blockSlice"]
                 block_slice = block_slice[1:-1].split(",")
                 block_slice = [block_slice[i] for i in transpose_axes[:3]]
                 block_slice = f"[{','.join(block_slice)}]"
