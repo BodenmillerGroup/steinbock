@@ -115,8 +115,8 @@ def construct_euclidean_border_dist_graph(
 
 
 def expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
-    dists, indices = distance_transform_edt(mask != 0, return_indices=True)
-    return np.where(dists <= dmax, mask[indices], mask)
+    dists, (i, j) = distance_transform_edt(mask == 0, return_indices=True)
+    return np.where(dists <= dmax, mask[i, j], mask)
 
 
 def construct_graph(

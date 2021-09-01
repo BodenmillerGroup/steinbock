@@ -88,7 +88,7 @@ To construct spatial object graphs by pixel expansion (morphological dilation):
     steinbock measure graphs --type expand --dmax 4
 
 !!! note "Pixel expansion versus border distance"
-    Graphs constructed by pixel expansion are a special case of spatial object graphs constructed from (non-Euclidean) object border distances, in which, after pixel expansion, only *touching* objects (i.e., objects within a 4-neighborhood) are considered neighbors.
+    Graphs constructed by pixel expansion are a special case of spatial object graphs constructed based on Euclidean distances between object borders, in which, after pixel expansion, only *touching* objects (i.e., objects within a 4-neighborhood) are considered neighbors.
     
 
 ## CellProfiler (legacy)
