@@ -276,7 +276,7 @@ def run_cmd(
 )
 @click.option(
     "--axisorder",
-    "axis_order",
+    "orig_axis_order",
     type=click.STRING,
     help="Axis order of the existing crops (e.g. zyxc)",
 )
@@ -286,7 +286,7 @@ def fix_cmd(
     ilastik_crop_dir,
     ilastik_probab_dir,
     create_backup,
-    axis_order,
+    orig_axis_order,
 ):
     ilastik_crop_files = ilastik.list_ilastik_crop_files(ilastik_crop_dir)
     if create_backup:
@@ -318,7 +318,7 @@ def fix_cmd(
         transpose_axes,
         ilastik_crop,
     ) in ilastik.fix_ilastik_crops_from_disk(
-        ilastik_crop_files, axis_order=axis_order
+        ilastik_crop_files, orig_axis_order=orig_axis_order
     ):
         if last_transpose_axes not in (None, transpose_axes):
             return click.echo(

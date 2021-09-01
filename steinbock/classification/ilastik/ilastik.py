@@ -11,6 +11,7 @@ from os import PathLike
 from pathlib import Path
 from skimage.transform import resize
 from typing import (
+    Any,
     Callable,
     Dict,
     Generator,
@@ -53,7 +54,7 @@ _dataset_axistags = json.dumps(
         ]
     }
 )
-_h5py_libver = "latest"
+_h5py_libver = "earliest"
 
 
 def list_ilastik_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
@@ -82,9 +83,11 @@ def write_ilastik_image(
     ilastik_img = io.to_dtype(ilastik_img, io.img_dtype)
     ilastik_img_file = io.as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(_img_dataset_path, data=ilastik_img)
-        dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
-        dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
+        dataset = _create_or_replace_dataset(f, _img_dataset_path, ilastik_img)
+        dataset.attrs["display_mode"] = _str_encode(
+            _dataset_display_mode, ascii=True
+        )
+        dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
     return ilastik_img_file
 
@@ -95,9 +98,13 @@ def write_ilastik_crop(
     ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
     ilastik_crop_file = io.as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
-        dataset = f.create_dataset(_crop_dataset_path, data=ilastik_crop)
-        dataset.attrs["display_mode"] = _dataset_display_mode.encode("ascii")
-        dataset.attrs["axistags"] = _dataset_axistags.encode("ascii")
+        dataset = _create_or_replace_dataset(
+            f, _crop_dataset_path, ilastik_crop
+        )
+        dataset.attrs["display_mode"] = _str_encode(
+            _dataset_display_mode, ascii=True
+        )
+        dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
     return ilastik_crop_file
 
@@ -195,7 +202,7 @@ def create_and_save_ilastik_project(
     dataset_id = str(uuid1())
     shutil.copyfile(_project_file_template, ilastik_project_file)
     with h5py.File(ilastik_project_file, mode="a", libver=_h5py_libver) as f:
-        infos = f["Input Data/infos"]
+        infos_group = f["Input Data/infos"]
         for i, ilastik_crop_file in enumerate(ilastik_crop_files):
             rel_ilastik_crop_file = Path(ilastik_crop_file).relative_to(
                 Path(ilastik_project_file).parent
@@ -204,14 +211,15 @@ def create_and_save_ilastik_project(
                 ilastik_crop_file, mode="r", libver=_h5py_libver
             ) as f_crop:
                 crop_shape = f_crop[_crop_dataset_path].shape
-            lane = infos.create_group(f"lane{i:04d}")
-            lane.create_group("Prediction Mask")
-            _init_project_raw_data_group(
-                lane.create_group("Raw Data"),
-                dataset_id,
-                str(rel_ilastik_crop_file / _crop_dataset_path),
-                Path(ilastik_crop_file).stem,
-                crop_shape,
+            lane_group = infos_group.create_group(f"lane{i:04d}")
+            lane_group.create_group("Prediction Mask")
+            raw_data_group = lane_group.create_group("Raw Data")
+            _fix_raw_data_group_inplace(
+                raw_data_group,
+                dataset_id=dataset_id,
+                file_path=str(rel_ilastik_crop_file / _crop_dataset_path),
+                nickname=Path(ilastik_crop_file).stem,
+                shape=crop_shape,
             )
 
 
@@ -262,15 +270,15 @@ def run_pixel_classification(
 
 def fix_ilastik_crops_from_disk(
     ilastik_crop_files: Sequence[Union[str, PathLike]],
-    axis_order: Optional[str] = None,
+    orig_axis_order: Union[str, Sequence, None] = None,
 ) -> Generator[Tuple[Path, Tuple[int, ...], np.ndarray], None, None]:
     for ilastik_crop_file in ilastik_crop_files:
         with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
             ilastik_crop_dataset = None
             if _crop_dataset_path in f:
                 ilastik_crop_dataset = f[_crop_dataset_path]
-            elif ilastik_crop_file.stem in f:
-                ilastik_crop_dataset = f[ilastik_crop_file.stem]
+            elif Path(ilastik_crop_file).stem in f:
+                ilastik_crop_dataset = f[Path(ilastik_crop_file).stem]
             elif len(f) == 1:
                 ilastik_crop_dataset = next(iter(f.values()))
             else:
@@ -278,12 +286,14 @@ def fix_ilastik_crops_from_disk(
             if ilastik_crop_dataset.attrs.get("steinbock", False):
                 continue
             ilastik_crop = ilastik_crop_dataset[()]
-            orig_axis_order = None
-            if axis_order is not None:
-                orig_axis_order = list(axis_order)
+            if orig_axis_order is not None:
+                orig_axis_order = list(orig_axis_order)
             elif "axistags" in ilastik_crop_dataset.attrs:
-                axis_tags = json.loads(ilastik_crop_dataset.attrs["axistags"])
-                orig_axis_order = [item["key"] for item in axis_tags["axes"]]
+                axis_tags, _ = _str_decode(
+                    ilastik_crop_dataset.attrs["axistags"]
+                )
+                axis_tags_json = json.loads(axis_tags)
+                orig_axis_order = [x["key"] for x in axis_tags_json["axes"]]
             else:
                 raise ValueError(f"Unknown axis order: {ilastik_crop_file}")
         if len(orig_axis_order) != ilastik_crop.ndim:
@@ -328,21 +338,24 @@ def fix_ilastik_project_file_inplace(
         Path(ilastik_project_file).parent
     )
     with h5py.File(ilastik_project_file, "a", libver=_h5py_libver) as f:
-        if "Input Data" in f:
-            _fix_project_input_data_inplace(
-                f["Input Data"], rel_ilastik_crop_dir, ilastik_crop_shapes
+        input_data_group = f.get("Input Data")
+        if input_data_group is not None:
+            _fix_input_data_group_inplace(
+                input_data_group, rel_ilastik_crop_dir, ilastik_crop_shapes
             )
-        if "PixelClassification" in f:
-            _fix_project_pixel_classification_inplace(
-                f["PixelClassification"], transpose_axes
+        pixel_classification_group = f.get("PixelClassification")
+        if pixel_classification_group is not None:
+            _fix_pixel_classification_group_inplace(
+                pixel_classification_group, transpose_axes
             )
-        if "Prediction Export" in f:
-            _fix_project_prediction_export_inplace(
-                f["Prediction Export"], rel_ilastik_probab_dir
+        prediction_export_group = f["Prediction Export"]
+        if prediction_export_group is not None:
+            _fix_prediction_export_group_inplace(
+                prediction_export_group, rel_ilastik_probab_dir
             )
 
 
-def _fix_project_input_data_inplace(
+def _fix_input_data_group_inplace(
     input_data_group: h5py.Group,
     rel_ilastik_crop_dir: Path,
     ilastik_crop_shapes: Dict[str, Tuple[int, ...]],
@@ -352,30 +365,24 @@ def _fix_project_input_data_inplace(
         for lane_group in infos_group.values():
             raw_data_group = lane_group.get("Raw Data")
             if raw_data_group is not None:
-                ilastik_crop_file = _get_hdf5_file(
-                    _try_decode(raw_data_group["filePath"][()], "ascii")
-                )
-                dataset_id = _try_decode(
-                    raw_data_group["datasetId"][()], "ascii"
-                )
-                raw_data_group.clear()
-                _init_project_raw_data_group(
+                file_path, _ = _str_decode(raw_data_group["filePath"][()])
+                ilastik_crop_file = _get_hdf5_file(file_path)
+                _fix_raw_data_group_inplace(
                     raw_data_group,
-                    dataset_id,
-                    str(
+                    file_path=str(
                         rel_ilastik_crop_dir
                         / ilastik_crop_file.name
                         / _crop_dataset_path
                     ),
-                    ilastik_crop_file.stem,
-                    ilastik_crop_shapes[ilastik_crop_file.stem],
+                    nickname=ilastik_crop_file.stem,
+                    shape=ilastik_crop_shapes[ilastik_crop_file.stem],
                 )
     local_data_group = input_data_group.get("local_data")
     if local_data_group is not None:
         local_data_group.clear()
 
 
-def _fix_project_pixel_classification_inplace(
+def _fix_pixel_classification_group_inplace(
     pixel_classification_group: h5py.Group, transpose_axes: List[int]
 ):
     label_sets_group = pixel_classification_group.get("LabelSets")
@@ -387,121 +394,112 @@ def _fix_project_pixel_classification_inplace(
                 block = block_dataset[()]
                 block = np.transpose(block, axes=transpose_axes)
                 block = np.reshape(block, block.shape[:3])
-                block_slice = _try_decode(
-                    block_dataset.attrs["blockSlice"], "ascii"
+                block_slice, block_slice_ascii = _str_decode(
+                    block_dataset.attrs["blockSlice"]
                 )
                 block_slice = block_slice[1:-1].split(",")
                 block_slice = [block_slice[i] for i in transpose_axes[:3]]
                 block_slice = f"[{','.join(block_slice)}]"
                 del labels_group[block_dataset_name]
-                block_dataset = labels_group.create_dataset(
-                    block_dataset_name, data=block
+                block_dataset = _create_or_replace_dataset(
+                    labels_group, block_dataset_name, block
                 )
-                block_dataset.attrs["blockSlice"] = block_slice.encode("ascii")
+                block_dataset.attrs["blockSlice"] = _str_encode(
+                    block_slice, ascii=block_slice_ascii
+                )
 
 
-def _fix_project_prediction_export_inplace(
+def _fix_prediction_export_group_inplace(
     prediction_export_group: h5py.Group, rel_ilastik_probab_dir: Path
 ):
-    prediction_export_group.clear()
     _logger.warning(
         "When exporting data from the graphical user interface of Ilastik, "
         "please manually edit the export image settings and enable "
         "renormalizing [min, max] from [0.0, 1.0] to [0, 65535]"
     )
-    # prediction_export_group.create_dataset(
-    #     "InputMin",
-    #     data=np.array([0.0], dtype=np.float32),
+    # _create_or_replace_dataset(
+    #   prediction_export_group,
+    #   "InputMin",
+    #   np.array([0.0], dtype=np.float32),
     # )
-    # prediction_export_group.create_dataset(
-    #     "InputMax",
-    #     data=np.array([1.0], dtype=np.float32),
+    # _create_or_replace_dataset(
+    #   prediction_export_group,
+    #   "InputMax", np.array([1.0], dtype=np.float32),
     # )
-    prediction_export_group.create_dataset(
-        "ExportMin", data=np.array([0], dtype=np.uint16)
+    _create_or_replace_dataset(
+        prediction_export_group, "ExportMin", np.array([0], dtype=np.uint16)
     )
-    prediction_export_group.create_dataset(
-        "ExportMax", data=np.array([65535], dtype=np.uint16)
+    _create_or_replace_dataset(
+        prediction_export_group,
+        "ExportMax",
+        np.array([65535], dtype=np.uint16),
     )
-    prediction_export_group.create_dataset(
-        "ExportDtype",
-        dtype=h5py.string_dtype("utf-8"),
-        data="uint16".encode("utf-8"),
+    _create_or_replace_dataset(
+        prediction_export_group, "ExportDtype", "uint16", ascii=False
     )
-    prediction_export_group.create_dataset(
-        "OutputAxisOrder",
-        dtype=h5py.string_dtype("ascii"),
-        data="yxc".encode("ascii"),
+    _create_or_replace_dataset(
+        prediction_export_group, "OutputAxisOrder", "yxc", ascii=True
     )
-    prediction_export_group.create_dataset(
-        "OutputFormat",
-        dtype=h5py.string_dtype("ascii"),
-        data="tiff".encode("ascii"),
+    _create_or_replace_dataset(
+        prediction_export_group, "OutputFormat", "tiff", ascii=True
     )
-    prediction_export_group.create_dataset(
+    _create_or_replace_dataset(
+        prediction_export_group,
         "OutputFilenameFormat",
-        dtype=h5py.string_dtype("ascii"),
-        data=f"{rel_ilastik_probab_dir}/{{nickname}}.tiff".encode("ascii"),
+        f"{rel_ilastik_probab_dir}/{{nickname}}.tiff",
+        ascii=True,
     )
-    prediction_export_group.create_dataset(
+    _create_or_replace_dataset(
+        prediction_export_group,
         "OutputInternalPath",
-        dtype=h5py.string_dtype("ascii"),
-        data="exported_data".encode("ascii"),
+        "exported_data",
+        ascii=True,
     )
-    prediction_export_group.create_dataset(
-        "StorageVersion",
-        dtype=h5py.string_dtype("utf-8"),
-        data="0.1".encode("utf-8"),
+    _create_or_replace_dataset(
+        prediction_export_group, "StorageVersion", "0.1", ascii=False
     )
 
 
-def _init_project_raw_data_group(
+def _fix_raw_data_group_inplace(
     raw_data_group: h5py.Group,
-    dataset_id: str,
-    file_path: str,
-    nickname: str,
-    shape: Tuple[int, ...],
+    dataset_id: Optional[str] = None,
+    file_path: Optional[str] = None,
+    nickname: Optional[str] = None,
+    shape: Optional[Tuple[int, ...]] = None,
 ):
-    raw_data_group.create_dataset(
+    _create_or_replace_dataset(
+        raw_data_group,
         "__class__",
-        dtype=h5py.string_dtype("ascii"),
-        data="RelativeFilesystemDatasetInfo".encode("ascii"),
+        "RelativeFilesystemDatasetInfo",
+        ascii=True,
     )
-    raw_data_group.create_dataset("allowLabels", data=True)
-    raw_data_group.create_dataset(
-        "axistags",
-        dtype=h5py.string_dtype("ascii"),
-        data=_dataset_axistags.encode("ascii"),
+    _create_or_replace_dataset(raw_data_group, "allowLabels", True)
+    _create_or_replace_dataset(
+        raw_data_group, "axistags", _dataset_axistags, ascii=True
     )
-    raw_data_group.create_dataset(
-        "datasetId",
-        dtype=h5py.string_dtype("ascii"),
-        data=dataset_id.encode("ascii"),
+    if dataset_id is not None:
+        _create_or_replace_dataset(
+            raw_data_group, "datasetId", dataset_id, ascii=True
+        )
+    _create_or_replace_dataset(
+        raw_data_group, "display_mode", _dataset_display_mode, ascii=True
     )
-    raw_data_group.create_dataset(
-        "display_mode",
-        dtype=h5py.string_dtype("ascii"),
-        data=_dataset_display_mode.encode("ascii"),
+    if file_path is not None:
+        _create_or_replace_dataset(
+            raw_data_group, "filePath", file_path, ascii=True
+        )
+    _create_or_replace_dataset(
+        raw_data_group, "location", "FileSystem", ascii=True
     )
-    raw_data_group.create_dataset(
-        "filePath",
-        dtype=h5py.string_dtype("ascii"),
-        data=file_path.encode("ascii"),
-    )
-    raw_data_group.create_dataset(
-        "location",
-        dtype=h5py.string_dtype("ascii"),
-        data="FileSystem".encode("ascii"),
-    )
-    raw_data_group.create_dataset(
-        "nickname",
-        dtype=h5py.string_dtype("ascii"),
-        data=nickname.encode("ascii"),
-    )
-    raw_data_group.create_dataset("normalizeDisplay", data=False)
-    raw_data_group.create_dataset(
-        "shape", data=np.array(shape, dtype=np.int64)
-    )
+    if nickname is not None:
+        _create_or_replace_dataset(
+            raw_data_group, "nickname", nickname, ascii=True
+        )
+    _create_or_replace_dataset(raw_data_group, "normalizeDisplay", False)
+    if shape is not None:
+        _create_or_replace_dataset(
+            raw_data_group, "shape", data=np.array(shape, dtype=np.int64)
+        )
 
 
 def _get_hdf5_file(hdf5_path: Union[str, PathLike]) -> Optional[Path]:
@@ -511,7 +509,30 @@ def _get_hdf5_file(hdf5_path: Union[str, PathLike]) -> Optional[Path]:
     return hdf5_file
 
 
-def _try_decode(x: Union[str, bytes], encoding: str) -> str:
-    if isinstance(x, bytes):
-        x = x.decode(encoding)
-    return x
+def _str_decode(obj: Union[str, bytes]) -> Tuple[str, bool]:
+    if isinstance(obj, bytes):
+        return obj.decode("ascii"), True
+    return obj, False
+
+
+def _str_encode(obj: str, ascii: bool = False) -> Union[str, bytes]:
+    if ascii and isinstance(obj, str):
+        return obj.encode("ascii")
+    return obj
+
+
+def _create_or_replace_dataset(
+    parent: Union[h5py.File, h5py.Group],
+    key: str,
+    data: Union[str, Any],
+    ascii: bool = True,
+) -> h5py.Dataset:
+    old_dataset = parent.get(key)
+    if old_dataset is not None:
+        old_data = old_dataset[()]
+        if isinstance(old_data, str):
+            _, ascii = _str_decode(old_data)
+        del parent[key]
+    if isinstance(data, str):
+        data = _str_encode(data, ascii=ascii)
+    return parent.create_dataset(key, data=data)
