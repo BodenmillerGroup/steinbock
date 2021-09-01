@@ -31,8 +31,9 @@ def construct_centroid_dist_graph(
     condensed_dists = pdist(centroids, metric=metric)
     if kmax is not None:
         k = min(kmax, len(props) - 1)
-        dist_mat = squareform(condensed_dists, checks=False)
-        knn_indices = np.argpartition(dist_mat, k)[:, 1 : k + 1]
+        dist_mat = squareform(condensed_dists, checks=False).astype(float)
+        np.fill_diagonal(dist_mat, np.inf)
+        knn_indices = np.argpartition(dist_mat, k - 1)[:, :k]
         if dmax is not None:
             knn_dists = np.take_along_axis(condensed_dists, knn_indices, -1)
             indices1, indices2 = np.nonzero(knn_dists <= dmax)
@@ -45,6 +46,11 @@ def construct_centroid_dist_graph(
         (condensed_indices,) = np.nonzero(condensed_dists <= dmax)
         indices1, indices2 = _to_triu_indices(condensed_indices, len(props))
         distances = condensed_dists[condensed_indices]
+        indices1, indices2, distances = (
+            np.concatenate((indices1, indices2)),
+            np.concatenate((indices2, indices1)),
+            np.concatenate((distances, distances)),
+        )
     else:
         raise ValueError("Specify either dmax or kmax (or both)")
     return pd.DataFrame(
