@@ -75,9 +75,12 @@ def construct_euclidean_border_dist_graph(
     for label in unique_labels:
         if dmax is not None:
             ys, xs = np.nonzero(mask == label)
+            dmax_int = int(np.ceil(dmax))
+            ymin, ymax = np.amin(ys) - dmax_int, np.amax(ys) + dmax_int
+            xmin, xmax = np.amin(xs) - dmax_int, np.amax(xs) + dmax_int
             mask_or_patch = mask[
-                min(ys) - dmax : max(ys) + dmax,
-                min(xs) - dmax : max(xs) + dmax,
+                max(0, ymin) : min(mask.shape[0], ymax),
+                max(0, xmin) : min(mask.shape[1], xmax),
             ]
             neighbor_labels = np.unique(mask_or_patch)
             neighbor_labels = neighbor_labels[neighbor_labels != 0]
