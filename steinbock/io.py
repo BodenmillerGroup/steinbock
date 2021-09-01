@@ -209,12 +209,22 @@ def read_graph(graph_stem: Union[str, PathLike]) -> pd.DataFrame:
     return pd.read_csv(
         graph_file,
         usecols=["Object", "Neighbor", "Distance"],
-        dtype=mask_dtype,
+        dtype={
+            "Object": mask_dtype,
+            "Neighbor": mask_dtype,
+            "Distance": float,
+        },
     )
 
 
 def write_graph(graph: pd.DataFrame, graph_stem: Union[str, PathLike]) -> Path:
     graph_file = as_path_with_suffix(graph_stem, ".csv")
-    graph = graph.loc[:, ["Object", "Neighbor", "Distance"]].astype(mask_dtype)
+    graph = graph.loc[:, ["Object", "Neighbor", "Distance"]].astype(
+        {
+            "Object": mask_dtype,
+            "Neighbor": mask_dtype,
+            "Distance": float,
+        }
+    )
     graph.to_csv(graph_file, index=False)
     return graph_file

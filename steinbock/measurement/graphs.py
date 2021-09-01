@@ -35,7 +35,7 @@ def construct_centroid_dist_graph(
         np.fill_diagonal(dist_mat, np.inf)
         knn_indices = np.argpartition(dist_mat, k - 1)[:, :k]
         if dmax is not None:
-            knn_dists = np.take_along_axis(condensed_dists, knn_indices, -1)
+            knn_dists = np.take_along_axis(dist_mat, knn_indices, -1)
             indices1, indices2 = np.nonzero(knn_dists <= dmax)
             indices2 = knn_indices[(indices1, indices2)]
         else:
