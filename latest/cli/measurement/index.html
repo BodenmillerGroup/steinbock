@@ -470,16 +470,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#object-distances" class="md-nav__link">
-    Object distances
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#spatial-object-graphs" class="md-nav__link">
     Spatial object graphs
   </a>
+  
+    <nav class="md-nav" aria-label="Spatial object graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centroid-distances" class="md-nav__link">
+    Centroid distances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#border-distances" class="md-nav__link">
+    Border distances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pixel-expansion" class="md-nav__link">
+    Pixel expansion
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -827,16 +847,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#object-distances" class="md-nav__link">
-    Object distances
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#spatial-object-graphs" class="md-nav__link">
     Spatial object graphs
   </a>
+  
+    <nav class="md-nav" aria-label="Spatial object graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centroid-distances" class="md-nav__link">
+    Centroid distances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#border-distances" class="md-nav__link">
+    Border distances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pixel-expansion" class="md-nav__link">
+    Pixel expansion
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -922,34 +962,47 @@
 <pre><code>steinbock measure regionprops area convex_area perimeter
 </code></pre>
 </div>
-<h2 id="object-distances">Object distances</h2>
-<p>To measure the pairwise Euclidean distances between object centroids:</p>
-<pre><code>steinbock measure distances centroids
-</code></pre>
-<p>To measure the pairwise Euclidean distances between object borders:</p>
-<pre><code>steinbock measure distances borders
-</code></pre>
-<p>The above commands will create symmetric object pixel distance matrices in CSV format (see <a href="../../specs/file-types/#object-distances">File types</a>, one file per image). The default destination directory is <code>distances</code>.</p>
-<div class="admonition danger">
-<p class="admonition-title">Computational complexity</p>
-<p>For <code>n</code> objects, the operations in this section require the computation and storage of <code>n choose 2</code> distances.</p>
-<p>Computationally, calculating the pairwise Euclidean distances between cell borders is particularly expensive.</p>
-</div>
 <h2 id="spatial-object-graphs">Spatial object graphs</h2>
+<p>Spatial object graphs can be constructed based on distances between object centroids or object borders, or by pixel expansion. For distance-based graphs, the maximum distance and/or number of neighbors can be specified.</p>
+<p>The following commands will create directed edge lists in CSV format (see <a href="../../specs/file-types/#spatial-object-graphs">File types</a>, one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is <code>graphs</code>.</p>
+<h3 id="centroid-distances">Centroid distances</h3>
+<p>To construct object graphs by thresholding on distances between object centroids:</p>
+<pre><code>steinbock measure graphs --type centroid --dmax 15
+</code></pre>
+<p>To construct k-nearest neighbor (kNN) graphs based on object centroid distances:</p>
+<pre><code>steinbock measure graphs --type centroid --kmax 5
+</code></pre>
 <div class="admonition note">
-<p class="admonition-title">Distance requirements</p>
-<p>The commands in this section require object distances to be pre-computed (see previous section).</p>
+<p class="admonition-title">Distance metric</p>
+<p>By default, the Euclidean distance distance is used. Other metrics can be specified using the <code>--metric</code> option, e.g.:</p>
+<pre><code>steinbock measure graphs --type centroid --dmax 15 --metric cityblock
+</code></pre>
+<p>Available distance metrics are listed in the <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html">documentation for scipy.spatial.distance.pdist</a>.</p>
 </div>
-<p>To construct spatial object graphs by thresholding on object distances (undirected):</p>
-<pre><code>steinbock measure graphs --dmax 4
-</code></pre>
-<p>To construct spatial k-nearest neighbor (kNN) object graphs (directed):</p>
-<pre><code>steinbock measure graphs --kmax 5
-</code></pre>
-<p>The above commands will create directed edge lists in CSV format (see <a href="../../specs/file-types/#spatial-object-graphs">File types</a>, one file per image). The default destination directory is <code>graphs</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Distance-thresholded kNN graphs</p>
-<p>The options <code>--dmax</code> and <code>--kmax</code> can be combined to construct distance-thresholded kNN graphs.</p>
+<p>The options <code>--dmax</code> and <code>--kmax</code> options can be combined to construct distance-thresholded kNN graphs, e.g.:</p>
+<pre><code>steinbock measure graphs --type centroid --dmax 15 --kmax 5
+</code></pre>
+</div>
+<h3 id="border-distances">Border distances</h3>
+<p>To construct object graphs by thresholding on Euclidean distances between object borders:</p>
+<pre><code>steinbock measure graphs --type border --dmax 4
+</code></pre>
+<p>To construct k-nearest neighbor (kNN) graphs based on Euclidean object border distances:</p>
+<pre><code>steinbock measure graphs --type border --kmax 5 --dmax 20
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Computational complexity</p>
+<p>The construction of spatial kNN graphs based on Euclidean distances between object borders is computationally expensive. To speed up the computation, always specify a suitable <code>--dmax</code> value like in the example above.</p>
+</div>
+<h3 id="pixel-expansion">Pixel expansion</h3>
+<p>To construct spatial object graphs by pixel expansion (morphological dilation):</p>
+<pre><code>steinbock measure graphs --type expand --dmax 4
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Pixel expansion versus border distance</p>
+<p>Graphs constructed by pixel expansion are a special case of spatial object graphs constructed based on Euclidean distances between object borders, in which, after pixel expansion, only <em>touching</em> objects (i.e., objects within a 4-neighborhood) are considered neighbors.</p>
 </div>
 <h2 id="cellprofiler-legacy">CellProfiler (legacy)</h2>
 <div class="admonition danger">

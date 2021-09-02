@@ -709,13 +709,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#object-distances" class="md-nav__link">
-    Object distances
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#spatial-object-graphs" class="md-nav__link">
     Spatial object graphs
   </a>
@@ -804,13 +797,6 @@
         <li class="md-nav__item">
   <a href="#object-data" class="md-nav__link">
     Object data
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#object-distances" class="md-nav__link">
-    Object distances
   </a>
   
 </li>
@@ -911,15 +897,10 @@
 <p class="admonition-title">Combined object data</p>
 <p>For data containing measurements from multiple images, a combined index of image name and object ID is used.</p>
 </div>
-<h2 id="object-distances">Object distances</h2>
-<p>File extension: .csv</p>
-<p>Pixel distances between objects (e.g. Euclidean centroid distances)</p>
-<p>Symmetric CSV file (one per image) with object IDs as both index (<code>Object</code> column) and columns</p>
 <h2 id="spatial-object-graphs">Spatial object graphs</h2>
 <p>File extension: .csv</p>
 <p>List of directed edges defining a spatial object neighborhood graph</p>
-<p>CSV file (one per image) with no index and two columns (<code>Object1</code>, <code>Object2</code>)</p>
-<p>Each row defines an edge from object with ID <code>Object1</code> to object with ID <code>Object2</code></p>
+<p>CSV file (one per image) with no index and three columns (<code>Object</code>, <code>Neighbor</code>, <code>Distance</code>)</p>
 <div class="admonition note">
 <p class="admonition-title">Undirected graphs</p>
 <p>For undirected graphs, each edge appears twice (one edge per direction)</p>
