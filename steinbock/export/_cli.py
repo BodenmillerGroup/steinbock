@@ -41,7 +41,7 @@ def export_cmd_group():
     "--dest",
     "xtiff_dir",
     type=click.Path(file_okay=False),
-    default="img_ome",
+    default="ome",
     show_default=True,
     help="Path to the OME-TIFF export directory",
 )
