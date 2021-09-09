@@ -9,12 +9,12 @@ from typing import Generator, Sequence, Tuple, Union
 from steinbock import io
 
 
-def to_networkx(graph: pd.DataFrame, *data_list) -> nx.Graph:
-    edges = graph[["Object1", "Object2"]].astype(int).values.tolist()
+def to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
+    edges = neighbors[["Object1", "Object2"]].astype(int).values.tolist()
     undirected_edges = [tuple(sorted(edge)) for edge in edges]
     is_directed = any([x != 2 for x in Counter(undirected_edges).values()])
-    g: nx.Graph = nx.from_pandas_edgelist(
-        graph,
+    graph: nx.Graph = nx.from_pandas_edgelist(
+        neighbors,
         source="Object1",
         target="Object2",
         create_using=nx.DiGraph if is_directed else nx.Graph,
@@ -29,18 +29,18 @@ def to_networkx(graph: pd.DataFrame, *data_list) -> nx.Graph:
             int(object_id): object_data.to_dict()
             for object_id, object_data in merged_data.iterrows()
         }
-        nx.set_node_attributes(g, node_attributes)
-    return g
+        nx.set_node_attributes(graph, node_attributes)
+    return graph
 
 
 def to_networkx_from_disk(
-    graph_files: Sequence[Union[str, PathLike]], *data_file_lists
+    neighbors_files: Sequence[Union[str, PathLike]], *data_file_lists
 ) -> Generator[Tuple[Path, nx.Graph], None, None]:
-    for i, graph_file in enumerate(graph_files):
-        graph = io.read_graph(graph_file)
+    for i, neighbors_file in enumerate(neighbors_files):
+        neighbors = io.read_neighbors(neighbors_file)
         data_list = []
         for data_files in data_file_lists:
             data_list.append(io.read_data(data_files[i]))
-        g = to_networkx(graph, *data_list)
-        yield Path(graph_file), g
-        del graph, data_list, g
+        graph = to_networkx(neighbors, *data_list)
+        yield Path(neighbors_file), graph
+        del neighbors, data_list, graph

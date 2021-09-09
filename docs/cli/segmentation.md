@@ -1,6 +1,6 @@
 # Object segmentation
 
-In this step, objects such as cells will be segmented. This will result in grayscale *object masks* of the same x and y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [File types](../specs/file-types.md#masks)).
+In this step, objects such as cells will be segmented. This will result in grayscale *object masks* of the same x and y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [File types](../specs/file-types.md#object-masks)).
 
 Various segmentation approaches are supported, each of which is described in the following.
 
@@ -42,7 +42,7 @@ More detailed instructions on how to create CellProfiler pipelines can be found 
     In particular, the generated pipeline is configured to down-size the probability images by a factor of two, to account for the default scaling applied in the [Ilastik pixel classification step](classification.md#ilastik). If a different classification strategy or scale factor has been used to generate the probability images, the down-scale factor must be adjusted accordingly.
 
 !!! note "CellProfiler output"
-    By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see [File types](../specs/file-types.md#masks)). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.
+    By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see [File types](../specs/file-types.md#object-masks)). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.
 
 ### Batch processing
 
@@ -50,7 +50,7 @@ After the pipeline has been configured, it can be applied to a batch of probabil
 
     steinbock segment cellprofiler run
 
-This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [File types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
+This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (*object IDs*, see [File types](../specs/file-types.md#object-masks)). The default destination directory for these masks is `masks`.
 
 ## DeepCell
 
@@ -67,7 +67,7 @@ To segment nuclei using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcel
 
     steinbock segment deepcell --app mesmer --minmax --type nuclear
 
-This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [File types](../specs/file-types.md#masks)). The default destination directory for these masks is `masks`.
+This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [File types](../specs/file-types.md#object-masks)). The default destination directory for these masks is `masks`.
 
 !!! note "DeepCell image data"
     Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin).

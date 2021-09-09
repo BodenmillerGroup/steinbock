@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from enum import Enum
+from functools import partial
 from os import PathLike
 from pathlib import Path
 from scipy.ndimage import distance_transform_edt
@@ -11,6 +13,11 @@ from typing import Generator, Optional, Sequence, Tuple, Union
 from steinbock import io
 
 
+def _expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
+    dists, (i, j) = distance_transform_edt(mask == 0, return_indices=True)
+    return np.where(dists <= dmax, mask[i, j], mask)
+
+
 def _to_triu_indices(k: np.ndarray, n: int) -> Tuple[np.ndarray, np.ndarray]:
     # https://stackoverflow.com/a/27088560 (optimized for numpy arrays)
     # Briefly, the formulas were derived using triangular numbers/roots
@@ -19,12 +26,14 @@ def _to_triu_indices(k: np.ndarray, n: int) -> Tuple[np.ndarray, np.ndarray]:
     return i.astype(int), j.astype(int)
 
 
-def construct_centroid_dist_graph(
+def _measure_centroid_distance_neighbors(
     mask: np.ndarray,
-    metric: str,
+    metric: Optional[str] = None,
     dmax: Optional[float] = None,
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
+    if metric is None:
+        raise ValueError("Metric is required")
     props = regionprops(mask)
     labels = np.array([p.label for p in props])
     centroids = np.array([p.centroid for p in props])
@@ -62,11 +71,14 @@ def construct_centroid_dist_graph(
     )
 
 
-def construct_euclidean_border_dist_graph(
+def _measure_euclidean_border_distance_neighbors(
     mask: np.ndarray,
+    metric: Optional[str] = None,
     dmax: Optional[float] = None,
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
+    if metric not in (None, "euclidean"):
+        raise ValueError("Metric has to be euclidean")
     labels1 = []
     labels2 = []
     distances = []
@@ -114,57 +126,61 @@ def construct_euclidean_border_dist_graph(
     )
 
 
-def expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
-    dists, (i, j) = distance_transform_edt(mask == 0, return_indices=True)
-    return np.where(dists <= dmax, mask[i, j], mask)
-
-
-def construct_graph(
+def _measure_euclidean_pixel_expansion_neighbors(
     mask: np.ndarray,
-    graph_type: str,
     metric: Optional[str] = None,
     dmax: Optional[float] = None,
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
-    if graph_type == "centroid":
-        if metric is None:
-            raise ValueError("Metric is required")
-        return construct_centroid_dist_graph(
-            mask, metric, dmax=dmax, kmax=kmax
+    if metric not in (None, "euclidean"):
+        raise ValueError("Metric has to be Euclidean for pixel expansion")
+    if dmax is None:
+        raise ValueError("Maximum distance required for pixel expansion")
+    if kmax is not None:
+        raise ValueError(
+            "k-nearest neighbors is not supported by pixel expansion"
         )
-    if graph_type == "border":
-        if metric not in (None, "euclidean"):
-            raise ValueError("Metric has to be Euclidean for border distances")
-        return construct_euclidean_border_dist_graph(
-            mask, dmax=dmax, kmax=kmax
-        )
-    if graph_type == "expand":
-        if metric not in (None, "euclidean"):
-            raise ValueError("Metric has to be Euclidean for pixel expansion")
-        if dmax is None:
-            raise ValueError("Maximum distance required for pixel expansion")
-        if kmax is not None:
-            raise ValueError("Pixel expansion does not support kNN graphs")
-        mask = expand_mask_euclidean(mask, dmax)
-        return construct_euclidean_border_dist_graph(mask, dmax=1.0)
-    raise ValueError(f"Unknown graph type: {graph_type}")
+    mask = _expand_mask_euclidean(mask, dmax)
+    return _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
 
 
-def construct_graphs_from_disk(
+class NeighborhoodType(Enum):
+    """"""
+
+    CENTROID_DISTANCE = partial(_measure_centroid_distance_neighbors)
+    EUCLIDEAN_BORDER_DISTANCE = partial(
+        _measure_euclidean_border_distance_neighbors
+    )
+    EUCLIDEAN_PIXEL_EXPANSION = partial(
+        _measure_euclidean_pixel_expansion_neighbors
+    )
+
+
+def measure_neighbors(
+    mask: np.ndarray,
+    neighborhood_type: NeighborhoodType,
+    metric: Optional[str] = None,
+    dmax: Optional[float] = None,
+    kmax: Optional[int] = None,
+) -> pd.DataFrame:
+    return neighborhood_type.value(mask, metric=metric, dmax=dmax, kmax=kmax)
+
+
+def measure_neighbors_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
-    graph_type: str,
+    neighborhood_type: NeighborhoodType,
     metric: Optional[str] = None,
     dmax: Optional[float] = None,
     kmax: Optional[int] = None,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
         mask = io.read_mask(mask_file)
-        graph = construct_graph(
+        neighbors = measure_neighbors(
             mask,
-            graph_type,
+            neighborhood_type,
             metric=metric,
             dmax=dmax,
             kmax=kmax,
         )
-        yield Path(mask_file), graph
-        del graph
+        yield Path(mask_file), neighbors
+        del neighbors

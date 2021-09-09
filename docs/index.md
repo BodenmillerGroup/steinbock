@@ -17,7 +17,7 @@ At its core, *steinbock* provides the following functionality:
   - Image preprocessing, including tools tiling/stitching images
   - Pixel classification, to enable pixel classification-based image segmentation
   - Image segmentation, to identify objects (e.g. cells or other regions of interest)
-  - Object measurement, to extract single-cell data, spatial cell graphs, etc.
+  - Object measurement, to extract single-cell data, cell neighbors, etc.
   - Data export, to facilitate downstream data analysis
 
 While all *steinbock* functionality can be used in a modular fashion, the framework was designed for - and explicitly supports - the following image segmentation workflows:

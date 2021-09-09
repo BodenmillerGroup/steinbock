@@ -40,11 +40,11 @@ Color images, with one color per class encoding the probability of pixels belong
 !!! danger "Probability image size"
     The size of probability images may be different from the original images (see [Ilastik pixel classification](../cli/classification.md#ilastik)).
 
-## Masks
+## Object masks
 
 File extension: .tiff
 
-Grayscale image, with one unique value per object ("object ID", 0 for background)
+Grayscale images, with one unique value per object ("object ID", 0 for background)
 
 16-bit unsigned integer TIFF images in YX dimension order, same YX shape as source image
 
@@ -59,7 +59,7 @@ CSV file with object IDs as index (`Object` column) and feature/channel names as
 !!! note "Combined object data"
     For data containing measurements from multiple images, a combined index of image name and object ID is used.
 
-## Spatial object graphs
+## Object neighbors
 
 File extension: .csv
 

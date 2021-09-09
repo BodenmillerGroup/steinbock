@@ -61,7 +61,7 @@ def ome_cmd(img_dir, panel_file, xtiff_dir):
 
 
 @export_cmd_group.command(
-    name="csv", help="Collect object data into a single CSV file",
+    name="csv", help="Collect object data into a single CSV file"
 )
 @click.argument(
     "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
@@ -89,7 +89,8 @@ def csv_cmd(data_dirs, table_file):
 
 
 @export_cmd_group.command(
-    name="fcs", help="Collect object data into a single FCS file",
+    name="fcs",
+    help="Collect object data into a single FCS file",
 )
 @click.argument(
     "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
@@ -120,7 +121,7 @@ def fcs_cmd(data_dirs, table_file):
 )
 @click.option(
     "--x",
-    "x_data_dir",
+    "data_dir",
     type=click.Path(exists=True, file_okay=False),
     default="intensities",
     show_default=True,
@@ -150,39 +151,41 @@ def fcs_cmd(data_dirs, table_file):
     help="Path to the AnnData output directory",
 )
 @check_steinbock_version
-def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
-    x_data_files = io.list_data_files(x_data_dir)
+def anndata_cmd(data_dir, obs_data_dirs, anndata_dir, anndata_format):
+    data_files = io.list_data_files(data_dir)
     obs_data_file_lists = [
-        io.list_data_files(obs_data_dir, base_files=x_data_files)
+        io.list_data_files(obs_data_dir, base_files=data_files)
         for obs_data_dir in obs_data_dirs
     ]
     Path(anndata_dir).mkdir(exist_ok=True)
-    for x_data_file, ad in data.to_anndata_from_disk(
-        x_data_files, *obs_data_file_lists
+    for data_file, anndata in data.to_anndata_from_disk(
+        data_files, *obs_data_file_lists
     ):
-        anndata_file = Path(anndata_dir) / x_data_file.name
+        anndata_file = Path(anndata_dir) / data_file.name
         if anndata_format.lower() == "h5ad":
             anndata_file = io.as_path_with_suffix(anndata_file, ".h5ad")
-            ad.write_h5ad(anndata_file)
+            anndata.write_h5ad(anndata_file)
         elif anndata_format.lower() == "loom":
             anndata_file = io.as_path_with_suffix(anndata_file, ".loom")
-            ad.write_loom(anndata_file)
+            anndata.write_loom(anndata_file)
         elif anndata_format.lower() == "zarr":
             anndata_file = io.as_path_with_suffix(anndata_file, ".zarr")
-            ad.write_zarr(anndata_file)
+            anndata.write_zarr(anndata_file)
         else:
             raise NotImplementedError()
         click.echo(anndata_file)
 
 
-@export_cmd_group.command(name="graphs", help="Export spatial object graphs")
+@export_cmd_group.command(
+    name="graphs", help="Export neighbors as spatial object graphs"
+)
 @click.option(
-    "--graph",
-    "graph_dir",
+    "--neighbors",
+    "neighbors_dir",
     type=click.Path(exists=True, file_okay=False),
-    default="graphs",
+    default="neighbors",
     show_default=True,
-    help="Path to the graph directory",
+    help="Path to the neighbors directory",
 )
 @click.option(
     "--data",
@@ -193,7 +196,7 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
 )
 @click.option(
     "--format",
-    "networkx_format",
+    "graph_format",
     type=click.Choice(["graphml", "gexf", "gml"], case_sensitive=False),
     default="graphml",
     show_default=True,
@@ -201,33 +204,33 @@ def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
 )
 @click.option(
     "--dest",
-    "networkx_dir",
+    "graph_dir",
     type=click.Path(file_okay=False),
-    default="graphs_export",
+    default="graphs",
     show_default=True,
     help="Path to the networkx output directory",
 )
 @check_steinbock_version
-def graphs_cmd(graph_dir, data_dirs, networkx_format, networkx_dir):
-    graph_files = io.list_graph_files(graph_dir)
+def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
+    neighbors_files = io.list_neighbors_files(neighbors_dir)
     data_file_lists = [
-        io.list_data_files(data_dir, base_files=graph_files)
+        io.list_data_files(data_dir, base_files=neighbors_files)
         for data_dir in data_dirs
     ]
-    Path(networkx_dir).mkdir(exist_ok=True)
-    for graph_file, g in graphs.to_networkx_from_disk(
-        graph_files, *data_file_lists
+    Path(graph_dir).mkdir(exist_ok=True)
+    for neighbors_file, graph in graphs.to_networkx_from_disk(
+        neighbors_files, *data_file_lists
     ):
-        networkx_file = Path(networkx_dir) / graph_file.name
-        if networkx_format == "graphml":
-            networkx_file = io.as_path_with_suffix(networkx_file, ".graphml")
-            nx.write_graphml(g, str(networkx_file))
-        elif networkx_format == "gexf":
-            networkx_file = io.as_path_with_suffix(networkx_file, ".gexf")
-            nx.write_gexf(g, str(networkx_file))
-        elif networkx_format == "gml":
-            networkx_file = io.as_path_with_suffix(networkx_file, ".gml")
-            nx.write_gml(g, str(networkx_file))
+        graph_file = Path(graph_dir) / neighbors_file.name
+        if graph_format == "graphml":
+            graph_file = io.as_path_with_suffix(graph_file, ".graphml")
+            nx.write_graphml(graph, str(graph_file))
+        elif graph_format == "gexf":
+            graph_file = io.as_path_with_suffix(graph_file, ".gexf")
+            nx.write_gexf(graph, str(graph_file))
+        elif graph_format == "gml":
+            graph_file = io.as_path_with_suffix(graph_file, ".gml")
+            nx.write_gml(graph, str(graph_file))
         else:
             raise NotImplementedError()
-        click.echo(networkx_file)
+        click.echo(graph_file)

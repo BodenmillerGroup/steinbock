@@ -42,7 +42,7 @@ By default, this will generate one .h5ad file per image, with object intensities
 
 ## Graphs
 
-To export spatial object graphs with object data as node attributes:
+To export neighbors as spatial object graphs, with object data as node attributes:
 
     steinbock export graphs --data intensities
 
