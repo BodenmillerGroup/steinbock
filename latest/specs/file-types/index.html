@@ -695,8 +695,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#masks" class="md-nav__link">
-    Masks
+  <a href="#object-masks" class="md-nav__link">
+    Object masks
   </a>
   
 </li>
@@ -709,8 +709,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#spatial-object-graphs" class="md-nav__link">
-    Spatial object graphs
+  <a href="#object-neighbors" class="md-nav__link">
+    Object neighbors
   </a>
   
 </li>
@@ -788,8 +788,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#masks" class="md-nav__link">
-    Masks
+  <a href="#object-masks" class="md-nav__link">
+    Object masks
   </a>
   
 </li>
@@ -802,8 +802,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#spatial-object-graphs" class="md-nav__link">
-    Spatial object graphs
+  <a href="#object-neighbors" class="md-nav__link">
+    Object neighbors
   </a>
   
 </li>
@@ -885,9 +885,9 @@
 <p class="admonition-title">Probability image size</p>
 <p>The size of probability images may be different from the original images (see <a href="../../cli/classification/#ilastik">Ilastik pixel classification</a>).</p>
 </div>
-<h2 id="masks">Masks</h2>
+<h2 id="object-masks">Object masks</h2>
 <p>File extension: .tiff</p>
-<p>Grayscale image, with one unique value per object ("object ID", 0 for background)</p>
+<p>Grayscale images, with one unique value per object ("object ID", 0 for background)</p>
 <p>16-bit unsigned integer TIFF images in YX dimension order, same YX shape as source image</p>
 <h2 id="object-data">Object data</h2>
 <p>File extension: .csv</p>
@@ -897,7 +897,7 @@
 <p class="admonition-title">Combined object data</p>
 <p>For data containing measurements from multiple images, a combined index of image name and object ID is used.</p>
 </div>
-<h2 id="spatial-object-graphs">Spatial object graphs</h2>
+<h2 id="object-neighbors">Object neighbors</h2>
 <p>File extension: .csv</p>
 <p>List of directed edges defining a spatial object neighborhood graph</p>
 <p>CSV file (one per image) with no index and three columns (<code>Object</code>, <code>Neighbor</code>, <code>Distance</code>)</p>

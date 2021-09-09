@@ -656,13 +656,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.list_graph_files" class="md-nav__link">
-    list_graph_files()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#steinbock.io.list_image_files" class="md-nav__link">
     list_image_files()
   </a>
@@ -677,15 +670,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.read_data" class="md-nav__link">
-    read_data()
+  <a href="#steinbock.io.list_neighbors_files" class="md-nav__link">
+    list_neighbors_files()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.read_graph" class="md-nav__link">
-    read_graph()
+  <a href="#steinbock.io.read_data" class="md-nav__link">
+    read_data()
   </a>
   
 </li>
@@ -700,6 +693,13 @@
         <li class="md-nav__item">
   <a href="#steinbock.io.read_mask" class="md-nav__link">
     read_mask()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.read_neighbors" class="md-nav__link">
+    read_neighbors()
   </a>
   
 </li>
@@ -726,13 +726,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.write_graph" class="md-nav__link">
-    write_graph()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#steinbock.io.write_image" class="md-nav__link">
     write_image()
   </a>
@@ -742,6 +735,13 @@
         <li class="md-nav__item">
   <a href="#steinbock.io.write_mask" class="md-nav__link">
     write_mask()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.write_neighbors" class="md-nav__link">
+    write_neighbors()
   </a>
   
 </li>
@@ -881,13 +881,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.list_graph_files" class="md-nav__link">
-    list_graph_files()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#steinbock.io.list_image_files" class="md-nav__link">
     list_image_files()
   </a>
@@ -902,15 +895,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.read_data" class="md-nav__link">
-    read_data()
+  <a href="#steinbock.io.list_neighbors_files" class="md-nav__link">
+    list_neighbors_files()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.read_graph" class="md-nav__link">
-    read_graph()
+  <a href="#steinbock.io.read_data" class="md-nav__link">
+    read_data()
   </a>
   
 </li>
@@ -925,6 +918,13 @@
         <li class="md-nav__item">
   <a href="#steinbock.io.read_mask" class="md-nav__link">
     read_mask()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.read_neighbors" class="md-nav__link">
+    read_neighbors()
   </a>
   
 </li>
@@ -951,13 +951,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steinbock.io.write_graph" class="md-nav__link">
-    write_graph()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#steinbock.io.write_image" class="md-nav__link">
     write_image()
   </a>
@@ -967,6 +960,13 @@
         <li class="md-nav__item">
   <a href="#steinbock.io.write_mask" class="md-nav__link">
     write_mask()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.write_neighbors" class="md-nav__link">
+    write_neighbors()
   </a>
   
 </li>
@@ -1111,36 +1111,6 @@
 
 
 
-<h2 id="steinbock.io.list_graph_files" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">list_graph_files</span><span class="p">(</span><span class="n">graph_dir</span><span class="p">,</span> <span class="n">base_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-
-</h2>
-
-    <div class="doc doc-contents ">
-
-
-        <details class="quote">
-          <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_graph_files</span><span class="p">(</span>
-    <span class="n">graph_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
-    <span class="n">base_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="n">base_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_list_related_files</span><span class="p">(</span><span class="n">base_files</span><span class="p">,</span> <span class="n">graph_dir</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">graph_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">))</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h2 id="steinbock.io.list_image_files" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">list_image_files</span><span class="p">(</span><span class="n">img_dir</span><span class="p">,</span> <span class="n">base_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
@@ -1201,6 +1171,36 @@
 
 
 
+<h2 id="steinbock.io.list_neighbors_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_neighbors_files</span><span class="p">(</span><span class="n">neighbors_dir</span><span class="p">,</span> <span class="n">base_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_neighbors_files</span><span class="p">(</span>
+    <span class="n">neighbors_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">base_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">base_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_list_related_files</span><span class="p">(</span><span class="n">base_files</span><span class="p">,</span> <span class="n">neighbors_dir</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">neighbors_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="steinbock.io.read_data" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">read_data</span><span class="p">(</span><span class="n">data_stem</span><span class="p">)</span></code>
 
@@ -1215,40 +1215,6 @@
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">data_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">data_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">data_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;Object&quot;</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="steinbock.io.read_graph" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_graph</span><span class="p">(</span><span class="n">graph_stem</span><span class="p">)</span></code>
-
-
-</h2>
-
-    <div class="doc doc-contents ">
-
-
-        <details class="quote">
-          <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_graph</span><span class="p">(</span><span class="n">graph_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">graph_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">graph_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-        <span class="n">graph_file</span><span class="p">,</span>
-        <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span> <span class="s2">&quot;Distance&quot;</span><span class="p">],</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1321,6 +1287,40 @@
     <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported number of mask dimensions: </span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="steinbock.io.read_neighbors" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_neighbors</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">neighbors_file</span><span class="p">,</span>
+        <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span> <span class="s2">&quot;Distance&quot;</span><span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1465,40 +1465,6 @@
 
 
 
-<h2 id="steinbock.io.write_graph" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">graph_stem</span><span class="p">)</span></code>
-
-
-</h2>
-
-    <div class="doc doc-contents ">
-
-
-        <details class="quote">
-          <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">graph_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">graph_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">graph_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
-    <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span> <span class="s2">&quot;Distance&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">)</span>
-    <span class="n">graph</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">graph_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">graph_file</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h2 id="steinbock.io.write_image" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">write_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_stem</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
@@ -1546,6 +1512,42 @@
     <span class="n">mask_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">mask_stem</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
     <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mask_file</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="steinbock.io.write_neighbors" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">write_neighbors</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">neighbors_stem</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_neighbors</span><span class="p">(</span>
+    <span class="n">neighbors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">neighbors_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span> <span class="s2">&quot;Distance&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
+            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">neighbors</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">neighbors_file</span>
 </code></pre></div>
         </details>
     </div>

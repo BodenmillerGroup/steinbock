@@ -1015,7 +1015,7 @@
 
 
 <h3 id="steinbock.export.graphs.to_networkx" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1025,12 +1025,12 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/export/graphs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
-    <span class="n">edges</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[[</span><span class="s2">&quot;Object1&quot;</span><span class="p">,</span> <span class="s2">&quot;Object2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">[[</span><span class="s2">&quot;Object1&quot;</span><span class="p">,</span> <span class="s2">&quot;Object2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">undirected_edges</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
     <span class="n">is_directed</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">x</span> <span class="o">!=</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">undirected_edges</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
-    <span class="n">g</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span>
-        <span class="n">graph</span><span class="p">,</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span>
+        <span class="n">neighbors</span><span class="p">,</span>
         <span class="n">source</span><span class="o">=</span><span class="s2">&quot;Object1&quot;</span><span class="p">,</span>
         <span class="n">target</span><span class="o">=</span><span class="s2">&quot;Object2&quot;</span><span class="p">,</span>
         <span class="n">create_using</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span> <span class="k">if</span> <span class="n">is_directed</span> <span class="k">else</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span>
@@ -1045,8 +1045,8 @@
             <span class="nb">int</span><span class="p">(</span><span class="n">object_id</span><span class="p">):</span> <span class="n">object_data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">object_data</span> <span class="ow">in</span> <span class="n">merged_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
         <span class="p">}</span>
-        <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">node_attributes</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">g</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node_attributes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">graph</span>
 </code></pre></div>
         </details>
     </div>
@@ -1060,7 +1060,7 @@
 
 
 <h3 id="steinbock.export.graphs.to_networkx_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_networkx_from_disk</span><span class="p">(</span><span class="n">graph_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">to_networkx_from_disk</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1071,16 +1071,16 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/export/graphs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">to_networkx_from_disk</span><span class="p">(</span>
-    <span class="n">graph_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="o">*</span><span class="n">data_file_lists</span>
+    <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="o">*</span><span class="n">data_file_lists</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">graph_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">graph_files</span><span class="p">):</span>
-        <span class="n">graph</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_graph</span><span class="p">(</span><span class="n">graph_file</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">neighbors_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">):</span>
+        <span class="n">neighbors</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span>
         <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">data_files</span> <span class="ow">in</span> <span class="n">data_file_lists</span><span class="p">:</span>
             <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">graph_file</span><span class="p">),</span> <span class="n">g</span>
-        <span class="k">del</span> <span class="n">graph</span><span class="p">,</span> <span class="n">data_list</span><span class="p">,</span> <span class="n">g</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">),</span> <span class="n">graph</span>
+        <span class="k">del</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">data_list</span><span class="p">,</span> <span class="n">graph</span>
 </code></pre></div>
         </details>
     </div>

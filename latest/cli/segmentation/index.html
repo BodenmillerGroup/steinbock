@@ -820,7 +820,7 @@
                 
                 
                 <h1 id="object-segmentation">Object segmentation</h1>
-<p>In this step, objects such as cells will be segmented. This will result in grayscale <em>object masks</em> of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#masks">File types</a>).</p>
+<p>In this step, objects such as cells will be segmented. This will result in grayscale <em>object masks</em> of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>).</p>
 <p>Various segmentation approaches are supported, each of which is described in the following.</p>
 <div class="admonition note">
 <p class="admonition-title">Pixel classification-based segmentation vs end-to-end approaches</p>
@@ -857,13 +857,13 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">CellProfiler output</p>
-<p>By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see <a href="../../specs/file-types/#masks">File types</a>). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.</p>
+<p>By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see <a href="../../specs/file-types/#object-masks">File types</a>). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.</p>
 </div>
 <h3 id="batch-processing">Batch processing</h3>
 <p>After the pipeline has been configured, it can be applied to a batch of probability images:</p>
 <pre><code>steinbock segment cellprofiler run
 </code></pre>
-<p>This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
+<p>This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
 <h2 id="deepcell">DeepCell</h2>
 <p><a href="https://github.com/vanvalenlab/deepcell-tf">DeepCell</a> is a deep learning library for single-cell analysis of biological images. Here, pre-trained DeepCell models are used for cell/nuclei segmentation from raw image data.</p>
 <div class="admonition note">
@@ -876,7 +876,7 @@
 <p>To segment nuclei using <a href="https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model">Mesmer</a> and the pre-trained <code>MultiplexSegmentation</code> dataset:</p>
 <pre><code>steinbock segment deepcell --app mesmer --minmax --type nuclear
 </code></pre>
-<p>This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (<em>object IDs</em>, see <a href="../../specs/file-types/#masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
+<p>This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">DeepCell image data</p>
 <p>Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin).</p>
