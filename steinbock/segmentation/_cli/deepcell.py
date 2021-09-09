@@ -26,18 +26,20 @@ _applications = {
     "--app",
     "application_name",
     type=click.Choice(list(_applications.keys()), case_sensitive=True),
-    required=True,
     show_choices=True,
+    default="mesmer",
+    show_default=True,
     help="DeepCell application name",
 )
 @click.option(
     "--model",
     "model_path_or_name",
     type=click.STRING,
+    default="MultiplexSegmentation",
+    show_default=True,
     help=(
         "Path to custom Keras model or name of Keras model stored in "
-        f"{keras_models_dir} [{', '.join(_model_paths.keys())}]; "
-        "do not specify to download default model for chosen application"
+        f"{keras_models_dir} [{', '.join(_model_paths.keys())}]"
     ),
 )
 @click.option(
@@ -143,7 +145,7 @@ def deepcell_cmd(
 
         if Path(model_path_or_name).exists():
             model = load_model(model_path_or_name)
-        else:
+        elif model_path_or_name in _model_paths:
             model = load_model(_model_paths[model_path_or_name])
     preprocess_kwargs = None
     if preprocess_file is not None:

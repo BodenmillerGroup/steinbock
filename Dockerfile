@@ -17,13 +17,14 @@ ENV LANG="en_US.UTF-8" LANGUAGE="en_US:en" LC_ALL="en_US.UTF-8"
 
 RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && echo "${TZ}" > /etc/timezone
 
-RUN mkdir /data && \
-    addgroup --gid "${GID}" steinbock && \
-    adduser --uid "${UID}" --gid "${GID}" --disabled-password --gecos "" steinbock && \
-    chown steinbock:steinbock /data
+RUN addgroup --gid "${GID}" steinbock && \
+    adduser --uid "${UID}" --gid "${GID}" --disabled-password --gecos "" steinbock
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
+
+RUN mkdir /data && \
+    chmod 666 /data
 
 # ilastik
 
@@ -42,8 +43,7 @@ RUN wget -q https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04
 RUN git clone -b "${CELLPROFILER_VERSION}" --depth 1 https://github.com/CellProfiler/CellProfiler.git && \
     pip install --upgrade ./CellProfiler && \
     rm -r CellProfiler
-
-RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" https://github.com/BodenmillerGroup/ImcPluginsCP.git && \
+RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" --depth 1 https://github.com/BodenmillerGroup/ImcPluginsCP.git && \
     cp -r ImcPluginsCP/plugins /opt/cellprofiler_plugins && \
     rm -r ImcPluginsCP
 
@@ -55,11 +55,10 @@ RUN pip install --upgrade deepcell==0.9.2 && \
     rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
-RUN mkdir -p /home/steinbock/.keras/models && \
+RUN mkdir -p /opt/keras/models && \
     wget -q https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-7.tar.gz && \
-    tar -xzf MultiplexSegmentation-7.tar.gz -C /home/steinbock/.keras/models && \
-    rm /home/steinbock/.keras/models/._MultiplexSegmentation && \
-    chown -R steinbock:steinbock /home/steinbock/.keras && \
+    tar -xzf MultiplexSegmentation-7.tar.gz -C /opt/keras/models && \
+    rm /opt/keras/models/._MultiplexSegmentation && \
     rm MultiplexSegmentation-7.tar.gz
 
 RUN mkdir /app
