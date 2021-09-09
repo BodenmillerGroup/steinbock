@@ -25,7 +25,7 @@ In principle, the *steinbock* Docker container can be run on any Docker-enabled 
 
 For reproducibility, it is recommended to always pull a specific release, e.g.:
 
-    docker run ghcr.io/bodenmillergroup/steinbock:0.7.2
+    docker run ghcr.io/bodenmillergroup/steinbock:0.7.3
 
 [Bind mounts](https://docs.docker.com/storage/bind-mounts/) can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to `docker run` as outlined in the following.
 
@@ -33,11 +33,11 @@ For reproducibility, it is recommended to always pull a specific release, e.g.:
 
 On the command line, use the following command to run the *steinbock* Docker container:
 
-    docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.7.2
+    docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.7.3
 
-In the command above, adapt the bind mount path to your data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.7.2`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`C:\Data`) and the *steinbock* Docker container version (`0.7.3`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.7.2 $*
+    doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.7.3 $*
 
 The created command alias is retained for the current session and enables running `steinbock` from the current command line without typing the full Docker command, for example:
 
@@ -50,11 +50,11 @@ The created command alias is retained for the current session and enables runnin
 
 On the terminal, use the following command to run the *steinbock* Docker container:
 
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.7.2
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.7.3
 
-In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.7.2`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.7.3`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.7.2"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.7.3"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
@@ -69,11 +69,11 @@ The created command alias is retained for the current session and enables runnin
 
 On the terminal, use the following command to run the *steinbock* Docker container:
 
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.7.2
+    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.7.3
 
-In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.7.2`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.7.3`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.7.2"
+    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.7.3"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
