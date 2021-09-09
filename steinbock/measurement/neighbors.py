@@ -141,7 +141,9 @@ def _measure_euclidean_pixel_expansion_neighbors(
             "k-nearest neighbors is not supported by pixel expansion"
         )
     mask = _expand_mask_euclidean(mask, dmax)
-    return _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
+    neighbors = _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
+    neighbors["Distance"] = np.nan
+    return neighbors
 
 
 class NeighborhoodType(Enum):

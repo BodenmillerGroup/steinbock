@@ -10,13 +10,14 @@ from steinbock import io
 
 
 def to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
-    edges = neighbors[["Object1", "Object2"]].astype(int).values.tolist()
+    edges = neighbors[["Object", "Neighbor"]].astype(int).values.tolist()
     undirected_edges = [tuple(sorted(edge)) for edge in edges]
     is_directed = any([x != 2 for x in Counter(undirected_edges).values()])
     graph: nx.Graph = nx.from_pandas_edgelist(
         neighbors,
-        source="Object1",
-        target="Object2",
+        source="Object",
+        target="Neighbor",
+        edge_attr=True,
         create_using=nx.DiGraph if is_directed else nx.Graph,
     )
     if len(data_list) > 0:
