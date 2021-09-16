@@ -4,7 +4,7 @@ from pathlib import Path
 
 from steinbock import io
 from steinbock._env import check_steinbock_version
-from steinbock.measurement.regionprops import measure_regionprops_from_disk
+from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
 
 
 @click.command(name="regionprops", help="Measure object region properties")
@@ -46,7 +46,7 @@ def regionprops_cmd(img_dir, mask_dir, skimage_regionprops, regionprops_dir):
             "minor_axis_length",
             "eccentricity",
         ]
-    for img_file, mask_file, regionprops in measure_regionprops_from_disk(
+    for img_file, mask_file, regionprops in try_measure_regionprops_from_disk(
         img_files, mask_files, skimage_regionprops,
     ):
         regionprops_stem = Path(regionprops_dir) / img_file.stem

@@ -183,7 +183,7 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
             mcd_txt_file,
             acquisition_id,
             img,
-        ) in imc.preprocess_images_from_disk(
+        ) in imc.try_preprocess_images_from_disk(
             mcd_files, txt_files, metal_order=metal_order, hpf=hpf
         ):
             img_file_stem = Path(mcd_txt_file).stem

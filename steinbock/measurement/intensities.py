@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import pandas as pd
 
@@ -9,6 +10,9 @@ from scipy.ndimage import measurements
 from typing import Generator, Sequence, Tuple, Union
 
 from steinbock import io
+
+
+_logger = logging.getLogger(__name__)
 
 
 class IntensityAggregation(Enum):
@@ -42,18 +46,21 @@ def measure_intensites(
     )
 
 
-def measure_intensities_from_disk(
+def try_measure_intensities_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     channel_names: Sequence[str],
     intensity_aggregation: IntensityAggregation,
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
-        intensities = measure_intensites(
-            io.read_image(img_file),
-            io.read_mask(mask_file),
-            channel_names,
-            intensity_aggregation,
-        )
-        yield Path(img_file), Path(mask_file), intensities
-        del intensities
+        try:
+            intensities = measure_intensites(
+                io.read_image(img_file),
+                io.read_mask(mask_file),
+                channel_names,
+                intensity_aggregation,
+            )
+            yield Path(img_file), Path(mask_file), intensities
+            del intensities
+        except:
+            _logger.exception(f"Error measuring intensities in {img_file}")

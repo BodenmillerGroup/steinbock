@@ -142,7 +142,7 @@ def create_ilastik_image(
     return io.to_dtype(ilastik_img, io.img_dtype)
 
 
-def create_ilastik_images_from_disk(
+def try_create_ilastik_images_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
@@ -151,16 +151,21 @@ def create_ilastik_images_from_disk(
     scale_factor: int = 1,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for img_file in img_files:
-        ilastik_img = create_ilastik_image(
-            io.read_image(img_file, ignore_dtype=True),
-            channel_groups=channel_groups,
-            aggr_func=aggr_func,
-            prepend_mean=prepend_mean,
-            mean_factor=mean_factor,
-            scale_factor=scale_factor,
-        )
-        yield Path(img_file), ilastik_img
-        del ilastik_img
+        try:
+            ilastik_img = create_ilastik_image(
+                io.read_image(img_file, ignore_dtype=True),
+                channel_groups=channel_groups,
+                aggr_func=aggr_func,
+                prepend_mean=prepend_mean,
+                mean_factor=mean_factor,
+                scale_factor=scale_factor,
+            )
+            yield Path(img_file), ilastik_img
+            del ilastik_img
+        except:
+            _logger.exception(
+                f"Error creating Ilastik image from file {img_file}"
+            )
 
 
 def create_ilastik_crop(
@@ -177,7 +182,7 @@ def create_ilastik_crop(
     return None, None, None
 
 
-def create_ilastik_crops_from_disk(
+def try_create_ilastik_crops_from_disk(
     ilastik_img_files: Sequence[Union[str, PathLike]],
     crop_size: int,
     seed=None,
@@ -188,11 +193,16 @@ def create_ilastik_crops_from_disk(
 ]:
     rng = np.random.default_rng(seed=seed)
     for ilastik_img_file in ilastik_img_files:
-        x_start, y_start, ilastik_crop = create_ilastik_crop(
-            read_ilastik_image(ilastik_img_file), crop_size, rng
-        )
-        yield Path(ilastik_img_file), x_start, y_start, ilastik_crop
-        del ilastik_crop
+        try:
+            x_start, y_start, ilastik_crop = create_ilastik_crop(
+                read_ilastik_image(ilastik_img_file), crop_size, rng
+            )
+            yield Path(ilastik_img_file), x_start, y_start, ilastik_crop
+            del ilastik_crop
+        except:
+            _logger.exception(
+                f"Error creating Ilastik crop from file {ilastik_img_file}"
+            )
 
 
 def create_and_save_ilastik_project(
@@ -268,60 +278,73 @@ def run_pixel_classification(
     return result
 
 
-def fix_ilastik_crops_from_disk(
+def try_fix_ilastik_crops_from_disk(
     ilastik_crop_files: Sequence[Union[str, PathLike]],
     orig_axis_order: Union[str, Sequence, None] = None,
 ) -> Generator[Tuple[Path, Tuple[int, ...], np.ndarray], None, None]:
     for ilastik_crop_file in ilastik_crop_files:
-        with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
-            ilastik_crop_dataset = None
-            if _crop_dataset_path in f:
-                ilastik_crop_dataset = f[_crop_dataset_path]
-            elif Path(ilastik_crop_file).stem in f:
-                ilastik_crop_dataset = f[Path(ilastik_crop_file).stem]
-            elif len(f) == 1:
-                ilastik_crop_dataset = next(iter(f.values()))
-            else:
-                raise ValueError(f"Unknown dataset name: {ilastik_crop_file}")
-            if ilastik_crop_dataset.attrs.get("steinbock", False):
-                continue
-            ilastik_crop = ilastik_crop_dataset[()]
-            if orig_axis_order is not None:
-                orig_axis_order = list(orig_axis_order)
-            elif "axistags" in ilastik_crop_dataset.attrs:
-                axis_tags, _ = _str_decode(
-                    ilastik_crop_dataset.attrs["axistags"]
+        try:
+            with h5py.File(
+                ilastik_crop_file, mode="r", libver=_h5py_libver
+            ) as f:
+                ilastik_crop_dataset = None
+                if _crop_dataset_path in f:
+                    ilastik_crop_dataset = f[_crop_dataset_path]
+                elif Path(ilastik_crop_file).stem in f:
+                    ilastik_crop_dataset = f[Path(ilastik_crop_file).stem]
+                elif len(f) == 1:
+                    ilastik_crop_dataset = next(iter(f.values()))
+                else:
+                    raise ValueError(f"Unknown dataset: {ilastik_crop_file}")
+                if ilastik_crop_dataset.attrs.get("steinbock", False):
+                    continue
+                ilastik_crop = ilastik_crop_dataset[()]
+                if orig_axis_order is not None:
+                    orig_axis_order = list(orig_axis_order)
+                elif "axistags" in ilastik_crop_dataset.attrs:
+                    axis_tags, _ = _str_decode(
+                        ilastik_crop_dataset.attrs["axistags"]
+                    )
+                    axis_tags_json = json.loads(axis_tags)
+                    orig_axis_order = [
+                        a_json["key"] for a_json in axis_tags_json["axes"]
+                    ]
+                else:
+                    raise ValueError(
+                        f"Unknown axis order: {ilastik_crop_file}"
+                    )
+            if len(orig_axis_order) != ilastik_crop.ndim:
+                raise ValueError(
+                    f"Incompatible axis order: {ilastik_crop_file}"
                 )
-                axis_tags_json = json.loads(axis_tags)
-                orig_axis_order = [x["key"] for x in axis_tags_json["axes"]]
-            else:
-                raise ValueError(f"Unknown axis order: {ilastik_crop_file}")
-        if len(orig_axis_order) != ilastik_crop.ndim:
-            raise ValueError(f"Incompatible axis order: {ilastik_crop_file}")
-        channel_axis_index = orig_axis_order.index("c")
-        size_x = ilastik_crop.shape[orig_axis_order.index("x")]
-        size_y = ilastik_crop.shape[orig_axis_order.index("y")]
-        num_channels = ilastik_crop.size // (size_x * size_y)
-        if ilastik_crop.shape[channel_axis_index] != num_channels:
-            channel_axis_indices = (
-                i
-                for i, a in enumerate(orig_axis_order)
-                if a not in ("x", "y")
-                and ilastik_crop.shape[i] == num_channels
+            channel_axis_index = orig_axis_order.index("c")
+            size_x = ilastik_crop.shape[orig_axis_order.index("x")]
+            size_y = ilastik_crop.shape[orig_axis_order.index("y")]
+            num_channels = ilastik_crop.size // (size_x * size_y)
+            if ilastik_crop.shape[channel_axis_index] != num_channels:
+                channel_axis_indices = (
+                    i
+                    for i, a in enumerate(orig_axis_order)
+                    if ilastik_crop.shape[i] == num_channels
+                    and a not in ("x", "y")
+                )
+                channel_axis_index = next(channel_axis_indices, None)
+            if channel_axis_index is None:
+                raise ValueError(f"Unknown channel axis: {ilastik_crop_file}")
+            axis_order = orig_axis_order.copy()
+            axis_order.insert(0, axis_order.pop(channel_axis_index))
+            axis_order.insert(1, axis_order.pop(axis_order.index("y")))
+            axis_order.insert(2, axis_order.pop(axis_order.index("x")))
+            transpose_axes = [orig_axis_order.index(a) for a in axis_order]
+            ilastik_crop = np.transpose(ilastik_crop, axes=transpose_axes)
+            ilastik_crop = np.reshape(ilastik_crop, ilastik_crop.shape[:3])
+            ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
+            yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
+            del ilastik_crop
+        except:
+            _logger.exception(
+                f"Error fixing Ilastik crop from file {ilastik_crop_file}"
             )
-            channel_axis_index = next(channel_axis_indices, None)
-        if channel_axis_index is None:
-            raise ValueError(f"Unknown channel axis: {ilastik_crop_file}")
-        new_axis_order = orig_axis_order.copy()
-        new_axis_order.insert(0, new_axis_order.pop(channel_axis_index))
-        new_axis_order.insert(1, new_axis_order.pop(new_axis_order.index("y")))
-        new_axis_order.insert(2, new_axis_order.pop(new_axis_order.index("x")))
-        transpose_axes = [orig_axis_order.index(a) for a in new_axis_order]
-        ilastik_crop = np.transpose(ilastik_crop, axes=transpose_axes)
-        ilastik_crop = np.reshape(ilastik_crop, ilastik_crop.shape[:3])
-        ilastik_crop = io.to_dtype(ilastik_crop, io.img_dtype)
-        yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
-        del ilastik_crop
 
 
 def fix_ilastik_project_file_inplace(

@@ -75,7 +75,7 @@ def run_cmd(segmentation_pipeline_file, probabilities_dir, mask_dir):
             file=sys.stderr,
         )
     Path(mask_dir).mkdir(exist_ok=True)
-    result = cellprofiler.run_object_segmentation(
+    result = cellprofiler.try_segment_objects(
         cellprofiler_binary,
         segmentation_pipeline_file,
         probabilities_dir,

@@ -1,4 +1,5 @@
 import logging
+from imctools.data.acquisitiondata import AcquisitionData
 import numpy as np
 import pandas as pd
 
@@ -25,6 +26,22 @@ _imc_panel_keep_col = "full"
 _imc_panel_ilastik_col = "ilastik"
 _imc_panel_deepcell_col = "deepcell"
 _logger = logging.getLogger(__name__)
+
+
+def _match_txt_files(
+    txt_files: Sequence[Union[str, PathLike]],
+    mcd_file: Union[str, PathLike],
+    acquisition_id: int,
+) -> Optional[Path]:
+    filtered_txt_files = [
+        txt_file
+        for txt_file in txt_files
+        if Path(txt_file).stem.startswith(mcd_file.stem)
+        and Path(txt_file).stem.endswith(f"_{acquisition_id}")
+    ]
+    if len(filtered_txt_files) == 1:
+        return Path(filtered_txt_files[0])
+    return None
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -171,52 +188,75 @@ def preprocess_image(
     return img
 
 
-def preprocess_images_from_disk(
+def try_preprocess_images_from_disk(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
     metal_order: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
 ) -> Generator[Tuple[Path, Optional[int], np.ndarray], None, None]:
+    def data_is_valid(data: AcquisitionData) -> bool:
+        return (
+            data is not None and data.image_data is not None and data.is_valid
+        )
+
+    def preprocess_data(data: AcquisitionData) -> np.ndarray:
+        img = data.image_data
+        if metal_order is not None:
+            img = data.get_image_stack_by_names(metal_order)
+        img = preprocess_data(img, hpf=hpf)
+        return io.to_dtype(img, io.img_dtype)
+
     remaining_txt_files = list(txt_files)
     for mcd_file in mcd_files:
-        with McdParser(mcd_file) as mcd_parser:
-            for acquisition in mcd_parser.session.acquisitions.values():
-                txt_file = None
-                filtered_txt_files = [
-                    txt_file
-                    for txt_file in txt_files
-                    if Path(txt_file).stem.startswith(Path(mcd_file).stem)
-                    and Path(txt_file).stem.endswith(f"_{acquisition.id}")
-                ]
-                if len(filtered_txt_files) == 1:
-                    remaining_txt_files.remove(filtered_txt_files[0])
-                    txt_file = filtered_txt_files[0]
-                data = mcd_parser.get_acquisition_data(acquisition.id)
-                if data.image_data is None or not data.is_valid:
-                    _logger.warning(f"File corrupted: {Path(mcd_file).name}")
-                    if txt_file is not None:
-                        _logger.info(f"Restoring from {Path(txt_file).name}")
-                        with TxtParser(
-                            txt_file, slide_id=acquisition.slide_id
-                        ) as txt_parser:
-                            data = txt_parser.get_acquisition_data()
-                if data.image_data is not None and data.is_valid:
-                    img = data.image_data
-                    if metal_order is not None:
-                        img = data.get_image_stack_by_names(metal_order)
-                    img = preprocess_image(img, hpf=hpf)
-                    img = io.to_dtype(img, io.img_dtype)
-                    yield Path(mcd_file), acquisition.id, img
-                    del img
+        try:
+            with McdParser(mcd_file) as mcd_parser:
+                for acquisition in mcd_parser.session.acquisitions.values():
+                    try:
+                        data = mcd_parser.get_acquisition_data(acquisition.id)
+                        if not data_is_valid(data):
+                            _logger.warning(f"File corrupted: {mcd_file}")
+                            txt_file = _match_txt_files(
+                                remaining_txt_files, mcd_file, acquisition.id
+                            )
+                            if txt_file is not None:
+                                _logger.info(f"Restoring from file {txt_file}")
+                                try:
+                                    with TxtParser(
+                                        txt_file, slide_id=acquisition.slide_id
+                                    ) as txt_parser:
+                                        data = (
+                                            txt_parser.get_acquisition_data()
+                                        )
+                                        if not data_is_valid(data):
+                                            _logger.warning(
+                                                f"File corrupted: {txt_file}"
+                                            )
+                                except:
+                                    _logger.exception(
+                                        f"Error preprocessing file {txt_file}"
+                                    )
+                                remaining_txt_files.remove(txt_file)
+                        if data_is_valid(data):
+                            img = preprocess_data(data)
+                            yield Path(mcd_file), acquisition.id, img
+                            del img
+                    except:
+                        _logger.exception(
+                            f"Error preprocessing acquisition {acquisition.id}"
+                            f" from file {mcd_file}"
+                        )
+        except:
+            _logger.exception(f"Error preprocessing file {mcd_file}")
     while len(remaining_txt_files) > 0:
         txt_file = remaining_txt_files.pop(0)
-        with TxtParser(txt_file) as txt_parser:
-            data = txt_parser.get_acquisition_data()
-        if data.image_data is not None and data.is_valid:
-            img = data.image_data
-            if metal_order is not None:
-                img = data.get_image_stack_by_names(metal_order)
-            img = preprocess_image(img, hpf=hpf)
-            img = io.to_dtype(img, io.img_dtype)
-            yield Path(txt_file), None, img
-            del img
+        try:
+            with TxtParser(txt_file) as txt_parser:
+                data = txt_parser.get_acquisition_data()
+                if not data_is_valid(data):
+                    _logger.warning(f"File corrupted: {txt_file}")
+            if data_is_valid(data):
+                img = preprocess_data(data)
+                yield Path(txt_file), None, img
+                del img
+        except:
+            _logger.exception(f"Error preprocessing file {txt_file}")

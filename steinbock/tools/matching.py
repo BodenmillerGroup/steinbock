@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import pandas as pd
 
@@ -6,6 +7,9 @@ from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
 from steinbock import io
+
+
+_logger = logging.getLogger(__name__)
 
 
 def match_masks(mask1: np.ndarray, mask2: np.ndarray) -> pd.DataFrame:
@@ -26,11 +30,16 @@ def match_masks(mask1: np.ndarray, mask2: np.ndarray) -> pd.DataFrame:
     return table
 
 
-def match_masks_from_disk(
+def try_match_masks_from_disk(
     mask_files1: Sequence[Union[str, PathLike]],
     mask_files2: Sequence[Union[str, PathLike]],
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for mask_file1, mask_file2 in zip(mask_files1, mask_files2):
-        table = match_masks(io.read_mask(mask_file1), io.read_mask(mask_file2))
-        yield mask_file1, mask_file2, table
-        del table
+        try:
+            table = match_masks(
+                io.read_mask(mask_file1), io.read_mask(mask_file2)
+            )
+            yield mask_file1, mask_file2, table
+            del table
+        except:
+            _logger.exception(f"Error matching masks {mask_file1, mask_file2}")

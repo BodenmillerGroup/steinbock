@@ -1,3 +1,4 @@
+import logging
 import networkx as nx
 import pandas as pd
 
@@ -9,7 +10,10 @@ from typing import Generator, Sequence, Tuple, Union
 from steinbock import io
 
 
-def to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
+_logger = logging.getLogger(__name__)
+
+
+def convert_to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
     edges = neighbors[["Object", "Neighbor"]].astype(int).values.tolist()
     undirected_edges = [tuple(sorted(edge)) for edge in edges]
     is_directed = any([x != 2 for x in Counter(undirected_edges).values()])
@@ -34,14 +38,17 @@ def to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
     return graph
 
 
-def to_networkx_from_disk(
+def try_convert_to_networkx_from_disk(
     neighbors_files: Sequence[Union[str, PathLike]], *data_file_lists
 ) -> Generator[Tuple[Path, nx.Graph], None, None]:
     for i, neighbors_file in enumerate(neighbors_files):
-        neighbors = io.read_neighbors(neighbors_file)
-        data_list = []
-        for data_files in data_file_lists:
-            data_list.append(io.read_data(data_files[i]))
-        graph = to_networkx(neighbors, *data_list)
-        yield Path(neighbors_file), graph
-        del neighbors, data_list, graph
+        try:
+            neighbors = io.read_neighbors(neighbors_file)
+            data_list = []
+            for data_files in data_file_lists:
+                data_list.append(io.read_data(data_files[i]))
+            graph = convert_to_networkx(neighbors, *data_list)
+            yield Path(neighbors_file), graph
+            del neighbors, data_list, graph
+        except:
+            _logger.exception(f"Error converting {neighbors_file} to networkx")

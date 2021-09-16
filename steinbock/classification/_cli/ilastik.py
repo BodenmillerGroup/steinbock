@@ -130,7 +130,7 @@ def prepare_cmd(
     img_files = io.list_image_files(img_dir)
     Path(ilastik_img_dir).mkdir(exist_ok=True)
     ilastik_img_files = []
-    for img_file, ilastik_img in ilastik.create_ilastik_images_from_disk(
+    for img_file, ilastik_img in ilastik.try_create_ilastik_images_from_disk(
         img_files,
         channel_groups=channel_groups,
         aggr_func=aggr_func,
@@ -152,7 +152,7 @@ def prepare_cmd(
         x_start,
         y_start,
         ilastik_crop,
-    ) in ilastik.create_ilastik_crops_from_disk(
+    ) in ilastik.try_create_ilastik_crops_from_disk(
         ilastik_img_files, crop_size=crop_size, seed=seed
     ):
         if ilastik_crop is not None:
@@ -317,7 +317,7 @@ def fix_cmd(
         ilastik_crop_file,
         transpose_axes,
         ilastik_crop,
-    ) in ilastik.fix_ilastik_crops_from_disk(
+    ) in ilastik.try_fix_ilastik_crops_from_disk(
         ilastik_crop_files, orig_axis_order=orig_axis_order
     ):
         if last_transpose_axes not in (None, transpose_axes):

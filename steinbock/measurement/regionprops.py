@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import pandas as pd
 
@@ -7,6 +8,9 @@ from skimage.measure import regionprops_table
 from typing import Generator, Sequence, Tuple, Union
 
 from steinbock import io
+
+
+_logger = logging.getLogger(__name__)
 
 
 def measure_regionprops(
@@ -24,7 +28,7 @@ def measure_regionprops(
     )
 
 
-def measure_regionprops_from_disk(
+def try_measure_regionprops_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     skimage_regionprops: Sequence[str],
@@ -33,10 +37,13 @@ def measure_regionprops_from_disk(
     if "label" not in skimage_regionprops:
         skimage_regionprops.insert(0, "label")
     for img_file, mask_file in zip(img_files, mask_files):
-        regionprops = measure_regionprops(
-            io.read_image(img_file),
-            io.read_mask(mask_file),
-            skimage_regionprops,
-        )
-        yield Path(img_file), Path(mask_file), regionprops
-        del regionprops
+        try:
+            regionprops = measure_regionprops(
+                io.read_image(img_file),
+                io.read_mask(mask_file),
+                skimage_regionprops,
+            )
+            yield Path(img_file), Path(mask_file), regionprops
+            del regionprops
+        except:
+            _logger.exception(f"Error measuring regionprops in {img_file}")

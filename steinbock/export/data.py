@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 
 from anndata import AnnData
@@ -8,7 +9,10 @@ from typing import Generator, Sequence, Tuple, Union
 from steinbock import io
 
 
-def to_table_from_disk(*data_file_lists) -> pd.DataFrame:
+_logger = logging.getLogger(__name__)
+
+
+def try_convert_to_table_from_disk(*data_file_lists) -> pd.DataFrame:
     data_objs = []
     img_file_names = []
     for data_files in zip(*data_file_lists):
@@ -26,21 +30,24 @@ def to_table_from_disk(*data_file_lists) -> pd.DataFrame:
     return pd.concat(data_objs, keys=img_file_names, names=["Image", "Object"])
 
 
-def to_anndata_from_disk(
+def try_convert_to_anndata_from_disk(
     x_files: Sequence[Union[str, PathLike]], *obs_file_lists
 ) -> Generator[Tuple[Path, AnnData], None, None]:
     for i, x_file in enumerate(x_files):
-        x = io.read_data(x_file)
-        merged_obs = None
-        if len(obs_file_lists) > 0:
-            merged_obs = io.read_data(obs_file_lists[0][i])
-            for obs_files in obs_file_lists[1:]:
-                merged_obs = pd.merge(
-                    merged_obs,
-                    io.read_data(obs_files[i]),
-                    left_index=True,
-                    right_index=True,
-                )
-            merged_obs.index = merged_obs.index.astype(str)
-        yield Path(x_file), AnnData(X=x.values, obs=merged_obs)
-        del x, merged_obs
+        try:
+            x = io.read_data(x_file)
+            merged_obs = None
+            if len(obs_file_lists) > 0:
+                merged_obs = io.read_data(obs_file_lists[0][i])
+                for obs_files in obs_file_lists[1:]:
+                    merged_obs = pd.merge(
+                        merged_obs,
+                        io.read_data(obs_files[i]),
+                        left_index=True,
+                        right_index=True,
+                    )
+                merged_obs.index = merged_obs.index.astype(str)
+            yield Path(x_file), AnnData(X=x.values, obs=merged_obs)
+            del x, merged_obs
+        except:
+            _logger.exception(f"Error converting {x_file} to AnnData")

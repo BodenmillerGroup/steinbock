@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import pandas as pd
 
@@ -11,6 +12,9 @@ from skimage.measure import regionprops
 from typing import Generator, Optional, Sequence, Tuple, Union
 
 from steinbock import io
+
+
+_logger = logging.getLogger(__name__)
 
 
 def _expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
@@ -168,7 +172,7 @@ def measure_neighbors(
     return neighborhood_type.value(mask, metric=metric, dmax=dmax, kmax=kmax)
 
 
-def measure_neighbors_from_disk(
+def try_measure_neighbors_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
     neighborhood_type: NeighborhoodType,
     metric: Optional[str] = None,
@@ -176,13 +180,16 @@ def measure_neighbors_from_disk(
     kmax: Optional[int] = None,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
-        mask = io.read_mask(mask_file)
-        neighbors = measure_neighbors(
-            mask,
-            neighborhood_type,
-            metric=metric,
-            dmax=dmax,
-            kmax=kmax,
-        )
-        yield Path(mask_file), neighbors
-        del neighbors
+        try:
+            mask = io.read_mask(mask_file)
+            neighbors = measure_neighbors(
+                mask,
+                neighborhood_type,
+                metric=metric,
+                dmax=dmax,
+                kmax=kmax,
+            )
+            yield Path(mask_file), neighbors
+            del neighbors
+        except:
+            _logger.exception(f"Error measuring neighbors in {mask_file}")

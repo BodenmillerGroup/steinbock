@@ -83,7 +83,7 @@ def csv_cmd(data_dirs, table_file):
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.to_table_from_disk(*data_file_lists)
+    table = data.try_convert_to_table_from_disk(*data_file_lists)
     table.reset_index(inplace=True)
     table.to_csv(table_file, index=False)
 
@@ -112,7 +112,7 @@ def fcs_cmd(data_dirs, table_file):
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.to_table_from_disk(*data_file_lists)
+    table = data.try_convert_to_table_from_disk(*data_file_lists)
     write_fcs(table_file, table.columns.values, table.values)
 
 
@@ -158,7 +158,7 @@ def anndata_cmd(data_dir, obs_data_dirs, anndata_dir, anndata_format):
         for obs_data_dir in obs_data_dirs
     ]
     Path(anndata_dir).mkdir(exist_ok=True)
-    for data_file, anndata in data.to_anndata_from_disk(
+    for data_file, anndata in data.try_convert_to_anndata_from_disk(
         data_files, *obs_data_file_lists
     ):
         anndata_file = Path(anndata_dir) / data_file.name
@@ -218,7 +218,7 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
         for data_dir in data_dirs
     ]
     Path(graph_dir).mkdir(exist_ok=True)
-    for neighbors_file, graph in graphs.to_networkx_from_disk(
+    for neighbors_file, graph in graphs.try_convert_to_networkx_from_disk(
         neighbors_files, *data_file_lists
     ):
         graph_file = Path(graph_dir) / neighbors_file.name

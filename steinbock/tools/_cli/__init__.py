@@ -39,7 +39,7 @@ def match_cmd(masks1, masks2, table_dir):
         mask_files1 = io.list_mask_files(masks1)
         mask_files2 = io.list_mask_files(masks2, base_files=mask_files1)
     Path(table_dir).mkdir(exist_ok=True)
-    for mask_file1, mask_file2, df in matching.match_masks_from_disk(
+    for mask_file1, mask_file2, df in matching.try_match_masks_from_disk(
         mask_files1, mask_files2
     ):
         table_file = io.as_path_with_suffix(

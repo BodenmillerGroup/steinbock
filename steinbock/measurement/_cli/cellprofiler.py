@@ -117,7 +117,7 @@ def prepare_cmd(
 @check_steinbock_version
 def run_cmd(measurement_pipeline_file, input_dir, output_dir):
     Path(output_dir).mkdir(exist_ok=True)
-    result = cellprofiler.run_object_measurement(
+    result = cellprofiler.measure_objects(
         cellprofiler_binary,
         measurement_pipeline_file,
         input_dir,

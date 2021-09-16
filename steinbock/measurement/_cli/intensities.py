@@ -6,7 +6,7 @@ from steinbock import io
 from steinbock._env import check_steinbock_version
 from steinbock.measurement.intensities import (
     IntensityAggregation,
-    measure_intensities_from_disk,
+    try_measure_intensities_from_disk,
 )
 
 
@@ -73,7 +73,7 @@ def intensities_cmd(
     img_files = io.list_image_files(img_dir)
     mask_files = io.list_mask_files(mask_dir, base_files=img_files)
     Path(intensities_dir).mkdir(exist_ok=True)
-    for img_file, mask_file, intensities in measure_intensities_from_disk(
+    for img_file, mask_file, intensities in try_measure_intensities_from_disk(
         img_files,
         mask_files,
         channel_names,

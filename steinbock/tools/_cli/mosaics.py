@@ -46,7 +46,7 @@ def mosaics_cmd_group():
 def tile_cmd(images, tile_size, tile_dir):
     img_files = _collect_img_files(images)
     Path(tile_dir).mkdir(exist_ok=True)
-    for img_file, x, y, w, h, tile in mosaics.extract_tiles_from_disk(
+    for img_file, x, y, w, h, tile in mosaics.try_extract_tiles_from_disk(
         img_files, tile_size
     ):
         tile_stem = Path(tile_dir) / f"{img_file.stem}_tx{x}_ty{y}_tw{w}_th{h}"
@@ -78,7 +78,9 @@ def stitch_cmd(tiles, img_dir):
                 tile_info_groups[img_stem_name] = []
             tile_info_groups[img_stem_name].append((tile_file, x, y, w, h))
     Path(img_dir).mkdir(exist_ok=True)
-    for img_stem_name, img in mosaics.stitch_tiles_from_disk(tile_info_groups):
+    for img_stem_name, img in mosaics.try_stitch_tiles_from_disk(
+        tile_info_groups
+    ):
         img_stem = Path(img_dir) / img_stem_name
         img_file = io.write_image(img, img_stem, ignore_dtype=True)
         click.echo(img_file)

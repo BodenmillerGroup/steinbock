@@ -19,7 +19,7 @@ def create_and_save_segmentation_pipeline(
     )
 
 
-def run_object_segmentation(
+def try_segment_objects(
     cellprofiler_binary: Union[str, PathLike],
     segmentation_pipeline_file: Union[str, PathLike],
     probabilities_dir: Union[str, PathLike],

@@ -6,7 +6,7 @@ from steinbock import io
 from steinbock._env import check_steinbock_version
 from steinbock.measurement.neighbors import (
     NeighborhoodType,
-    measure_neighbors_from_disk,
+    try_measure_neighbors_from_disk,
 )
 
 _neighborhood_types = {
@@ -65,7 +65,7 @@ def neighbors_cmd(
 ):
     mask_files = io.list_mask_files(mask_dir)
     Path(neighbors_dir).mkdir(exist_ok=True)
-    for mask_file, neighbors in measure_neighbors_from_disk(
+    for mask_file, neighbors in try_measure_neighbors_from_disk(
         mask_files,
         _neighborhood_types[neighborhood_type_name],
         metric=metric,

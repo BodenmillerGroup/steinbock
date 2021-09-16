@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 
 from enum import Enum
@@ -21,6 +22,9 @@ from steinbock import io
 
 if TYPE_CHECKING:
     from tensorflow.keras.models import Model
+
+
+_logger = logging.getLogger(__name__)
 
 deepcell_available = find_spec("deepcell") is not None
 
@@ -64,7 +68,7 @@ class Application(Enum):
     MESMER = partial(_mesmer_application)
 
 
-def run_object_segmentation(
+def try_segment_objects(
     img_files: Sequence[Union[str, PathLike]],
     application: Application,
     model: Optional["Model"] = None,
@@ -76,23 +80,26 @@ def run_object_segmentation(
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = application.value(model=model)
     for img_file in img_files:
-        img = io.read_image(img_file)
-        if channelwise_minmax:
-            channel_mins = np.nanmin(img, axis=(1, 2), keepdims=True)
-            channel_maxs = np.nanmax(img, axis=(1, 2), keepdims=True)
-            img = (img - channel_mins) / (channel_maxs - channel_mins)
-        if channelwise_zscore:
-            channel_means = np.nanmean(img, axis=(1, 2), keepdims=True)
-            channel_stds = np.nanstd(img, axis=(1, 2), keepdims=True)
-            img = (img - channel_means) / channel_stds
-        if channel_groups is not None:
-            img = np.stack(
-                [
-                    aggr_func(img[channel_groups == channel_group], axis=0)
-                    for channel_group in np.unique(channel_groups)
-                    if not np.isnan(channel_group)
-                ]
-            )
-        mask = predict(img, **predict_kwargs)
-        yield Path(img_file), mask
-        del img, mask
+        try:
+            img = io.read_image(img_file)
+            if channelwise_minmax:
+                channel_mins = np.nanmin(img, axis=(1, 2), keepdims=True)
+                channel_maxs = np.nanmax(img, axis=(1, 2), keepdims=True)
+                img = (img - channel_mins) / (channel_maxs - channel_mins)
+            if channelwise_zscore:
+                channel_means = np.nanmean(img, axis=(1, 2), keepdims=True)
+                channel_stds = np.nanstd(img, axis=(1, 2), keepdims=True)
+                img = (img - channel_means) / channel_stds
+            if channel_groups is not None:
+                img = np.stack(
+                    [
+                        aggr_func(img[channel_groups == channel_group], axis=0)
+                        for channel_group in np.unique(channel_groups)
+                        if not np.isnan(channel_group)
+                    ]
+                )
+            mask = predict(img, **predict_kwargs)
+            yield Path(img_file), mask
+            del img, mask
+        except:
+            _logger.exception(f"Error segmenting objects in {img_file}")

@@ -156,7 +156,7 @@ def deepcell_cmd(
         with Path(postprocess_file).open() as f:
             postprocess_kwargs = yaml.load(f)
     Path(mask_dir).mkdir(exist_ok=True)
-    for img_file, mask in deepcell.run_object_segmentation(
+    for img_file, mask in deepcell.try_segment_objects(
         img_files,
         _applications[application_name],
         model=model,
