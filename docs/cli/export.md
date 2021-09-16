@@ -16,7 +16,7 @@ To export specified object data from all images as a single .csv file:
 
     steinbock export csv intensities regionprops
 
-This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in [object data format](../specs/file-types.md#object-data), with an additional first column indicating the source image. The default destination file is `objects.csv`.
+This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in [object data format](../file-types.md#object-data), with an additional first column indicating the source image. The default destination file is `objects.csv`.
 
 ## FCS
 

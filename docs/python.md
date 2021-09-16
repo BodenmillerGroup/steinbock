@@ -18,4 +18,4 @@ The *steinbock* Python package can be installed and upgraded [from PyPI](https:/
 
 ## Usage
 
-Please refer to [Python usage](../python/intro.md) for usage instructions.
+Please refer to [Python usage](python/intro.md) for usage instructions.

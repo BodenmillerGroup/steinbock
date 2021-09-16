@@ -13,7 +13,7 @@ To extract mean object intensities per channel:
 
     steinbock measure intensities
 
-This will create object data tables in CSV format (see [File types](../specs/file-types.md#object-data), one file per image). The default destination directory is `intensities`.
+This will create object data tables in CSV format (see [File types](../file-types.md#object-data), one file per image). The default destination directory is `intensities`.
 
 !!! note "Pixel aggregation"
     By default, pixels belonging to an object are aggregated by taking the mean. To specify a different [numpy](https://numpy.org) function for aggregation, use the `--aggr` option (e.g. specify `--aggr median` to measure "median object intensities").
@@ -24,7 +24,7 @@ To extract spatial object properties ("region properties"):
 
     steinbock measure regionprops
 
-This will create object data tables in CSV format (see [File types](../specs/file-types.md#object-data), one file per image). The default destination directory is `regionprops`.
+This will create object data tables in CSV format (see [File types](../file-types.md#object-data), one file per image). The default destination directory is `regionprops`.
 
 !!! note "Region property selection"
     By default, the following [scikit-image region properties](https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) will be computed:
@@ -46,7 +46,7 @@ Neighbors can be measured (i.e., identified) based on distances between object c
 !!! note "Spatial object graphs"
     Pairs of neighbors can be represented as edges on a spatial object graph, where each cell is a vertex (node), and neighboring cells are connected by an edge associated with a spatial distance.
 
-The following commands will create directed edge lists in CSV format (see [File types](../specs/file-types.md#object-neighbors), one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is `neighbors`.
+The following commands will create directed edge lists in CSV format (see [File types](../file-types.md#object-neighbors), one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is `neighbors`.
 
 ### Centroid distances
 

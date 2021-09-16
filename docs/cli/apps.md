@@ -3,7 +3,7 @@
 The *steinbock* Docker container exposes various third-party apps via the `apps` command.
 
 !!! note "Graphical user interfaces"
-    Graphical user interfaces are not supported on Windows hosts, see [Docker configuration](../install/docker.md#windows).
+    Graphical user interfaces are not supported on Windows hosts, see [Docker configuration](../docker.md#windows).
 
 ## Ilastik
 

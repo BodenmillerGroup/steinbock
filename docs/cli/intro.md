@@ -3,7 +3,7 @@
 The following sections document the usage of the *steinbock* command-line interface (CLI).
 
 !!! note "Prerequisites"
-    From this point onwards, it is assumed that the `steinbock` command alias was [configured](../install/docker.md) correctly.
+    From this point onwards, it is assumed that the `steinbock` command alias was [configured](../docker.md) correctly.
 
 ## Getting help
 
@@ -27,7 +27,7 @@ At any time, use the `--help` option to show help about a *steinbock* command, e
     apps        Third-party applications
 
 !!! note "Directory structure"
-    By default, all *steinbock* command options follow to the default [directory structure](../specs/directory-structure.md).
+    By default, all *steinbock* command options follow to the default [directory structure](../directories.md).
 
 ## Trying it out
 

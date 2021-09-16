@@ -13,8 +13,8 @@ Comma-separated values (CSV) file with column headers and no index
 | `channel` | Unique channel ID, e.g. metal isotope | Text | yes |
 | `name` | Unique channel name, e.g. antibody target<br>(can be empty only for rows with `keep=0`) | Text or empty | yes |
 | `keep` | Whether the channel is present in preprocessed images<br>(if column is absent, all channels are assumed present) | Boolean (`0` or `1`) | no |
-| `ilastik` | Group label for creating [*steinbock* Ilastik images](../cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
-| `deepcell` | Group label for [DeepCell segmentation](../cli/segmentation.md#deepcell)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
+| `ilastik` | Group label for creating [*steinbock* Ilastik images](cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
+| `deepcell` | Group label for [DeepCell segmentation](cli/segmentation.md#deepcell)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 
 The *steinbock* panel allows for further arbitrary columns.
 
@@ -38,7 +38,7 @@ Color images, with one color per class encoding the probability of pixels belong
 16-bit unsigned integer TIFF images in YXS dimension order, same YX ratio as source image
 
 !!! danger "Probability image size"
-    The size of probability images may be different from the original images (see [Ilastik pixel classification](../cli/classification.md#ilastik)).
+    The size of probability images may be different from the original images (see [Ilastik pixel classification](cli/classification.md#ilastik)).
 
 ## Object masks
 

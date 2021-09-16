@@ -35,9 +35,12 @@ extra_css:
 nav:
   - Home:
     - index.md
-    - Installation:
-      - install/docker.md
-      - install/python.md
+    - Getting started:
+      - docker.md
+      - python.md
+    - Specifications:
+      - file-types.md
+      - directories.md
     - changelog.md
     - license.md
   - CLI usage:
@@ -59,6 +62,3 @@ nav:
       - python/api/steinbock.export.md
       - python/api/steinbock.tools.md
       - python/api/steinbock.io.md
-  - Specifications:
-    - specs/file-types.md
-    - specs/directory-structure.md

@@ -5,10 +5,10 @@ In this step, image data will be prepared for processing with *steinbock*.
 Various sources for raw data are supported by *steinbock*, each of which is described in the following. If you miss support for an imaging modality, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
 !!! note "Optional preprocessing"
-    Not all raw data require preprocessing. The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../specs/file-types.md#images). If your images are available in TIFF already, preprocessing may not be required.
+    Not all raw data require preprocessing. The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If your images are available in TIFF already, preprocessing may not be required.
 
 !!! note "Computational resources"
-    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../specs/file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](tools.md#mosaics).
+    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](tools.md#mosaics).
 
 ## Imaging Mass Cytometry (IMC)
 
@@ -28,15 +28,15 @@ To create a *steinbock* panel file from IMC raw data:
 
 This will generate a *steinbock* panel file as follows:
 
-  - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../specs/file-types.md#panel).
+  - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../file-types.md#panel).
   - If no IMC panel file was found, the *steinbock* panel is created based on the first acquisition in the first .mcd file found at the specified location (defaults to `raw`). 
   - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on the first .txt file found at the specified location (defaults to `raw`).
 
 !!! note "Panel file types"
-    The *steinbock* panel file is different from the IMC panel file used in the original *IMC Segmentation Pipeline*[^1] in that it is ordered (i.e., the channel order in the panel matches the channel order in the images) and only requires `channel` and `name` columns (see [File types](../specs/file-types.md#panel)). By default, channels in a *steinbock* panel file generated from IMC raw data are sorted by mass. As the *steinbock* panel format allows for further arbitrary columns, unmapped columns from an original "IMC panel" will be "passed through" to the generated *steinbock* panel.
+    The *steinbock* panel file is different from the IMC panel file used in the original *IMC Segmentation Pipeline*[^1] in that it is ordered (i.e., the channel order in the panel matches the channel order in the images) and only requires `channel` and `name` columns (see [File types](../file-types.md#panel)). By default, channels in a *steinbock* panel file generated from IMC raw data are sorted by mass. As the *steinbock* panel format allows for further arbitrary columns, unmapped columns from an original "IMC panel" will be "passed through" to the generated *steinbock* panel.
 
 !!! note "Manual panel file creation"
-    The *steinbock* panel file can also be created manually, following the [*steinbock* panel format specification](../specs/file-types.md#panel).
+    The *steinbock* panel file can also be created manually, following the [*steinbock* panel format specification](../file-types.md#panel).
 
 ### Image conversion
 
