@@ -20,23 +20,26 @@ Preprocessing of IMC data consists of two steps:
 !!! note "Panel-based image extraction"
     The *steinbock* panel determines the presence and order of channels in the extracted images.
 
-### Panel generation
+### Panel creation
 
-To create a *steinbock* panel file from IMC raw data:
+A *steinbock* panel file contains information about the channels in an image, such as channel ID (e.g. metal tag), channel name (e.g. antibody target), or whether a channel will be used in certain tasks (e.g. classification, segmentation). Multiple options exist for creating a *steinbock* panel file for IMC applications:
+
+  - Manual *steinbock* panel file creation, following the [*steinbock* panel format specification](../file-types.md#panel)
+  - Automatic *steinbock* panel file creation from metadata embedded in raw MCD/TXT files
+  - Conversion from an "IMC panel file" in *IMC Segmentation Pipeline*[^1] format (undocumented)
+
+!!! note "Panel file types"
+    The *steinbock* panel file is different from the "IMC panel file" used in the original *IMC Segmentation Pipeline*[^1] in that it is ordered (i.e., the channel order in the panel matches the channel order in the images) and only requires `channel` and `name` columns (see [File types](../file-types.md#panel)). By default, channels in a *steinbock* panel file generated from IMC raw data are sorted by mass. As the *steinbock* panel format allows for further arbitrary columns, unmapped columns from an original "IMC panel" will be "passed through" to the generated *steinbock* panel.
+
+When manually creating the *steinbock* panel file, no further actions are required; proceed with image conversion. Otherwise, to create a *steinbock* panel file for IMC data processing:
 
     steinbock preprocess imc panel
 
-This will generate a *steinbock* panel file as follows:
+This will create a *steinbock* panel at the specified location (defaults to `panel.csv`) as follows:
 
   - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../file-types.md#panel).
   - If no IMC panel file was found, the *steinbock* panel is created based on the first acquisition in the first .mcd file found at the specified location (defaults to `raw`). 
   - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on the first .txt file found at the specified location (defaults to `raw`).
-
-!!! note "Panel file types"
-    The *steinbock* panel file is different from the IMC panel file used in the original *IMC Segmentation Pipeline*[^1] in that it is ordered (i.e., the channel order in the panel matches the channel order in the images) and only requires `channel` and `name` columns (see [File types](../file-types.md#panel)). By default, channels in a *steinbock* panel file generated from IMC raw data are sorted by mass. As the *steinbock* panel format allows for further arbitrary columns, unmapped columns from an original "IMC panel" will be "passed through" to the generated *steinbock* panel.
-
-!!! note "Manual panel file creation"
-    The *steinbock* panel file can also be created manually, following the [*steinbock* panel format specification](../file-types.md#panel).
 
 ### Image conversion
 
