@@ -61,11 +61,11 @@ This will create grayscale object masks of the same x and y dimensions as the or
 
 To segment cells using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model) and the pre-trained `MultiplexSegmentation` dataset:
 
-    steinbock segment deepcell --app mesmer --minmax
+    steinbock segment deepcell --minmax
 
 To segment nuclei using [Mesmer](https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model) and the pre-trained `MultiplexSegmentation` dataset:
 
-    steinbock segment deepcell --app mesmer --minmax --type nuclear
+    steinbock segment deepcell --minmax --type nuclear
 
 This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (*object IDs*, see [File types](../file-types.md#object-masks)). The default destination directory for these masks is `masks`.
 
