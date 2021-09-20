@@ -207,6 +207,9 @@ def images_cmd(
                 "width_px": img.shape[2],
                 "height_px": img.shape[1],
                 "num_channels": img.shape[0],
+                "source": mcd_txt_file.name,
+                "recovered": (acquisition is not None)
+                and (mcd_txt_file.suffix == ".txt"),
             }
             if acquisition is not None:
                 image_info_row.update(

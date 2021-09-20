@@ -29,6 +29,24 @@ Tag Image File Format (TIFF) images of any data type in CYX dimension order
 !!! note "Image data type"
     Unless explicitly mentioned, images are converted to 32-bit floating point upon loading (without rescaling).
 
+## Image information
+
+File extension: .csv
+
+Image information (e.g. image dimensions) extracted during preprocessing
+
+CSV file with image file name as index (`Image` column) and the following columns:
+
+| Column | Description | Type |
+| --- | --- | --- |
+| `image` | Unique image file name | Text |
+| `width_px` | Image width, in pixels | Numeric |
+| `height_px` | Image height, in pixels | Numeric |
+| `num_channels` | Number of image channels | Numeric |
+
+Further columns may be added by [modality-specific preprocessing commands](cli/preprocessing.md).
+
+
 ## Probabilities
 
 File extension: .tiff
