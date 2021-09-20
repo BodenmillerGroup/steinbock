@@ -8,6 +8,7 @@ The input and output files and directories of all *steinbock* CLI commands can b
     |
     ├── img                       (user-provided, when not starting from raw data)
     ├── panel.csv                 (user-provided, when not starting from raw data)
+    ├── images.csv
     |
     ├── ilastik_img
     ├── ilastik_crops
