@@ -178,10 +178,6 @@ def write_image_info(
     image_info: pd.DataFrame, image_info_stem: Union[str, PathLike]
 ) -> Path:
     image_info_file = as_path_with_suffix(image_info_stem, ".csv")
-    image_info = image_info.copy()
-    for col in image_info.columns:
-        if image_info[col].convert_dtypes().dtype == pd.BooleanDtype():
-            image_info[col] = image_info[col].astype(pd.UInt8Dtype())
     image_info.to_csv(image_info_file, index=False)
     return image_info_file
 
