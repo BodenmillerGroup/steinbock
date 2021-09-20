@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 ARG UID=1000
 ARG GID=1000
 ARG TZ=Europe/Zurich
+ARG STEINBOCK_VERSION
 
 ARG ILASTIK_BINARY=ilastik-1.3.3post3-Linux.tar.bz2
 ARG CELLPROFILER_VERSION=v4.2.1
@@ -63,7 +64,7 @@ RUN mkdir -p /opt/keras/models && \
 
 RUN mkdir /app
 COPY . /app/steinbock
-RUN pip install --upgrade -e /app/steinbock[IMC,DeepCell]
+RUN SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install --upgrade -e /app/steinbock[IMC,DeepCell]
 
 USER steinbock
 WORKDIR /data
