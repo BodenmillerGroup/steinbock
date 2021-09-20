@@ -1,23 +1,42 @@
 import logging
-from imctools.data.acquisitiondata import AcquisitionData
 import numpy as np
 import pandas as pd
 
 from os import PathLike
 from pathlib import Path
 from scipy.ndimage import maximum_filter
-from typing import Generator, List, Optional, Sequence, Tuple, Union
+from typing import (
+    Generator,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 from steinbock import io
 
 try:
-    from imctools.data.acquisition import Acquisition
-    from imctools.io.mcd.mcdparser import McdParser
-    from imctools.io.txt.txtparser import TxtParser
+    from imctools.data.acquisition import Acquisition as _Acquisition
+    from imctools.data.acquisitiondata import (
+        AcquisitionData as _AcquisitionData,
+    )
+    from imctools.io.mcd.mcdparser import McdParser as _McdParser
+    from imctools.io.txt.txtparser import TxtParser as _TxtParser
 
     imc_available = True
 except:
     imc_available = False
+
+
+class Acquisition(NamedTuple):
+    id: int
+    name: str
+    posx_um: float
+    posy_um: float
+    width_um: float
+    height_um: float
 
 
 _imc_panel_metal_col = "Metal Tag"
@@ -137,18 +156,18 @@ def create_panel_from_imc_panel(
 
 
 def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
-    with McdParser(mcd_file) as mcd_parser:
+    with _McdParser(mcd_file) as mcd_parser:
         acquisition = next(iter(mcd_parser.session.acquisitions.values()))
         return create_panel_from_acquisition(acquisition)
 
 
 def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
-    with TxtParser(txt_file) as txt_parser:
+    with _TxtParser(txt_file) as txt_parser:
         acquisition = txt_parser.get_acquisition_data().acquisition
         return create_panel_from_acquisition(acquisition)
 
 
-def create_panel_from_acquisition(acquisition: "Acquisition") -> pd.DataFrame:
+def create_panel_from_acquisition(acquisition: "_Acquisition") -> pd.DataFrame:
     channels = sorted(
         acquisition.channels.values(), key=lambda channel: channel.order_number
     )
@@ -193,13 +212,13 @@ def try_preprocess_images_from_disk(
     txt_files: Sequence[Union[str, PathLike]],
     metal_order: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
-) -> Generator[Tuple[Path, Optional[int], np.ndarray], None, None]:
-    def data_is_valid(data: AcquisitionData) -> bool:
+) -> Generator[Tuple[Path, Optional[Acquisition], np.ndarray], None, None]:
+    def data_is_valid(data: "_AcquisitionData") -> bool:
         return (
             data is not None and data.image_data is not None and data.is_valid
         )
 
-    def preprocess_data(data: AcquisitionData) -> np.ndarray:
+    def preprocess_data(data: "_AcquisitionData") -> np.ndarray:
         img = data.image_data
         if metal_order is not None:
             img = data.get_image_stack_by_names(metal_order)
@@ -209,20 +228,20 @@ def try_preprocess_images_from_disk(
     remaining_txt_files = list(txt_files)
     for mcd_file in mcd_files:
         try:
-            with McdParser(mcd_file) as mcd_parser:
-                for acquisition in mcd_parser.session.acquisitions.values():
+            with _McdParser(mcd_file) as mcd_parser:
+                for a in mcd_parser.session.acquisitions.values():
                     try:
-                        data = mcd_parser.get_acquisition_data(acquisition.id)
+                        data = mcd_parser.get_acquisition_data(a.id)
                         if not data_is_valid(data):
                             _logger.warning(f"File corrupted: {mcd_file}")
                             txt_file = _match_txt_files(
-                                remaining_txt_files, mcd_file, acquisition.id
+                                remaining_txt_files, mcd_file, a.id
                             )
                             if txt_file is not None:
                                 _logger.info(f"Restoring from file {txt_file}")
                                 try:
-                                    with TxtParser(
-                                        txt_file, slide_id=acquisition.slide_id
+                                    with _TxtParser(
+                                        txt_file, slide_id=a.slide_id
                                     ) as txt_parser:
                                         data = (
                                             txt_parser.get_acquisition_data()
@@ -238,11 +257,19 @@ def try_preprocess_images_from_disk(
                                 remaining_txt_files.remove(txt_file)
                         if data_is_valid(data):
                             img = preprocess_data(data)
-                            yield Path(mcd_file), acquisition.id, img
+                            acquisition = Acquisition(
+                                a.id,
+                                a.description,
+                                min(a.roi_start_x_pos_um, a.roi_end_x_pos_um),
+                                min(a.roi_start_y_pos_um, a.roi_end_y_pos_um),
+                                abs(a.roi_start_x_pos_um - a.roi_end_x_pos_um),
+                                abs(a.roi_start_y_pos_um - a.roi_end_y_pos_um),
+                            )
+                            yield Path(mcd_file), acquisition, img
                             del img
                     except:
                         _logger.exception(
-                            f"Error preprocessing acquisition {acquisition.id}"
+                            f"Error preprocessing acquisition {a.id}"
                             f" from file {mcd_file}"
                         )
         except:
@@ -250,7 +277,7 @@ def try_preprocess_images_from_disk(
     while len(remaining_txt_files) > 0:
         txt_file = remaining_txt_files.pop(0)
         try:
-            with TxtParser(txt_file) as txt_parser:
+            with _TxtParser(txt_file) as txt_parser:
                 data = txt_parser.get_acquisition_data()
                 if not data_is_valid(data):
                     _logger.warning(f"File corrupted: {txt_file}")

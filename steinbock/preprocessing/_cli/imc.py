@@ -1,4 +1,5 @@
 import click
+import pandas as pd
 import sys
 
 from contextlib import nullcontext
@@ -93,7 +94,7 @@ def imc_cmd_group():
     help="Path to the IMC .txt file directory",
 )
 @click.option(
-    "--dest",
+    "-o",
     "panel_file",
     type=click.Path(dir_okay=False),
     default="panel.csv",
@@ -161,34 +162,65 @@ def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
     help="Hot pixel filter (specify delta threshold)",
 )
 @click.option(
-    "--dest",
+    "--imgout",
     "img_dir",
     type=click.Path(file_okay=False),
     default="img",
     show_default=True,
     help="Path to the image output directory",
 )
+@click.option(
+    "--infoout",
+    "image_info_file",
+    type=click.Path(dir_okay=False),
+    default="images.csv",
+    show_default=True,
+    help="Path to the image information output file",
+)
 @check_steinbock_version
-def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir):
+def images_cmd(
+    mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
+):
     metal_order = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
             metal_order = panel["channel"].tolist()
+    image_info_data = []
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
         mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
         txt_files = _collect_txt_files(txt_dir, unzip_dir=temp_dir)
         Path(img_dir).mkdir(exist_ok=True)
         for (
             mcd_txt_file,
-            acquisition_id,
+            acquisition,
             img,
         ) in imc.try_preprocess_images_from_disk(
             mcd_files, txt_files, metal_order=metal_order, hpf=hpf
         ):
             img_file_stem = Path(mcd_txt_file).stem
-            if acquisition_id is not None:
-                img_file_stem += f"_{acquisition_id}"
+            if acquisition is not None:
+                img_file_stem += f"_{acquisition.id}"
             img_file = io.write_image(img, Path(img_dir) / img_file_stem)
+            image_info_row = {
+                "image": img_file.name,
+                "width_px": img.shape[2],
+                "height_px": img.shape[1],
+                "num_channels": img.shape[0],
+            }
+            if acquisition is not None:
+                image_info_row.update(
+                    {
+                        "acquisition_id": acquisition.id,
+                        "acquisition_name": acquisition.name,
+                        "acquisition_posx_um": acquisition.posx_um,
+                        "acquisition_posy_um": acquisition.posy_um,
+                        "acquisition_width_um": acquisition.width_um,
+                        "acquisition_height_um": acquisition.height_um,
+                    }
+                )
+            image_info_data.append(image_info_row)
             click.echo(img_file)
             del img
+    image_info = pd.DataFrame(data=image_info_data)
+    io.write_image_info(image_info, image_info_file)

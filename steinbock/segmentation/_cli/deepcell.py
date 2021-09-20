@@ -110,7 +110,7 @@ _applications = {
     help="[Mesmer] Postprocessing parameters (YAML file)",
 )
 @click.option(
-    "--dest",
+    "-o",
     "mask_dir",
     type=click.Path(file_okay=False),
     default="masks",

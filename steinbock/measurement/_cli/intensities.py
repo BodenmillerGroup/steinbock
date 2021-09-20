@@ -57,7 +57,7 @@ _intensity_aggregations = {
     help="Function for aggregating cell pixels",
 )
 @click.option(
-    "--dest",
+    "-o",
     "intensities_dir",
     type=click.Path(file_okay=False),
     default="intensities",
@@ -80,8 +80,6 @@ def intensities_cmd(
         _intensity_aggregations[intensity_aggregation_name],
     ):
         intensities_stem = Path(intensities_dir) / img_file.stem
-        intensities_file = io.write_data(
-            intensities, intensities_stem, copy=False
-        )
+        intensities_file = io.write_data(intensities, intensities_stem)
         click.echo(intensities_file)
         del intensities

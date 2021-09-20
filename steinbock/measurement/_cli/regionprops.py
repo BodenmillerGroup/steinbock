@@ -26,7 +26,7 @@ from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
 )
 @click.argument("skimage_regionprops", nargs=-1, type=click.STRING)
 @click.option(
-    "--dest",
+    "-o",
     "regionprops_dir",
     type=click.Path(file_okay=False),
     default="regionprops",
@@ -47,11 +47,9 @@ def regionprops_cmd(img_dir, mask_dir, skimage_regionprops, regionprops_dir):
             "eccentricity",
         ]
     for img_file, mask_file, regionprops in try_measure_regionprops_from_disk(
-        img_files, mask_files, skimage_regionprops,
+        img_files, mask_files, skimage_regionprops
     ):
         regionprops_stem = Path(regionprops_dir) / img_file.stem
-        regionprops_file = io.write_data(
-            regionprops, regionprops_stem, copy=False
-        )
+        regionprops_file = io.write_data(regionprops, regionprops_stem)
         click.echo(regionprops_file)
         del regionprops

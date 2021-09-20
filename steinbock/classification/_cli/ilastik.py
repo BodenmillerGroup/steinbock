@@ -28,7 +28,7 @@ def ilastik_cmd_group():
     name="prepare", help="Prepare an Ilastik project file, images and crops"
 )
 @click.option(
-    "--dest",
+    "-o",
     "ilastik_project_file",
     type=click.Path(dir_okay=False),
     default="pixel_classifier.ilp",
@@ -91,7 +91,7 @@ def ilastik_cmd_group():
     help="Ilastik crop size (in pixels)",
 )
 @click.option(
-    "--imgdest",
+    "--imgout",
     "ilastik_img_dir",
     type=click.Path(file_okay=False),
     default="ilastik_img",
@@ -99,7 +99,7 @@ def ilastik_cmd_group():
     help="Path to the Ilastik image output directory",
 )
 @click.option(
-    "--cropdest",
+    "--cropout",
     "ilastik_crop_dir",
     type=click.Path(file_okay=False),
     default="ilastik_crops",
@@ -197,7 +197,7 @@ def prepare_cmd(
     help="Path to the Ilastik image directory",
 )
 @click.option(
-    "--dest",
+    "-o",
     "ilastik_probab_dir",
     type=click.Path(file_okay=False),
     default="ilastik_probabilities",

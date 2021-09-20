@@ -141,6 +141,51 @@ def write_image(
     return img_file
 
 
+def read_image_info(image_info_stem: Union[str, PathLike]) -> pd.DataFrame:
+    image_info_file = as_path_with_suffix(image_info_stem, ".csv")
+    image_info = pd.read_csv(
+        image_info_file,
+        sep=",|;",
+        dtype={
+            "image": pd.StringDtype(),
+            "width_px": pd.UInt16Dtype(),
+            "height_px": pd.UInt16Dtype(),
+            "num_channels": pd.UInt8Dtype(),
+        },
+        engine="python",
+    )
+    for required_col in ("image", "width_px", "height_px", "num_channels"):
+        if required_col not in image_info:
+            raise ValueError(
+                f"Missing '{required_col}' column in {image_info_file}"
+            )
+    for notnan_col in ("image", "width_px", "height_px", "num_channels"):
+        if notnan_col in image_info and image_info[notnan_col].isna().any():
+            raise ValueError(
+                f"Missing values for '{notnan_col}' in {image_info_file}"
+            )
+    for unique_col in ("image",):
+        if unique_col in image_info:
+            if image_info[unique_col].dropna().duplicated().any():
+                raise ValueError(
+                    f"Duplicated values for '{unique_col}'"
+                    f" in {image_info_file}"
+                )
+    return image_info
+
+
+def write_image_info(
+    image_info: pd.DataFrame, image_info_stem: Union[str, PathLike]
+) -> Path:
+    image_info_file = as_path_with_suffix(image_info_stem, ".csv")
+    image_info = image_info.copy()
+    for col in image_info.columns:
+        if image_info[col].convert_dtypes().dtype == pd.BooleanDtype():
+            image_info[col] = image_info[col].astype(pd.UInt8Dtype())
+    image_info.to_csv(image_info_file, index=False)
+    return image_info_file
+
+
 def list_mask_files(
     mask_dir: Union[str, PathLike],
     base_files: Optional[Sequence[Union[str, PathLike]]] = None,
@@ -180,17 +225,14 @@ def list_data_files(
 
 def read_data(data_stem: Union[str, PathLike]) -> pd.DataFrame:
     data_file = as_path_with_suffix(data_stem, ".csv")
-    return pd.read_csv(data_file, index_col="Object")
+    return pd.read_csv(
+        data_file, sep=",|;", index_col="Object", engine="python"
+    )
 
 
-def write_data(
-    data: pd.DataFrame, data_stem: Union[str, PathLike], copy: bool = True
-) -> Path:
+def write_data(data: pd.DataFrame, data_stem: Union[str, PathLike]) -> Path:
     data_file = as_path_with_suffix(data_stem, ".csv")
-    if copy:
-        data = data.reset_index()
-    else:
-        data.reset_index(inplace=True)
+    data = data.reset_index()
     data.to_csv(data_file, index=False)
     return data_file
 
@@ -208,12 +250,14 @@ def read_neighbors(neighbors_stem: Union[str, PathLike]) -> pd.DataFrame:
     neighbors_file = as_path_with_suffix(neighbors_stem, ".csv")
     return pd.read_csv(
         neighbors_file,
+        sep=",|;",
         usecols=["Object", "Neighbor", "Distance"],
         dtype={
             "Object": mask_dtype,
             "Neighbor": mask_dtype,
             "Distance": float,
         },
+        engine="python",
     )
 
 

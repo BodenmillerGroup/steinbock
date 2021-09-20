@@ -25,7 +25,7 @@ def cellprofiler_cmd_group():
     name="prepare", help="Prepare a CellProfiler segmentation pipeline"
 )
 @click.option(
-    "--dest",
+    "-o",
     "segmentation_pipeline_file",
     type=click.Path(dir_okay=False),
     default="cell_segmentation.cppipe",
@@ -59,7 +59,7 @@ def prepare_cmd(segmentation_pipeline_file):
     help="Path to the probabilities directory",
 )
 @click.option(
-    "--dest",
+    "-o",
     "mask_dir",
     type=click.Path(file_okay=False),
     default="masks",

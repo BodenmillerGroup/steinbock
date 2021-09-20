@@ -52,7 +52,7 @@ _neighborhood_types = {
     help="Maximum number of neighbors per object",
 )
 @click.option(
-    "--dest",
+    "-o",
     "neighbors_dir",
     type=click.Path(file_okay=False),
     default="neighbors",

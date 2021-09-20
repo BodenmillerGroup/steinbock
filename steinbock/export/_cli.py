@@ -38,25 +38,25 @@ def export_cmd_group():
     help="Path to the panel file",
 )
 @click.option(
-    "--dest",
-    "xtiff_dir",
+    "-o",
+    "ome_dir",
     type=click.Path(file_okay=False),
     default="ome",
     show_default=True,
     help="Path to the OME-TIFF export directory",
 )
 @check_steinbock_version
-def ome_cmd(img_dir, panel_file, xtiff_dir):
+def ome_cmd(img_dir, panel_file, ome_dir):
     panel = io.read_panel(panel_file)
     channel_names = panel["name"].tolist()
-    Path(xtiff_dir).mkdir(exist_ok=True)
+    Path(ome_dir).mkdir(exist_ok=True)
     for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file)
-        xtiff_file = io.as_path_with_suffix(
-            Path(xtiff_dir) / img_file.name, ".ome.tiff"
+        ome_file = io.as_path_with_suffix(
+            Path(ome_dir) / img_file.name, ".ome.tiff"
         )
-        to_tiff(img, xtiff_file, channel_names=channel_names)
-        click.echo(xtiff_file.name)
+        to_tiff(img, ome_file, channel_names=channel_names)
+        click.echo(ome_file.name)
         del img
 
 
@@ -67,15 +67,15 @@ def ome_cmd(img_dir, panel_file, xtiff_dir):
     "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
 )
 @click.option(
-    "--dest",
-    "table_file",
+    "-o",
+    "csv_file",
     type=click.Path(dir_okay=False),
     default="objects.csv",
     show_default=True,
     help="Path to the CSV output file",
 )
 @check_steinbock_version
-def csv_cmd(data_dirs, table_file):
+def csv_cmd(data_dirs, csv_file):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
@@ -83,9 +83,9 @@ def csv_cmd(data_dirs, table_file):
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.try_convert_to_table_from_disk(*data_file_lists)
-    table.reset_index(inplace=True)
-    table.to_csv(table_file, index=False)
+    df = data.try_convert_to_dataframe_from_disk(*data_file_lists)
+    df.reset_index(inplace=True)
+    df.to_csv(csv_file, index=False)
 
 
 @export_cmd_group.command(
@@ -96,15 +96,15 @@ def csv_cmd(data_dirs, table_file):
     "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
 )
 @click.option(
-    "--dest",
-    "table_file",
+    "-o",
+    "fcs_file",
     type=click.Path(dir_okay=False),
     default="objects.fcs",
     show_default=True,
     help="Path to the FCS output file",
 )
 @check_steinbock_version
-def fcs_cmd(data_dirs, table_file):
+def fcs_cmd(data_dirs, fcs_file):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     first_data_files = io.list_data_files(data_dirs[0])
@@ -112,8 +112,8 @@ def fcs_cmd(data_dirs, table_file):
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    table = data.try_convert_to_table_from_disk(*data_file_lists)
-    write_fcs(table_file, table.columns.values, table.values)
+    df = data.try_convert_to_dataframe_from_disk(*data_file_lists)
+    write_fcs(fcs_file, df.columns.values, df.values)
 
 
 @export_cmd_group.command(
@@ -143,7 +143,7 @@ def fcs_cmd(data_dirs, table_file):
     help="AnnData file format to use",
 )
 @click.option(
-    "--dest",
+    "-o",
     "anndata_dir",
     type=click.Path(file_okay=False),
     default="anndata",
@@ -203,7 +203,7 @@ def anndata_cmd(data_dir, obs_data_dirs, anndata_dir, anndata_format):
     help="AnnData file format to use",
 )
 @click.option(
-    "--dest",
+    "-o",
     "graph_dir",
     type=click.Path(file_okay=False),
     default="graphs",

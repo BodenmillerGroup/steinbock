@@ -12,7 +12,7 @@ from steinbock import io
 _logger = logging.getLogger(__name__)
 
 
-def try_convert_to_table_from_disk(*data_file_lists) -> pd.DataFrame:
+def try_convert_to_dataframe_from_disk(*data_file_lists) -> pd.DataFrame:
     data_objs = []
     img_file_names = []
     for data_files in zip(*data_file_lists):

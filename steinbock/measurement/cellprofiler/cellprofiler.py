@@ -22,8 +22,8 @@ def create_and_save_measurement_pipeline(
 def measure_objects(
     cellprofiler_binary: str,
     measurement_pipeline_file: Union[str, PathLike],
-    input_dir: Union[str, PathLike],
-    output_dir: Union[str, PathLike],
+    cpdata_dir: Union[str, PathLike],
+    cpout_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ):
     args = [
@@ -33,9 +33,9 @@ def measure_objects(
         "-p",
         str(measurement_pipeline_file),
         "-i",
-        str(input_dir),
+        str(cpdata_dir),
         "-o",
-        str(output_dir),
+        str(cpout_dir),
     ]
     if cellprofiler_plugin_dir is not None:
         args.append("--plugins-directory")
