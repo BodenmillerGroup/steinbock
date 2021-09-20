@@ -47,22 +47,6 @@ _imc_panel_deepcell_col = "deepcell"
 _logger = logging.getLogger(__name__)
 
 
-def _match_txt_files(
-    txt_files: Sequence[Union[str, PathLike]],
-    mcd_file: Union[str, PathLike],
-    acquisition_id: int,
-) -> Optional[Path]:
-    filtered_txt_files = [
-        txt_file
-        for txt_file in txt_files
-        if Path(txt_file).stem.startswith(mcd_file.stem)
-        and Path(txt_file).stem.endswith(f"_{acquisition_id}")
-    ]
-    if len(filtered_txt_files) == 1:
-        return Path(filtered_txt_files[0])
-    return None
-
-
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.mcd"))
 
@@ -222,7 +206,7 @@ def try_preprocess_images_from_disk(
         img = data.image_data
         if metal_order is not None:
             img = data.get_image_stack_by_names(metal_order)
-        img = preprocess_data(img, hpf=hpf)
+        img = preprocess_image(img, hpf=hpf)
         return io.to_dtype(img, io.img_dtype)
 
     remaining_txt_files = list(txt_files)
@@ -230,13 +214,20 @@ def try_preprocess_images_from_disk(
         try:
             with _McdParser(mcd_file) as mcd_parser:
                 for a in mcd_parser.session.acquisitions.values():
+                    txt_file = None
+                    filtered_txt_files = [
+                        x
+                        for x in remaining_txt_files
+                        if Path(x).stem.startswith(Path(mcd_file).stem)
+                        and Path(x).stem.endswith(f"_{a.id}")
+                    ]
+                    if len(filtered_txt_files) == 1:
+                        txt_file = filtered_txt_files[0]
+                        remaining_txt_files.remove(txt_file)
                     try:
                         data = mcd_parser.get_acquisition_data(a.id)
                         if not data_is_valid(data):
                             _logger.warning(f"File corrupted: {mcd_file}")
-                            txt_file = _match_txt_files(
-                                remaining_txt_files, mcd_file, a.id
-                            )
                             if txt_file is not None:
                                 _logger.info(f"Restoring from file {txt_file}")
                                 try:
@@ -254,7 +245,6 @@ def try_preprocess_images_from_disk(
                                     _logger.exception(
                                         f"Error preprocessing file {txt_file}"
                                     )
-                                remaining_txt_files.remove(txt_file)
                         if data_is_valid(data):
                             img = preprocess_data(data)
                             acquisition = Acquisition(
