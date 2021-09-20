@@ -144,9 +144,9 @@ def deepcell_cmd(
         from tensorflow.keras.models import load_model
 
         if Path(model_path_or_name).exists():
-            model = load_model(model_path_or_name)
+            model = load_model(model_path_or_name, compile=False)
         elif model_path_or_name in _model_paths:
-            model = load_model(_model_paths[model_path_or_name])
+            model = load_model(_model_paths[model_path_or_name], compile=False)
     preprocess_kwargs = None
     if preprocess_file is not None:
         with Path(preprocess_file).open() as f:
