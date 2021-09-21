@@ -51,7 +51,7 @@ RUN git clone -b "${CELLPROFILER_PLUGINS_VERSION}" --depth 1 https://github.com/
 # steinbock
 
 COPY ./requirements.txt .
-RUN pip install --upgrade deepcell==0.9.2 && \
+RUN pip install --upgrade deepcell==0.10.0 && \
     pip install --upgrade -r requirements.txt && \
     rm requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
