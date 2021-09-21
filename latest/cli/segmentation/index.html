@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -18,7 +18,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7f47774.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -167,22 +167,6 @@
   
 
       
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../specs/file-types/" class="md-tabs__link">
-        Specifications
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -261,13 +245,13 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
       
       <label class="md-nav__link" for="__nav_1_2">
-        Installation
+        Getting started
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+      <nav class="md-nav" aria-label="Getting started" data-md-level="2">
         <label class="md-nav__title" for="__nav_1_2">
           <span class="md-nav__icon md-icon"></span>
-          Installation
+          Getting started
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -276,7 +260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/docker/" class="md-nav__link">
+      <a href="../../docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -288,8 +272,59 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/python/" class="md-nav__link">
+      <a href="../../python/" class="md-nav__link">
         Python
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      <label class="md-nav__link" for="__nav_1_3">
+        Specifications
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../directories/" class="md-nav__link">
+        Directories
       </a>
     </li>
   
@@ -686,60 +721,6 @@
   
 
     
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
-      
-      <label class="md-nav__link" for="__nav_4">
-        Specifications
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Specifications" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          Specifications
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specs/file-types/" class="md-nav__link">
-        File types
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specs/directory-structure/" class="md-nav__link">
-        Directory structure
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -820,7 +801,7 @@
                 
                 
                 <h1 id="object-segmentation">Object segmentation</h1>
-<p>In this step, objects such as cells will be segmented. This will result in grayscale <em>object masks</em> of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>).</p>
+<p>In this step, objects such as cells will be segmented. This will result in grayscale <em>object masks</em> of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../file-types/#object-masks">File types</a>).</p>
 <p>Various segmentation approaches are supported, each of which is described in the following.</p>
 <div class="admonition note">
 <p class="admonition-title">Pixel classification-based segmentation vs end-to-end approaches</p>
@@ -857,13 +838,13 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">CellProfiler output</p>
-<p>By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see <a href="../../specs/file-types/#object-masks">File types</a>). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.</p>
+<p>By default, the pipeline is configured to generate object masks as grayscale 16-bit unsigned integer TIFF images with the same name and x and y dimensions as the input images (see <a href="../../file-types/#object-masks">File types</a>). Custom segmentation pipelines should adhere to this convention to ensure compatibility with downstream measurement tasks.</p>
 </div>
 <h3 id="batch-processing">Batch processing</h3>
 <p>After the pipeline has been configured, it can be applied to a batch of probability images:</p>
 <pre><code>steinbock segment cellprofiler run
 </code></pre>
-<p>This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
+<p>This will create grayscale object masks of the same x and y dimensions as the original images, containing unique pixel values for each object (<em>object IDs</em>, see <a href="../../file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
 <h2 id="deepcell">DeepCell</h2>
 <p><a href="https://github.com/vanvalenlab/deepcell-tf">DeepCell</a> is a deep learning library for single-cell analysis of biological images. Here, pre-trained DeepCell models are used for cell/nuclei segmentation from raw image data.</p>
 <div class="admonition note">
@@ -871,12 +852,12 @@
 <p>This approach operates directly on image intensities and does not require a preceding pixel classification step.</p>
 </div>
 <p>To segment cells using <a href="https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model">Mesmer</a> and the pre-trained <code>MultiplexSegmentation</code> dataset:</p>
-<pre><code>steinbock segment deepcell --app mesmer --minmax
+<pre><code>steinbock segment deepcell --minmax
 </code></pre>
 <p>To segment nuclei using <a href="https://github.com/vanvalenlab/intro-to-deepcell/tree/master/pretrained_models#mesmer-segmentation-model">Mesmer</a> and the pre-trained <code>MultiplexSegmentation</code> dataset:</p>
-<pre><code>steinbock segment deepcell --app mesmer --minmax --type nuclear
+<pre><code>steinbock segment deepcell --minmax --type nuclear
 </code></pre>
-<p>This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (<em>object IDs</em>, see <a href="../../specs/file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
+<p>This will create grayscale cell/nuclear masks of the same x and y dimensions as the original images, containing unique pixel values for each cell/nucleus (<em>object IDs</em>, see <a href="../../file-types/#object-masks">File types</a>). The default destination directory for these masks is <code>masks</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">DeepCell image data</p>
 <p>Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin).</p>
@@ -972,10 +953,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.febc23d1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

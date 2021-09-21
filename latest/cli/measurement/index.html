@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -18,7 +18,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.f7f47774.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -167,22 +167,6 @@
   
 
       
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../specs/file-types/" class="md-tabs__link">
-        Specifications
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -261,13 +245,13 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
       
       <label class="md-nav__link" for="__nav_1_2">
-        Installation
+        Getting started
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+      <nav class="md-nav" aria-label="Getting started" data-md-level="2">
         <label class="md-nav__title" for="__nav_1_2">
           <span class="md-nav__icon md-icon"></span>
-          Installation
+          Getting started
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -276,7 +260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/docker/" class="md-nav__link">
+      <a href="../../docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -288,8 +272,59 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/python/" class="md-nav__link">
+      <a href="../../python/" class="md-nav__link">
         Python
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      <label class="md-nav__link" for="__nav_1_3">
+        Specifications
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../directories/" class="md-nav__link">
+        Directories
       </a>
     </li>
   
@@ -727,60 +762,6 @@
   
 
     
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
-      
-      <label class="md-nav__link" for="__nav_4">
-        Specifications
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Specifications" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          Specifications
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specs/file-types/" class="md-nav__link">
-        File types
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specs/directory-structure/" class="md-nav__link">
-        Directory structure
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -912,7 +893,7 @@
 <p>To extract mean object intensities per channel:</p>
 <pre><code>steinbock measure intensities
 </code></pre>
-<p>This will create object data tables in CSV format (see <a href="../../specs/file-types/#object-data">File types</a>, one file per image). The default destination directory is <code>intensities</code>.</p>
+<p>This will create object data tables in CSV format (see <a href="../../file-types/#object-data">File types</a>, one file per image). The default destination directory is <code>intensities</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Pixel aggregation</p>
 <p>By default, pixels belonging to an object are aggregated by taking the mean. To specify a different <a href="https://numpy.org">numpy</a> function for aggregation, use the <code>--aggr</code> option (e.g. specify <code>--aggr median</code> to measure "median object intensities").</p>
@@ -921,7 +902,7 @@
 <p>To extract spatial object properties ("region properties"):</p>
 <pre><code>steinbock measure regionprops
 </code></pre>
-<p>This will create object data tables in CSV format (see <a href="../../specs/file-types/#object-data">File types</a>, one file per image). The default destination directory is <code>regionprops</code>.</p>
+<p>This will create object data tables in CSV format (see <a href="../../file-types/#object-data">File types</a>, one file per image). The default destination directory is <code>regionprops</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Region property selection</p>
 <p>By default, the following <a href="https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops">scikit-image region properties</a> will be computed:</p>
@@ -942,7 +923,7 @@
 <p class="admonition-title">Spatial object graphs</p>
 <p>Pairs of neighbors can be represented as edges on a spatial object graph, where each cell is a vertex (node), and neighboring cells are connected by an edge associated with a spatial distance.</p>
 </div>
-<p>The following commands will create directed edge lists in CSV format (see <a href="../../specs/file-types/#object-neighbors">File types</a>, one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is <code>neighbors</code>.</p>
+<p>The following commands will create directed edge lists in CSV format (see <a href="../../file-types/#object-neighbors">File types</a>, one file per image). For undirected graphs, i.e., graphs constructed by distance thresholding/pixel expansion, each edge will appear twice. The default destination directory is <code>neighbors</code>.</p>
 <h3 id="centroid-distances">Centroid distances</h3>
 <p>To find neighbors by thresholding on distances between object centroids:</p>
 <pre><code>steinbock measure neighbors --type centroids --dmax 15
@@ -1085,10 +1066,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.febc23d1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>
