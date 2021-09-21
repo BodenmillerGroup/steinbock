@@ -91,7 +91,7 @@ The created command alias is retained for the current session and enables runnin
 
 Please refer to [CLI usage](cli/intro.md) for usage instructions.
 
-## Troubleshooting
+<!-- ## Troubleshooting
 
 !!! note "Getting help"
     The *steinbock* Docker container is under active development. If you are experiencing issues, you are more than welcome to [file an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues). However, please understand that only issues directly concerning *steinbock* can be addressed. For user support with Docker, command line usage, etc., please refer to your local IT administrator.
@@ -110,4 +110,4 @@ Alternatively, you have the following options to run the *steinbock* Docker cont
 
  - **[Custom build]** Re-build the *steinbock* Docker container from scratch with the UID and GID matching the desired (e.g., current) host system user ([Dockerfile](https://github.com/BodenmillerGroup/steinbock/blob/main/Dockerfile))
 
-If you are a developer and would like to implement a workaround for this inconvenience (e.g. automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request!
+If you are a developer and would like to implement a workaround for this inconvenience (e.g. automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request! -->
