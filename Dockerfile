@@ -64,7 +64,7 @@ RUN mkdir -p /opt/keras/models && \
 
 RUN mkdir /app
 COPY . /app/steinbock
-RUN SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install --upgrade -e /app/steinbock[IMC,DeepCell]
+RUN SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION}" pip install --upgrade -e /app/steinbock[IMC,DeepCell]
 
 USER steinbock
 WORKDIR /data
