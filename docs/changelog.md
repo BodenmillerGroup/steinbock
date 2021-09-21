@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.8.0] - 2021-09-21
+
+  - Improved error handling & messages
+  - Restructured & improved documentation
+  - IMC preprocessing: extract image metadata
+  - Fix steinbock versioning in docker container
+  - Upgraded dependencies, including deepcell 0.10.0
+
+
 ## [0.7.3] - 2021-09-09
 
   - Make container ready for passwd mounting
@@ -184,6 +193,7 @@ Added:
 Initial release for beta testing
 
 
+[0.8.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/BodenmillerGroup/steinbock/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.7.0...v0.7.1
