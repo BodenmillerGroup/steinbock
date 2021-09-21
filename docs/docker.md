@@ -53,11 +53,11 @@ The created command alias is retained for the current session and enables runnin
 
 On the terminal, use the following command to run the *steinbock* Docker container:
 
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0
+    docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0
 
-In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.8.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.8.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0"
+    alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
@@ -72,11 +72,11 @@ The created command alias is retained for the current session and enables runnin
 
 On the terminal, use the following command to run the *steinbock* Docker container:
 
-    docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0
+    docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0
 
-In the command above, adapt the bind mount path to your data/working directory (`/mnt/data`) and the *steinbock* Docker container version (`0.8.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.8.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    alias steinbock="docker run -v /mnt/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0"
+    alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
@@ -91,23 +91,5 @@ The created command alias is retained for the current session and enables runnin
 
 Please refer to [CLI usage](cli/intro.md) for usage instructions.
 
-<!-- ## Troubleshooting
-
 !!! note "Getting help"
     The *steinbock* Docker container is under active development. If you are experiencing issues, you are more than welcome to [file an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues). However, please understand that only issues directly concerning *steinbock* can be addressed. For user support with Docker, command line usage, etc., please refer to your local IT administrator.
-
-### File permission issues
-
-The data/working directory must be writable by the host system user and/or group matching the user/group ID (UID/GID) of the user running within the *steinbock* Docker container. By default, the *steinbock* Docker container internally runs as user `steinbock` with UID `1000` and GID `1000`. The data/working directory must therefore be writeable by the host system user and/or group matching these IDs, and files created from within the container will be owned by that user.
-
-Alternatively, you have the following options to run the *steinbock* Docker container:
-
- - **[Linux only]** Add bind mounts for the `/etc/passwd` and `/etc/groups` files and run the *steinbock* Docker container with the desired (e.g., current) host system user, by supplying the following additional options to the `docker run` command (remember to update your alias):
- 
-        -v /etc/passwd:/etc/passwd:ro -v /etc/groups:/etc/groups:ro -u $(id -u):$(id -g)
-
- - **[Singularity]** Run the *steinbock* Docker container using [Singularity](https://sylabs.io/singularity/) (see [here](https://sylabs.io/guides/3.0/user-guide/singularity_and_docker.html))
-
- - **[Custom build]** Re-build the *steinbock* Docker container from scratch with the UID and GID matching the desired (e.g., current) host system user ([Dockerfile](https://github.com/BodenmillerGroup/steinbock/blob/main/Dockerfile))
-
-If you are a developer and would like to implement a workaround for this inconvenience (e.g. automatically change the UID/GID at runtime of the *steinbock* Docker container), you are more than welcome to submit a pull request! -->

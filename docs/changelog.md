@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - IMC preprocessing: extract image metadata
   - Fix steinbock versioning in docker container
   - Upgraded dependencies, including deepcell 0.10.0
+  - Fix permission issues using fixuid approach
 
 
 ## [0.7.3] - 2021-09-09

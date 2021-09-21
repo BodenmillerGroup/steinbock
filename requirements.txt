@@ -11,4 +11,4 @@ pyyaml==5.4.1
 scikit-image==0.18.3
 scipy==1.7.1
 tifffile==2021.8.30
-xtiff==0.7.6
+xtiff==0.7.7
