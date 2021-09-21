@@ -1,0 +1,1771 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
+    
+    
+      
+        <title>steinbock.classification - steinbock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.92558b1b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#steinbockclassification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="steinbock" class="md-header__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            steinbock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              steinbock.classification
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../cli/intro/" class="md-tabs__link">
+        CLI usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../intro/" class="md-tabs__link md-tabs__link--active">
+        Python usage
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="steinbock" class="md-nav__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    steinbock
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      <label class="md-nav__link" for="__nav_1">
+        Home
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Welcome
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+      
+      <label class="md-nav__link" for="__nav_1_2">
+        Getting started
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Getting started" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Getting started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      <label class="md-nav__link" for="__nav_1_3">
+        Specifications
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../directories/" class="md-nav__link">
+        Directories
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        CLI usage
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          CLI usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/preprocessing/" class="md-nav__link">
+        Preprocessing
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/classification/" class="md-nav__link">
+        Pixel classification
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/segmentation/" class="md-nav__link">
+        Object segmentation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/measurement/" class="md-nav__link">
+        Object measurement
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/export/" class="md-nav__link">
+        Data export
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/tools/" class="md-nav__link">
+        Tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/apps/" class="md-nav__link">
+        Apps
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Python usage
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Python usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Python usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      <label class="md-nav__link" for="__nav_3_2">
+        API documentation
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="API documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          API documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.preprocessing/" class="md-nav__link">
+        steinbock.preprocessing
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          steinbock.classification
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        steinbock.classification
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik" class="md-nav__link">
+    ilastik
+  </a>
+  
+    <nav class="md-nav" aria-label="ilastik">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik" class="md-nav__link">
+    ilastik
+  </a>
+  
+    <nav class="md-nav" aria-label="ilastik">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_and_save_ilastik_project" class="md-nav__link">
+    create_and_save_ilastik_project()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_ilastik_crop" class="md-nav__link">
+    create_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_ilastik_image" class="md-nav__link">
+    create_ilastik_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.fix_ilastik_project_file_inplace" class="md-nav__link">
+    fix_ilastik_project_file_inplace()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.list_ilastik_crop_files" class="md-nav__link">
+    list_ilastik_crop_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.list_ilastik_image_files" class="md-nav__link">
+    list_ilastik_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.read_ilastik_crop" class="md-nav__link">
+    read_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.read_ilastik_image" class="md-nav__link">
+    read_ilastik_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.run_pixel_classification" class="md-nav__link">
+    run_pixel_classification()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_create_ilastik_crops_from_disk" class="md-nav__link">
+    try_create_ilastik_crops_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_create_ilastik_images_from_disk" class="md-nav__link">
+    try_create_ilastik_images_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_fix_ilastik_crops_from_disk" class="md-nav__link">
+    try_fix_ilastik_crops_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.write_ilastik_crop" class="md-nav__link">
+    write_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.write_ilastik_image" class="md-nav__link">
+    write_ilastik_image()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.segmentation/" class="md-nav__link">
+        steinbock.segmentation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.measurement/" class="md-nav__link">
+        steinbock.measurement
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.export/" class="md-nav__link">
+        steinbock.export
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.tools/" class="md-nav__link">
+        steinbock.tools
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.io/" class="md-nav__link">
+        steinbock.io
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik" class="md-nav__link">
+    ilastik
+  </a>
+  
+    <nav class="md-nav" aria-label="ilastik">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik" class="md-nav__link">
+    ilastik
+  </a>
+  
+    <nav class="md-nav" aria-label="ilastik">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_and_save_ilastik_project" class="md-nav__link">
+    create_and_save_ilastik_project()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_ilastik_crop" class="md-nav__link">
+    create_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.create_ilastik_image" class="md-nav__link">
+    create_ilastik_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.fix_ilastik_project_file_inplace" class="md-nav__link">
+    fix_ilastik_project_file_inplace()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.list_ilastik_crop_files" class="md-nav__link">
+    list_ilastik_crop_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.list_ilastik_image_files" class="md-nav__link">
+    list_ilastik_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.read_ilastik_crop" class="md-nav__link">
+    read_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.read_ilastik_image" class="md-nav__link">
+    read_ilastik_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.run_pixel_classification" class="md-nav__link">
+    run_pixel_classification()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_create_ilastik_crops_from_disk" class="md-nav__link">
+    try_create_ilastik_crops_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_create_ilastik_images_from_disk" class="md-nav__link">
+    try_create_ilastik_images_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.try_fix_ilastik_crops_from_disk" class="md-nav__link">
+    try_fix_ilastik_crops_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.write_ilastik_crop" class="md-nav__link">
+    write_ilastik_crop()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.classification.ilastik.ilastik.write_ilastik_image" class="md-nav__link">
+    write_ilastik_image()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="steinbockclassification">steinbock.classification</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.classification.ilastik" class="doc doc-heading">
+        <code>ilastik</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h3 id="steinbock.classification.ilastik.ilastik" class="doc doc-heading">
+        <code>ilastik</code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.create_and_save_ilastik_project" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_and_save_ilastik_project</span><span class="p">(</span><span class="n">ilastik_crop_files</span><span class="p">,</span> <span class="n">ilastik_project_file</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_and_save_ilastik_project</span><span class="p">(</span>
+    <span class="n">ilastik_crop_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">ilastik_project_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="n">dataset_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid1</span><span class="p">())</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">_project_file_template</span><span class="p">,</span> <span class="n">ilastik_project_file</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">infos_group</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;Input Data/infos&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ilastik_crop_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ilastik_crop_files</span><span class="p">):</span>
+            <span class="n">rel_ilastik_crop_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span>
+                <span class="n">ilastik_crop_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">f_crop</span><span class="p">:</span>
+                <span class="n">crop_shape</span> <span class="o">=</span> <span class="n">f_crop</span><span class="p">[</span><span class="n">_crop_dataset_path</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">lane_group</span> <span class="o">=</span> <span class="n">infos_group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lane</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">lane_group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;Prediction Mask&quot;</span><span class="p">)</span>
+            <span class="n">raw_data_group</span> <span class="o">=</span> <span class="n">lane_group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;Raw Data&quot;</span><span class="p">)</span>
+            <span class="n">_fix_raw_data_group_inplace</span><span class="p">(</span>
+                <span class="n">raw_data_group</span><span class="p">,</span>
+                <span class="n">dataset_id</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+                <span class="n">file_path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">rel_ilastik_crop_file</span> <span class="o">/</span> <span class="n">_crop_dataset_path</span><span class="p">),</span>
+                <span class="n">nickname</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="n">crop_shape</span><span class="p">,</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.create_ilastik_crop" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_ilastik_crop</span><span class="p">(</span><span class="n">ilastik_img</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_ilastik_crop</span><span class="p">(</span>
+    <span class="n">ilastik_img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+    <span class="n">yx_shape</span> <span class="o">=</span> <span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">shape</span> <span class="o">&gt;=</span> <span class="n">crop_size</span> <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">yx_shape</span><span class="p">):</span>
+        <span class="n">x_start</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">crop_size</span><span class="p">)</span>
+        <span class="n">x_end</span> <span class="o">=</span> <span class="n">x_start</span> <span class="o">+</span> <span class="n">crop_size</span>
+        <span class="n">y_start</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">crop_size</span><span class="p">)</span>
+        <span class="n">y_end</span> <span class="o">=</span> <span class="n">y_start</span> <span class="o">+</span> <span class="n">crop_size</span>
+        <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">ilastik_img</span><span class="p">[:,</span> <span class="n">y_start</span><span class="p">:</span><span class="n">y_end</span><span class="p">,</span> <span class="n">x_start</span><span class="p">:</span><span class="n">x_end</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">x_start</span><span class="p">,</span> <span class="n">y_start</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.create_ilastik_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_ilastik_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7efd989b11f0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">prepend_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mean_factor</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_ilastik_image</span><span class="p">(</span>
+    <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">channel_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">aggr_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="n">prepend_mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">mean_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span>
+    <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">img</span>
+    <span class="k">if</span> <span class="n">channel_groups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">aggr_func</span><span class="p">(</span><span class="n">ilastik_img</span><span class="p">[</span><span class="n">channel_groups</span> <span class="o">==</span> <span class="n">channel_group</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">channel_group</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">channel_groups</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">channel_group</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">prepend_mean</span><span class="p">:</span>
+        <span class="n">mean_img</span> <span class="o">=</span> <span class="n">ilastik_img</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">mean_factor</span>
+        <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">mean_img</span><span class="p">,</span> <span class="n">ilastik_img</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">scale_factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># bilinear resizing (for compatibility with IMC Segmentation Pipeline)</span>
+        <span class="n">output_shape</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">,</span>
+            <span class="n">ilastik_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">resize</span><span class="p">(</span>
+            <span class="n">ilastik_img</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;symmetric&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">ilastik_img</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.fix_ilastik_project_file_inplace" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fix_ilastik_project_file_inplace</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">,</span> <span class="n">ilastik_crop_dir</span><span class="p">,</span> <span class="n">ilastik_probab_dir</span><span class="p">,</span> <span class="n">ilastik_crop_shapes</span><span class="p">,</span> <span class="n">transpose_axes</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">fix_ilastik_project_file_inplace</span><span class="p">(</span>
+    <span class="n">ilastik_project_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ilastik_crop_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ilastik_probab_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ilastik_crop_shapes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">transpose_axes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="n">rel_ilastik_crop_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_dir</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="p">)</span>
+    <span class="n">rel_ilastik_probab_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_probab_dir</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_project_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">input_data_group</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Input Data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">input_data_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_fix_input_data_group_inplace</span><span class="p">(</span>
+                <span class="n">input_data_group</span><span class="p">,</span> <span class="n">rel_ilastik_crop_dir</span><span class="p">,</span> <span class="n">ilastik_crop_shapes</span>
+            <span class="p">)</span>
+        <span class="n">pixel_classification_group</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PixelClassification&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pixel_classification_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_fix_pixel_classification_group_inplace</span><span class="p">(</span>
+                <span class="n">pixel_classification_group</span><span class="p">,</span> <span class="n">transpose_axes</span>
+            <span class="p">)</span>
+        <span class="n">prediction_export_group</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;Prediction Export&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prediction_export_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_fix_prediction_export_group_inplace</span><span class="p">(</span>
+                <span class="n">prediction_export_group</span><span class="p">,</span> <span class="n">rel_ilastik_probab_dir</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.list_ilastik_crop_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_ilastik_crop_files</span><span class="p">(</span><span class="n">crop_dir</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_ilastik_crop_files</span><span class="p">(</span><span class="n">crop_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">crop_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.h5&quot;</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.list_ilastik_image_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_ilastik_image_files</span><span class="p">(</span><span class="n">img_dir</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_ilastik_image_files</span><span class="p">(</span><span class="n">img_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">img_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.h5&quot;</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.read_ilastik_crop" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">read_ilastik_crop</span><span class="p">(</span><span class="n">ilastik_crop_stem</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_ilastik_crop</span><span class="p">(</span><span class="n">ilastik_crop_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">ilastik_crop_file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">ilastik_crop_stem</span><span class="p">,</span> <span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">_crop_dataset_path</span><span class="p">)][()],</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.read_ilastik_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">read_ilastik_image</span><span class="p">(</span><span class="n">ilastik_img_stem</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_ilastik_image</span><span class="p">(</span><span class="n">ilastik_img_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">ilastik_img_file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">ilastik_img_stem</span><span class="p">,</span> <span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">_img_dataset_path</span><span class="p">)][()],</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.run_pixel_classification" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">run_pixel_classification</span><span class="p">(</span><span class="n">ilastik_binary</span><span class="p">,</span> <span class="n">ilastik_project_file</span><span class="p">,</span> <span class="n">ilastik_img_files</span><span class="p">,</span> <span class="n">ilastik_probab_dir</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">memory_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ilastik_env</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run_pixel_classification</span><span class="p">(</span>
+    <span class="n">ilastik_binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ilastik_project_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ilastik_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">ilastik_probab_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">num_threads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">memory_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ilastik_env</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CompletedProcess</span><span class="p">:</span>
+    <span class="n">output_filename_format</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_probab_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{nickname}</span><span class="s2">.tiff&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">ilastik_binary</span><span class="p">),</span>
+        <span class="s2">&quot;--headless&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;--project=</span><span class="si">{</span><span class="n">ilastik_project_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--readonly&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--input_axes=cyx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--export_source=Probabilities&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--output_format=tiff&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;--output_filename_format=</span><span class="si">{</span><span class="n">output_filename_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--export_dtype=uint16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--output_axis_order=yxc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--pipeline_result_drange=(0.0,1.0)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--export_drange=(0,65535)&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">ilastik_img_file</span> <span class="ow">in</span> <span class="n">ilastik_img_files</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">ilastik_img_file</span><span class="p">)</span> <span class="o">/</span> <span class="n">_img_dataset_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ilastik_env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ilastik_env</span> <span class="o">=</span> <span class="n">ilastik_env</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ilastik_env</span><span class="p">[</span><span class="s2">&quot;LAZYFLOW_THREADS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_threads</span>
+        <span class="k">if</span> <span class="n">memory_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ilastik_env</span><span class="p">[</span><span class="s2">&quot;LAZYFLOW_TOTAL_RAM_MB&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">memory_limit</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">run_captured</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">ilastik_env</span><span class="p">)</span>
+    <span class="n">ilastik_probab_files</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_probab_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;*-</span><span class="si">{</span><span class="n">_img_dataset_path</span><span class="si">}</span><span class="s2">.tiff&quot;</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">ilastik_probab_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ilastik_probab_files</span><span class="p">):</span>
+        <span class="n">ilastik_probab_file</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">ilastik_probab_file</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span>
+                <span class="n">ilastik_probab_file</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">_img_dataset_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.try_create_ilastik_crops_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_create_ilastik_crops_from_disk</span><span class="p">(</span><span class="n">ilastik_img_files</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_create_ilastik_crops_from_disk</span><span class="p">(</span>
+    <span class="n">ilastik_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">crop_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+<span class="p">]:</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ilastik_img_file</span> <span class="ow">in</span> <span class="n">ilastik_img_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x_start</span><span class="p">,</span> <span class="n">y_start</span><span class="p">,</span> <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">create_ilastik_crop</span><span class="p">(</span>
+                <span class="n">read_ilastik_image</span><span class="p">(</span><span class="n">ilastik_img_file</span><span class="p">),</span> <span class="n">crop_size</span><span class="p">,</span> <span class="n">rng</span>
+            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_img_file</span><span class="p">),</span> <span class="n">x_start</span><span class="p">,</span> <span class="n">y_start</span><span class="p">,</span> <span class="n">ilastik_crop</span>
+            <span class="k">del</span> <span class="n">ilastik_crop</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating Ilastik crop from file </span><span class="si">{</span><span class="n">ilastik_img_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.try_create_ilastik_images_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_create_ilastik_images_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7efd989b11f0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">prepend_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mean_factor</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_create_ilastik_images_from_disk</span><span class="p">(</span>
+    <span class="n">img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">channel_groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">aggr_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+    <span class="n">prepend_mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">mean_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span>
+    <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">img_file</span> <span class="ow">in</span> <span class="n">img_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">create_ilastik_image</span><span class="p">(</span>
+                <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">channel_groups</span><span class="o">=</span><span class="n">channel_groups</span><span class="p">,</span>
+                <span class="n">aggr_func</span><span class="o">=</span><span class="n">aggr_func</span><span class="p">,</span>
+                <span class="n">prepend_mean</span><span class="o">=</span><span class="n">prepend_mean</span><span class="p">,</span>
+                <span class="n">mean_factor</span><span class="o">=</span><span class="n">mean_factor</span><span class="p">,</span>
+                <span class="n">scale_factor</span><span class="o">=</span><span class="n">scale_factor</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span> <span class="n">ilastik_img</span>
+            <span class="k">del</span> <span class="n">ilastik_img</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating Ilastik image from file </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.try_fix_ilastik_crops_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_fix_ilastik_crops_from_disk</span><span class="p">(</span><span class="n">ilastik_crop_files</span><span class="p">,</span> <span class="n">orig_axis_order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_fix_ilastik_crops_from_disk</span><span class="p">(</span>
+    <span class="n">ilastik_crop_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">orig_axis_order</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">ilastik_crop_file</span> <span class="ow">in</span> <span class="n">ilastik_crop_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span>
+                <span class="n">ilastik_crop_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">ilastik_crop_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">_crop_dataset_path</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">ilastik_crop_dataset</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">_crop_dataset_path</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">ilastik_crop_dataset</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ilastik_crop_dataset</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown dataset: </span><span class="si">{</span><span class="n">ilastik_crop_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ilastik_crop_dataset</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;steinbock&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">ilastik_crop_dataset</span><span class="p">[()]</span>
+                <span class="k">if</span> <span class="n">orig_axis_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">orig_axis_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">orig_axis_order</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;axistags&quot;</span> <span class="ow">in</span> <span class="n">ilastik_crop_dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                    <span class="n">axis_tags</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_str_decode</span><span class="p">(</span>
+                        <span class="n">ilastik_crop_dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axistags&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">axis_tags_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">axis_tags</span><span class="p">)</span>
+                    <span class="n">orig_axis_order</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">a_json</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">a_json</span> <span class="ow">in</span> <span class="n">axis_tags_json</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unknown axis order: </span><span class="si">{</span><span class="n">ilastik_crop_file</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig_axis_order</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Incompatible axis order: </span><span class="si">{</span><span class="n">ilastik_crop_file</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">channel_axis_index</span> <span class="o">=</span> <span class="n">orig_axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+            <span class="n">size_x</span> <span class="o">=</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">orig_axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)]</span>
+            <span class="n">size_y</span> <span class="o">=</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">orig_axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)]</span>
+            <span class="n">num_channels</span> <span class="o">=</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="p">(</span><span class="n">size_x</span> <span class="o">*</span> <span class="n">size_y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">channel_axis_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">num_channels</span><span class="p">:</span>
+                <span class="n">channel_axis_indices</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">i</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orig_axis_order</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">num_channels</span>
+                    <span class="ow">and</span> <span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">channel_axis_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">channel_axis_indices</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">channel_axis_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown channel axis: </span><span class="si">{</span><span class="n">ilastik_crop_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">axis_order</span> <span class="o">=</span> <span class="n">orig_axis_order</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">axis_order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis_order</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">channel_axis_index</span><span class="p">))</span>
+            <span class="n">axis_order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis_order</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)))</span>
+            <span class="n">axis_order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis_order</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)))</span>
+            <span class="n">transpose_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">orig_axis_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axis_order</span><span class="p">]</span>
+            <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">transpose_axes</span><span class="p">)</span>
+            <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">ilastik_crop</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">),</span> <span class="n">transpose_axes</span><span class="p">,</span> <span class="n">ilastik_crop</span>
+            <span class="k">del</span> <span class="n">ilastik_crop</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error fixing Ilastik crop from file </span><span class="si">{</span><span class="n">ilastik_crop_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.write_ilastik_crop" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">write_ilastik_crop</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">ilastik_crop_stem</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_ilastik_crop</span><span class="p">(</span>
+    <span class="n">ilastik_crop</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ilastik_crop_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="n">ilastik_crop</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">ilastik_crop</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+    <span class="n">ilastik_crop_file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">ilastik_crop_stem</span><span class="p">,</span> <span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_crop_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">_create_or_replace_dataset</span><span class="p">(</span>
+            <span class="n">f</span><span class="p">,</span> <span class="n">_crop_dataset_path</span><span class="p">,</span> <span class="n">ilastik_crop</span>
+        <span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;display_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_str_encode</span><span class="p">(</span>
+            <span class="n">_dataset_display_mode</span><span class="p">,</span> <span class="n">ascii</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axistags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_str_encode</span><span class="p">(</span><span class="n">_dataset_axistags</span><span class="p">,</span> <span class="n">ascii</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;steinbock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">ilastik_crop_file</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 id="steinbock.classification.ilastik.ilastik.write_ilastik_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">write_ilastik_image</span><span class="p">(</span><span class="n">ilastik_img</span><span class="p">,</span> <span class="n">ilastik_img_stem</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/classification/ilastik/ilastik.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_ilastik_image</span><span class="p">(</span>
+    <span class="n">ilastik_img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ilastik_img_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="n">ilastik_img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">ilastik_img</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+    <span class="n">ilastik_img_file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">as_path_with_suffix</span><span class="p">(</span><span class="n">ilastik_img_stem</span><span class="p">,</span> <span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">ilastik_img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">libver</span><span class="o">=</span><span class="n">_h5py_libver</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">_create_or_replace_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">_img_dataset_path</span><span class="p">,</span> <span class="n">ilastik_img</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;display_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_str_encode</span><span class="p">(</span>
+            <span class="n">_dataset_display_mode</span><span class="p">,</span> <span class="n">ascii</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axistags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_str_encode</span><span class="p">(</span><span class="n">_dataset_axistags</span><span class="p">,</span> <span class="n">ascii</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;steinbock&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">ilastik_img_file</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../steinbock.preprocessing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: steinbock.preprocessing" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              steinbock.preprocessing
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../steinbock.segmentation/" class="md-footer__link md-footer__link--next" aria-label="Next: steinbock.segmentation" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              steinbock.segmentation
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.94ec81fe.min.js", "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.48dfec6c.min.js"></script>
+      
+    
+  </body>
+</html>
