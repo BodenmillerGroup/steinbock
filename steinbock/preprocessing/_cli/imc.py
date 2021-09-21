@@ -215,7 +215,7 @@ def images_cmd(
                 image_info_row.update(
                     {
                         "acquisition_id": acquisition.id,
-                        "acquisition_name": acquisition.name,
+                        "acquisition_description": acquisition.description,
                         "acquisition_posx_um": acquisition.posx_um,
                         "acquisition_posy_um": acquisition.posy_um,
                         "acquisition_width_um": acquisition.width_um,

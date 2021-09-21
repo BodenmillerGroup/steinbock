@@ -32,7 +32,7 @@ except:
 
 class Acquisition(NamedTuple):
     id: int
-    name: str
+    description: str
     posx_um: float
     posy_um: float
     width_um: float
