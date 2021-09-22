@@ -11,7 +11,7 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 [Install Docker](https://docs.docker.com/get-docker/)
 
-Make Docker available to non-root users: Linux users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group.
+Make Docker available to non-root users: Linux users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group. For MacOS, no further setup is required.
 
 !!! note "Adding a user to the `docker-users` group on Windows hosts"
     On Windows hosts, to add a user to the `docker-users` group using the command line (as administrator):
