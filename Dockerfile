@@ -65,7 +65,8 @@ RUN mkdir -p /opt/keras/models && \
 
 COPY steinbock /app/steinbock/steinbock
 COPY entrypoint.sh MANIFEST.in pyproject.toml setup.cfg setup.py /app/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install --upgrade -e /app/steinbock[IMC,DeepCell]
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install --upgrade -e /app/steinbock[IMC,DeepCell] && \
+    chmod +x /app/steinbock/entrypoint.sh
 
 USER steinbock:steinbock
 WORKDIR /data
