@@ -249,13 +249,13 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" checked>
       
       <label class="md-nav__link" for="__nav_1_2">
-        Getting started
+        Installation
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Getting started" data-md-level="2">
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
         <label class="md-nav__title" for="__nav_1_2">
           <span class="md-nav__icon md-icon"></span>
-          Getting started
+          Installation
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -825,7 +825,7 @@
 </div>
 <h2 id="requirements">Requirements</h2>
 <p><a href="https://docs.docker.com/get-docker/">Install Docker</a></p>
-<p>Make Docker available to non-root users: Linux/MacOS users can follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-installation steps for Linux</a>, Windows users need to add the current user to the <code>docker-users</code> group.</p>
+<p>Make Docker available to non-root users: Linux users can follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-installation steps for Linux</a>, Windows users need to add the current user to the <code>docker-users</code> group. For MacOS, no further setup is required.</p>
 <div class="admonition note">
 <p class="admonition-title">Adding a user to the <code>docker-users</code> group on Windows hosts</p>
 <p>On Windows hosts, to add a user to the <code>docker-users</code> group using the command line (as administrator):</p>
@@ -838,15 +838,15 @@
 <pre><code>docker run ghcr.io/bodenmillergroup/steinbock
 </code></pre>
 <p>For reproducibility, it is recommended to always pull a specific release, e.g.:</p>
-<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.8.0
+<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.8.1
 </code></pre>
 <p><a href="https://docs.docker.com/storage/bind-mounts/">Bind mounts</a> can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to <code>docker run</code> as outlined in the following.</p>
 <h3 id="windows">Windows</h3>
 <p>On the command line, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.8.0
+<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.8.1
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.8.0 $*
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.8.1 $*
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current command line without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -857,10 +857,10 @@
 </div>
 <h3 id="linux">Linux</h3>
 <p>On the terminal, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.1
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.0"
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.8.1"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -872,18 +872,18 @@
 </code></pre>
 </div>
 <h3 id="macos">MacOS</h3>
-<p>On the terminal, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0
+<p>On the terminal, use the following command to run the <em>steinbock</em> Docker container (Docker must be running):</p>
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.1
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0"
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.8.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.1"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Graphical user interfaces on MacOS hosts</p>
-<p>To allow the <em>steinbock</em> Docker container to run graphical user interfaces, first install and start <a href="https://www.xquartz.org/">XQuartz</a>. Then, open <em>XQuartz</em> &gt; <em>Preferences</em> and tick <em>Allow connections from network clients</em>. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:</p>
+<p>To allow the <em>steinbock</em> Docker container to run graphical user interfaces, first install and start <a href="https://www.xquartz.org/">XQuartz</a>. Then, open <em>XQuartz</em> &gt; <em>Security</em> &gt; <em>Preferences</em> and tick <em>Allow connections from network clients</em>. Log out of your user account and login again; restart Docker and XQuartz. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:</p>
 <pre><code>xhost + $(hostname)
 </code></pre>
 </div>
