@@ -11,7 +11,7 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 [Install Docker](https://docs.docker.com/get-docker/)
 
-Make Docker available to non-root users: Linux/MacOS users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group.
+Make Docker available to non-root users: Linux users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group.
 
 !!! note "Adding a user to the `docker-users` group on Windows hosts"
     On Windows hosts, to add a user to the `docker-users` group using the command line (as administrator):
@@ -70,7 +70,7 @@ The created command alias is retained for the current session and enables runnin
 
 ### MacOS
 
-On the terminal, use the following command to run the *steinbock* Docker container:
+On the terminal, use the following command to run the *steinbock* Docker container (Docker must be running):
 
     docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.8.0
 
@@ -83,7 +83,7 @@ The created command alias is retained for the current session and enables runnin
     steinbock --version
 
 !!! note "Graphical user interfaces on MacOS hosts"
-    To allow the *steinbock* Docker container to run graphical user interfaces, first install and start [XQuartz](https://www.xquartz.org/). Then, open *XQuartz* > *Preferences* and tick *Allow connections from network clients*. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:
+    To allow the *steinbock* Docker container to run graphical user interfaces, first install and start [XQuartz](https://www.xquartz.org/). Then, open *XQuartz* > *Security* > *Preferences* and tick *Allow connections from network clients*. Log out of your user account and login again; restart Docker and XQuartz. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:
 
         xhost + $(hostname)
 
