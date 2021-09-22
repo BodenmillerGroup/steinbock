@@ -11,6 +11,9 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 [Install Docker](https://docs.docker.com/get-docker/)
 
+!!! note "System resources"
+    On Windows and MacOS hosts, make sure to allocate enough system resources to Docker. In particular, Docker's default memory limit of 2GB will likely not be sufficient to run steinbock on real-world datasets. To increase the memory limit, please refer to the Docker manual for [Windows](https://docs.docker.com/desktop/windows/) and [MacOS](https://docs.docker.com/desktop/mac/).
+
 Make Docker available to non-root users: Linux users can follow the [post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/), Windows users need to add the current user to the `docker-users` group. For MacOS, no further setup is required.
 
 !!! note "Adding a user to the `docker-users` group on Windows hosts"
@@ -31,6 +34,7 @@ For reproducibility, it is recommended to always pull a specific release, e.g.:
     docker run ghcr.io/bodenmillergroup/steinbock:0.8.1
 
 [Bind mounts](https://docs.docker.com/storage/bind-mounts/) can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to `docker run` as outlined in the following.
+
 
 ### Windows
 
