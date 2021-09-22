@@ -249,13 +249,13 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" checked>
       
       <label class="md-nav__link" for="__nav_1_2">
-        Installation
+        Getting started
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+      <nav class="md-nav" aria-label="Getting started" data-md-level="2">
         <label class="md-nav__title" for="__nav_1_2">
           <span class="md-nav__icon md-icon"></span>
-          Installation
+          Getting started
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -825,6 +825,10 @@
 </div>
 <h2 id="requirements">Requirements</h2>
 <p><a href="https://docs.docker.com/get-docker/">Install Docker</a></p>
+<div class="admonition note">
+<p class="admonition-title">System resources</p>
+<p>On Windows and MacOS hosts, make sure to allocate enough system resources to Docker. In particular, Docker's default memory limit of 2GB will likely not be sufficient to run steinbock on real-world datasets. To increase the memory limit, please refer to the Docker manual for <a href="https://docs.docker.com/desktop/windows/">Windows</a> and <a href="https://docs.docker.com/desktop/mac/">MacOS</a>.</p>
+</div>
 <p>Make Docker available to non-root users: Linux users can follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-installation steps for Linux</a>, Windows users need to add the current user to the <code>docker-users</code> group. For MacOS, no further setup is required.</p>
 <div class="admonition note">
 <p class="admonition-title">Adding a user to the <code>docker-users</code> group on Windows hosts</p>
