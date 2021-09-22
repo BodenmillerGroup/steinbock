@@ -161,6 +161,7 @@ def create_panel_from_acquisition(acquisition: "_Acquisition") -> pd.DataFrame:
             "name": [channel.label for channel in channels],
             "keep": 1,
             "ilastik": range(1, len(channels) + 1),
+            "deepcell": np.nan,
         }
     )
     panel.sort_values(
