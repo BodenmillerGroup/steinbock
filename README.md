@@ -1,3 +1,5 @@
+<img src="docs/imgs/steinbock.png" align="right" alt="" width="150" />
+
 # steinbock
 
 <a href="https://bodenmillergroup.github.io/steinbock" alt="Docs">
