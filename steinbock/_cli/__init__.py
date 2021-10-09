@@ -8,7 +8,7 @@ from steinbock.segmentation._cli import segment_cmd_group
 from steinbock.measurement._cli import measure_cmd_group
 from steinbock.export._cli import export_cmd_group
 from steinbock.tools._cli import tools_cmd_group
-from steinbock.version import version as steinbock_version
+from steinbock._version import version as steinbock_version
 
 
 @click.group(name="steinbock", cls=OrderedClickGroup)

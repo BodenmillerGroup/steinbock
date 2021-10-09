@@ -6,7 +6,7 @@ import sys
 from functools import wraps
 from pathlib import Path
 
-from steinbock.version import version as steinbock_version
+from steinbock._version import version as steinbock_version
 
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 cellprofiler_binary = "cellprofiler"
