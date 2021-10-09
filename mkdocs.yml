@@ -1,5 +1,4 @@
 site_name: steinbock
-
 plugins:
   - mkdocstrings:
       handlers:
@@ -9,38 +8,37 @@ plugins:
             show_if_no_docstring: yes
           selection:
             filters:
-              - "!^_"
+              - '!^_'
       watch:
         - steinbock
   - mike:
       version_selector: true
-
 markdown_extensions:
   - admonition
   - footnotes
-
 theme:
   name: material
   features:
     - navigation.tabs
     - navigation.top
-
 extra:
   version:
     provider: mike
-
 extra_css:
   - mkdocstrings.css
-
 nav:
   - Home:
     - index.md
-    - Getting started:
+    - Installation:
       - docker.md
       - python.md
     - Specifications:
       - file-types.md
       - directories.md
+    - Development:
+      - authors.md
+      - contributors.md
+      - contributing.md
     - changelog.md
     - license.md
   - CLI usage:

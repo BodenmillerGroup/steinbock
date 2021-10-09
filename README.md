@@ -1,25 +1,24 @@
 # steinbock
 
-<a href="https://github.com/BodenmillerGroup/steinbock/blob/main/LICENSE" alt="License">
-    <img src="https://img.shields.io/github/license/BodenmillerGroup/steinbock?label=license" />
-</a>
-<a href="https://github.com/BodenmillerGroup/steinbock/tags" alt="Tag">
-    <img src="https://img.shields.io/github/v/tag/BodenmillerGroup/steinbock?label=tag" />
-</a>
-<a href="https://bodenmillergroup.github.io/steinbock" alt="Docs">
-    <img src="https://img.shields.io/github/workflow/status/BodenmillerGroup/steinbock/docs?label=docs" />
-</a>
+<img alt="Python" src="https://img.shields.io/pypi/pyversions/steinbock">
 <a href="https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock" alt="Build">
-    <img src="https://img.shields.io/github/workflow/status/BodenmillerGroup/steinbock/build?label=build" />
+    <img alt="Build" src="https://img.shields.io/github/workflow/status/BodenmillerGroup/steinbock/build?label=build">
 </a>
 <a href="https://pypi.org/project/steinbock" alt="PyPI">
-    <img src="https://img.shields.io/pypi/v/steinbock?label=pypi" />
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/steinbock">
+</a>
+<img alt="Coverage" src="https://img.shields.io/codecov/c/github/BodenmillerGroup/steinbock">
+<a href="https://bodenmillergroup.github.io/steinbock" alt="Documentation">
+    <img alt="Documentation" src="https://img.shields.io/github/workflow/status/BodenmillerGroup/steinbock/docs?label=docs">
 </a>
 <a href="https://github.com/BodenmillerGroup/steinbock/issues" alt="Issues">
-    <img src="https://img.shields.io/github/issues/BodenmillerGroup/steinbock?label=issues" />
+    <img alt="Issues" src="https://img.shields.io/github/issues/BodenmillerGroup/steinbock">
 </a>
-<a href="https://github.com/BodenmillerGroup/steinbock/pulls" alt="Pull Requests">
-    <img src="https://img.shields.io/github/issues-pr/BodenmillerGroup/steinbock?label=pull%20requests" />
+<a href="https://github.com/BodenmillerGroup/steinbock/pulls" alt="Pull requests">
+    <img alt="Pull requests" src="https://img.shields.io/github/issues-pr/BodenmillerGroup/steinbock">
+</a>
+<a href="https://github.com/BodenmillerGroup/steinbock/blob/main/LICENSE" alt="License">
+    <img alt="License" src="https://img.shields.io/github/license/BodenmillerGroup/steinbock">
 </a>
 
 Dockerized multi-channel image processing framework
