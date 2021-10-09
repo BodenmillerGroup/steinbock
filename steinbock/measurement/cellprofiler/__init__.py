@@ -1,4 +1,4 @@
-from steinbock.measurement.cellprofiler.cellprofiler import (
+from steinbock.measurement.cellprofiler._cellprofiler import (
     create_and_save_measurement_pipeline,
     measure_objects,
 )

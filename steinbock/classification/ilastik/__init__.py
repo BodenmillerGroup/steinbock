@@ -1,4 +1,4 @@
-from steinbock.classification.ilastik.ilastik import (
+from steinbock.classification.ilastik._ilastik import (
     list_ilastik_image_files,
     list_ilastik_crop_files,
     read_ilastik_image,
@@ -14,7 +14,6 @@ from steinbock.classification.ilastik.ilastik import (
     try_fix_ilastik_crops_from_disk,
     fix_ilastik_project_file_inplace,
 )
-
 
 __all__ = [
     "list_ilastik_image_files",

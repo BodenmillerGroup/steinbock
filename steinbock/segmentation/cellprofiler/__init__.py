@@ -1,4 +1,4 @@
-from steinbock.segmentation.cellprofiler.cellprofiler import (
+from steinbock.segmentation.cellprofiler._cellprofiler import (
     create_and_save_segmentation_pipeline,
     try_segment_objects,
 )
