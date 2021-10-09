@@ -1,9 +1,18 @@
 version: '3.4'
 services:
-  steinbock:
+  test:
     image: steinbock
     build:
-      context: .
+      context: ${PWD}
+      dockerfile: ${PWD}/Dockerfile
+    volumes:
+      - ${PWD}/test:/app/steinbock/test
+    entrypoint: /bin/bash
+    command: ['-c', 'cd /app/steinbock && pip install -r test/requirements.txt && pytest --cov=./ --cov-report=xml']
+  debug:
+    image: steinbock
+    build:
+      context: ${PWD}
       dockerfile: ${PWD}/Dockerfile
     volumes:
       - ${PWD}/data:/data:rw
