@@ -4,9 +4,12 @@
 /dist/
 /docs/
 /site/
-/steinbock/version.py
+/steinbock/_version.py
+/test/
 /.dockerignore
 /.gitignore
+/CHANGELOG.md
+
 /docker-compose.yml
 /Dockerfile
 /LICENSE
