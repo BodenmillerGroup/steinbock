@@ -8,7 +8,6 @@ from scipy.ndimage import maximum_filter
 from typing import (
     Generator,
     List,
-    NamedTuple,
     Optional,
     Sequence,
     Tuple,
@@ -18,25 +17,12 @@ from typing import (
 from steinbock import io
 
 try:
-    from imctools.data.acquisition import Acquisition as _Acquisition
-    from imctools.data.acquisitiondata import (
-        AcquisitionData as _AcquisitionData,
-    )
-    from imctools.io.mcd.mcdparser import McdParser as _McdParser
-    from imctools.io.txt.txtparser import TxtParser as _TxtParser
+    from readimc import IMCMCDFile, IMCTXTFile
+    from readimc.data import Acquisition, AcquisitionBase
 
     imc_available = True
 except:
     imc_available = False
-
-
-class Acquisition(NamedTuple):
-    id: int
-    description: str
-    posx_um: float
-    posy_um: float
-    width_um: float
-    height_um: float
 
 
 _imc_panel_metal_col = "Metal Tag"
@@ -140,27 +126,26 @@ def create_panel_from_imc_panel(
 
 
 def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
-    with _McdParser(mcd_file) as mcd_parser:
-        acquisition = next(iter(mcd_parser.session.acquisitions.values()))
-        return create_panel_from_acquisition(acquisition)
+    with IMCMCDFile(mcd_file) as f:
+        first_slide = f.slides[0]
+        first_acquisition = first_slide.acquisitions[0]
+        return create_panel_from_acquisition(first_acquisition)
 
 
 def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
-    with _TxtParser(txt_file) as txt_parser:
-        acquisition = txt_parser.get_acquisition_data().acquisition
-        return create_panel_from_acquisition(acquisition)
+    with IMCTXTFile(txt_file) as f:
+        return create_panel_from_acquisition(f)
 
 
-def create_panel_from_acquisition(acquisition: "_Acquisition") -> pd.DataFrame:
-    channels = sorted(
-        acquisition.channels.values(), key=lambda channel: channel.order_number
-    )
+def create_panel_from_acquisition(
+    acquisition: "AcquisitionBase",
+) -> pd.DataFrame:
     panel = pd.DataFrame(
         data={
-            "channel": [channel.name for channel in channels],
-            "name": [channel.label for channel in channels],
+            "channel": acquisition.channel_names,
+            "name": acquisition.channel_labels,
             "keep": 1,
-            "ilastik": range(1, len(channels) + 1),
+            "ilastik": range(1, acquisition.num_channels + 1),
             "deepcell": np.nan,
         }
     )
@@ -195,86 +180,62 @@ def preprocess_image(
 def try_preprocess_images_from_disk(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
-    metal_order: Optional[Sequence[str]] = None,
+    channel_order: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
-) -> Generator[Tuple[Path, Optional[Acquisition], np.ndarray], None, None]:
-    def data_is_valid(data: "_AcquisitionData") -> bool:
-        return (
-            data is not None and data.image_data is not None and data.is_valid
-        )
-
-    def preprocess_data(data: "_AcquisitionData") -> np.ndarray:
-        img = data.image_data
-        if metal_order is not None:
-            img = data.get_image_stack_by_names(metal_order)
+) -> Generator[Tuple[Path, Optional["Acquisition"], np.ndarray], None, None]:
+    def preprocess_image(a: AcquisitionBase, img: np.ndarray) -> np.ndarray:
+        if channel_order is not None:
+            indices = [a.channel_names.index(metal) for metal in channel_order]
+            img = img[indices, :, :]
         img = preprocess_image(img, hpf=hpf)
         return io.to_dtype(img, io.img_dtype)
 
     remaining_txt_files = list(txt_files)
     for mcd_file in mcd_files:
         try:
-            with _McdParser(mcd_file) as mcd_parser:
-                for a in mcd_parser.session.acquisitions.values():
-                    txt_file = None
-                    filtered_txt_files = [
-                        x
-                        for x in remaining_txt_files
-                        if Path(x).stem.startswith(Path(mcd_file).stem)
-                        and Path(x).stem.endswith(f"_{a.id}")
-                    ]
-                    if len(filtered_txt_files) == 1:
-                        txt_file = filtered_txt_files[0]
-                        remaining_txt_files.remove(txt_file)
-                    try:
-                        data = mcd_parser.get_acquisition_data(a.id)
-                        if not data_is_valid(data):
-                            _logger.warning(f"File corrupted: {mcd_file}")
+            with IMCMCDFile(mcd_file) as f_mcd:
+                for slide in f_mcd.slides:
+                    for acquisition in slide.acquisitions:
+                        txt_file = None
+                        filtered_txt_files = [
+                            x
+                            for x in remaining_txt_files
+                            if Path(x).stem.startswith(Path(mcd_file).stem)
+                            and Path(x).stem.endswith(f"_{acquisition.id}")
+                        ]
+                        if len(filtered_txt_files) == 1:
+                            txt_file = filtered_txt_files[0]
+                            remaining_txt_files.remove(txt_file)
+                        img = None
+                        try:
+                            img = f_mcd.read_acquisition(acquisition)
+                        except IOError:
+                            _logger.warning(
+                                f"Error reading acquisition {acquisition.id} "
+                                f"from file {mcd_file}"
+                            )
                             if txt_file is not None:
                                 _logger.info(f"Restoring from file {txt_file}")
                                 try:
-                                    with _TxtParser(
-                                        txt_file, slide_id=a.slide_id
-                                    ) as txt_parser:
-                                        data = (
-                                            txt_parser.get_acquisition_data()
-                                        )
-                                        if not data_is_valid(data):
-                                            _logger.warning(
-                                                f"File corrupted: {txt_file}"
-                                            )
-                                except:
+                                    with IMCTXTFile(txt_file) as f_txt:
+                                        img = f_txt.read_acquisition()
+                                except IOError:
                                     _logger.exception(
-                                        f"Error preprocessing file {txt_file}"
+                                        f"Error reading file {txt_file}"
                                     )
-                        if data_is_valid(data):
-                            img = preprocess_data(data)
-                            acquisition = Acquisition(
-                                a.id,
-                                a.description,
-                                min(a.roi_start_x_pos_um, a.roi_end_x_pos_um),
-                                min(a.roi_start_y_pos_um, a.roi_end_y_pos_um),
-                                abs(a.roi_start_x_pos_um - a.roi_end_x_pos_um),
-                                abs(a.roi_start_y_pos_um - a.roi_end_y_pos_um),
-                            )
+                        if img is not None:
+                            img = preprocess_image(acquisition, img)
                             yield Path(mcd_file), acquisition, img
                             del img
-                    except:
-                        _logger.exception(
-                            f"Error preprocessing acquisition {a.id}"
-                            f" from file {mcd_file}"
-                        )
         except:
-            _logger.exception(f"Error preprocessing file {mcd_file}")
+            _logger.exception(f"Error reading file {mcd_file}")
     while len(remaining_txt_files) > 0:
         txt_file = remaining_txt_files.pop(0)
         try:
-            with _TxtParser(txt_file) as txt_parser:
-                data = txt_parser.get_acquisition_data()
-                if not data_is_valid(data):
-                    _logger.warning(f"File corrupted: {txt_file}")
-            if data_is_valid(data):
-                img = preprocess_data(data)
-                yield Path(txt_file), None, img
-                del img
+            with IMCTXTFile(txt_file) as f:
+                img = f.read_acquisition()
+            img = preprocess_image(f, img)
+            yield Path(txt_file), None, img
+            del img
         except:
-            _logger.exception(f"Error preprocessing file {txt_file}")
+            _logger.exception(f"Error reading file {txt_file}")

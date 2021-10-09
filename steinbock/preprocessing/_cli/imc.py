@@ -181,11 +181,11 @@ def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
 def images_cmd(
     mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
 ):
-    metal_order = None
+    channel_order = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
-            metal_order = panel["channel"].tolist()
+            channel_order = panel["channel"].tolist()
     image_info_data = []
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
         mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
@@ -196,7 +196,7 @@ def images_cmd(
             acquisition,
             img,
         ) in imc.try_preprocess_images_from_disk(
-            mcd_files, txt_files, metal_order=metal_order, hpf=hpf
+            mcd_files, txt_files, channel_order=channel_order, hpf=hpf
         ):
             img_file_stem = Path(mcd_txt_file).stem
             if acquisition is not None:
@@ -208,16 +208,19 @@ def images_cmd(
                 "height_px": img.shape[1],
                 "num_channels": img.shape[0],
                 "source": mcd_txt_file.name,
-                "recovered": (acquisition is not None)
-                and (mcd_txt_file.suffix == ".txt"),
+                "recovered": (
+                    acquisition is not None and mcd_txt_file.suffix == ".txt"
+                ),
             }
             if acquisition is not None:
                 image_info_row.update(
                     {
                         "acquisition_id": acquisition.id,
                         "acquisition_description": acquisition.description,
-                        "acquisition_posx_um": acquisition.posx_um,
-                        "acquisition_posy_um": acquisition.posy_um,
+                        "acquisition_start_x_um": acquisition.start_x_um,
+                        "acquisition_start_y_um": acquisition.start_y_um,
+                        "acquisition_end_x_um": acquisition.end_x_um,
+                        "acquisition_end_y_um": acquisition.end_y_um,
                         "acquisition_width_um": acquisition.width_um,
                         "acquisition_height_um": acquisition.height_um,
                     }
