@@ -23,7 +23,7 @@ At any time, use the `--help` option to show help about a *steinbock* command, e
     segment     Perform image segmentation to create object masks
     measure     Extract object data from segmented images
     export      Export data to third-party formats
-    tools       Various utilities and tools
+    utils       Various utilities and tools
     apps        Third-party applications
 
 !!! note "Directory structure"

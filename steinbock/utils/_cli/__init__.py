@@ -5,18 +5,18 @@ from pathlib import Path
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
 from steinbock._env import check_steinbock_version
-from steinbock.tools import matching
-from steinbock.tools._cli.mosaics import mosaics_cmd_group
+from steinbock.utils import matching
+from steinbock.utils._cli.mosaics import mosaics_cmd_group
 
 
 @click.group(
-    name="tools", cls=OrderedClickGroup, help="Various utilities and tools"
+    name="utils", cls=OrderedClickGroup, help="Various utilities and tools"
 )
-def tools_cmd_group():
+def utils_cmd_group():
     pass
 
 
-@tools_cmd_group.command(name="match", help="Match mask objects")
+@utils_cmd_group.command(name="match", help="Match mask objects")
 @click.argument(
     "masks1", nargs=1, type=click.Path(exists=True, file_okay=False)
 )
@@ -51,4 +51,4 @@ def match_cmd(masks1, masks2, csv_dir):
         del df
 
 
-tools_cmd_group.add_command(mosaics_cmd_group)
+utils_cmd_group.add_command(mosaics_cmd_group)

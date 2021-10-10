@@ -48,7 +48,7 @@ nav:
     - cli/segmentation.md
     - cli/measurement.md
     - cli/export.md
-    - cli/tools.md
+    - cli/utils.md
     - cli/apps.md
   - Python usage:
     - python/intro.md
@@ -58,5 +58,5 @@ nav:
       - python/api/steinbock.segmentation.md
       - python/api/steinbock.measurement.md
       - python/api/steinbock.export.md
-      - python/api/steinbock.tools.md
+      - python/api/steinbock.utils.md
       - python/api/steinbock.io.md

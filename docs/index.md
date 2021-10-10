@@ -14,7 +14,7 @@ The *steinbock* framework comprises the following components:
 
 At its core, *steinbock* provides the following functionality:
 
-  - Image preprocessing, including tools tiling/stitching images
+  - Image preprocessing, including utilities for tiling/stitching images
   - Pixel classification, to enable pixel classification-based image segmentation
   - Image segmentation, to identify objects (e.g. cells or other regions of interest)
   - Object measurement, to extract single-cell data, cell neighbors, etc.

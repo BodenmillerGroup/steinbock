@@ -1,3 +1,3 @@
-# steinbock.tools
+# steinbock.utils
 
-::: steinbock.tools
+::: steinbock.utils

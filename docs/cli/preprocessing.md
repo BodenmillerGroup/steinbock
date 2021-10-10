@@ -8,7 +8,7 @@ Various sources for raw data are supported by *steinbock*, each of which is desc
     Not all raw data require preprocessing. The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If your images are available in TIFF already, preprocessing may not be required.
 
 !!! note "Computational resources"
-    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](tools.md#mosaics).
+    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](utils.md#mosaics).
 
 ## Imaging Mass Cytometry (IMC)
 

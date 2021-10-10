@@ -6,7 +6,7 @@ from pathlib import Path
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
 from steinbock._env import check_steinbock_version
-from steinbock.tools import mosaics
+from steinbock.utils import mosaics
 
 
 def _collect_img_files(img_files_or_dirs):
