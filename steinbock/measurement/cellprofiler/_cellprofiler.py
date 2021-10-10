@@ -19,7 +19,7 @@ def create_and_save_measurement_pipeline(
         f.write(s)
 
 
-def measure_objects(
+def try_measure_objects(
     cellprofiler_binary: str,
     measurement_pipeline_file: Union[str, PathLike],
     cpdata_dir: Union[str, PathLike],

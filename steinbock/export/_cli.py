@@ -52,7 +52,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     Path(ome_dir).mkdir(exist_ok=True)
     for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file)
-        ome_file = io.as_path_with_suffix(
+        ome_file = io._as_path_with_suffix(
             Path(ome_dir) / img_file.name, ".ome.tiff"
         )
         to_tiff(img, ome_file, channel_names=channel_names)
@@ -163,13 +163,13 @@ def anndata_cmd(data_dir, obs_data_dirs, anndata_dir, anndata_format):
     ):
         anndata_file = Path(anndata_dir) / data_file.name
         if anndata_format.lower() == "h5ad":
-            anndata_file = io.as_path_with_suffix(anndata_file, ".h5ad")
+            anndata_file = io._as_path_with_suffix(anndata_file, ".h5ad")
             anndata.write_h5ad(anndata_file)
         elif anndata_format.lower() == "loom":
-            anndata_file = io.as_path_with_suffix(anndata_file, ".loom")
+            anndata_file = io._as_path_with_suffix(anndata_file, ".loom")
             anndata.write_loom(anndata_file)
         elif anndata_format.lower() == "zarr":
-            anndata_file = io.as_path_with_suffix(anndata_file, ".zarr")
+            anndata_file = io._as_path_with_suffix(anndata_file, ".zarr")
             anndata.write_zarr(anndata_file)
         else:
             raise NotImplementedError()
@@ -223,13 +223,13 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
     ):
         graph_file = Path(graph_dir) / neighbors_file.name
         if graph_format == "graphml":
-            graph_file = io.as_path_with_suffix(graph_file, ".graphml")
+            graph_file = io._as_path_with_suffix(graph_file, ".graphml")
             nx.write_graphml(graph, str(graph_file))
         elif graph_format == "gexf":
-            graph_file = io.as_path_with_suffix(graph_file, ".gexf")
+            graph_file = io._as_path_with_suffix(graph_file, ".gexf")
             nx.write_gexf(graph, str(graph_file))
         elif graph_format == "gml":
-            graph_file = io.as_path_with_suffix(graph_file, ".gml")
+            graph_file = io._as_path_with_suffix(graph_file, ".gml")
             nx.write_gml(graph, str(graph_file))
         else:
             raise NotImplementedError()

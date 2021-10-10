@@ -129,15 +129,15 @@ def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
     with IMCMCDFile(mcd_file) as f:
         first_slide = f.slides[0]
         first_acquisition = first_slide.acquisitions[0]
-        return create_panel_from_acquisition(first_acquisition)
+        return _create_panel_from_acquisition(first_acquisition)
 
 
 def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
     with IMCTXTFile(txt_file) as f:
-        return create_panel_from_acquisition(f)
+        return _create_panel_from_acquisition(f)
 
 
-def create_panel_from_acquisition(
+def _create_panel_from_acquisition(
     acquisition: "AcquisitionBase",
 ) -> pd.DataFrame:
     panel = pd.DataFrame(
@@ -188,7 +188,7 @@ def try_preprocess_images_from_disk(
             indices = [a.channel_names.index(metal) for metal in channel_order]
             img = img[indices, :, :]
         img = preprocess_image(img, hpf=hpf)
-        return io.to_dtype(img, io.img_dtype)
+        return io._to_dtype(img, io.img_dtype)
 
     remaining_txt_files = list(txt_files)
     for mcd_file in mcd_files:
