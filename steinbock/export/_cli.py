@@ -52,7 +52,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     Path(ome_dir).mkdir(exist_ok=True)
     for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file)
-        ome_file = io._as_path_with_suffix(
+        ome_file = io.as_path_with_suffix(
             Path(ome_dir) / img_file.name, ".ome.tiff"
         )
         to_tiff(img, ome_file, channel_names=channel_names)
@@ -121,7 +121,7 @@ def fcs_cmd(data_dirs, fcs_file):
 )
 @click.option(
     "--x",
-    "data_dir",
+    "x_data_dir",
     type=click.Path(exists=True, file_okay=False),
     default="intensities",
     show_default=True,
@@ -151,25 +151,29 @@ def fcs_cmd(data_dirs, fcs_file):
     help="Path to the AnnData output directory",
 )
 @check_steinbock_version
-def anndata_cmd(data_dir, obs_data_dirs, anndata_dir, anndata_format):
-    data_files = io.list_data_files(data_dir)
+def anndata_cmd(x_data_dir, obs_data_dirs, anndata_dir, anndata_format):
+    x_data_files = io.list_data_files(x_data_dir)
     obs_data_file_lists = [
-        io.list_data_files(obs_data_dir, base_files=data_files)
+        io.list_data_files(obs_data_dir, base_files=x_data_files)
         for obs_data_dir in obs_data_dirs
     ]
     Path(anndata_dir).mkdir(exist_ok=True)
-    for data_file, anndata in data.try_convert_to_anndata_from_disk(
-        data_files, *obs_data_file_lists
+    for (
+        x_data_file,
+        obs_data_files,
+        anndata,
+    ) in data.try_convert_to_anndata_from_disk(
+        x_data_files, *obs_data_file_lists
     ):
-        anndata_file = Path(anndata_dir) / data_file.name
+        anndata_file = Path(anndata_dir) / x_data_file.name
         if anndata_format.lower() == "h5ad":
-            anndata_file = io._as_path_with_suffix(anndata_file, ".h5ad")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".h5ad")
             anndata.write_h5ad(anndata_file)
         elif anndata_format.lower() == "loom":
-            anndata_file = io._as_path_with_suffix(anndata_file, ".loom")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".loom")
             anndata.write_loom(anndata_file)
         elif anndata_format.lower() == "zarr":
-            anndata_file = io._as_path_with_suffix(anndata_file, ".zarr")
+            anndata_file = io.as_path_with_suffix(anndata_file, ".zarr")
             anndata.write_zarr(anndata_file)
         else:
             raise NotImplementedError()
@@ -218,18 +222,22 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
         for data_dir in data_dirs
     ]
     Path(graph_dir).mkdir(exist_ok=True)
-    for neighbors_file, graph in graphs.try_convert_to_networkx_from_disk(
+    for (
+        neighbors_file,
+        data_files,
+        graph,
+    ) in graphs.try_convert_to_networkx_from_disk(
         neighbors_files, *data_file_lists
     ):
         graph_file = Path(graph_dir) / neighbors_file.name
         if graph_format == "graphml":
-            graph_file = io._as_path_with_suffix(graph_file, ".graphml")
+            graph_file = io.as_path_with_suffix(graph_file, ".graphml")
             nx.write_graphml(graph, str(graph_file))
         elif graph_format == "gexf":
-            graph_file = io._as_path_with_suffix(graph_file, ".gexf")
+            graph_file = io.as_path_with_suffix(graph_file, ".gexf")
             nx.write_gexf(graph, str(graph_file))
         elif graph_format == "gml":
-            graph_file = io._as_path_with_suffix(graph_file, ".gml")
+            graph_file = io.as_path_with_suffix(graph_file, ".gml")
             nx.write_gml(graph, str(graph_file))
         else:
             raise NotImplementedError()

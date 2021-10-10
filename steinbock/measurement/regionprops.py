@@ -16,6 +16,9 @@ _logger = logging.getLogger(__name__)
 def measure_regionprops(
     img: np.ndarray, mask: np.ndarray, skimage_regionprops: Sequence[str]
 ) -> pd.DataFrame:
+    skimage_regionprops = list(skimage_regionprops)
+    if "label" not in skimage_regionprops:
+        skimage_regionprops.insert(0, "label")
     data = regionprops_table(
         mask,
         intensity_image=np.moveaxis(img, 0, -1),
@@ -33,9 +36,6 @@ def try_measure_regionprops_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
     skimage_regionprops: Sequence[str],
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
-    skimage_regionprops = list(skimage_regionprops)
-    if "label" not in skimage_regionprops:
-        skimage_regionprops.insert(0, "label")
     for img_file, mask_file in zip(img_files, mask_files):
         try:
             regionprops = measure_regionprops(

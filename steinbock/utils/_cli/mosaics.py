@@ -46,10 +46,13 @@ def mosaics_cmd_group():
 def tile_cmd(images, tile_size, tile_dir):
     img_files = _collect_img_files(images)
     Path(tile_dir).mkdir(exist_ok=True)
-    for img_file, x, y, w, h, tile in mosaics.try_extract_tiles_from_disk(
+    for img_file, x, y, tile in mosaics.try_extract_tiles_from_disk(
         img_files, tile_size
     ):
-        tile_stem = Path(tile_dir) / f"{img_file.stem}_tx{x}_ty{y}_tw{w}_th{h}"
+        tile_stem = (
+            Path(tile_dir)
+            / f"{img_file.stem}_tx{x}_ty{y}_tw{tile_size}_th{tile_size}"
+        )
         tile_file = io.write_image(tile, tile_stem, ignore_dtype=True)
         click.echo(tile_file)
         del tile

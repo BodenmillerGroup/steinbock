@@ -30,9 +30,9 @@ def apps_cmd_group():
 @check_steinbock_version
 @check_x11
 @use_ilastik_env
-def ilastik_cmd(ilastik_args, env):
+def ilastik_cmd(ilastik_args, ilastik_env):
     args = [ilastik_binary] + list(ilastik_args)
-    result = run_captured(args, env=env)
+    result = run_captured(args, env=ilastik_env)
     sys.exit(result.returncode)
 
 

@@ -3,6 +3,7 @@
 /data/
 /docs/
 /steinbock/_version.py
+/tests/
 /.dockerignore
 /.gitignore
 /AUTHORS.md

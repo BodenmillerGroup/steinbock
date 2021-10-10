@@ -60,10 +60,10 @@ def check_x11(func):
 def use_ilastik_env(func):
     @wraps(func)
     def use_ilastik_env_wrapper(*args, **kwargs):
-        if "env" not in kwargs:
-            kwargs["env"] = os.environ.copy()
-        kwargs["env"].pop("PYTHONPATH", None)
-        kwargs["env"].pop("PYTHONHOME", None)
+        if "ilastik_env" not in kwargs:
+            kwargs["ilastik_env"] = os.environ.copy()
+        kwargs["ilastik_env"].pop("PYTHONPATH", None)
+        kwargs["ilastik_env"].pop("PYTHONHOME", None)
         return func(*args, **kwargs)
 
     return use_ilastik_env_wrapper

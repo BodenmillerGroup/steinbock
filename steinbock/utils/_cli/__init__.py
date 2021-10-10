@@ -42,7 +42,7 @@ def match_cmd(masks1, masks2, csv_dir):
     for mask_file1, mask_file2, df in matching.try_match_masks_from_disk(
         mask_files1, mask_files2
     ):
-        csv_file = io._as_path_with_suffix(
+        csv_file = io.as_path_with_suffix(
             Path(csv_dir) / mask_file1.name, ".csv"
         )
         df.columns = [Path(masks1).name, Path(masks2).name]

@@ -57,22 +57,26 @@ _dataset_axistags = json.dumps(
 _h5py_libver = "earliest"
 
 
-def list_ilastik_image_files(img_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(img_dir).rglob("*.h5"))
+def list_ilastik_image_files(
+    ilastik_img_dir: Union[str, PathLike]
+) -> List[Path]:
+    return sorted(Path(ilastik_img_dir).rglob("*.h5"))
 
 
-def list_ilastik_crop_files(crop_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(crop_dir).rglob("*.h5"))
+def list_ilastik_crop_files(
+    ilastik_crop_dir: Union[str, PathLike]
+) -> List[Path]:
+    return sorted(Path(ilastik_crop_dir).rglob("*.h5"))
 
 
 def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_img_file = io._as_path_with_suffix(ilastik_img_stem, ".h5")
+    ilastik_img_file = io.as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
         return io._to_dtype(f[str(_img_dataset_path)][()], io.img_dtype)
 
 
 def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_crop_file = io._as_path_with_suffix(ilastik_crop_stem, ".h5")
+    ilastik_crop_file = io.as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
         return io._to_dtype(f[str(_crop_dataset_path)][()], io.img_dtype)
 
@@ -81,7 +85,7 @@ def write_ilastik_image(
     ilastik_img: np.ndarray, ilastik_img_stem: Union[str, PathLike]
 ) -> Path:
     ilastik_img = io._to_dtype(ilastik_img, io.img_dtype)
-    ilastik_img_file = io._as_path_with_suffix(ilastik_img_stem, ".h5")
+    ilastik_img_file = io.as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
         dataset = _create_or_replace_dataset(f, _img_dataset_path, ilastik_img)
         dataset.attrs["display_mode"] = _str_encode(
@@ -96,7 +100,7 @@ def write_ilastik_crop(
     ilastik_crop: np.ndarray, ilastik_crop_stem: Union[str, PathLike]
 ):
     ilastik_crop = io._to_dtype(ilastik_crop, io.img_dtype)
-    ilastik_crop_file = io._as_path_with_suffix(ilastik_crop_stem, ".h5")
+    ilastik_crop_file = io.as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
         dataset = _create_or_replace_dataset(
             f, _crop_dataset_path, ilastik_crop
@@ -169,35 +173,49 @@ def try_create_ilastik_images_from_disk(
 
 
 def create_ilastik_crop(
-    ilastik_img: np.ndarray, crop_size: int, rng: np.random.Generator
+    ilastik_img: np.ndarray, ilastik_crop_size: int, rng: np.random.Generator
 ) -> Tuple[Optional[int], Optional[int], Optional[np.ndarray]]:
-    yx_shape = ilastik_img.shape[1:]
-    if all(shape >= crop_size for shape in yx_shape):
-        x_start = rng.integers(ilastik_img.shape[2] - crop_size)
-        x_end = x_start + crop_size
-        y_start = rng.integers(ilastik_img.shape[1] - crop_size)
-        y_end = y_start + crop_size
-        ilastik_crop = ilastik_img[:, y_start:y_end, x_start:x_end]
-        return x_start, y_start, io._to_dtype(ilastik_crop, io.img_dtype)
+    if all(shape >= ilastik_crop_size for shape in ilastik_img.shape[1:]):
+        ilastik_crop_x = 0
+        if ilastik_img.shape[2] > ilastik_crop_size:
+            ilastik_crop_x = rng.integers(
+                ilastik_img.shape[2] - ilastik_crop_size
+            )
+        ilastik_crop_y = 0
+        if ilastik_img.shape[1] > ilastik_crop_size:
+            ilastik_crop_y = rng.integers(
+                ilastik_img.shape[1] - ilastik_crop_size
+            )
+        ilastik_crop = ilastik_img[
+            :,
+            ilastik_crop_y : (ilastik_crop_y + ilastik_crop_size),
+            ilastik_crop_x : (ilastik_crop_x + ilastik_crop_size),
+        ]
+        return (
+            ilastik_crop_x,
+            ilastik_crop_y,
+            io._to_dtype(ilastik_crop, io.img_dtype),
+        )
     return None, None, None
 
 
 def try_create_ilastik_crops_from_disk(
     ilastik_img_files: Sequence[Union[str, PathLike]],
-    crop_size: int,
-    seed=None,
+    ilastik_crop_size: int,
+    rng: np.random.Generator,
 ) -> Generator[
     Tuple[Path, Optional[int], Optional[int], Optional[np.ndarray]],
     None,
     None,
 ]:
-    rng = np.random.default_rng(seed=seed)
     for ilastik_img_file in ilastik_img_files:
         try:
-            x_start, y_start, ilastik_crop = create_ilastik_crop(
-                read_ilastik_image(ilastik_img_file), crop_size, rng
+            ilastik_crop_x, ilastik_crop_y, ilastik_crop = create_ilastik_crop(
+                read_ilastik_image(ilastik_img_file), ilastik_crop_size, rng
             )
-            yield Path(ilastik_img_file), x_start, y_start, ilastik_crop
+            yield Path(
+                ilastik_img_file
+            ), ilastik_crop_x, ilastik_crop_y, ilastik_crop
             del ilastik_crop
         except:
             _logger.exception(
@@ -220,7 +238,7 @@ def create_and_save_ilastik_project(
             with h5py.File(
                 ilastik_crop_file, mode="r", libver=_h5py_libver
             ) as f_crop:
-                crop_shape = f_crop[_crop_dataset_path].shape
+                ilastik_crop_shape = f_crop[_crop_dataset_path].shape
             lane_group = infos_group.create_group(f"lane{i:04d}")
             lane_group.create_group("Prediction Mask")
             raw_data_group = lane_group.create_group("Raw Data")
@@ -229,7 +247,7 @@ def create_and_save_ilastik_project(
                 dataset_id=dataset_id,
                 file_path=str(rel_ilastik_crop_file / _crop_dataset_path),
                 nickname=Path(ilastik_crop_file).stem,
-                shape=crop_shape,
+                shape=ilastik_crop_shape,
             )
 
 
@@ -318,9 +336,10 @@ def try_fix_ilastik_crops_from_disk(
                     f"Incompatible axis order: {ilastik_crop_file}"
                 )
             channel_axis_index = orig_axis_order.index("c")
-            size_x = ilastik_crop.shape[orig_axis_order.index("x")]
-            size_y = ilastik_crop.shape[orig_axis_order.index("y")]
-            num_channels = ilastik_crop.size // (size_x * size_y)
+            num_channels = ilastik_crop.size // (
+                ilastik_crop.shape[orig_axis_order.index("x")]
+                * ilastik_crop.shape[orig_axis_order.index("y")]
+            )
             if ilastik_crop.shape[channel_axis_index] != num_channels:
                 channel_axis_indices = (
                     i

@@ -24,7 +24,7 @@ def try_convert_to_dataframe_from_disk(*data_file_lists) -> pd.DataFrame:
                 left_index=True,
                 right_index=True,
             )
-        img_file = io._as_path_with_suffix(data_files[0], ".tiff")
+        img_file = io.as_path_with_suffix(data_files[0], ".tiff")
         data_objs.append(data)
         img_file_names.append(img_file.name)
     return pd.concat(data_objs, keys=img_file_names, names=["Image", "Object"])
@@ -32,22 +32,24 @@ def try_convert_to_dataframe_from_disk(*data_file_lists) -> pd.DataFrame:
 
 def try_convert_to_anndata_from_disk(
     x_files: Sequence[Union[str, PathLike]], *obs_file_lists
-) -> Generator[Tuple[Path, AnnData], None, None]:
-    for i, x_file in enumerate(x_files):
+) -> Generator[Tuple[Path, Tuple[Path, ...], AnnData], None, None]:
+    for x_file, *obs_files in zip(x_files, *obs_file_lists):
+        obs_files = tuple(Path(obs_file) for obs_file in obs_files)
         try:
             x = io.read_data(x_file)
-            merged_obs = None
-            if len(obs_file_lists) > 0:
-                merged_obs = io.read_data(obs_file_lists[0][i])
-                for obs_files in obs_file_lists[1:]:
-                    merged_obs = pd.merge(
-                        merged_obs,
-                        io.read_data(obs_files[i]),
+            obs = None
+            if len(obs_files) > 0:
+                obs = io.read_data(obs_files[0])
+                for obs_file in obs_files[1:]:
+                    obs = pd.merge(
+                        obs,
+                        io.read_data(obs_file),
                         left_index=True,
                         right_index=True,
                     )
-                merged_obs.index = merged_obs.index.astype(str)
-            yield Path(x_file), AnnData(X=x.values, obs=merged_obs)
-            del x, merged_obs
+                obs.index = obs.index.astype(str)
+            anndata = AnnData(X=x.values, obs=obs)
+            yield Path(x_file), obs_files, anndata
+            del x, obs
         except:
             _logger.exception(f"Error converting {x_file} to AnnData")

@@ -84,7 +84,7 @@ def ilastik_cmd_group():
 )
 @click.option(
     "--cropsize",
-    "crop_size",
+    "ilastik_crop_size",
     type=click.INT,
     default=512,
     show_default=True,
@@ -116,7 +116,7 @@ def prepare_cmd(
     prepend_mean,
     mean_factor,
     scale_factor,
-    crop_size,
+    ilastik_crop_size,
     ilastik_img_dir,
     ilastik_crop_dir,
     seed,
@@ -149,17 +149,17 @@ def prepare_cmd(
     ilastik_crop_files = []
     for (
         ilastik_img_file,
-        x_start,
-        y_start,
+        ilastik_crop_x,
+        ilastik_crop_y,
         ilastik_crop,
     ) in ilastik.try_create_ilastik_crops_from_disk(
-        ilastik_img_files, crop_size=crop_size, seed=seed
+        ilastik_img_files, ilastik_crop_size, np.random.default_rng(seed=seed)
     ):
         if ilastik_crop is not None:
             ilastik_crop_stem = Path(ilastik_crop_dir) / (
                 f"{ilastik_img_file.stem}"
-                f"_x{x_start}_y{y_start}"
-                f"_w{crop_size}_h{crop_size}"
+                f"_x{ilastik_crop_x}_y{ilastik_crop_y}"
+                f"_w{ilastik_crop_size}_h{ilastik_crop_size}"
             )
             ilastik_crop_file = ilastik.write_ilastik_crop(
                 ilastik_crop, ilastik_crop_stem
@@ -224,7 +224,7 @@ def run_cmd(
     ilastik_probab_dir,
     num_threads,
     memory_limit,
-    env,
+    ilastik_env,
 ):
     ilastik_img_files = ilastik.list_ilastik_image_files(ilastik_img_dir)
     Path(ilastik_probab_dir).mkdir(exist_ok=True)
@@ -235,7 +235,7 @@ def run_cmd(
         ilastik_probab_dir,
         num_threads=num_threads,
         memory_limit=memory_limit,
-        ilastik_env=env,
+        ilastik_env=ilastik_env,
     )
     sys.exit(result.returncode)
 

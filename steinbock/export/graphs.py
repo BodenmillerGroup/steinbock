@@ -40,15 +40,14 @@ def convert_to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
 
 def try_convert_to_networkx_from_disk(
     neighbors_files: Sequence[Union[str, PathLike]], *data_file_lists
-) -> Generator[Tuple[Path, nx.Graph], None, None]:
-    for i, neighbors_file in enumerate(neighbors_files):
+) -> Generator[Tuple[Path, Tuple[Path, ...], nx.Graph], None, None]:
+    for neighbors_file, *data_files in zip(neighbors_files, *data_file_lists):
+        data_files = tuple(Path(data_file) for data_file in data_files)
         try:
             neighbors = io.read_neighbors(neighbors_file)
-            data_list = []
-            for data_files in data_file_lists:
-                data_list.append(io.read_data(data_files[i]))
+            data_list = [io.read_data(data_file) for data_file in data_files]
             graph = convert_to_networkx(neighbors, *data_list)
-            yield Path(neighbors_file), graph
+            yield Path(neighbors_file), data_files, graph
             del neighbors, data_list, graph
         except:
             _logger.exception(f"Error converting {neighbors_file} to networkx")
