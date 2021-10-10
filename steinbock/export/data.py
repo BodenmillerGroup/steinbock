@@ -24,7 +24,7 @@ def try_convert_to_dataframe_from_disk(*data_file_lists) -> pd.DataFrame:
                 left_index=True,
                 right_index=True,
             )
-        img_file = io.as_path_with_suffix(data_files[0], ".tiff")
+        img_file = io._as_path_with_suffix(data_files[0], ".tiff")
         data_objs.append(data)
         img_file_names.append(img_file.name)
     return pd.concat(data_objs, keys=img_file_names, names=["Image", "Object"])
