@@ -6,7 +6,7 @@
 			"type": "docker-build",
 			"platform": "python",
 			"dockerBuild": {
-				"tag": "steinbock:latest",
+				"tag": "ghcr.io/bodenmillergroup/steinbock:latest",
 				"dockerfile": "${workspaceFolder}/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
@@ -28,7 +28,7 @@
 			"dependsOn": [
 				"docker-build"
 			],
-			"command": "docker-compose -f docker-compose.yml up -d"
+			"command": "docker-compose up -d debug"
 		}
 	]
 }
