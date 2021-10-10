@@ -13,7 +13,7 @@
 			}
 		},
 		{
-			"label": "docker-run: debug",
+			"label": "docker-run",
 			"type": "docker-run",
 			"dependsOn": [
 				"docker-build"
@@ -21,6 +21,14 @@
 			"python": {
 				"module": "steinbock"
 			}
+		},
+		{
+			"label": "compose-up: test",
+			"type": "shell",
+			"dependsOn": [
+				"docker-build"
+			],
+			"command": "docker-compose up -d test"
 		},
 		{
 			"label": "compose-up: debug",

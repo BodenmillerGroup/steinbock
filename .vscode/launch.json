@@ -4,7 +4,7 @@
             "name": "Docker: Python - General",
             "type": "docker",
             "request": "launch",
-            "preLaunchTask": "docker-run: debug",
+            "preLaunchTask": "docker-run",
             "python": {
                 "pathMappings": [
                     {
@@ -16,7 +16,24 @@
             }
         },
         {
-            "name": "Python: Remote Attach",
+            "name": "Python: Remote Attach (test)",
+            "type": "python",
+            "request": "attach",
+            "preLaunchTask": "compose-up: test",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app/steinbock"
+                }
+            ],
+            "justMyCode": false
+        },
+        {
+            "name": "Python: Remote Attach (debug)",
             "type": "python",
             "request": "attach",
             "preLaunchTask": "compose-up: debug",
