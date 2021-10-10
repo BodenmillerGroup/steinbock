@@ -34,15 +34,3 @@ Code: [https://github.com/BodenmillerGroup/steinbock](https://github.com/Bodenmi
 Documentation: [https://bodenmillergroup.github.io/steinbock](https://bodenmillergroup.github.io/steinbock)
 
 Issue tracker: [https://github.com/BodenmillerGroup/steinbock/issues](https://github.com/BodenmillerGroup/steinbock/issues)
-
-## Contributing
-
-Pull requests are welcome. Please make sure to update documentation as appropriate.
-
-For major changes, please open an issue first to discuss what you would like to change.
-
-To debug *steinbock* commands using [Visual Studio Code](https://code.visualstudio.com) and [Docker Compose](https://docs.docker.com/compose), adapt the `command` in [docker-compose.yml](https://github.com/BodenmillerGroup/steinbock/blob/main/docker-compose.yml) file (e.g. add `--version` after `-m steinbock`) and use the "Python: Remote Attach" task (run it twice to prepare the Docker container and start debugging).
-
-## Authors
-
-- [Jonas Windhager](mailto:jonas.windhager@uzh.ch) (main author)

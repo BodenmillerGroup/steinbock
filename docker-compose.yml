@@ -23,7 +23,7 @@ services:
     command: ['-c', 'pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m steinbock']
     ports:
       - '5678:5678'
-  test:
+  pytest:
     image: ghcr.io/bodenmillergroup/steinbock:latest
     volumes:
       - ./tests:/app/steinbock/tests
@@ -31,7 +31,7 @@ services:
     command: ['-c', 'pip install -r tests/requirements.txt && python -m pytest tests']
     working_dir: /app/steinbock
     user: root
-  test-debug:
+  pytest-debug:
     image: ghcr.io/bodenmillergroup/steinbock
     volumes:
       - ./tests:/app/steinbock/tests

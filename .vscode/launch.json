@@ -33,10 +33,10 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Remote Attach (test-debug)",
+            "name": "Python: Remote Attach (pytest-debug)",
             "type": "python",
             "request": "attach",
-            "preLaunchTask": "compose-up: test-debug",
+            "preLaunchTask": "compose-up: pytest-debug",
             "connect": {
                 "host": "localhost",
                 "port": 5678

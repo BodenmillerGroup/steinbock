@@ -36,7 +36,7 @@
 			"dependsOn": [
 				"docker-build"
 			],
-			"command": "docker-compose up -d test-debug"
+			"command": "docker-compose up -d pytest-debug"
 		}
 	]
 }
