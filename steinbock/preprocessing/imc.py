@@ -78,6 +78,11 @@ def create_panel_from_imc_panel(
             _imc_panel_deepcell_col: "deepcell",
         }
     )
+    panel["channel"] = panel["channel"].str.replace(
+        r"^(?P<metal>[a-zA-Z]+)(?P<mass>[0-9]+)$",
+        lambda m: f"{m.group('metal')}({m.group('mass')})",
+        regex=True,
+    )
     for _, group in panel.groupby("channel"):
         panel.loc[group.index, "name"] = "/".join(
             group["name"].dropna().unique()
@@ -183,7 +188,7 @@ def try_preprocess_images_from_disk(
     channel_order: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
 ) -> Generator[Tuple[Path, Optional["Acquisition"], np.ndarray], None, None]:
-    def preprocess_image(a: AcquisitionBase, img: np.ndarray) -> np.ndarray:
+    def preprocess(a: AcquisitionBase, img: np.ndarray) -> np.ndarray:
         if channel_order is not None:
             indices = [a.channel_names.index(metal) for metal in channel_order]
             img = img[indices, :, :]
@@ -224,7 +229,7 @@ def try_preprocess_images_from_disk(
                                         f"Error reading file {txt_file}"
                                     )
                         if img is not None:
-                            img = preprocess_image(acquisition, img)
+                            img = preprocess(acquisition, img)
                             yield Path(mcd_file), acquisition, img
                             del img
         except:
@@ -234,7 +239,7 @@ def try_preprocess_images_from_disk(
         try:
             with IMCTXTFile(txt_file) as f:
                 img = f.read_acquisition()
-                img = preprocess_image(f, img)
+                img = preprocess(f, img)
             yield Path(txt_file), None, img
             del img
         except:
