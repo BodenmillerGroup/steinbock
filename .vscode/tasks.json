@@ -31,7 +31,7 @@
 			"command": "docker-compose up -d steinbock-debug"
 		},
 		{
-			"label": "compose-up: test-debug",
+			"label": "compose-up: pytest-debug",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build"
