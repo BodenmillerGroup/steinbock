@@ -23,20 +23,20 @@
 			}
 		},
 		{
-			"label": "compose-up: test",
+			"label": "compose-up: steinbock-debug",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build"
 			],
-			"command": "docker-compose up -d test"
+			"command": "docker-compose up -d steinbock-debug"
 		},
 		{
-			"label": "compose-up: debug",
+			"label": "compose-up: test-debug",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build"
 			],
-			"command": "docker-compose up -d debug"
+			"command": "docker-compose up -d test-debug"
 		}
 	]
 }

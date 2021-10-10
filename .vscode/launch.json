@@ -16,10 +16,10 @@
             }
         },
         {
-            "name": "Python: Remote Attach (test)",
+            "name": "Python: Remote Attach (steinbock-debug)",
             "type": "python",
             "request": "attach",
-            "preLaunchTask": "compose-up: test",
+            "preLaunchTask": "compose-up: steinbock-debug",
             "connect": {
                 "host": "localhost",
                 "port": 5678
@@ -33,10 +33,10 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Remote Attach (debug)",
+            "name": "Python: Remote Attach (test-debug)",
             "type": "python",
             "request": "attach",
-            "preLaunchTask": "compose-up: debug",
+            "preLaunchTask": "compose-up: test-debug",
             "connect": {
                 "host": "localhost",
                 "port": 5678
@@ -48,6 +48,6 @@
                 }
             ],
             "justMyCode": false
-        }
+        },
     ]
 }
