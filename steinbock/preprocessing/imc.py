@@ -234,7 +234,7 @@ def try_preprocess_images_from_disk(
         try:
             with IMCTXTFile(txt_file) as f:
                 img = f.read_acquisition()
-            img = preprocess_image(f, img)
+                img = preprocess_image(f, img)
             yield Path(txt_file), None, img
             del img
         except:
