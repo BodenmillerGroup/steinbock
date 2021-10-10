@@ -5,7 +5,6 @@
 /docs/
 /site/
 /steinbock/_version.py
-/test/
 /.dockerignore
 /.gitignore
 /CHANGELOG.md

@@ -1,21 +1,21 @@
 version: '3.4'
 services:
+  steinbock:
+    image: steinbock
+    build:
+      context: .
+      dockerfile: Dockerfile
   test:
     image: steinbock
-    build:
-      context: ${PWD}
-      dockerfile: ${PWD}/Dockerfile
     volumes:
-      - ${PWD}/test:/app/steinbock/test
+      - ./tests:/app/steinbock/tests
+    working_dir: /app/steinbock
     entrypoint: /bin/bash
-    command: ['-c', 'cd /app/steinbock && pip install -r test/requirements.txt && pytest --cov=./ --cov-report=xml']
+    command: ['-c', 'pip install -r tests/requirements.txt && pytest tests']
   debug:
     image: steinbock
-    build:
-      context: ${PWD}
-      dockerfile: ${PWD}/Dockerfile
     volumes:
-      - ${PWD}/data:/data:rw
+      - ./data:/data:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ~/.Xauthority:/home/steinbock/.Xauthority:ro
     entrypoint: /bin/bash
