@@ -78,11 +78,6 @@ def create_panel_from_imc_panel(
             _imc_panel_deepcell_col: "deepcell",
         }
     )
-    panel["channel"] = panel["channel"].str.replace(
-        r"^(?P<metal>[a-zA-Z]+)(?P<mass>[0-9]+)$",
-        lambda m: f"{m.group('metal')}({m.group('mass')})",
-        regex=True,
-    )
     for _, group in panel.groupby("channel"):
         panel.loc[group.index, "name"] = "/".join(
             group["name"].dropna().unique()
