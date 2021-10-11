@@ -17,7 +17,7 @@ from typing import (
 from steinbock import io
 
 try:
-    from readimc import IMCMCDFile, IMCTXTFile
+    from readimc import IMCMcdFile, IMCTxtFile
     from readimc.data import Acquisition, AcquisitionBase
 
     imc_available = True
@@ -126,14 +126,14 @@ def create_panel_from_imc_panel(
 
 
 def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
-    with IMCMCDFile(mcd_file) as f:
+    with IMCMcdFile(mcd_file) as f:
         first_slide = f.slides[0]
         first_acquisition = first_slide.acquisitions[0]
         return _create_panel_from_acquisition(first_acquisition)
 
 
 def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
-    with IMCTXTFile(txt_file) as f:
+    with IMCTxtFile(txt_file) as f:
         return _create_panel_from_acquisition(f)
 
 
@@ -193,7 +193,7 @@ def try_preprocess_images_from_disk(
     remaining_txt_files = list(txt_files)
     for mcd_file in mcd_files:
         try:
-            with IMCMCDFile(mcd_file) as f_mcd:
+            with IMCMcdFile(mcd_file) as f_mcd:
                 for slide in f_mcd.slides:
                     for acquisition in slide.acquisitions:
                         txt_file = None
@@ -217,7 +217,7 @@ def try_preprocess_images_from_disk(
                             if txt_file is not None:
                                 _logger.info(f"Restoring from file {txt_file}")
                                 try:
-                                    with IMCTXTFile(txt_file) as f_txt:
+                                    with IMCTxtFile(txt_file) as f_txt:
                                         img = f_txt.read_acquisition()
                                 except IOError:
                                     _logger.exception(
@@ -232,7 +232,7 @@ def try_preprocess_images_from_disk(
     while len(remaining_txt_files) > 0:
         txt_file = remaining_txt_files.pop(0)
         try:
-            with IMCTXTFile(txt_file) as f:
+            with IMCTxtFile(txt_file) as f:
                 img = f.read_acquisition()
                 img = preprocess(f, img)
             yield Path(txt_file), None, img
