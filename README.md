@@ -1,4 +1,4 @@
-<img src="docs/img/steinbock.png" style="float: right;" alt="Logo" width="150" />
+<img src="docs/img/steinbock.png" align="right" alt="Logo" width="150" />
 
 # steinbock
 
