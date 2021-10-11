@@ -1,4 +1,4 @@
-<img src="img/steinbock.png" align="right" alt="Logo" width="150" />
+<img src="img/steinbock-logo.png" align="right" alt="Logo" width="150" />
 
 # Welcome
 
