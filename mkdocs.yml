@@ -30,7 +30,7 @@ extra_css:
   - mkdocstrings.css
 nav:
   - Home:
-    - index.md
+    - Welcome: index.md
     - Installation:
       - docker.md
       - python.md
