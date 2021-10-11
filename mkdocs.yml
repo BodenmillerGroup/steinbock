@@ -18,6 +18,8 @@ markdown_extensions:
   - footnotes
 theme:
   name: material
+  logo: img/steinbock-logo-white.png
+  favicon: img/steinbock-favicon.png
   features:
     - navigation.tabs
     - navigation.top
