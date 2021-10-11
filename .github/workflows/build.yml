@@ -17,7 +17,13 @@ jobs:
         with:
           fetch-depth: 0
       - run: docker-compose build steinbock
+        env:
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
       - run: docker-compose run pytest
+        env:
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
       - uses: codecov/codecov-action@v2
         with:
           files: tests/coverage.xml
