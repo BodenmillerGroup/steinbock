@@ -12,9 +12,25 @@ Tested versions of Python package dependencies can be found in [requirements.txt
 
 ## Installation
 
-The *steinbock* Python package can be installed and upgraded [from PyPI](https://pypi.org/project/steinbock) as follows:
+The *steinbock* Python package can be installed [from PyPI](https://pypi.org/project/steinbock) as follows:
 
-    pip install --upgrade steinbock
+    pip install steinbock
+
+The following extras are available:
+
+  - `imc` to enable IMC preprocessing functionality
+  - `deepcell` to enable DeepCell segmentation functionality
+
+To install all extras, use the `all` extra:
+
+    pip install "steinbock[all]"
+
+!!! note "Package version conflics"
+    Some of the dependencies of steinbock are incompatible due to different version requirements. As a workaround, use the following strategy for installing tested combinations of package versions:
+
+        pip install --upgrade deepcell==0.10.0
+        pip install --upgrade -r requirements.txt
+        pip install --upgrade "steinbock[all]"
 
 ## Usage
 
