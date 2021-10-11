@@ -26,6 +26,7 @@ jobs:
           COMPOSE_DOCKER_CLI_BUILD: 1
       - uses: codecov/codecov-action@v2
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: tests/coverage.xml
   pypi:
     needs: test
