@@ -1,0 +1,1378 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+    
+    
+      
+        <title>steinbock.utils - steinbock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.24c991ad.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#steinbockutils" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="steinbock" class="md-header__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            steinbock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              steinbock.utils
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../cli/intro/" class="md-tabs__link">
+        CLI usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../intro/" class="md-tabs__link md-tabs__link--active">
+        Python usage
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="steinbock" class="md-nav__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    steinbock
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          Specifications
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../directories/" class="md-nav__link">
+        Directories
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../authors/" class="md-nav__link">
+        Authors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributors/" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          CLI usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          CLI usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/preprocessing/" class="md-nav__link">
+        Preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/classification/" class="md-nav__link">
+        Pixel classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/segmentation/" class="md-nav__link">
+        Object segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/measurement/" class="md-nav__link">
+        Object measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/export/" class="md-nav__link">
+        Data export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/utils/" class="md-nav__link">
+        Utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/apps/" class="md-nav__link">
+        Apps
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Python usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Python usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Python usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          API documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          API documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.preprocessing/" class="md-nav__link">
+        steinbock.preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.classification/" class="md-nav__link">
+        steinbock.classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.segmentation/" class="md-nav__link">
+        steinbock.segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.measurement/" class="md-nav__link">
+        steinbock.measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.export/" class="md-nav__link">
+        steinbock.export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          steinbock.utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        steinbock.utils
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.utils.matching" class="md-nav__link">
+    matching
+  </a>
+  
+    <nav class="md-nav" aria-label="matching">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.matching.match_masks" class="md-nav__link">
+    match_masks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.matching.try_match_masks_from_disk" class="md-nav__link">
+    try_match_masks_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics" class="md-nav__link">
+    mosaics
+  </a>
+  
+    <nav class="md-nav" aria-label="mosaics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.TileInfo" class="md-nav__link">
+    TileInfo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.try_extract_tiles_from_disk" class="md-nav__link">
+    try_extract_tiles_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.try_stitch_tiles_from_disk" class="md-nav__link">
+    try_stitch_tiles_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.io/" class="md-nav__link">
+        steinbock.io
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.utils.matching" class="md-nav__link">
+    matching
+  </a>
+  
+    <nav class="md-nav" aria-label="matching">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.matching.match_masks" class="md-nav__link">
+    match_masks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.matching.try_match_masks_from_disk" class="md-nav__link">
+    try_match_masks_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics" class="md-nav__link">
+    mosaics
+  </a>
+  
+    <nav class="md-nav" aria-label="mosaics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.TileInfo" class="md-nav__link">
+    TileInfo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.try_extract_tiles_from_disk" class="md-nav__link">
+    try_extract_tiles_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.utils.mosaics.try_stitch_tiles_from_disk" class="md-nav__link">
+    try_stitch_tiles_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="steinbockutils">steinbock.utils</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.utils.matching" class="doc doc-heading">
+        <code>matching</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.utils.matching.match_masks" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">match_masks</span><span class="p">(</span><span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/utils/matching.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">match_masks</span><span class="p">(</span><span class="n">mask1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">nz1</span> <span class="o">=</span> <span class="n">mask1</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">nz2</span> <span class="o">=</span> <span class="n">mask2</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">object_ids1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">object_ids2</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">object_id1</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask1</span><span class="p">[</span><span class="n">nz1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">object_id2</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask2</span><span class="p">[</span><span class="n">nz2</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mask1</span> <span class="o">==</span> <span class="n">object_id1</span><span class="p">)]):</span>
+            <span class="n">object_ids1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_id1</span><span class="p">)</span>
+            <span class="n">object_ids2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_id2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">object_id2</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask2</span><span class="p">[</span><span class="n">nz2</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">object_id1</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask1</span><span class="p">[</span><span class="n">nz1</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mask2</span> <span class="o">==</span> <span class="n">object_id2</span><span class="p">)]):</span>
+            <span class="n">object_ids1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_id1</span><span class="p">)</span>
+            <span class="n">object_ids2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_id2</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Object1&quot;</span><span class="p">:</span> <span class="n">object_ids1</span><span class="p">,</span> <span class="s2">&quot;Object2&quot;</span><span class="p">:</span> <span class="n">object_ids2</span><span class="p">})</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.utils.matching.try_match_masks_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_match_masks_from_disk</span><span class="p">(</span><span class="n">mask_files1</span><span class="p">,</span> <span class="n">mask_files2</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/utils/matching.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_match_masks_from_disk</span><span class="p">(</span>
+    <span class="n">mask_files1</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">mask_files2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">mask_file1</span><span class="p">,</span> <span class="n">mask_file2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mask_files1</span><span class="p">,</span> <span class="n">mask_files2</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">match_masks</span><span class="p">(</span>
+                <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file1</span><span class="p">),</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file2</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">mask_file1</span><span class="p">,</span> <span class="n">mask_file2</span><span class="p">,</span> <span class="n">df</span>
+            <span class="k">del</span> <span class="n">df</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error matching masks </span><span class="si">{</span><span class="n">mask_file1</span><span class="p">,</span> <span class="n">mask_file2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.utils.mosaics" class="doc doc-heading">
+        <code>mosaics</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="steinbock.utils.mosaics.TileInfo" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">TileInfo</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.utils.mosaics.try_extract_tiles_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_extract_tiles_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/utils/mosaics.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_extract_tiles_from_disk</span><span class="p">(</span>
+    <span class="n">img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="n">tile_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">img_file</span> <span class="ow">in</span> <span class="n">img_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tile_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">tile_size</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">tile_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tile_size</span><span class="p">):</span>
+                    <span class="n">tile</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span>
+                        <span class="p">:,</span>
+                        <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
+                        <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
+                    <span class="p">]</span>
+                    <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span> <span class="n">tile_x</span><span class="p">,</span> <span class="n">tile_y</span><span class="p">,</span> <span class="n">tile</span>
+                    <span class="k">del</span> <span class="n">tile</span>
+            <span class="k">del</span> <span class="n">img</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error extracting tiles: </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.utils.mosaics.try_stitch_tiles_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_stitch_tiles_from_disk</span><span class="p">(</span><span class="n">img_tile_infos</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/utils/mosaics.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_stitch_tiles_from_disk</span><span class="p">(</span>
+    <span class="n">img_tile_infos</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TileInfo</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">img_stem_name</span><span class="p">,</span> <span class="n">tile_infos</span> <span class="ow">in</span> <span class="n">img_tile_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tile_file</span><span class="p">,</span> <span class="n">tile_x</span><span class="p">,</span> <span class="n">tile_y</span><span class="p">,</span> <span class="n">tile_width</span><span class="p">,</span> <span class="n">tile_height</span> <span class="o">=</span> <span class="n">tile_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">tile</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">),</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">tile</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">img</span><span class="p">[</span>
+                <span class="p">:,</span>
+                <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_height</span><span class="p">),</span>
+                <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_width</span><span class="p">),</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">tile_file</span><span class="p">,</span>
+                <span class="n">tile_x</span><span class="p">,</span>
+                <span class="n">tile_y</span><span class="p">,</span>
+                <span class="n">tile_width</span><span class="p">,</span>
+                <span class="n">tile_height</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="n">img</span><span class="p">[</span>
+                    <span class="p">:,</span>
+                    <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_height</span><span class="p">),</span>
+                    <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_width</span><span class="p">),</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">img_stem_name</span><span class="p">,</span> <span class="n">img</span>
+            <span class="k">del</span> <span class="n">img</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error stitching tiles: </span><span class="si">{</span><span class="n">img_stem_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../steinbock.export/" class="md-footer__link md-footer__link--prev" aria-label="Previous: steinbock.export" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              steinbock.export
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../steinbock.io/" class="md-footer__link md-footer__link--next" aria-label="Next: steinbock.io" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              steinbock.io
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.e99e714c.min.js", "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.bc35569b.min.js"></script>
+      
+    
+  </body>
+</html>
