@@ -1,3 +1,5 @@
+<img src="docs/img/steinbock.png" style="float: right;" alt="Logo" width="150" />
+
 # steinbock
 
 <a href="#"><img alt="Python" src="https://img.shields.io/pypi/pyversions/steinbock"></a>

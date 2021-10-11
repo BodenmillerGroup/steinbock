@@ -1,3 +1,5 @@
+<img src="img/steinbock.png" style="float: right;" alt="Logo" width="150" />
+
 # Welcome
 
 *steinbock* is a framework for multi-channel image processing
