@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: docker-compose run test
+      - run: docker-compose run pytest
       - uses: codecov/codecov-action@v2
         with:
           files: tests/coverage.xml
