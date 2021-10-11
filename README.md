@@ -1,4 +1,4 @@
-<img src="docs/img/steinbock-logo.png" align="right" alt="Logo" width="150" />
+<img src="https://raw.githubusercontent.com/BodenmillerGroup/steinbock/main/docs/img/steinbock-logo.png" align="right" alt="Logo" width="150" />
 
 # steinbock
 
