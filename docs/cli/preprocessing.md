@@ -47,7 +47,17 @@ To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixe
 
     steinbock preprocess imc images --hpf 50
 
-This will extract images from .mcd files at the specified location (defaults to `raw`). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well. Furthermore, this commands creates an image information table as described in [File types](../file-types.md#image-information).
+This will extract images from .mcd files at the specified location (defaults to `raw`). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well.
+
+Furthermore, this commands also creates an image information table as described in [File types](../file-types.md#image-information). In addition to the default columns, the following IMC-specific columns will be added:
+
+  - `source`: the raw .mcd/.txt file name
+  - `recovered`: *True* if the .mcd acquisition was recovered from the corresponding .txt file
+  - Acquisition-specific information: 
+    - `acquisition_id`: numeric acquisition ID
+    - `acquisition_description`: user-specified acquisition description
+    - `acquisition_posx_um`, `acquisition_posy_um`: start position, in micrometers
+    - `acquisition_width_um`, `acquisition_height_um`: dimensions, in micrometers
 
 !!! note "IMC file matching"
     Matching of .txt files to .mcd files is performed by file name: If a .txt file name starts with the file name of an .mcd file (without extension) AND ends with `_{acquisition}.txt`, where `{acquisition}` is the numeric acquisition ID, it is considered matching that particular acquisition from the .mcd file.
