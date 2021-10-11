@@ -1,4 +1,5 @@
 import pytest
+import shutil
 
 from pathlib import Path
 
@@ -12,7 +13,11 @@ class TestCellprofilerSegmentation:
             tmp_path / "cell_segmentation.cppipe"
         )  # TODO
 
-    @pytest.mark.skip(reason="test would take too long")
+    @pytest.mark.skip(reason="Test would take too long")
+    @pytest.mark.skipif(
+        shutil.which(cellprofiler_binary) is None,
+        reason="CellProfiler is not available",
+    )
     def test_try_segment_objects(
         self, imc_test_data_steinbock_path: Path, tmp_path: Path
     ):

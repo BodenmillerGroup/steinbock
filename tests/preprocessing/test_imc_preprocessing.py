@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 
 from pathlib import Path
@@ -6,6 +7,7 @@ from steinbock import io
 from steinbock.preprocessing import imc
 
 
+@pytest.mark.skipif(not imc.imc_available, reason="IMC is not available")
 class TestIMCPreprocessing:
     def test_list_mcd_files(self, imc_test_data_steinbock_path: Path):
         imc.list_mcd_files(imc_test_data_steinbock_path / "raw")  # TODO

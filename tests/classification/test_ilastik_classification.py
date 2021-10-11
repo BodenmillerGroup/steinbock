@@ -165,7 +165,10 @@ class TestIlastikClassification:
             ilastik_crop_files, tmp_path / "pixel_classifier.ilp"
         )  # TODO
 
-    @pytest.mark.skip(reason="test would take too long")
+    @pytest.mark.skip(reason="Test would take too long")
+    @pytest.mark.skipif(
+        shutil.which(ilastik_binary) is None, reason="Ilastik is not available"
+    )
     def test_run_pixel_classification(
         self, imc_test_data_steinbock_path: Path, tmp_path: Path
     ):
