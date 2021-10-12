@@ -47,7 +47,7 @@ To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixe
 
     steinbock preprocess imc images --hpf 50
 
-This will extract images from .mcd files at the specified location (defaults to `raw`). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well.
+This will extract images from raw files (source directory defaults to `raw`) and save them at the specified location (defaults to `img`). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well.
 
 Furthermore, this commands also creates an image information table as described in [File types](../file-types.md#image-information). In addition to the default columns, the following IMC-specific columns will be added:
 
