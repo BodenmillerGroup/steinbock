@@ -69,17 +69,21 @@ def create_panel_from_imc_panel(
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
-    panel = imc_panel.rename(
-        columns={
-            _imc_panel_metal_col: "channel",
-            _imc_panel_target_col: "name",
-            _imc_panel_keep_col: "keep",
-            _imc_panel_ilastik_col: "ilastik",
-            _imc_panel_deepcell_col: "deepcell",
-        }
-    )
+    rename_columns = {
+        _imc_panel_metal_col: "channel",
+        _imc_panel_target_col: "name",
+        _imc_panel_keep_col: "keep",
+        _imc_panel_ilastik_col: "ilastik",
+        _imc_panel_deepcell_col: "deepcell",
+    }
+    drop_columns = [
+        panel_col
+        for imc_panel_col, panel_col in rename_columns.items()
+        if panel_col in imc_panel.columns and panel_col != imc_panel_col
+    ]
+    panel = imc_panel.drop(columns=drop_columns).rename(columns=rename_columns)
     for _, group in panel.groupby("channel"):
-        panel.loc[group.index, "name"] = "/".join(
+        panel.loc[group.index, "name"] = " / ".join(
             group["name"].dropna().unique()
         )
         if "keep" in panel:
@@ -94,6 +98,9 @@ def create_panel_from_imc_panel(
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
+    duplicated_mask = panel["name"].duplicated(keep=False)
+    name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
+    panel.loc[duplicated_mask, "name"] += name_suffixes[duplicated_mask]
     if "keep" not in panel:
         panel["keep"] = pd.Series(True, dtype=pd.BooleanDtype())
     if "ilastik" in panel:
