@@ -106,14 +106,14 @@ To prepare a CellProfiler measurement pipeline:
 !!! note "Data/working directory"
     Within the container, your data/working directory containing the CellProfiler pipeline is accessible under `/data`.
 
-By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks into the `cellprofiler_input` directory.
+By default, this will create a CellProfiler pipeline file `cell_measurement.cppipe` and collect all images and masks (both in 16-bit unsigned integer format) into the `cellprofiler_input` directory.
 
 !!! note "CellProfiler plugins"
     The generated CellProfiler pipeline makes use of [custom plugins for multi-channel images](https://github.com/BodenmillerGroup/ImcPluginsCP), which are pre-installed in the *steinbock* Docker container. It can be inspected using CellProfiler as described in the following section.
 
 ### Modifying the pipeline
 
-To interactively inspect, modify and run the pipeline, open it in CellProfiler (see [Apps](apps.md#cellprofiler)):
+To interactively inspect, modify and run the pipeline, import it in CellProfiler (see [Apps](apps.md#cellprofiler)):
 
     steinbock apps cellprofiler
 

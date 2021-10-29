@@ -51,7 +51,7 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Name to assign these images:Mask
     Name to assign these objects:cell
     Select the image type:Grayscale image
-    Set intensity range from:Image metadata
+    Set intensity range from:Image bit-depth
     Maximum intensity:255.0
 
 Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
