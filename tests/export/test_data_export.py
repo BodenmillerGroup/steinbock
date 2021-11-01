@@ -15,9 +15,15 @@ class TestDataExport:
             imc_test_data_steinbock_path / "regionprops",
             base_files=intensities_files,
         )
-        data.try_convert_to_dataframe_from_disk(
-            intensities_files, regionprops_files
-        )  # TODO
+        gen = data.try_convert_to_dataframe_from_disk(
+            intensities_files, regionprops_files, concatenate=True
+        )
+        try:
+            while True:
+                img_file_name, data_files, df = next(gen)
+                # TODO
+        except StopIteration:
+            pass  # TODO
 
     def test_try_convert_to_anndata_from_disk(
         self, imc_test_data_steinbock_path: Path
@@ -30,7 +36,11 @@ class TestDataExport:
             base_files=intensities_files,
         )
         gen = data.try_convert_to_anndata_from_disk(
-            intensities_files, regionprops_files
+            intensities_files, regionprops_files, concatenate=True
         )
-        for intensities_file, (regionprops_file,), anndata in gen:
+        try:
+            while True:
+                img_file_name, x_data_file, obs_data_files, adata = next(gen)
+                # TODO
+        except StopIteration:
             pass  # TODO
