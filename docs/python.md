@@ -28,7 +28,7 @@ To install all extras, use the `all` extra:
 !!! note "Package version conflics"
     Some of the dependencies of steinbock are incompatible due to different version requirements. As a workaround, use the following strategy for installing tested combinations of package versions:
 
-        pip install --upgrade deepcell==0.10.0
+        pip install --upgrade deepcell==0.11.0
         pip install --upgrade -r requirements.txt
         pip install --upgrade "steinbock[all]"
 

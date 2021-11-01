@@ -58,7 +58,7 @@ RUN mkdir /opt/cellprofiler_plugins && \
 # steinbock
 
 COPY requirements.txt /app/steinbock/requirements.txt
-RUN pip install --upgrade deepcell==0.10.0 && \
+RUN pip install --upgrade deepcell==0.11.0 && \
     pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
