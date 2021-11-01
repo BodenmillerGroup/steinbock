@@ -130,7 +130,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             mask = io.read_mask(mask_files[i])
             imwrite(
                 histocat_img_dir / f"{img_file.stem}_mask.tiff",
-                data=io._to_dtype(mask, np.float32),
+                data=io._to_dtype(mask, np.uint16),
             )
         click.echo(img_file.name)
         del img, mask
