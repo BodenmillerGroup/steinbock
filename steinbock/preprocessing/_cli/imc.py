@@ -200,7 +200,7 @@ def images_cmd(
         ):
             img_file_stem = Path(mcd_txt_file).stem
             if acquisition is not None:
-                img_file_stem += f"_{acquisition.id}"
+                img_file_stem += f"_{acquisition.id:03d}"
             img_file = io.write_image(img, Path(img_dir) / img_file_stem)
             image_info_row = {
                 "image": img_file.name,

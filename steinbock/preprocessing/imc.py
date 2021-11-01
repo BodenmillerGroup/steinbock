@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 import pandas as pd
+import re
 
 from os import PathLike
 from pathlib import Path
@@ -203,12 +204,14 @@ def try_preprocess_images_from_disk(
             with IMCMcdFile(mcd_file) as f_mcd:
                 for slide in f_mcd.slides:
                     for acquisition in slide.acquisitions:
+                        pattern = re.compile(
+                            rf"{Path(mcd_file).stem}.*_0*{acquisition.id}"
+                        )
                         txt_file = None
                         filtered_txt_files = [
-                            x
-                            for x in remaining_txt_files
-                            if Path(x).stem.startswith(Path(mcd_file).stem)
-                            and Path(x).stem.endswith(f"_{acquisition.id}")
+                            remaining_txt_file
+                            for remaining_txt_file in remaining_txt_files
+                            if pattern.match(Path(remaining_txt_file).stem)
                         ]
                         if len(filtered_txt_files) == 1:
                             txt_file = filtered_txt_files[0]
