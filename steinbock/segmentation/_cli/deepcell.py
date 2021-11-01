@@ -1,12 +1,16 @@
 import click
 import numpy as np
-import yaml
 
 from pathlib import Path
 
 from steinbock import io
 from steinbock._env import check_steinbock_version, keras_models_dir
 from steinbock.segmentation import deepcell
+
+if deepcell.deepcell_available:
+    import yaml
+else:
+    yaml = None
 
 deepcell_cli_available = deepcell.deepcell_available
 
