@@ -145,7 +145,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )
@@ -204,7 +204,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )
@@ -275,7 +275,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )
