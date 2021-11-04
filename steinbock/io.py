@@ -253,7 +253,7 @@ def read_neighbors(neighbors_stem: Union[str, PathLike]) -> pd.DataFrame:
         dtype={
             "Object": mask_dtype,
             "Neighbor": mask_dtype,
-            "Distance": float,
+            "Distance": np.float32,
         },
         engine="python",
     )
@@ -267,7 +267,7 @@ def write_neighbors(
         {
             "Object": mask_dtype,
             "Neighbor": mask_dtype,
-            "Distance": float,
+            "Distance": np.float32,
         }
     )
     neighbors.to_csv(neighbors_file, index=False)

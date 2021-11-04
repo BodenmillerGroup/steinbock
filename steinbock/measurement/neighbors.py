@@ -70,7 +70,7 @@ def _measure_centroid_distance_neighbors(
         data={
             "Object": np.asarray(labels[indices1], dtype=io.mask_dtype),
             "Neighbor": np.asarray(labels[indices2], dtype=io.mask_dtype),
-            "Distance": np.asarray(distances, dtype=float),
+            "Distance": np.asarray(distances, dtype=np.float32),
         }
     )
 
@@ -125,7 +125,7 @@ def _measure_euclidean_border_distance_neighbors(
         data={
             "Object": np.asarray(labels1, dtype=io.mask_dtype),
             "Neighbor": np.asarray(labels2, dtype=io.mask_dtype),
-            "Distance": np.asarray(distances, dtype=float),
+            "Distance": np.asarray(distances, dtype=np.float32),
         }
     )
 
