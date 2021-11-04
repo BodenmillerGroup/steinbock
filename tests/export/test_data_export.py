@@ -16,13 +16,9 @@ class TestDataExport:
             base_files=intensities_files,
         )
         gen = data.try_convert_to_dataframe_from_disk(
-            intensities_files, regionprops_files, concatenate=True
+            intensities_files, regionprops_files
         )
-        try:
-            while True:
-                img_file_name, data_files, df = next(gen)
-                # TODO
-        except StopIteration:
+        for img_file_name, data_files, df in gen:
             pass  # TODO
 
     def test_try_convert_to_anndata_from_disk(
@@ -35,12 +31,26 @@ class TestDataExport:
             imc_test_data_steinbock_path / "regionprops",
             base_files=intensities_files,
         )
-        gen = data.try_convert_to_anndata_from_disk(
-            intensities_files, regionprops_files, concatenate=True
+        neighbors_files = io.list_neighbors_files(
+            imc_test_data_steinbock_path / "neighbors",
+            base_files=intensities_files,
         )
-        try:
-            while True:
-                img_file_name, x_data_file, obs_data_files, adata = next(gen)
-                # TODO
-        except StopIteration:
+        panel = io.read_panel(imc_test_data_steinbock_path / "panel.csv")
+        image_info = io.read_image_info(
+            imc_test_data_steinbock_path / "images.csv"
+        )
+        gen = data.try_convert_to_anndata_from_disk(
+            intensities_files,
+            regionprops_files,
+            neighbors_files=neighbors_files,
+            panel=panel,
+            image_info=image_info,
+        )
+        for (
+            img_file_name,
+            intensities_file,
+            data_files,
+            neighbors_file,
+            adata,
+        ) in gen:
             pass  # TODO

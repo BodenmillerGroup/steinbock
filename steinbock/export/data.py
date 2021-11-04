@@ -1,83 +1,138 @@
 import logging
+import numpy as np
 import pandas as pd
 
-from anndata import AnnData, concat as anndata_concat
+from anndata import AnnData
 from os import PathLike
 from pathlib import Path
+from scipy.sparse import csr_matrix
 from typing import Generator, Optional, Sequence, Tuple, Union
 
 from steinbock import io
 
 
-# TODO
 _logger = logging.getLogger(__name__)
 
 
 def try_convert_to_dataframe_from_disk(
     *data_file_lists,
-    concatenate: bool = False,
-) -> Generator[
-    Tuple[str, Tuple[Path, ...], pd.DataFrame], None, Optional[pd.DataFrame]
-]:
-    img_file_names = []
-    dfs = []
+) -> Generator[Tuple[str, Tuple[Path, ...], pd.DataFrame], None, None]:
     for data_files in zip(*data_file_lists):
-        img_file_name = io._as_path_with_suffix(data_files[0], ".tiff").name
         data_files = tuple(Path(data_file) for data_file in data_files)
-        # TODO try/catch
-        df = io.read_data(data_files[0])
-        for data_file in data_files[1:]:
-            df = pd.merge(
-                df,
-                io.read_data(data_file),
-                left_index=True,
-                right_index=True,
-            )
-        yield img_file_name, data_files, df
-        if concatenate:
-            img_file_names.append(img_file_name)
-            dfs.append(df)
-        else:
-            del df
-    if concatenate:
-        return pd.concat(dfs, keys=img_file_names, names=["Image", "Object"])
-
-
-def try_convert_to_anndata_from_disk(
-    x_data_files: Sequence[Union[str, PathLike]],
-    *obs_data_file_lists,
-    concatenate: bool = False,
-) -> Generator[
-    Tuple[str, Path, Tuple[Path, ...], AnnData], None, Optional[AnnData]
-]:
-    # TODO export image metadata
-    img_file_names = []
-    adatas = []
-    for x_data_file, *obs_data_files in zip(
-        x_data_files, *obs_data_file_lists
-    ):
-        img_file_name = io._as_path_with_suffix(x_data_file, ".tiff").name
-        x_data_file = Path(x_data_file)
-        obs_data_files = tuple(Path(obs_file) for obs_file in obs_data_files)
-        # TODO try/catch
-        x = io.read_data(x_data_file)
-        obs = None
-        if len(obs_data_files) > 0:
-            obs = io.read_data(obs_data_files[0])
-            for obs_file in obs_data_files[1:]:
-                obs = pd.merge(
-                    obs,
-                    io.read_data(obs_file),
+        img_file_name = io._as_path_with_suffix(data_files[0], ".tiff").name
+        try:
+            df = io.read_data(data_files[0])
+            for data_file in data_files[1:]:
+                df = pd.merge(
+                    df,
+                    io.read_data(data_file),
                     left_index=True,
                     right_index=True,
                 )
-            obs.index = obs.index.astype(str)
-        adata = AnnData(X=x.values, obs=obs)
-        yield img_file_name, x_data_file, obs_data_files, adata
-        if concatenate:
-            img_file_names.append(img_file_name)
-            adatas.append(adata)
-        else:
-            del x, obs, adata
-    if concatenate:
-        return anndata_concat(adatas, keys=img_file_names, index_unique="_")
+            yield img_file_name, data_files, df
+            del df
+        except:
+            _logger.exception(
+                f"Error creating DataFrame for image {img_file_name}; "
+                "skipping image"
+            )
+
+
+def try_convert_to_anndata_from_disk(
+    intensity_files: Sequence[Union[str, PathLike]],
+    *data_file_lists,
+    neighbors_files: Optional[Sequence[Union[str, PathLike]]] = None,
+    panel: Optional[pd.DataFrame] = None,
+    image_info: Optional[pd.DataFrame] = None,
+) -> Generator[
+    Tuple[str, Path, Tuple[Path, ...], Optional[Path], AnnData], None, None
+]:
+    panel = panel.set_index("name", drop=False, verify_integrity=True)
+    image_info = image_info.set_index(
+        "image", drop=False, verify_integrity=True
+    )
+    for i, intensity_file in enumerate(intensity_files):
+        intensity_file = Path(intensity_file)
+        data_files = tuple(Path(dfl[i]) for dfl in data_file_lists)
+        neighbors_file = None
+        if neighbors_files is not None:
+            neighbors_file = Path(neighbors_files[i])
+        img_file_name = io._as_path_with_suffix(intensity_file, ".tiff").name
+        try:
+            x = io.read_data(intensity_file)
+            obs = None
+            if len(data_files) > 0:
+                obs = io.read_data(data_files[0])
+                for data_file in data_files[1:]:
+                    obs = pd.merge(
+                        obs,
+                        io.read_data(data_file),
+                        left_index=True,
+                        right_index=True,
+                    )
+                obs = obs.loc[x.index, :]
+            if image_info is not None:
+                r = image_info.loc[img_file_name, :]
+                image_obs = pd.concat([r] * len(x.index), axis=1).transpose()
+                image_obs.columns = [
+                    "image" if column == "image" else f"image_{column}"
+                    for column in image_obs.columns
+                ]
+                image_obs.index = x.index
+                if obs is not None:
+                    obs = pd.merge(
+                        obs,
+                        image_obs,
+                        how="inner",  # preserves order of left keys
+                        left_index=True,
+                        right_index=True,
+                    )
+                else:
+                    obs = image_obs
+            var = None
+            if panel is not None:
+                var = panel.loc[x.columns, :].copy()
+            if obs is not None:
+                obs.index = [f"Object {object_id}" for object_id in x.index]
+            if var is not None:
+                var.index = x.columns.astype(str).values
+            adata = AnnData(X=x.values, obs=obs, var=var)
+            if neighbors_file is not None:
+                neighbors = io.read_neighbors(neighbors_file)
+                adata.obsp["adj"] = csr_matrix(
+                    (
+                        [True] * len(neighbors.index),
+                        (
+                            neighbors["Object"].astype(int).values,
+                            neighbors["Neighbor"].astype(int).values,
+                        ),
+                    ),
+                    shape=(adata.n_obs, adata.n_obs),
+                    dtype=np.uint8,
+                )
+                if neighbors["Distance"].notna().any():
+                    adata.obsp["dist"] = csr_matrix(
+                        (
+                            neighbors["Distance"].values,
+                            (
+                                neighbors["Object"].astype(int).values,
+                                neighbors["Neighbor"].astype(int).values,
+                            ),
+                        ),
+                        shape=(adata.n_obs, adata.n_obs),
+                        dtype=np.float32,
+                    )
+                del neighbors
+            yield (
+                img_file_name,
+                intensity_file,
+                data_files,
+                neighbors_file,
+                adata,
+            )
+            del x, obs, var, adata
+        except:
+            _logger.exception(
+                f"Error creating AnnData object for image {img_file_name}; "
+                "skipping image"
+            )
