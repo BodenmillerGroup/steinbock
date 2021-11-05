@@ -5,7 +5,7 @@ In this step, image data will be prepared for processing with *steinbock*.
 Various sources for raw data are supported by *steinbock*, each of which is described in the following. If you miss support for an imaging modality, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
 !!! note "Optional preprocessing"
-    Not all raw data require preprocessing. The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If your images are available in TIFF already, preprocessing may not be required.
+    The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by [imageio](https://imageio.readthedocs.io), you need to convert them to *steinbock*-compatible TIFF files first, see [External images](#external-images).
 
 !!! note "Computational resources"
     Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](utils.md#mosaics).
@@ -75,4 +75,14 @@ After image extraction, if the `--hpf` option is specified, the images are filte
 
 [^1]: Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
 
-<!-- TODO add external image preprocessing docs -->
+## External images
+
+*External images* are images preprocessed externally (i.e., without *steinbock*) that are saved in an image format supported by [imageio](https://imageio.readthedocs.io).
+
+For convenience, to create a template panel file based on external image data stored at the specified location (defaults to `external`):
+
+    steinbock preprocess external panel
+
+To convert external image data to *steinbock*-supported TIFF files (see [File types](../file-types.md#images)) and save them to the specified location (defaults to `external`):
+
+    steinbock preprocess external images
