@@ -26,7 +26,7 @@ from steinbock.export import data
     "-o",
     "csv_file_or_dir",
     type=click.Path(),
-    default="csv",
+    default="objects.csv",
     show_default=True,
     help="Path to the CSV output file or directory",
 )
@@ -46,14 +46,14 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
-    if concatenate:
+    if not concatenate:
         Path(csv_file_or_dir).mkdir(exist_ok=True)
     for i, (img_file_name, data_files, df) in enumerate(
         data.try_convert_to_dataframe_from_disk(*data_file_lists)
     ):
         df.reset_index(inplace=True)
         if concatenate:
-            df.insert(0, "image", img_file_name)
+            df.insert(0, "Image", img_file_name)
             if i == 0:
                 df.to_csv(csv_file_or_dir, index=False)
             else:
@@ -83,7 +83,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     "-o",
     "fcs_file_or_dir",
     type=click.Path(),
-    default="fcs",
+    default="objects.fcs",
     show_default=True,
     help="Path to the FCS output file or directory",
 )
@@ -108,6 +108,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
             "WARNING: The fcswrite package currently does not support on-disk "
             "concatenation; all files will be loaded into memory"
         )
+    else:
         Path(fcs_file_or_dir).mkdir(exist_ok=True)
     dfs = []
     for (
@@ -115,9 +116,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
         data_files,
         df,
     ) in data.try_convert_to_dataframe_from_disk(*data_file_lists):
-        df.reset_index(inplace=True)
         if concatenate:
-            df.insert(0, "image", img_file_name)
             click.echo(img_file_name)
             dfs.append(df)
         else:
@@ -158,22 +157,22 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     type=click.Path(exists=True, file_okay=False),
     help="Path to the neighbors directory",
 )
-@click.option(
-    "--panel",
-    "panel_file",
-    type=click.Path(dir_okay=False),
-    default="panel.csv",
-    show_default=True,
-    help="Path to the panel file",
-)
-@click.option(
-    "--info",
-    "image_info_file",
-    type=click.Path(dir_okay=False),
-    default="images.csv",
-    show_default=True,
-    help="Path to the image information file",
-)
+# @click.option(
+#     "--panel",
+#     "panel_file",
+#     type=click.Path(dir_okay=False),
+#     default="panel.csv",
+#     show_default=True,
+#     help="Path to the panel file",
+# )
+# @click.option(
+#     "--info",
+#     "image_info_file",
+#     type=click.Path(dir_okay=False),
+#     default="images.csv",
+#     show_default=True,
+#     help="Path to the image information file",
+# )
 @click.option(
     "--concat/--no-concat",
     "concatenate",
@@ -193,7 +192,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     "-o",
     "anndata_file_or_dir",
     type=click.Path(),
-    default="anndata",
+    default="objects.h5ad",
     show_default=True,
     help="Path to the AnnData output file or directory",
 )
@@ -202,8 +201,8 @@ def anndata_cmd(
     intensities_dir,
     data_dirs,
     neighbors_dir,
-    panel_file,
-    image_info_file,
+    # panel_file,
+    # image_info_file,
     concatenate,
     anndata_format,
     anndata_file_or_dir,
@@ -246,12 +245,12 @@ def anndata_cmd(
         neighbors_files = io.list_neighbors_files(
             neighbors_dir, base_files=intensities_files
         )
-    panel = None
-    if panel_file is not None and Path(panel_file).is_file():
-        panel = io.read_panel(panel_file)
-    image_info = None
-    if image_info is not None and Path(image_info_file).is_file():
-        image_info = io.read_image_info(image_info_file)
+    # panel = None
+    # if panel_file is not None and Path(panel_file).is_file():
+    #     panel = io.read_panel(panel_file)
+    # image_info = None
+    # if image_info_file is not None and Path(image_info_file).is_file():
+    #     image_info = io.read_image_info(image_info_file)
     if concatenate and Path(anndata_file_or_dir).is_dir():
         return click.echo(
             "ERROR: Specify a single output file when concatenating",
@@ -265,6 +264,7 @@ def anndata_cmd(
             "concatenation (https://github.com/theislab/anndata/issues/312); "
             "all files will be loaded into memory"
         )
+    else:
         Path(anndata_file_or_dir).mkdir(exist_ok=True)
     adatas = {}
     for (
@@ -277,9 +277,8 @@ def anndata_cmd(
         intensities_files,
         *data_file_lists,
         neighbors_files=neighbors_files,
-        panel=panel,
-        image_info=image_info,
-        concatenate=concatenate,
+        # panel=panel,
+        # image_info=image_info,
     ):
         if concatenate:
             adatas[img_file_name] = adata
@@ -293,6 +292,9 @@ def anndata_cmd(
             del adata
     if concatenate:
         adata = anndata_concat(
-            adatas, merge="first", label="image", index_unique=" in "
+            adatas, merge="first", label="Image", index_unique=" in "
         )
+        obs_cols = list(adata.obs.columns)
+        obs_cols.insert(0, obs_cols.pop(obs_cols.index("Image")))
+        adata.obs = adata.obs.loc[:, obs_cols]
         write_anndata(adata, anndata_file_or_dir, keep_suffix=True)

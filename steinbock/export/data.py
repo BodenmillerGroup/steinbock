@@ -42,15 +42,17 @@ def try_convert_to_anndata_from_disk(
     intensity_files: Sequence[Union[str, PathLike]],
     *data_file_lists,
     neighbors_files: Optional[Sequence[Union[str, PathLike]]] = None,
-    panel: Optional[pd.DataFrame] = None,
-    image_info: Optional[pd.DataFrame] = None,
+    # panel: Optional[pd.DataFrame] = None,
+    # image_info: Optional[pd.DataFrame] = None,
 ) -> Generator[
     Tuple[str, Path, Tuple[Path, ...], Optional[Path], AnnData], None, None
 ]:
-    panel = panel.set_index("name", drop=False, verify_integrity=True)
-    image_info = image_info.set_index(
-        "image", drop=False, verify_integrity=True
-    )
+    # if panel is not None:
+    #     panel = panel.set_index("name", drop=False, verify_integrity=True)
+    # if image_info is not None:
+    #     image_info = image_info.set_index(
+    #         "image", drop=False, verify_integrity=True
+    #     )
     for i, intensity_file in enumerate(intensity_files):
         intensity_file = Path(intensity_file)
         data_files = tuple(Path(dfl[i]) for dfl in data_file_lists)
@@ -71,54 +73,52 @@ def try_convert_to_anndata_from_disk(
                         right_index=True,
                     )
                 obs = obs.loc[x.index, :]
-            if image_info is not None:
-                r = image_info.loc[img_file_name, :]
-                image_obs = pd.concat([r] * len(x.index), axis=1).transpose()
-                image_obs.columns = [
-                    "image" if column == "image" else f"image_{column}"
-                    for column in image_obs.columns
-                ]
-                image_obs.index = x.index
-                if obs is not None:
-                    obs = pd.merge(
-                        obs,
-                        image_obs,
-                        how="inner",  # preserves order of left keys
-                        left_index=True,
-                        right_index=True,
-                    )
-                else:
-                    obs = image_obs
+            # if image_info is not None:
+            #     image_obs = (
+            #         pd.concat(
+            #             [image_info.loc[img_file_name, :]] * len(x.index),
+            #             axis=1,
+            #         )
+            #         .transpose()
+            #         .astype(image_info.dtypes.to_dict())
+            #     )
+            #     image_obs.index = x.index
+            #     image_obs.columns = "image_" + image_obs.columns
+            #     image_obs.rename(
+            #         columns={"image_image": "image"}, inplace=True
+            #     )
+            #     if obs is not None:
+            #         obs = pd.merge(
+            #             obs,
+            #             image_obs,
+            #             how="inner",  # preserves order of left keys
+            #             left_index=True,
+            #             right_index=True,
+            #         )
+            #     else:
+            #         obs = image_obs
             var = None
-            if panel is not None:
-                var = panel.loc[x.columns, :].copy()
+            # if panel is not None:
+            #     var = panel.loc[x.columns, :].copy()
             if obs is not None:
-                obs.index = [f"Object {object_id}" for object_id in x.index]
+                obs.reset_index(inplace=True)
             if var is not None:
-                var.index = x.columns.astype(str).values
+                var.reset_index(inplace=True)
             adata = AnnData(X=x.values, obs=obs, var=var)
+            adata.obs_names = [f"Object {object_id}" for object_id in x.index]
+            adata.var_names = x.columns.astype(str).tolist()
             if neighbors_file is not None:
                 neighbors = io.read_neighbors(neighbors_file)
+                row_ind = [x.index.get_loc(a) for a in neighbors["Object"]]
+                col_ind = [x.index.get_loc(b) for b in neighbors["Neighbor"]]
                 adata.obsp["adj"] = csr_matrix(
-                    (
-                        [True] * len(neighbors.index),
-                        (
-                            neighbors["Object"].astype(int).values,
-                            neighbors["Neighbor"].astype(int).values,
-                        ),
-                    ),
+                    ([True] * len(neighbors.index), (row_ind, col_ind)),
                     shape=(adata.n_obs, adata.n_obs),
                     dtype=np.uint8,
                 )
                 if neighbors["Distance"].notna().any():
                     adata.obsp["dist"] = csr_matrix(
-                        (
-                            neighbors["Distance"].values,
-                            (
-                                neighbors["Object"].astype(int).values,
-                                neighbors["Neighbor"].astype(int).values,
-                            ),
-                        ),
+                        (neighbors["Distance"].values, (row_ind, col_ind)),
                         shape=(adata.n_obs, adata.n_obs),
                         dtype=np.float32,
                     )
