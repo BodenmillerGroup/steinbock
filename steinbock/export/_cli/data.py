@@ -18,7 +18,7 @@ from steinbock.export import data
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )
@@ -75,7 +75,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )
@@ -135,25 +135,20 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
 @click.option(
     "--intensities",
     "intensities_dir",
+    required=True,
     type=click.Path(exists=True, file_okay=False),
-    default="intensities",
-    show_default=True,
     help="Path to the intensities directory",
 )
 @click.option(
     "--data",
     "data_dirs",
     multiple=True,
-    default=["regionprops"],
-    show_default=True,
     type=click.Path(exists=True, file_okay=False),
     help="Path to the object data directory",
 )
 @click.option(
     "--neighbors",
     "neighbors_dir",
-    default="neighbors",
-    show_default=True,
     type=click.Path(exists=True, file_okay=False),
     help="Path to the neighbors directory",
 )
@@ -176,7 +171,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
 @click.option(
     "--concat/--no-concat",
     "concatenate",
-    default=False,
+    default=True,
     show_default=True,
     help="Concatenate all files into a single file",
 )

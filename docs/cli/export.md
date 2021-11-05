@@ -24,7 +24,7 @@ To export specified object data from all images as a single .csv file:
 
     steinbock export csv intensities regionprops
 
-This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in [object data format](../file-types.md#object-data), with an additional first column indicating the source image. The default destination file is `objects.csv`.
+This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in [object data format](../file-types.md#object-data), with an additional first column indicating the source image.
 
 ## FCS
 
@@ -32,21 +32,23 @@ To export specified object data from all images as a single .fcs file:
 
     steinbock export fcs intensities regionprops
 
-This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in FCS format using the [fcswrite](https://github.com/ZELLMECHANIK-DRESDEN/fcswrite) package. The default destination file is `objects.fcs`.
+This will collect object data from the `intensities` and `regionprops` directories and create a single FCS file (defaults to `objects.fcs`) using the [fcswrite](https://github.com/ZELLMECHANIK-DRESDEN/fcswrite) package.
 
 ## AnnData
 
 To export specified object data to [AnnData](https://github.com/theislab/anndata):
 
-    steinbock export anndata --x intensities --obs regionprops
+    steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors
 
-By default, this will generate one .h5ad file per image, with object intensities as main data and object regionprops as observations annotation. The default destination directory is `anndata`.
+This will generate a single .h5ad file (defaults to `objects.h5ad`), with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in `adj`, distances in `dists`).
 
 !!! note "AnnData file format"
     To export the data as .loom or .zarr, specify `--format loom` or `--format zarr`, respectively.
 
-!!! note "Multiple observations annotation sources"
-    The `--obs` option can be specified multiple times to include different object data as observations annotations.
+    Currently, the .h5ad format does not allow for storing panel/image metadata, see [issue #66](https://github.com/BodenmillerGroup/steinbock/issues/66).
+
+!!! note "Multiple data sources"
+    The `--data` option can be specified multiple times to include different object data as observation annotationss.
 
 ## Graphs
 
