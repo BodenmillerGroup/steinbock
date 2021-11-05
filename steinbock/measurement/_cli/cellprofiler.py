@@ -84,12 +84,14 @@ def prepare_cmd(
         imwrite(
             Path(cpdata_dir) / img_file.name,
             data=io._to_dtype(img, np.uint16),
+            imagej=True,
         )
         del img
         mask = io.read_mask(mask_file)
         imwrite(
             Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}",
             data=io._to_dtype(mask, np.uint16),
+            imagej=True,
         )
         del mask
     cellprofiler.create_and_save_measurement_pipeline(

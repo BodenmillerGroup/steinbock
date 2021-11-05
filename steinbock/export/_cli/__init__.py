@@ -123,6 +123,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             imwrite(
                 histocat_img_dir / f"{channel_name}.tiff",
                 data=io._to_dtype(channel_img, np.float32),
+                imagej=True,
             )
         mask = None
         if mask_files is not None:
@@ -130,6 +131,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             imwrite(
                 histocat_img_dir / f"{img_file.stem}_mask.tiff",
                 data=io._to_dtype(mask, np.uint16),
+                imagej=True,
             )
         click.echo(img_file.name)
         del img, mask
