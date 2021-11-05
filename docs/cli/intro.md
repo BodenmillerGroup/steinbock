@@ -3,7 +3,7 @@
 The following sections document the usage of the *steinbock* command-line interface (CLI).
 
 !!! note "Prerequisites"
-    From this point onwards, it is assumed that the `steinbock` command alias was [configured](../docker.md) correctly.
+    From this point onwards, it is assumed that the `steinbock` command alias was [configured](../install-docker.md) correctly.
 
 ## Getting help
 
