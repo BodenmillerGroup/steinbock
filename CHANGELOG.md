@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.10.0] - 2021-11-05
+
+  - Unified object data (csv, fcs, anndata) export commands
+  - Improved anndata export: concatenation, intensities, graphs
+  - Improved IMC panel preprocessing: support for different panels
+  - Added functionality for importing image data using imageio
+  - Clean up and upgrade dependencies, including deepcell 0.11.0
+  - Change image file name pattern to make acquisitions sortable
+  - Upgrade readimc for faster reading of .txt files
+  - Change CellProfiler input image dtype to uint16
+  - Change histoCAT mask dtype to uint16
+  - Updated documentation on Docker
+
+
 ## [0.9.1] - 2021-10-12
 
   - Fixed preprocessing of IMC Segmentation Pipeline panels
@@ -217,6 +231,7 @@ Added:
 Initial release for beta testing
 
 
+[0.10.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.9.1...v0.10.0
 [0.9.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.8.1...v0.9.0
 [0.8.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.8.0...v0.8.1
