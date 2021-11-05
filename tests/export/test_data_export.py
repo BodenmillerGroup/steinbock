@@ -35,21 +35,15 @@ class TestDataExport:
             imc_test_data_steinbock_path / "neighbors",
             base_files=intensities_files,
         )
-        panel = io.read_panel(imc_test_data_steinbock_path / "panel.csv")
-        image_info = io.read_image_info(
-            imc_test_data_steinbock_path / "images.csv"
-        )
         gen = data.try_convert_to_anndata_from_disk(
             intensities_files,
             regionprops_files,
             neighbors_files=neighbors_files,
-            panel=panel,
-            image_info=image_info,
         )
         for (
             img_file_name,
             intensities_file,
-            data_files,
+            (regionprops_file, ),
             neighbors_file,
             adata,
         ) in gen:
