@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
     
     
       
@@ -148,7 +148,7 @@
   
     <li class="md-tabs__item">
       <a href="../intro/" class="md-tabs__link md-tabs__link--active">
-        CLI usage
+        Command-line usage
       </a>
     </li>
   
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker/" class="md-nav__link">
+      <a href="../../install-docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -289,7 +289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python/" class="md-nav__link">
+      <a href="../../install-python/" class="md-nav__link">
         Python
       </a>
     </li>
@@ -493,14 +493,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          CLI usage
+          Command-line usage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          CLI usage
+          Command-line usage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -580,6 +580,13 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-images" class="md-nav__link">
+    External images
+  </a>
   
 </li>
       
@@ -913,6 +920,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#external-images" class="md-nav__link">
+    External images
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -931,7 +945,7 @@
 <p>Various sources for raw data are supported by <em>steinbock</em>, each of which is described in the following. If you miss support for an imaging modality, please consider <a href="https://github.com/BodenmillerGroup/steinbock/issues">filing an issue on GitHub</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Optional preprocessing</p>
-<p>Not all raw data require preprocessing. The <em>steinbock</em> framework natively supports input images saved in Tag Image File Format (TIFF), see <a href="../../file-types/#images">File types</a>. If your images are available in TIFF already, preprocessing may not be required.</p>
+<p>The <em>steinbock</em> framework natively supports input images saved in Tag Image File Format (TIFF), see <a href="../../file-types/#images">File types</a>. If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by <a href="https://imageio.readthedocs.io">imageio</a>, you need to convert them to <em>steinbock</em>-compatible TIFF files first, see <a href="#external-images">External images</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Computational resources</p>
@@ -964,14 +978,18 @@
 <p>This will create a <em>steinbock</em> panel at the specified location (defaults to <code>panel.csv</code>) as follows:</p>
 <ul>
 <li>If an IMC panel file (in <em>IMC Segmentation Pipeline</em><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">1</a></sup> format, undocumented) exists at the specified location (defaults to <code>raw/panel.csv</code>), it is converted to the <a href="../../file-types/#panel"><em>steinbock</em> panel format</a>.</li>
-<li>If no IMC panel file was found, the <em>steinbock</em> panel is created based on the first acquisition in the first .mcd file found at the specified location (defaults to <code>raw</code>). </li>
-<li>If no IMC panel file and no .mcd file were found, the <em>steinbock</em> panel is created based on the first .txt file found at the specified location (defaults to <code>raw</code>).</li>
+<li>If no IMC panel file was found, the <em>steinbock</em> panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to <code>raw</code>). </li>
+<li>If no IMC panel file and no .mcd file were found, the <em>steinbock</em> panel is created based on all .txt files found at the specified location (defaults to <code>raw</code>).</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Different panels</p>
+<p>In principle, IMC supports acquiring a different panel for each .mcd/.txt file and acquisition. When creating a <em>steinbock</em> panel from .mcd/.txt files, the created panel will contain all targets found in any of the input files. During image conversion (see below), only targets marked as <code>keep=1</code> in the panel file will be retained; imaging data with missing channels (identified by the <code>channel</code> column in the panel file) are skipped.</p>
+</div>
 <h3 id="image-conversion">Image conversion</h3>
 <p>To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixels:</p>
 <pre><code>steinbock preprocess imc images --hpf 50
 </code></pre>
-<p>This will extract images from raw files (source directory defaults to <code>raw</code>) and save them at the specified location (defaults to <code>img</code>). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the <em>steinbock</em> panel file at the specified location (defaults to <code>panel.csv</code>). For corrupted .mcd files, <em>steinbock</em> will try to recover the missing acquisitions from matching .txt files. In a second step, images from <em>unmatched</em> .txt files are extracted as well.</p>
+<p>This will extract images from raw files (source directory defaults to <code>raw</code>) and save them at the specified location (defaults to <code>img</code>). Each image corresponds to one acquisition in one file, with the image channels filtered (<code>keep</code> column) and sorted according to the <em>steinbock</em> panel file at the specified location (defaults to <code>panel.csv</code>). For corrupted .mcd files, <em>steinbock</em> will try to recover the missing acquisitions from matching .txt files. In a second step, images from <em>unmatched</em> .txt files are extracted as well.</p>
 <p>Furthermore, this commands also creates an image information table as described in <a href="../../file-types/#image-information">File types</a>. In addition to the default columns, the following IMC-specific columns will be added:</p>
 <ul>
 <li><code>source</code>: the raw .mcd/.txt file name</li>
@@ -997,6 +1015,14 @@
 <p class="admonition-title">Hot pixel filtering</p>
 <p>Hot pixel filtering works by comparing each pixel to its 8-neighborhood (i.e., neighboring pixels at a <a href="https://en.wikipedia.org/wiki/Chebyshev_distance">Chebyshev distance</a> of 1). If the difference (not: absolute difference) between the pixel and any of its 8 neighbor pixels exceeds a <em>hot pixel filtering threshold</em>, the pixel is set to the maximum neighbor pixel value ("hot pixel-filtered"). In the original implementation of the <em>IMC Segmentation Pipeline</em><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, a <em>hot pixel filtering threshold</em> of 50 is recommended.</p>
 </div>
+<h2 id="external-images">External images</h2>
+<p><em>External images</em> are images preprocessed externally (i.e., without <em>steinbock</em>) that are saved in an image format supported by <a href="https://imageio.readthedocs.io">imageio</a>.</p>
+<p>For convenience, to create a template panel file based on external image data stored at the specified location (defaults to <code>external</code>):</p>
+<pre><code>steinbock preprocess external panel
+</code></pre>
+<p>To convert external image data to <em>steinbock</em>-supported TIFF files (see <a href="../../file-types/#images">File types</a>) and save them to the specified location (defaults to <code>external</code>):</p>
+<pre><code>steinbock preprocess external images
+</code></pre>
 <div class="footnote">
 <hr />
 <ol>

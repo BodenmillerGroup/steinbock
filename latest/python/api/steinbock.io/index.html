@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
     
     
       
@@ -146,7 +146,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../cli/intro/" class="md-tabs__link">
-        CLI usage
+        Command-line usage
       </a>
     </li>
   
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../docker/" class="md-nav__link">
+      <a href="../../../install-docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -289,7 +289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../install-python/" class="md-nav__link">
         Python
       </a>
     </li>
@@ -491,14 +491,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          CLI usage
+          Command-line usage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          CLI usage
+          Command-line usage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1335,7 +1335,7 @@
 
 
 <h2 id="steinbock.io.read_image" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_stem</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">keep_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1346,12 +1346,19 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_image</span><span class="p">(</span>
-    <span class="n">img_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">ignore_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">keep_suffix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_imageio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="n">img_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span>
-        <span class="n">img_stem</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">,</span> <span class="n">replace_ome_suffix</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_suffix</span><span class="p">:</span>
+        <span class="n">img_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span>
+            <span class="n">img_file</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">,</span> <span class="n">replace_ome_suffix</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">use_imageio</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">volread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1360,7 +1367,7 @@
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
     <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported number of image dimensions: </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_dtype</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">native_dtype</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_dtype</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">img</span>
 </code></pre></div>
@@ -1482,7 +1489,7 @@
         <span class="n">dtype</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
             <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1691,7 +1698,7 @@
         <span class="p">{</span>
             <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
             <span class="s2">&quot;Neighbor&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
-            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="s2">&quot;Distance&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
         <span class="p">}</span>
     <span class="p">)</span>
     <span class="n">neighbors</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

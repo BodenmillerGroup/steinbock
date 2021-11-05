@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
     
     
       
@@ -148,7 +148,7 @@
   
     <li class="md-tabs__item">
       <a href="../intro/" class="md-tabs__link md-tabs__link--active">
-        CLI usage
+        Command-line usage
       </a>
     </li>
   
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker/" class="md-nav__link">
+      <a href="../../install-docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -289,7 +289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python/" class="md-nav__link">
+      <a href="../../install-python/" class="md-nav__link">
         Python
       </a>
     </li>
@@ -493,14 +493,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          CLI usage
+          Command-line usage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          CLI usage
+          Command-line usage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -972,24 +972,25 @@
 <p>To export specified object data from all images as a single .csv file:</p>
 <pre><code>steinbock export csv intensities regionprops
 </code></pre>
-<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single object data table in <a href="../../file-types/#object-data">object data format</a>, with an additional first column indicating the source image. The default destination file is <code>objects.csv</code>.</p>
+<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single object data table in <a href="../../file-types/#object-data">object data format</a>, with an additional first column indicating the source image.</p>
 <h2 id="fcs">FCS</h2>
 <p>To export specified object data from all images as a single .fcs file:</p>
 <pre><code>steinbock export fcs intensities regionprops
 </code></pre>
-<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single object data table in FCS format using the <a href="https://github.com/ZELLMECHANIK-DRESDEN/fcswrite">fcswrite</a> package. The default destination file is <code>objects.fcs</code>.</p>
+<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single FCS file (defaults to <code>objects.fcs</code>) using the <a href="https://github.com/ZELLMECHANIK-DRESDEN/fcswrite">fcswrite</a> package.</p>
 <h2 id="anndata">AnnData</h2>
 <p>To export specified object data to <a href="https://github.com/theislab/anndata">AnnData</a>:</p>
-<pre><code>steinbock export anndata --x intensities --obs regionprops
+<pre><code>steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors
 </code></pre>
-<p>By default, this will generate one .h5ad file per image, with object intensities as main data and object regionprops as observations annotation. The default destination directory is <code>anndata</code>.</p>
+<p>This will generate a single .h5ad file (defaults to <code>objects.h5ad</code>), with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in <code>adj</code>, distances in <code>dists</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">AnnData file format</p>
 <p>To export the data as .loom or .zarr, specify <code>--format loom</code> or <code>--format zarr</code>, respectively.</p>
+<p>Currently, the .h5ad format does not allow for storing panel/image metadata, see <a href="https://github.com/BodenmillerGroup/steinbock/issues/66">issue #66</a>.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Multiple observations annotation sources</p>
-<p>The <code>--obs</code> option can be specified multiple times to include different object data as observations annotations.</p>
+<p class="admonition-title">Multiple data sources</p>
+<p>The <code>--data</code> option can be specified multiple times to include different object data as observation annotationss.</p>
 </div>
 <h2 id="graphs">Graphs</h2>
 <p>To export neighbors as spatial object graphs, with object data as node attributes:</p>

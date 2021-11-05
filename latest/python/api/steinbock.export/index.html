@@ -10,7 +10,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
     
     
       
@@ -146,7 +146,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../cli/intro/" class="md-tabs__link">
-        CLI usage
+        Command-line usage
       </a>
     </li>
   
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../docker/" class="md-nav__link">
+      <a href="../../../install-docker/" class="md-nav__link">
         Docker
       </a>
     </li>
@@ -289,7 +289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../install-python/" class="md-nav__link">
         Python
       </a>
     </li>
@@ -491,14 +491,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          CLI usage
+          Command-line usage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          CLI usage
+          Command-line usage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1034,7 +1034,7 @@
 
 
 <h3 id="steinbock.export.data.try_convert_to_anndata_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_convert_to_anndata_from_disk</span><span class="p">(</span><span class="n">x_files</span><span class="p">,</span> <span class="o">*</span><span class="n">obs_file_lists</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_convert_to_anndata_from_disk</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">neighbors_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1045,28 +1045,103 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/export/data.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_anndata_from_disk</span><span class="p">(</span>
-    <span class="n">x_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="o">*</span><span class="n">obs_file_lists</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="k">for</span> <span class="n">x_file</span><span class="p">,</span> <span class="o">*</span><span class="n">obs_files</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_files</span><span class="p">,</span> <span class="o">*</span><span class="n">obs_file_lists</span><span class="p">):</span>
-        <span class="n">obs_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">obs_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">obs_file</span> <span class="ow">in</span> <span class="n">obs_files</span><span class="p">)</span>
+    <span class="n">intensity_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span>
+    <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># panel: Optional[pd.DataFrame] = None,</span>
+    <span class="c1"># image_info: Optional[pd.DataFrame] = None,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="p">]:</span>
+    <span class="c1"># if panel is not None:</span>
+    <span class="c1">#     panel = panel.set_index(&quot;name&quot;, drop=False, verify_integrity=True)</span>
+    <span class="c1"># if image_info is not None:</span>
+    <span class="c1">#     image_info = image_info.set_index(</span>
+    <span class="c1">#         &quot;image&quot;, drop=False, verify_integrity=True</span>
+    <span class="c1">#     )</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">intensity_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">):</span>
+        <span class="n">intensity_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">)</span>
+        <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dfl</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">dfl</span> <span class="ow">in</span> <span class="n">data_file_lists</span><span class="p">)</span>
+        <span class="n">neighbors_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">neighbors_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">img_file_name</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">x_file</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">)</span>
             <span class="n">obs</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obs_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">obs</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">obs_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">obs_file</span> <span class="ow">in</span> <span class="n">obs_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
                     <span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
                         <span class="n">obs</span><span class="p">,</span>
-                        <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">obs_file</span><span class="p">),</span>
+                        <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">),</span>
                         <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="p">)</span>
-                <span class="n">obs</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-            <span class="n">anndata</span> <span class="o">=</span> <span class="n">AnnData</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">x_file</span><span class="p">),</span> <span class="n">obs_files</span><span class="p">,</span> <span class="n">anndata</span>
-            <span class="k">del</span> <span class="n">x</span><span class="p">,</span> <span class="n">obs</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="c1"># if image_info is not None:</span>
+            <span class="c1">#     image_obs = (</span>
+            <span class="c1">#         pd.concat(</span>
+            <span class="c1">#             [image_info.loc[img_file_name, :]] * len(x.index),</span>
+            <span class="c1">#             axis=1,</span>
+            <span class="c1">#         )</span>
+            <span class="c1">#         .transpose()</span>
+            <span class="c1">#         .astype(image_info.dtypes.to_dict())</span>
+            <span class="c1">#     )</span>
+            <span class="c1">#     image_obs.index = x.index</span>
+            <span class="c1">#     image_obs.columns = &quot;image_&quot; + image_obs.columns</span>
+            <span class="c1">#     image_obs.rename(</span>
+            <span class="c1">#         columns={&quot;image_image&quot;: &quot;image&quot;}, inplace=True</span>
+            <span class="c1">#     )</span>
+            <span class="c1">#     if obs is not None:</span>
+            <span class="c1">#         obs = pd.merge(</span>
+            <span class="c1">#             obs,</span>
+            <span class="c1">#             image_obs,</span>
+            <span class="c1">#             how=&quot;inner&quot;,  # preserves order of left keys</span>
+            <span class="c1">#             left_index=True,</span>
+            <span class="c1">#             right_index=True,</span>
+            <span class="c1">#         )</span>
+            <span class="c1">#     else:</span>
+            <span class="c1">#         obs = image_obs</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># if panel is not None:</span>
+            <span class="c1">#     var = panel.loc[x.columns, :].copy()</span>
+            <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">obs</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">adata</span> <span class="o">=</span> <span class="n">AnnData</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
+            <span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">object_id</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">adata</span><span class="o">.</span><span class="n">var_names</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">neighbors_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">neighbors</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span>
+                <span class="n">row_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">]]</span>
+                <span class="n">col_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Neighbor&quot;</span><span class="p">]]</span>
+                <span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s2">&quot;adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+                    <span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="p">(</span><span class="n">row_ind</span><span class="p">,</span> <span class="n">col_ind</span><span class="p">)),</span>
+                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Distance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Distance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="n">row_ind</span><span class="p">,</span> <span class="n">col_ind</span><span class="p">)),</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">del</span> <span class="n">neighbors</span>
+            <span class="k">yield</span> <span class="p">(</span>
+                <span class="n">img_file_name</span><span class="p">,</span>
+                <span class="n">intensity_file</span><span class="p">,</span>
+                <span class="n">data_files</span><span class="p">,</span>
+                <span class="n">neighbors_file</span><span class="p">,</span>
+                <span class="n">adata</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">del</span> <span class="n">x</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">adata</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting </span><span class="si">{</span><span class="n">x_file</span><span class="si">}</span><span class="s2"> to AnnData&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating AnnData object for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;skipping image&quot;</span>
+            <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1090,22 +1165,28 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/export/data.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_dataframe_from_disk</span><span class="p">(</span><span class="o">*</span><span class="n">data_file_lists</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">data_objs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">img_file_names</span> <span class="o">=</span> <span class="p">[]</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_dataframe_from_disk</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">data_files</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_file_lists</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">data</span><span class="p">,</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">),</span>
-                <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">)</span>
+        <span class="n">img_file_name</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">),</span>
+                    <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">img_file_name</span><span class="p">,</span> <span class="n">data_files</span><span class="p">,</span> <span class="n">df</span>
+            <span class="k">del</span> <span class="n">df</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating DataFrame for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;skipping image&quot;</span>
             <span class="p">)</span>
-        <span class="n">img_file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
-        <span class="n">data_objs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">img_file_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">data_objs</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">img_file_names</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;Object&quot;</span><span class="p">])</span>
 </code></pre></div>
         </details>
     </div>

@@ -10,11 +10,11 @@
       
       
       <link rel="icon" href="../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
     
     
       
-        <title>Docker - steinbock</title>
+        <title>Python - steinbock</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#docker" class="md-skip">
+        <a href="#python" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Docker
+              Python
             
           </span>
         </div>
@@ -148,7 +148,7 @@
   
     <li class="md-tabs__item">
       <a href="../cli/intro/" class="md-tabs__link">
-        CLI usage
+        Command-line usage
       </a>
     </li>
   
@@ -277,6 +277,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../install-docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -289,12 +303,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Docker
+          Python
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Docker
+        Python
       </a>
       
         
@@ -323,33 +337,6 @@
     Installation
   </a>
   
-    <nav class="md-nav" aria-label="Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#windows" class="md-nav__link">
-    Windows
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linux" class="md-nav__link">
-    Linux
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#macos" class="md-nav__link">
-    MacOS
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -363,20 +350,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../python/" class="md-nav__link">
-        Python
-      </a>
     </li>
   
 
@@ -576,14 +549,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          CLI usage
+          Command-line usage
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="CLI usage" data-md-level="1">
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          CLI usage
+          Command-line usage
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -921,33 +894,6 @@
     Installation
   </a>
   
-    <nav class="md-nav" aria-label="Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#windows" class="md-nav__link">
-    Windows
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#linux" class="md-nav__link">
-    Linux
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#macos" class="md-nav__link">
-    MacOS
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -970,87 +916,34 @@
               
                 
                 
-                <h1 id="docker">Docker</h1>
-<p>The <em>steinbock</em> framework can be used interactively using the <em>steinbock</em> Docker container.</p>
-<p>In this section, the installation and configuration of the <em>steinbock</em> Docker container is described.</p>
-<div class="admonition note">
-<p class="admonition-title">Prerequisites</p>
-<p>To make efficient use of the <em>steinbock</em> Docker container, basic command line skills are absolutely required. Furthermore, understanding key concepts of containerization using Docker may be helpful in resolving issues.</p>
-</div>
+                <h1 id="python">Python</h1>
+<p>The <em>steinbock</em> framework can be used programmatically using the <em>steinbock</em> Python package.</p>
+<p>In this section, the installation of the <em>steinbock</em> Python package is described.</p>
 <h2 id="requirements">Requirements</h2>
-<p><a href="https://docs.docker.com/get-docker/">Install Docker</a></p>
-<div class="admonition note">
-<p class="admonition-title">System resources</p>
-<p>On Windows and MacOS hosts, make sure to allocate enough system resources to Docker. In particular, Docker's default memory limit of 2GB will likely not be sufficient to run steinbock on real-world datasets. To increase the memory limit, please refer to the Docker manual for <a href="https://docs.docker.com/desktop/windows/">Windows</a> and <a href="https://docs.docker.com/desktop/mac/">MacOS</a>.</p>
-</div>
-<p>Make Docker available to non-root users: Linux users can follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-installation steps for Linux</a>, Windows users need to add the current user to the <code>docker-users</code> group. For MacOS, no further setup is required.</p>
-<div class="admonition note">
-<p class="admonition-title">Adding a user to the <code>docker-users</code> group on Windows hosts</p>
-<p>On Windows hosts, to add a user to the <code>docker-users</code> group using the command line (as administrator):</p>
-<pre><code>net localgroup /add docker-users &lt;username&gt;
-</code></pre>
-<p>Replace <code>&lt;username&gt;</code> with the name of the user (for domain accounts, use the <code>&lt;domain&gt;\&lt;username&gt;</code> format).</p>
-</div>
+<p><a href="https://www.python.org">Python</a> 3.8 or newer</p>
+<p>Tested versions of Python package dependencies can be found in <a href="https://github.com/BodenmillerGroup/steinbock/blob/main/requirements.txt">requirements.txt</a>.</p>
 <h2 id="installation">Installation</h2>
-<p>In principle, the <em>steinbock</em> Docker container can be run on any Docker-enabled platform:</p>
-<pre><code>docker run ghcr.io/bodenmillergroup/steinbock
+<p>The <em>steinbock</em> Python package can be installed <a href="https://pypi.org/project/steinbock">from PyPI</a> as follows:</p>
+<pre><code>pip install steinbock
 </code></pre>
-<p>For reproducibility, it is recommended to always pull a specific release, e.g.:</p>
-<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.9.1
-</code></pre>
-<p><a href="https://docs.docker.com/storage/bind-mounts/">Bind mounts</a> can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to <code>docker run</code> as outlined in the following.</p>
-<h3 id="windows">Windows</h3>
-<p>On the command line, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.9.1
-</code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.9.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.9.1 $*
-</code></pre>
-<p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current command line without typing the full Docker command, for example:</p>
-<pre><code>steinbock --version
+<p>The following extras are available:</p>
+<ul>
+<li><code>imc</code> to enable IMC preprocessing functionality</li>
+<li><code>deepcell</code> to enable DeepCell segmentation functionality</li>
+</ul>
+<p>To install all extras, use the <code>all</code> extra:</p>
+<pre><code>pip install "steinbock[all]"
 </code></pre>
 <div class="admonition note">
-<p class="admonition-title">Graphical user interfaces on Windows hosts</p>
-<p>Commands that launch a graphical user interface (e.g. for Ilastik, CellProfiler) will not work on Windows hosts. It is recommended to run these programs directly on the Windows host, if graphical user interfaces are required. For compatibility, versions of third-party applications can be found in the <a href="https://github.com/BodenmillerGroup/steinbock/blob/main/Dockerfile"><em>steinbock</em> Dockerfile</a>.</p>
-</div>
-<h3 id="linux">Linux</h3>
-<p>On the terminal, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.9.1
-</code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.9.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.9.1"
-</code></pre>
-<p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
-<pre><code>steinbock --version
-</code></pre>
-<div class="admonition note">
-<p class="admonition-title">Graphical user interfaces on Linux hosts</p>
-<p>To allow the <em>steinbock</em> Docker container to run graphical user interfaces, if necessary, allow the local root user (i.e., the user running the Docker daemon) to access the running X server:</p>
-<pre><code>xhost +local:root
-</code></pre>
-</div>
-<h3 id="macos">MacOS</h3>
-<p>On the terminal, use the following command to run the <em>steinbock</em> Docker container (Docker must be running):</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.9.1
-</code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.9.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.9.1"
-</code></pre>
-<p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
-<pre><code>steinbock --version
-</code></pre>
-<div class="admonition note">
-<p class="admonition-title">Graphical user interfaces on MacOS hosts</p>
-<p>To allow the <em>steinbock</em> Docker container to run graphical user interfaces, first install and start <a href="https://www.xquartz.org/">XQuartz</a>. Then, open <em>XQuartz</em> &gt; <em>Security</em> &gt; <em>Preferences</em> and tick <em>Allow connections from network clients</em>. Log out of your user account and login again; restart Docker and XQuartz. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:</p>
-<pre><code>xhost + $(hostname)
+<p class="admonition-title">Package version conflics</p>
+<p>Some of the dependencies of steinbock are incompatible due to different version requirements. As a workaround, use the following strategy for installing tested combinations of package versions:</p>
+<pre><code>pip install --upgrade deepcell==0.11.0
+pip install --upgrade -r requirements.txt
+pip install --upgrade "steinbock[all]"
 </code></pre>
 </div>
 <h2 id="usage">Usage</h2>
-<p>Please refer to <a href="../cli/intro/">CLI usage</a> for usage instructions.</p>
-<div class="admonition note">
-<p class="admonition-title">Getting help</p>
-<p>The <em>steinbock</em> Docker container is under active development. If you are experiencing issues, you are more than welcome to <a href="https://github.com/BodenmillerGroup/steinbock/issues">file an issue on GitHub</a>. However, please understand that only issues directly concerning <em>steinbock</em> can be addressed. For user support with Docker, command line usage, etc., please refer to your local IT administrator.</p>
-</div>
+<p>Please refer to <a href="../python/intro/">Python usage</a> for usage instructions.</p>
                 
               
               
@@ -1075,7 +968,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Welcome" rel="prev">
+        <a href="../install-docker/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Docker" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1084,20 +977,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Welcome
+              Docker
             </div>
           </div>
         </a>
       
       
         
-        <a href="../python/" class="md-footer__link md-footer__link--next" aria-label="Next: Python" rel="next">
+        <a href="../file-types/" class="md-footer__link md-footer__link--next" aria-label="Next: File types" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Python
+              File types
             </div>
           </div>
           <div class="md-footer__button md-icon">
