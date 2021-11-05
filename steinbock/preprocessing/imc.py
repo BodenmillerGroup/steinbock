@@ -38,8 +38,8 @@ def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(mcd_dir).rglob("*.mcd"))
 
 
-def list_txt_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(mcd_dir).rglob("*.txt"))
+def list_txt_files(txt_dir: Union[str, PathLike]) -> List[Path]:
+    return sorted(Path(txt_dir).rglob("*.txt"))
 
 
 def create_panel_from_imc_panel(
@@ -83,25 +83,201 @@ def create_panel_from_imc_panel(
         if panel_col in imc_panel.columns and panel_col != imc_panel_col
     ]
     panel = imc_panel.drop(columns=drop_columns).rename(columns=rename_columns)
-    for _, group in panel.groupby("channel"):
-        panel.loc[group.index, "name"] = " / ".join(
-            group["name"].dropna().unique()
+    if "ilastik" in panel:
+        ilastik_mask = panel["ilastik"].astype(bool)
+        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
+    if "deepcell" in panel:
+        deepcell_mask = panel["deepcell"].astype(bool)
+        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel.loc[deepcell_mask, "deepcell"] = range(
+            1, deepcell_mask.sum() + 1
         )
+    return _clean_panel(panel)
+
+
+def create_panel_from_mcd_files(
+    mcd_files: Sequence[Union[str, PathLike]]
+) -> pd.DataFrame:
+    panels = []
+    for mcd_file in mcd_files:
+        with IMCMcdFile(mcd_file) as f:
+            for slide in f.slides:
+                for acquisition in slide.acquisitions:
+                    panel = _create_panel_from_acquisition(acquisition)
+                    panels.append(panel)
+    panel = pd.concat(panels, ignore_index=True, copy=False)
+    return _clean_panel(panel)
+
+
+def create_panel_from_txt_files(
+    txt_files: Sequence[Union[str, PathLike]]
+) -> pd.DataFrame:
+    panels = []
+    for txt_file in txt_files:
+        with IMCTxtFile(txt_file) as f:
+            panel = _create_panel_from_acquisition(f)
+            panels.append(panel)
+    panel = pd.concat(panels, ignore_index=True, copy=False)
+    return _clean_panel(panel)
+
+
+def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
+    kernel = np.ones((1, 3, 3), dtype=bool)
+    kernel[0, 1, 1] = False
+    max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
+    return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
+
+
+def preprocess_image(
+    img: np.ndarray,
+    channel_indices: Optional[Sequence[int]] = None,
+    hpf: Optional[float] = None,
+) -> np.ndarray:
+    if channel_indices is not None:
+        img = img[channel_indices, :, :]
+    img = img.astype(np.float32)
+    if hpf is not None:
+        img = filter_hot_pixels(img, hpf)
+    return io._to_dtype(img, io.img_dtype)
+
+
+def try_preprocess_images_from_disk(
+    mcd_files: Sequence[Union[str, PathLike]],
+    txt_files: Sequence[Union[str, PathLike]],
+    channel_names: Optional[Sequence[str]] = None,
+    hpf: Optional[float] = None,
+) -> Generator[Tuple[Path, Optional["Acquisition"], np.ndarray], None, None]:
+    unmatched_txt_files = list(txt_files)
+    for mcd_file in mcd_files:
+        try:
+            with IMCMcdFile(mcd_file) as f_mcd:
+                for slide in f_mcd.slides:
+                    for acquisition in slide.acquisitions:
+                        matched_txt_file = _match_txt_file(
+                            mcd_file, acquisition, unmatched_txt_files
+                        )
+                        if matched_txt_file is not None:
+                            unmatched_txt_files.remove(matched_txt_file)
+                        channel_ind = None
+                        if channel_names is not None:
+                            channel_ind = _get_channel_indices(
+                                acquisition, channel_names
+                            )
+                            if isinstance(channel_ind, str):
+                                _logger.warning(
+                                    f"Channel {channel_ind} not found for "
+                                    f"acquisition {acquisition.id} in file "
+                                    "{mcd_file}; skipping acquisition"
+                                )
+                                continue
+                        img = None
+                        try:
+                            img = f_mcd.read_acquisition(acquisition)
+                        except IOError:
+                            _logger.warning(
+                                f"Error reading acquisition {acquisition.id} "
+                                f"from file {mcd_file}"
+                            )
+                            if matched_txt_file is not None:
+                                _logger.warning(
+                                    f"Restoring from file {matched_txt_file}"
+                                )
+                                try:
+                                    with IMCTxtFile(matched_txt_file) as f_txt:
+                                        img = f_txt.read_acquisition()
+                                        if channel_names is not None:
+                                            channel_ind = _get_channel_indices(
+                                                f_txt, channel_names
+                                            )
+                                            if isinstance(channel_ind, str):
+                                                _logger.warning(
+                                                    f"Channel {channel_ind} "
+                                                    "not found in file "
+                                                    f"{matched_txt_file}; "
+                                                    "skipping acquisition"
+                                                )
+                                                continue
+                                except IOError:
+                                    _logger.exception(
+                                        "Error reading file "
+                                        f"{matched_txt_file}"
+                                    )
+                        if img is not None:  # exceptions ...
+                            if channel_ind is not None:
+                                img = img[channel_ind, :, :]
+                            img = preprocess_image(img, hpf=hpf)
+                            yield Path(mcd_file), acquisition, img
+                            del img
+        except:
+            _logger.exception(f"Error reading file {mcd_file}")
+    while len(unmatched_txt_files) > 0:
+        matched_txt_file = unmatched_txt_files.pop(0)
+        try:
+            channel_ind = None
+            with IMCTxtFile(matched_txt_file) as f:
+                if channel_names is not None:
+                    channel_ind = _get_channel_indices(f, channel_names)
+                    if isinstance(channel_ind, str):
+                        _logger.warning(
+                            f"Channel {channel_ind} not found in file "
+                            f"{matched_txt_file}; skipping acquisition"
+                        )
+                        continue
+                img = f.read_acquisition()
+            if channel_ind is not None:
+                img = img[channel_ind, :, :]
+            img = preprocess_image(img, hpf=hpf)
+            yield Path(matched_txt_file), None, img
+            del img
+        except:
+            _logger.exception(f"Error reading file {matched_txt_file}")
+
+
+def _create_panel_from_acquisition(
+    acquisition: "AcquisitionBase",
+) -> pd.DataFrame:
+    panel = pd.DataFrame(
+        data={
+            "channel": acquisition.channel_names,
+            "name": acquisition.channel_labels,
+            "keep": True,
+            "ilastik": range(1, acquisition.num_channels + 1),
+            "deepcell": np.nan,
+        },
+    )
+    panel["channel"] = panel["channel"].astype(pd.StringDtype())
+    panel["name"] = panel["name"].astype(pd.StringDtype())
+    panel["keep"] = panel["keep"].astype(pd.BooleanDtype())
+    panel["ilastik"] = panel["ilastik"].astype(pd.UInt8Dtype())
+    panel["deepcell"] = panel["deepcell"].astype(pd.UInt8Dtype())
+    panel.sort_values(
+        "channel",
+        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
+        inplace=True,
+    )
+    return panel
+
+
+def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
+    panel = panel.copy()
+    for _, g in panel.groupby("channel"):
+        panel.loc[g.index, "name"] = " / ".join(g["name"].dropna().unique())
         if "keep" in panel:
-            panel.loc[group.index, "keep"] = group["keep"].any()
+            panel.loc[g.index, "keep"] = g["keep"].any()
         if "ilastik" in panel:
-            panel.loc[group.index, "ilastik"] = group["ilastik"].any()
+            panel.loc[g.index, "ilastik"] = g["ilastik"].notna().any()
         if "deepcell" in panel:
-            panel.loc[group.index, "deepcell"] = group["deepcell"].any()
+            panel.loc[g.index, "deepcell"] = g["deepcell"].notna().any()
     panel = panel.groupby(panel["channel"].values).aggregate("first")
     panel.sort_values(
         "channel",
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
         inplace=True,
     )
-    duplicated_mask = panel["name"].duplicated(keep=False)
+    name_dupl_mask = panel["name"].duplicated(keep=False)
     name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
-    panel.loc[duplicated_mask, "name"] += name_suffixes[duplicated_mask]
+    panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
     if "keep" not in panel:
         panel["keep"] = pd.Series(True, dtype=pd.BooleanDtype())
     if "ilastik" in panel:
@@ -122,130 +298,38 @@ def create_panel_from_imc_panel(
         panel["deepcell"] = pd.Series(
             range(1, len(panel.index) + 1), dtype=pd.UInt8Dtype()
         )
-    col_order = panel.columns.tolist()
-    next_col_index = 0
-    for col in ("channel", "name", "keep", "ilastik", "deepcell"):
-        if col in col_order:
-            col_order.remove(col)
-            col_order.insert(next_col_index, col)
-            next_col_index += 1
-    panel = panel.loc[:, col_order]
+    next_column_index = 0
+    for column in ("channel", "name", "keep", "ilastik", "deepcell"):
+        if column in panel:
+            column_data = panel[column]
+            panel.drop(columns=[column], inplace=True)
+            panel.insert(next_column_index, column, column_data)
+            next_column_index += 1
     return panel
 
 
-def create_panel_from_mcd_file(mcd_file: Union[str, PathLike]) -> pd.DataFrame:
-    with IMCMcdFile(mcd_file) as f:
-        first_slide = f.slides[0]
-        first_acquisition = first_slide.acquisitions[0]
-        return _create_panel_from_acquisition(first_acquisition)
-
-
-def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
-    with IMCTxtFile(txt_file) as f:
-        return _create_panel_from_acquisition(f)
-
-
-def _create_panel_from_acquisition(
-    acquisition: "AcquisitionBase",
-) -> pd.DataFrame:
-    panel = pd.DataFrame(
-        data={
-            "channel": acquisition.channel_names,
-            "name": acquisition.channel_labels,
-            "keep": 1,
-            "ilastik": range(1, acquisition.num_channels + 1),
-            "deepcell": np.nan,
-        }
-    )
-    panel.sort_values(
-        "channel",
-        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
-        inplace=True,
-    )
-    return panel
-
-
-def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
-    kernel = np.ones((1, 3, 3), dtype=bool)
-    kernel[0, 1, 1] = False
-    max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
-    return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
-
-
-def preprocess_image(
-    img: np.ndarray,
-    channel_indices: Optional[Sequence[int]] = None,
-    hpf: Optional[float] = None,
-) -> np.ndarray:
-    if channel_indices is not None:
-        img = img[channel_indices, :, :]
-    img = img.astype(np.float32)
-    if hpf is not None:
-        img = filter_hot_pixels(img, hpf)
-    return img
-
-
-def try_preprocess_images_from_disk(
-    mcd_files: Sequence[Union[str, PathLike]],
+def _match_txt_file(
+    mcd_file: Union[str, PathLike],
+    acquisition: Acquisition,
     txt_files: Sequence[Union[str, PathLike]],
-    channel_order: Optional[Sequence[str]] = None,
-    hpf: Optional[float] = None,
-) -> Generator[Tuple[Path, Optional["Acquisition"], np.ndarray], None, None]:
-    def preprocess(a: AcquisitionBase, img: np.ndarray) -> np.ndarray:
-        if channel_order is not None:
-            indices = [a.channel_names.index(metal) for metal in channel_order]
-            img = img[indices, :, :]
-        img = preprocess_image(img, hpf=hpf)
-        return io._to_dtype(img, io.img_dtype)
+) -> Union[str, PathLike, None]:
+    pattern = re.compile(rf"{Path(mcd_file).stem}.*_0*{acquisition.id}.txt")
+    filtered_txt_files = [
+        txt_file
+        for txt_file in txt_files
+        if pattern.match(Path(txt_file).name)
+    ]
+    if len(filtered_txt_files) == 1:
+        return filtered_txt_files[0]
+    return None
 
-    remaining_txt_files = list(txt_files)
-    for mcd_file in mcd_files:
-        try:
-            with IMCMcdFile(mcd_file) as f_mcd:
-                for slide in f_mcd.slides:
-                    for acquisition in slide.acquisitions:
-                        pattern = re.compile(
-                            rf"{Path(mcd_file).stem}.*_0*{acquisition.id}"
-                        )
-                        txt_file = None
-                        filtered_txt_files = [
-                            remaining_txt_file
-                            for remaining_txt_file in remaining_txt_files
-                            if pattern.match(Path(remaining_txt_file).stem)
-                        ]
-                        if len(filtered_txt_files) == 1:
-                            txt_file = filtered_txt_files[0]
-                            remaining_txt_files.remove(txt_file)
-                        img = None
-                        try:
-                            img = f_mcd.read_acquisition(acquisition)
-                        except IOError:
-                            _logger.warning(
-                                f"Error reading acquisition {acquisition.id} "
-                                f"from file {mcd_file}"
-                            )
-                            if txt_file is not None:
-                                _logger.info(f"Restoring from file {txt_file}")
-                                try:
-                                    with IMCTxtFile(txt_file) as f_txt:
-                                        img = f_txt.read_acquisition()
-                                except IOError:
-                                    _logger.exception(
-                                        f"Error reading file {txt_file}"
-                                    )
-                        if img is not None:
-                            img = preprocess(acquisition, img)
-                            yield Path(mcd_file), acquisition, img
-                            del img
-        except:
-            _logger.exception(f"Error reading file {mcd_file}")
-    while len(remaining_txt_files) > 0:
-        txt_file = remaining_txt_files.pop(0)
-        try:
-            with IMCTxtFile(txt_file) as f:
-                img = f.read_acquisition()
-                img = preprocess(f, img)
-            yield Path(txt_file), None, img
-            del img
-        except:
-            _logger.exception(f"Error reading file {txt_file}")
+
+def _get_channel_indices(
+    acquisition: AcquisitionBase, channel_names: Sequence[str]
+) -> Union[Sequence[int], str]:
+    channel_indices = []
+    for channel_name in channel_names:
+        if channel_name not in acquisition.channel_names:
+            return channel_name
+        channel_indices.append(acquisition.channel_names.index(channel_name))
+    return channel_indices

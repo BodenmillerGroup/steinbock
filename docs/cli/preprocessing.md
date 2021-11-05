@@ -38,8 +38,11 @@ When manually creating the *steinbock* panel file, no further actions are requir
 This will create a *steinbock* panel at the specified location (defaults to `panel.csv`) as follows:
 
   - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../file-types.md#panel).
-  - If no IMC panel file was found, the *steinbock* panel is created based on the first acquisition in the first .mcd file found at the specified location (defaults to `raw`). 
-  - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on the first .txt file found at the specified location (defaults to `raw`).
+  - If no IMC panel file was found, the *steinbock* panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to `raw`). 
+  - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on all .txt files found at the specified location (defaults to `raw`).
+
+!!! note "Different panels"
+    In principle, IMC supports acquiring a different panel for each .mcd/.txt file and acquisition. When creating a *steinbock* panel from .mcd/.txt files, the created panel will contain all targets found in any of the input files. During image conversion (see below), only targets marked as `keep=1` in the panel file will be retained; imaging data with missing channels (identified by the `channel` column in the panel file) are skipped.
 
 ### Image conversion
 
@@ -47,7 +50,7 @@ To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixe
 
     steinbock preprocess imc images --hpf 50
 
-This will extract images from raw files (source directory defaults to `raw`) and save them at the specified location (defaults to `img`). Each image corresponds to one acquisition in one file, with the image channels filtered and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well.
+This will extract images from raw files (source directory defaults to `raw`) and save them at the specified location (defaults to `img`). Each image corresponds to one acquisition in one file, with the image channels filtered (`keep` column) and sorted according to the *steinbock* panel file at the specified location (defaults to `panel.csv`). For corrupted .mcd files, *steinbock* will try to recover the missing acquisitions from matching .txt files. In a second step, images from *unmatched* .txt files are extracted as well.
 
 Furthermore, this commands also creates an image information table as described in [File types](../file-types.md#image-information). In addition to the default columns, the following IMC-specific columns will be added:
 

@@ -109,11 +109,11 @@ def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
     if panel is None:
         mcd_files = _collect_mcd_files(mcd_dir)
         if len(mcd_files) > 0:
-            panel = imc.create_panel_from_mcd_file(mcd_files[0])
+            panel = imc.create_panel_from_mcd_files(mcd_files)
     if panel is None:
         txt_files = _collect_txt_files(txt_dir)
         if len(txt_files) > 0:
-            panel = imc.create_panel_from_txt_file(txt_files[0])
+            panel = imc.create_panel_from_txt_files(txt_files)
     if panel is None:
         return click.echo(
             "ERROR: No panel/.mcd/.txt file found", file=sys.stderr
@@ -181,11 +181,11 @@ def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
 def images_cmd(
     mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
 ):
-    channel_order = None
+    channel_names = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
-            channel_order = panel["channel"].tolist()
+            channel_names = panel["channel"].tolist()
     image_info_data = []
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
         mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
@@ -196,7 +196,7 @@ def images_cmd(
             acquisition,
             img,
         ) in imc.try_preprocess_images_from_disk(
-            mcd_files, txt_files, channel_order=channel_order, hpf=hpf
+            mcd_files, txt_files, channel_names=channel_names, hpf=hpf
         ):
             img_file_stem = Path(mcd_txt_file).stem
             if acquisition is not None:
