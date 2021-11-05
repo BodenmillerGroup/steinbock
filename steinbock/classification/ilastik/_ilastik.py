@@ -157,7 +157,7 @@ def try_create_ilastik_images_from_disk(
     for img_file in img_files:
         try:
             ilastik_img = create_ilastik_image(
-                io.read_image(img_file, ignore_dtype=True),
+                io.read_image(img_file, native_dtype=True),
                 channel_groups=channel_groups,
                 aggr_func=aggr_func,
                 prepend_mean=prepend_mean,

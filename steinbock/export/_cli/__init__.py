@@ -116,7 +116,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         mask_files = io.list_mask_files(mask_dir, base_files=img_files)
     Path(histocat_dir).mkdir(exist_ok=True)
     for i, img_file in enumerate(img_files):
-        img = io.read_image(img_file, ignore_dtype=True)
+        img = io.read_image(img_file, native_dtype=True)
         histocat_img_dir = Path(histocat_dir) / img_file.stem
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_name, channel_img in zip(channel_names, img):

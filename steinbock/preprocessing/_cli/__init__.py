@@ -1,6 +1,7 @@
 import click
 
 from steinbock._cli.utils import OrderedClickGroup
+from steinbock.preprocessing._cli.external import external_cmd_group
 from steinbock.preprocessing._cli.imc import imc_cli_available, imc_cmd_group
 
 
@@ -15,3 +16,5 @@ def preprocess_cmd_group():
 
 if imc_cli_available:
     preprocess_cmd_group.add_command(imc_cmd_group)
+
+preprocess_cmd_group.add_command(external_cmd_group)

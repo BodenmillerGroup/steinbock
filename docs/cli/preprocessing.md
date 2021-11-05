@@ -74,3 +74,5 @@ After image extraction, if the `--hpf` option is specified, the images are filte
     Hot pixel filtering works by comparing each pixel to its 8-neighborhood (i.e., neighboring pixels at a [Chebyshev distance](https://en.wikipedia.org/wiki/Chebyshev_distance) of 1). If the difference (not: absolute difference) between the pixel and any of its 8 neighbor pixels exceeds a *hot pixel filtering threshold*, the pixel is set to the maximum neighbor pixel value ("hot pixel-filtered"). In the original implementation of the *IMC Segmentation Pipeline*[^1], a *hot pixel filtering threshold* of 50 is recommended.
 
 [^1]: Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
+
+<!-- TODO add external image preprocessing docs -->

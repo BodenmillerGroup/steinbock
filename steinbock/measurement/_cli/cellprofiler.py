@@ -80,16 +80,16 @@ def prepare_cmd(
     mask_files = io.list_mask_files(mask_dir, base_files=img_files)
     Path(cpdata_dir).mkdir(exist_ok=True)
     for img_file, mask_file in zip(img_files, mask_files):
-        img = io.read_image(img_file, ignore_dtype=True)
+        img = io.read_image(img_file, native_dtype=True)
         imwrite(
             Path(cpdata_dir) / img_file.name,
-            data=io._to_dtype(img, np.uint16)
+            data=io._to_dtype(img, np.uint16),
         )
         del img
         mask = io.read_mask(mask_file)
         imwrite(
             Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}",
-            data=io._to_dtype(mask, np.uint16)
+            data=io._to_dtype(mask, np.uint16),
         )
         del mask
     cellprofiler.create_and_save_measurement_pipeline(

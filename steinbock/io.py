@@ -1,3 +1,4 @@
+import imageio
 import numpy as np
 import os
 import pandas as pd
@@ -114,12 +115,19 @@ def list_image_files(
 
 
 def read_image(
-    img_stem: Union[str, PathLike], ignore_dtype: bool = False
+    img_file: Union[str, PathLike],
+    keep_suffix: bool = False,
+    use_imageio: bool = False,
+    native_dtype: bool = False,
 ) -> np.ndarray:
-    img_file = _as_path_with_suffix(
-        img_stem, ".tiff", replace_ome_suffix=False
-    )
-    img = tifffile.imread(img_file)
+    if not keep_suffix:
+        img_file = _as_path_with_suffix(
+            img_file, ".tiff", replace_ome_suffix=False
+        )
+    if use_imageio:
+        img = imageio.volread(img_file)
+    else:
+        img = tifffile.imread(img_file)
     while img.ndim > 3 and img.shape[0] == 1:
         img = img.sqeeze(axis=0)
     while img.ndim > 3 and img.shape[-1] == 1:
@@ -128,7 +136,7 @@ def read_image(
         img = img[np.newaxis, :, :]
     elif img.ndim != 3:
         raise ValueError(f"Unsupported number of image dimensions: {img_file}")
-    if not ignore_dtype:
+    if not native_dtype:
         img = _to_dtype(img, img_dtype)
     return img
 

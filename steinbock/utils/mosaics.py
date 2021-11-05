@@ -18,7 +18,7 @@ def try_extract_tiles_from_disk(
 ) -> Generator[Tuple[Path, int, int, np.ndarray], None, None]:
     for img_file in img_files:
         try:
-            img = io.read_image(img_file, ignore_dtype=True)
+            img = io.read_image(img_file, native_dtype=True)
             for tile_x in range(0, img.shape[2], tile_size):
                 for tile_y in range(0, img.shape[1], tile_size):
                     tile = img[
@@ -39,7 +39,7 @@ def try_stitch_tiles_from_disk(
     for img_stem_name, tile_infos in img_tile_infos.items():
         try:
             tile_file, tile_x, tile_y, tile_width, tile_height = tile_infos[0]
-            tile = io.read_image(tile_file, ignore_dtype=True)
+            tile = io.read_image(tile_file, native_dtype=True)
             img = np.zeros(
                 (
                     tile.shape[0],
@@ -64,7 +64,7 @@ def try_stitch_tiles_from_disk(
                     :,
                     tile_y : (tile_y + tile_height),
                     tile_x : (tile_x + tile_width),
-                ] = io.read_image(tile_file, ignore_dtype=True)
+                ] = io.read_image(tile_file, native_dtype=True)
             yield img_stem_name, img
             del img
         except:
