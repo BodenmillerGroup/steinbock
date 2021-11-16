@@ -42,7 +42,7 @@ Issue tracker: [https://github.com/BodenmillerGroup/steinbock/issues](https://gi
 Please cite the following paper when using *steinbock* in your work:
 
 !!! quote
-    An end-to-end workflow for multiplexed image processing and analysis. Jonas Windhager, Bernd Bodenmiller, Nils Eling. bioRxiv 2021; doi: https://doi.org/10.1101/2021.11.12.468357.
+    Windhager J, Bodenmiller B, Eling N (2021). An end-to-end workflow for multiplexed image processing and analysis. bioRxiv. doi: https://doi.org/10.1101/2021.11.12.468357.
 
 ```
 @article{Windhager2021,
