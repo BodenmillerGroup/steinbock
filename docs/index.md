@@ -36,3 +36,21 @@ Code: [https://github.com/BodenmillerGroup/steinbock](https://github.com/Bodenmi
 Documentation: [https://bodenmillergroup.github.io/steinbock](https://bodenmillergroup.github.io/steinbock)
 
 Issue tracker: [https://github.com/BodenmillerGroup/steinbock/issues](https://github.com/BodenmillerGroup/steinbock/issues)
+
+## Citing steinbock
+
+Please cite the following paper when using *steinbock* in your work:
+
+!!! quote
+    An end-to-end workflow for multiplexed image processing and analysis. Jonas Windhager, Bernd Bodenmiller, Nils Eling. bioRxiv 2021.11.12.468357; doi: https://doi.org/10.1101/2021.11.12.468357.
+
+```
+@article{Windhager2021,
+  author = {Windhager, Jonas and Bodenmiller, Bernd and Eling, Nils},
+  title = {An end-to-end workflow for multiplexed image processing and analysis},
+  year = {2021},
+  doi = {10.1101/2021.11.12.468357},
+  URL = {https://www.biorxiv.org/content/early/2021/11/13/2021.11.12.468357},
+  journal = {bioRxiv}
+}
+```
