@@ -147,7 +147,11 @@ def try_preprocess_images_from_disk(
     txt_files: Sequence[Union[str, PathLike]],
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
-) -> Generator[Tuple[Path, Optional["Acquisition"], np.ndarray], None, None]:
+) -> Generator[
+    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool],
+    None,
+    None,
+]:
     unmatched_txt_files = list(txt_files)
     for mcd_file in mcd_files:
         try:
@@ -172,6 +176,7 @@ def try_preprocess_images_from_disk(
                                 )
                                 continue
                         img = None
+                        recovered = False
                         try:
                             img = f_mcd.read_acquisition(acquisition)
                         except IOError:
@@ -198,6 +203,7 @@ def try_preprocess_images_from_disk(
                                                     "skipping acquisition"
                                                 )
                                                 continue
+                                    recovered = True
                                 except IOError:
                                     _logger.exception(
                                         "Error reading file "
@@ -207,31 +213,39 @@ def try_preprocess_images_from_disk(
                             if channel_ind is not None:
                                 img = img[channel_ind, :, :]
                             img = preprocess_image(img, hpf=hpf)
-                            yield Path(mcd_file), acquisition, img
+                            yield (
+                                Path(mcd_file),
+                                acquisition,
+                                img,
+                                Path(matched_txt_file)
+                                if matched_txt_file is not None
+                                else None,
+                                recovered,
+                            )
                             del img
         except:
             _logger.exception(f"Error reading file {mcd_file}")
     while len(unmatched_txt_files) > 0:
-        matched_txt_file = unmatched_txt_files.pop(0)
+        txt_file = unmatched_txt_files.pop(0)
         try:
             channel_ind = None
-            with IMCTxtFile(matched_txt_file) as f:
+            with IMCTxtFile(txt_file) as f:
                 if channel_names is not None:
                     channel_ind = _get_channel_indices(f, channel_names)
                     if isinstance(channel_ind, str):
                         _logger.warning(
                             f"Channel {channel_ind} not found in file "
-                            f"{matched_txt_file}; skipping acquisition"
+                            f"{txt_file}; skipping acquisition"
                         )
                         continue
                 img = f.read_acquisition()
             if channel_ind is not None:
                 img = img[channel_ind, :, :]
             img = preprocess_image(img, hpf=hpf)
-            yield Path(matched_txt_file), None, img
+            yield Path(txt_file), None, img, None, False
             del img
         except:
-            _logger.exception(f"Error reading file {matched_txt_file}")
+            _logger.exception(f"Error reading file {txt_file}")
 
 
 def _create_panel_from_acquisition(

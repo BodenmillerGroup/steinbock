@@ -54,7 +54,8 @@ This will extract images from raw files (source directory defaults to `raw`) and
 
 Furthermore, this commands also creates an image information table as described in [File types](../file-types.md#image-information). In addition to the default columns, the following IMC-specific columns will be added:
 
-  - `source`: the raw .mcd/.txt file name
+  - `source_file`: the raw .mcd/.txt file name
+  - `recovery_file`: the corresponding .txt file name, if available
   - `recovered`: *True* if the .mcd acquisition was recovered from the corresponding .txt file
   - Acquisition-specific information: 
     - `acquisition_id`: numeric acquisition ID

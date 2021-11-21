@@ -16,47 +16,6 @@ from steinbock.preprocessing import imc
 imc_cli_available = imc.imc_available
 
 
-def _extract_zips(path, suffix, dest):
-    extracted_files = []
-    for zip_file_path in Path(path).rglob("*.zip"):
-        with ZipFile(zip_file_path) as zip_file:
-            zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
-            for zip_info in zip_infos:
-                zip_info_suffix = Path(zip_info.filename).suffix
-                if not zip_info.is_dir() and zip_info_suffix == suffix:
-                    extracted_file = zip_file.extract(zip_info, path=dest)
-                    extracted_files.append(Path(extracted_file))
-    return extracted_files
-
-
-def _collect_mcd_files(mcd_dir, unzip_dir=None):
-    mcd_files = imc.list_mcd_files(mcd_dir)
-    if unzip_dir is not None:
-        mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
-    unique_mcd_stem_names = []
-    for mcd_file in mcd_files:
-        if mcd_file.stem in unique_mcd_stem_names:
-            return click.echo(
-                f"ERROR: Duplicated file stem {mcd_file.stem}", file=sys.stderr
-            )
-        unique_mcd_stem_names.append(mcd_file.stem)
-    return mcd_files
-
-
-def _collect_txt_files(txt_dir, unzip_dir=None):
-    txt_files = imc.list_txt_files(txt_dir)
-    if unzip_dir is not None:
-        txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
-    unique_txt_stem_names = []
-    for txt_file in txt_files:
-        if txt_file.stem in unique_txt_stem_names:
-            return click.echo(
-                f"ERROR: Duplicated file stem {txt_file.stem}", file=sys.stderr
-            )
-        unique_txt_stem_names.append(txt_file.stem)
-    return txt_files
-
-
 @click.group(
     name="imc",
     cls=OrderedClickGroup,
@@ -191,26 +150,44 @@ def images_cmd(
         mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
         txt_files = _collect_txt_files(txt_dir, unzip_dir=temp_dir)
         Path(img_dir).mkdir(exist_ok=True)
+        mcd_txt_files = {}
+        num_dupl = 0
         for (
             mcd_txt_file,
             acquisition,
             img,
+            recovery_file,
+            recovered,
         ) in imc.try_preprocess_images_from_disk(
             mcd_files, txt_files, channel_names=channel_names, hpf=hpf
         ):
             img_file_stem = Path(mcd_txt_file).stem
             if acquisition is not None:
                 img_file_stem += f"_{acquisition.id:03d}"
+            if img_file_stem in mcd_txt_files:
+                num_dupl += 1
+                first_mcd_txt_file = mcd_txt_files[img_file_stem][0]
+                img_file_stem = f"DUPLICATE{num_dupl:03d}_" + img_file_stem
+                click.echo(
+                    f"WARNING: File {mcd_txt_file} is a duplicate of "
+                    f"{first_mcd_txt_file}, saving as {img_file_stem}",
+                    file=sys.stderr,
+                )
+                mcd_txt_files[img_file_stem].append(mcd_txt_file)
+            else:
+                mcd_txt_files[img_file_stem] = [mcd_txt_file]
             img_file = io.write_image(img, Path(img_dir) / img_file_stem)
+            recovery_file_name = None
+            if recovery_file is not None:
+                recovery_file_name = recovery_file.name
             image_info_row = {
                 "image": img_file.name,
                 "width_px": img.shape[2],
                 "height_px": img.shape[1],
                 "num_channels": img.shape[0],
-                "source": mcd_txt_file.name,
-                "recovered": (
-                    acquisition is not None and mcd_txt_file.suffix == ".txt"
-                ),
+                "source_file": mcd_txt_file.name,
+                "recovery_file": recovery_file_name,
+                "recovered": recovered,
             }
             if acquisition is not None:
                 image_info_row.update(
@@ -230,3 +207,46 @@ def images_cmd(
             del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
+
+
+def _extract_zips(path, suffix, dest):
+    extracted_files = []
+    for zip_file_path in Path(path).rglob("*.zip"):
+        with ZipFile(zip_file_path) as zip_file:
+            zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
+            for zip_info in zip_infos:
+                zip_info_suffix = Path(zip_info.filename).suffix
+                if not zip_info.is_dir() and zip_info_suffix == suffix:
+                    extracted_file = zip_file.extract(zip_info, path=dest)
+                    extracted_files.append(Path(extracted_file))
+    return extracted_files
+
+
+def _collect_mcd_files(mcd_dir, unzip_dir=None):
+    mcd_files = imc.list_mcd_files(mcd_dir)
+    if unzip_dir is not None:
+        mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
+    # unique_mcd_stem_names = []
+    # for mcd_file in mcd_files:
+    #     if mcd_file.stem in unique_mcd_stem_names:
+    #         return click.echo(
+    #             f"ERROR: Duplicated file stem {mcd_file.stem}",
+    #             file=sys.stderr
+    #         )
+    #     unique_mcd_stem_names.append(mcd_file.stem)
+    return mcd_files
+
+
+def _collect_txt_files(txt_dir, unzip_dir=None):
+    txt_files = imc.list_txt_files(txt_dir)
+    if unzip_dir is not None:
+        txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
+    # unique_txt_stem_names = []
+    # for txt_file in txt_files:
+    #     if txt_file.stem in unique_txt_stem_names:
+    #         return click.echo(
+    #             f"ERROR: Duplicated file stem {txt_file.stem}",
+    #             file=sys.stderr
+    #         )
+    #     unique_txt_stem_names.append(txt_file.stem)
+    return txt_files
