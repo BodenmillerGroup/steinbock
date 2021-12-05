@@ -18,7 +18,7 @@ from typing import (
 from steinbock import io
 
 try:
-    from readimc import IMCMcdFile, IMCTxtFile
+    from readimc import MCDFile, TXTFile
     from readimc.data import Acquisition, AcquisitionBase
 
     imc_available = True
@@ -101,7 +101,7 @@ def create_panel_from_mcd_files(
 ) -> pd.DataFrame:
     panels = []
     for mcd_file in mcd_files:
-        with IMCMcdFile(mcd_file) as f:
+        with MCDFile(mcd_file) as f:
             for slide in f.slides:
                 for acquisition in slide.acquisitions:
                     panel = _create_panel_from_acquisition(acquisition)
@@ -115,7 +115,7 @@ def create_panel_from_txt_files(
 ) -> pd.DataFrame:
     panels = []
     for txt_file in txt_files:
-        with IMCTxtFile(txt_file) as f:
+        with TXTFile(txt_file) as f:
             panel = _create_panel_from_acquisition(f)
             panels.append(panel)
     panel = pd.concat(panels, ignore_index=True, copy=False)
@@ -155,7 +155,7 @@ def try_preprocess_images_from_disk(
     unmatched_txt_files = list(txt_files)
     for mcd_file in mcd_files:
         try:
-            with IMCMcdFile(mcd_file) as f_mcd:
+            with MCDFile(mcd_file) as f_mcd:
                 for slide in f_mcd.slides:
                     for acquisition in slide.acquisitions:
                         matched_txt_file = _match_txt_file(
@@ -189,7 +189,7 @@ def try_preprocess_images_from_disk(
                                     f"Restoring from file {matched_txt_file}"
                                 )
                                 try:
-                                    with IMCTxtFile(matched_txt_file) as f_txt:
+                                    with TXTFile(matched_txt_file) as f_txt:
                                         img = f_txt.read_acquisition()
                                         if channel_names is not None:
                                             channel_ind = _get_channel_indices(
@@ -229,7 +229,7 @@ def try_preprocess_images_from_disk(
         txt_file = unmatched_txt_files.pop(0)
         try:
             channel_ind = None
-            with IMCTxtFile(txt_file) as f:
+            with TXTFile(txt_file) as f:
                 if channel_names is not None:
                     channel_ind = _get_channel_indices(f, channel_names)
                     if isinstance(channel_ind, str):

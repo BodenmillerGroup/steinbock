@@ -194,10 +194,18 @@ def images_cmd(
                     {
                         "acquisition_id": acquisition.id,
                         "acquisition_description": acquisition.description,
-                        "acquisition_start_x_um": acquisition.start_x_um,
-                        "acquisition_start_y_um": acquisition.start_y_um,
-                        "acquisition_end_x_um": acquisition.end_x_um,
-                        "acquisition_end_y_um": acquisition.end_y_um,
+                        "acquisition_start_x_um": (
+                            acquisition.roi_points_um[0][0]
+                        ),
+                        "acquisition_start_y_um": (
+                            acquisition.roi_points_um[0][1]
+                        ),
+                        "acquisition_end_x_um": (
+                            acquisition.roi_points_um[2][0]
+                        ),
+                        "acquisition_end_y_um": (
+                            acquisition.roi_points_um[2][1]
+                        ),
                         "acquisition_width_um": acquisition.width_um,
                         "acquisition_height_um": acquisition.height_um,
                     }
