@@ -1423,7 +1423,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">mcd_file</span> <span class="ow">in</span> <span class="n">mcd_files</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">IMCMcdFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">MCDFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">slide</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">slides</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">acquisition</span> <span class="ow">in</span> <span class="n">slide</span><span class="o">.</span><span class="n">acquisitions</span><span class="p">:</span>
                     <span class="n">panel</span> <span class="o">=</span> <span class="n">_create_panel_from_acquisition</span><span class="p">(</span><span class="n">acquisition</span><span class="p">)</span>
@@ -1458,7 +1458,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">txt_file</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">IMCTxtFile</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">TXTFile</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">panel</span> <span class="o">=</span> <span class="n">_create_panel_from_acquisition</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">panels</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1603,11 +1603,15 @@
     <span class="n">txt_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">channel_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">hpf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+<span class="p">]:</span>
     <span class="n">unmatched_txt_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">txt_files</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">mcd_file</span> <span class="ow">in</span> <span class="n">mcd_files</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">IMCMcdFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_mcd</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">MCDFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_mcd</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">slide</span> <span class="ow">in</span> <span class="n">f_mcd</span><span class="o">.</span><span class="n">slides</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">acquisition</span> <span class="ow">in</span> <span class="n">slide</span><span class="o">.</span><span class="n">acquisitions</span><span class="p">:</span>
                         <span class="n">matched_txt_file</span> <span class="o">=</span> <span class="n">_match_txt_file</span><span class="p">(</span>
@@ -1628,6 +1632,7 @@
                                 <span class="p">)</span>
                                 <span class="k">continue</span>
                         <span class="n">img</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">recovered</span> <span class="o">=</span> <span class="kc">False</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="n">img</span> <span class="o">=</span> <span class="n">f_mcd</span><span class="o">.</span><span class="n">read_acquisition</span><span class="p">(</span><span class="n">acquisition</span><span class="p">)</span>
                         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
@@ -1640,7 +1645,7 @@
                                     <span class="sa">f</span><span class="s2">&quot;Restoring from file </span><span class="si">{</span><span class="n">matched_txt_file</span><span class="si">}</span><span class="s2">&quot;</span>
                                 <span class="p">)</span>
                                 <span class="k">try</span><span class="p">:</span>
-                                    <span class="k">with</span> <span class="n">IMCTxtFile</span><span class="p">(</span><span class="n">matched_txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_txt</span><span class="p">:</span>
+                                    <span class="k">with</span> <span class="n">TXTFile</span><span class="p">(</span><span class="n">matched_txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_txt</span><span class="p">:</span>
                                         <span class="n">img</span> <span class="o">=</span> <span class="n">f_txt</span><span class="o">.</span><span class="n">read_acquisition</span><span class="p">()</span>
                                         <span class="k">if</span> <span class="n">channel_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                             <span class="n">channel_ind</span> <span class="o">=</span> <span class="n">_get_channel_indices</span><span class="p">(</span>
@@ -1654,6 +1659,7 @@
                                                     <span class="s2">&quot;skipping acquisition&quot;</span>
                                                 <span class="p">)</span>
                                                 <span class="k">continue</span>
+                                    <span class="n">recovered</span> <span class="o">=</span> <span class="kc">True</span>
                                 <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
                                     <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                                         <span class="s2">&quot;Error reading file &quot;</span>
@@ -1663,31 +1669,39 @@
                             <span class="k">if</span> <span class="n">channel_ind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">channel_ind</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
                             <span class="n">img</span> <span class="o">=</span> <span class="n">preprocess_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span><span class="p">)</span>
-                            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">),</span> <span class="n">acquisition</span><span class="p">,</span> <span class="n">img</span>
+                            <span class="k">yield</span> <span class="p">(</span>
+                                <span class="n">Path</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">),</span>
+                                <span class="n">acquisition</span><span class="p">,</span>
+                                <span class="n">img</span><span class="p">,</span>
+                                <span class="n">Path</span><span class="p">(</span><span class="n">matched_txt_file</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">matched_txt_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">recovered</span><span class="p">,</span>
+                            <span class="p">)</span>
                             <span class="k">del</span> <span class="n">img</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading file </span><span class="si">{</span><span class="n">mcd_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">unmatched_txt_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">matched_txt_file</span> <span class="o">=</span> <span class="n">unmatched_txt_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">txt_file</span> <span class="o">=</span> <span class="n">unmatched_txt_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">channel_ind</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">with</span> <span class="n">IMCTxtFile</span><span class="p">(</span><span class="n">matched_txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">TXTFile</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">channel_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">channel_ind</span> <span class="o">=</span> <span class="n">_get_channel_indices</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">channel_names</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel_ind</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Channel </span><span class="si">{</span><span class="n">channel_ind</span><span class="si">}</span><span class="s2"> not found in file &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">matched_txt_file</span><span class="si">}</span><span class="s2">; skipping acquisition&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">txt_file</span><span class="si">}</span><span class="s2">; skipping acquisition&quot;</span>
                         <span class="p">)</span>
                         <span class="k">continue</span>
                 <span class="n">img</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read_acquisition</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">channel_ind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">channel_ind</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
             <span class="n">img</span> <span class="o">=</span> <span class="n">preprocess_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">matched_txt_file</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">img</span>
+            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">txt_file</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
             <span class="k">del</span> <span class="n">img</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading file </span><span class="si">{</span><span class="n">matched_txt_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading file </span><span class="si">{</span><span class="n">txt_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
