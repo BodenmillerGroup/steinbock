@@ -101,12 +101,10 @@ def try_convert_to_anndata_from_disk(
             # if panel is not None:
             #     var = panel.loc[x.columns, :].copy()
             if obs is not None:
-                obs.reset_index(inplace=True)
+                obs.index = [f"Object {object_id}" for object_id in x.index]
             if var is not None:
-                var.reset_index(inplace=True)
+                var.index = x.columns.astype(str).tolist()
             adata = AnnData(X=x.values, obs=obs, var=var)
-            adata.obs_names = [f"Object {object_id}" for object_id in x.index]
-            adata.var_names = x.columns.astype(str).tolist()
             if neighbors_file is not None:
                 neighbors = io.read_neighbors(neighbors_file)
                 row_ind = [x.index.get_loc(a) for a in neighbors["Object"]]
