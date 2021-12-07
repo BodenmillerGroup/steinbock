@@ -1,0 +1,1415 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../../img/steinbock-favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.2">
+    
+    
+      
+        <title>steinbock.export - steinbock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.24c991ad.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#steinbockexport" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="steinbock" class="md-header__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            steinbock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              steinbock.export
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../cli/intro/" class="md-tabs__link">
+        Command-line usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../intro/" class="md-tabs__link md-tabs__link--active">
+        Python usage
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="steinbock" class="md-nav__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    steinbock
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Welcome
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install-docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install-python/" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          Specifications
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../directories/" class="md-nav__link">
+        Directories
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../authors/" class="md-nav__link">
+        Authors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributors/" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Command-line usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/preprocessing/" class="md-nav__link">
+        Preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/classification/" class="md-nav__link">
+        Pixel classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/segmentation/" class="md-nav__link">
+        Object segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/measurement/" class="md-nav__link">
+        Object measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/export/" class="md-nav__link">
+        Data export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/utils/" class="md-nav__link">
+        Utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/apps/" class="md-nav__link">
+        Apps
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Python usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Python usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Python usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          API documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          API documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.preprocessing/" class="md-nav__link">
+        steinbock.preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.classification/" class="md-nav__link">
+        steinbock.classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.segmentation/" class="md-nav__link">
+        steinbock.segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.measurement/" class="md-nav__link">
+        steinbock.measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          steinbock.export
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        steinbock.export
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.export.data" class="md-nav__link">
+    data
+  </a>
+  
+    <nav class="md-nav" aria-label="data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.data.try_convert_to_anndata_from_disk" class="md-nav__link">
+    try_convert_to_anndata_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.data.try_convert_to_dataframe_from_disk" class="md-nav__link">
+    try_convert_to_dataframe_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.export.graphs" class="md-nav__link">
+    graphs
+  </a>
+  
+    <nav class="md-nav" aria-label="graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.graphs.convert_to_networkx" class="md-nav__link">
+    convert_to_networkx()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.graphs.try_convert_to_networkx_from_disk" class="md-nav__link">
+    try_convert_to_networkx_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.utils/" class="md-nav__link">
+        steinbock.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.io/" class="md-nav__link">
+        steinbock.io
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.export.data" class="md-nav__link">
+    data
+  </a>
+  
+    <nav class="md-nav" aria-label="data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.data.try_convert_to_anndata_from_disk" class="md-nav__link">
+    try_convert_to_anndata_from_disk()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.data.try_convert_to_dataframe_from_disk" class="md-nav__link">
+    try_convert_to_dataframe_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.export.graphs" class="md-nav__link">
+    graphs
+  </a>
+  
+    <nav class="md-nav" aria-label="graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.graphs.convert_to_networkx" class="md-nav__link">
+    convert_to_networkx()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.export.graphs.try_convert_to_networkx_from_disk" class="md-nav__link">
+    try_convert_to_networkx_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="steinbockexport">steinbock.export</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.export.data" class="doc doc-heading">
+        <code>data</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.export.data.try_convert_to_anndata_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_convert_to_anndata_from_disk</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">neighbors_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/export/data.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_anndata_from_disk</span><span class="p">(</span>
+    <span class="n">intensity_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span>
+    <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># panel: Optional[pd.DataFrame] = None,</span>
+    <span class="c1"># image_info: Optional[pd.DataFrame] = None,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="p">]:</span>
+    <span class="c1"># if panel is not None:</span>
+    <span class="c1">#     panel = panel.set_index(&quot;name&quot;, drop=False, verify_integrity=True)</span>
+    <span class="c1"># if image_info is not None:</span>
+    <span class="c1">#     image_info = image_info.set_index(</span>
+    <span class="c1">#         &quot;image&quot;, drop=False, verify_integrity=True</span>
+    <span class="c1">#     )</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">intensity_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">):</span>
+        <span class="n">intensity_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">)</span>
+        <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dfl</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">dfl</span> <span class="ow">in</span> <span class="n">data_file_lists</span><span class="p">)</span>
+        <span class="n">neighbors_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">neighbors_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">img_file_name</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">)</span>
+            <span class="n">obs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                    <span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                        <span class="n">obs</span><span class="p">,</span>
+                        <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">),</span>
+                        <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="c1"># if image_info is not None:</span>
+            <span class="c1">#     image_obs = (</span>
+            <span class="c1">#         pd.concat(</span>
+            <span class="c1">#             [image_info.loc[img_file_name, :]] * len(x.index),</span>
+            <span class="c1">#             axis=1,</span>
+            <span class="c1">#         )</span>
+            <span class="c1">#         .transpose()</span>
+            <span class="c1">#         .astype(image_info.dtypes.to_dict())</span>
+            <span class="c1">#     )</span>
+            <span class="c1">#     image_obs.index = x.index</span>
+            <span class="c1">#     image_obs.columns = &quot;image_&quot; + image_obs.columns</span>
+            <span class="c1">#     image_obs.rename(</span>
+            <span class="c1">#         columns={&quot;image_image&quot;: &quot;image&quot;}, inplace=True</span>
+            <span class="c1">#     )</span>
+            <span class="c1">#     if obs is not None:</span>
+            <span class="c1">#         obs = pd.merge(</span>
+            <span class="c1">#             obs,</span>
+            <span class="c1">#             image_obs,</span>
+            <span class="c1">#             how=&quot;inner&quot;,  # preserves order of left keys</span>
+            <span class="c1">#             left_index=True,</span>
+            <span class="c1">#             right_index=True,</span>
+            <span class="c1">#         )</span>
+            <span class="c1">#     else:</span>
+            <span class="c1">#         obs = image_obs</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># if panel is not None:</span>
+            <span class="c1">#     var = panel.loc[x.columns, :].copy()</span>
+            <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">obs</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">object_id</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">adata</span> <span class="o">=</span> <span class="n">AnnData</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">neighbors_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">neighbors</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span>
+                <span class="n">row_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">]]</span>
+                <span class="n">col_ind</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Neighbor&quot;</span><span class="p">]]</span>
+                <span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s2">&quot;adj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+                    <span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="p">(</span><span class="n">row_ind</span><span class="p">,</span> <span class="n">col_ind</span><span class="p">)),</span>
+                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Distance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="s2">&quot;Distance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="n">row_ind</span><span class="p">,</span> <span class="n">col_ind</span><span class="p">)),</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">del</span> <span class="n">neighbors</span>
+            <span class="k">yield</span> <span class="p">(</span>
+                <span class="n">img_file_name</span><span class="p">,</span>
+                <span class="n">intensity_file</span><span class="p">,</span>
+                <span class="n">data_files</span><span class="p">,</span>
+                <span class="n">neighbors_file</span><span class="p">,</span>
+                <span class="n">adata</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">del</span> <span class="n">x</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">adata</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating AnnData object for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;skipping image&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.export.data.try_convert_to_dataframe_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_convert_to_dataframe_from_disk</span><span class="p">(</span><span class="o">*</span><span class="n">data_file_lists</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/export/data.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_dataframe_from_disk</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">data_files</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_file_lists</span><span class="p">):</span>
+        <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">)</span>
+        <span class="n">img_file_name</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">,</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">),</span>
+                    <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">img_file_name</span><span class="p">,</span> <span class="n">data_files</span><span class="p">,</span> <span class="n">df</span>
+            <span class="k">del</span> <span class="n">df</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating DataFrame for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;skipping image&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.export.graphs" class="doc doc-heading">
+        <code>graphs</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.export.graphs.convert_to_networkx" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">convert_to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/export/graphs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">convert_to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">[[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">undirected_edges</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
+    <span class="n">is_directed</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">x</span> <span class="o">!=</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">undirected_edges</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span>
+        <span class="n">neighbors</span><span class="p">,</span>
+        <span class="n">source</span><span class="o">=</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span>
+        <span class="n">target</span><span class="o">=</span><span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span>
+        <span class="n">edge_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">create_using</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span> <span class="k">if</span> <span class="n">is_directed</span> <span class="k">else</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">merged_data</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">merged_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">merged_data</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="n">node_attributes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">object_id</span><span class="p">):</span> <span class="n">object_data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">object_data</span> <span class="ow">in</span> <span class="n">merged_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">node_attributes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">graph</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.export.graphs.try_convert_to_networkx_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_convert_to_networkx_from_disk</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/export/graphs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_convert_to_networkx_from_disk</span><span class="p">(</span>
+    <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="o">*</span><span class="n">data_file_lists</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">neighbors_file</span><span class="p">,</span> <span class="o">*</span><span class="n">data_files</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">neighbors_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">):</span>
+        <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">io</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">]</span>
+            <span class="n">graph</span> <span class="o">=</span> <span class="n">convert_to_networkx</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">*</span><span class="n">data_list</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">),</span> <span class="n">data_files</span><span class="p">,</span> <span class="n">graph</span>
+            <span class="k">del</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">data_list</span><span class="p">,</span> <span class="n">graph</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting </span><span class="si">{</span><span class="n">neighbors_file</span><span class="si">}</span><span class="s2"> to networkx&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../steinbock.measurement/" class="md-footer__link md-footer__link--prev" aria-label="Previous: steinbock.measurement" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              steinbock.measurement
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../steinbock.utils/" class="md-footer__link md-footer__link--next" aria-label="Next: steinbock.utils" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              steinbock.utils
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.e99e714c.min.js", "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.bc35569b.min.js"></script>
+      
+    
+  </body>
+</html>
