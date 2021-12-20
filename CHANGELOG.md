@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.3] - 2021-12-20
+
+  - Fix memory issue with Ilastik image creation
+
 ## [0.10.2] - 2021-12-07
 
   - Fix deepcell incompatibility with scikit-image upgrade
@@ -242,6 +246,7 @@ Added:
 Initial release for beta testing
 
 
+[0.10.3]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.9.1...v0.10.0
