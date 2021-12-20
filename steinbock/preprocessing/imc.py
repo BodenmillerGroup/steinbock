@@ -130,12 +130,8 @@ def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
 
 
 def preprocess_image(
-    img: np.ndarray,
-    channel_indices: Optional[Sequence[int]] = None,
-    hpf: Optional[float] = None,
+    img: np.ndarray, hpf: Optional[float] = None
 ) -> np.ndarray:
-    if channel_indices is not None:
-        img = img[channel_indices, :, :]
     img = img.astype(np.float32)
     if hpf is not None:
         img = filter_hot_pixels(img, hpf)

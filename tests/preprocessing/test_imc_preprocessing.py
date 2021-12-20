@@ -47,17 +47,10 @@ class TestIMCPreprocessing:
                     [4, 13, 6],
                     [7, 8, 9],
                 ],
-                [
-                    [0, 0, 0],
-                    [0, 0, 0],
-                    [0, 0, 0],
-                ],
             ],
             dtype=io.img_dtype,
         )
-        preprocessed_img = imc.preprocess_image(
-            img, channel_indices=[0], hpf=3.0
-        )
+        preprocessed_img = imc.preprocess_image(img, hpf=3.0)
         expected_preprocessed_img = np.array(
             [
                 [

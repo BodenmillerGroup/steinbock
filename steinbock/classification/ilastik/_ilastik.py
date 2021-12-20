@@ -1,3 +1,4 @@
+import cv2
 import h5py
 import json
 import logging
@@ -9,7 +10,6 @@ import subprocess
 from enum import IntEnum
 from os import PathLike
 from pathlib import Path
-from skimage.transform import resize
 from typing import (
     Any,
     Callable,
@@ -135,14 +135,28 @@ def create_ilastik_image(
         ilastik_img = np.concatenate((mean_img, ilastik_img))
     if scale_factor > 1:
         # bilinear resizing (for compatibility with IMC Segmentation Pipeline)
-        output_shape = (
-            ilastik_img.shape[0],
-            ilastik_img.shape[1] * scale_factor,
-            ilastik_img.shape[2] * scale_factor,
+        # # use OpenCV instead of scikit-image for memory reasons
+        # output_shape = (
+        #     ilastik_img.shape[0],
+        #     ilastik_img.shape[1] * scale_factor,
+        #     ilastik_img.shape[2] * scale_factor,
+        # )
+        # ilastik_img = resize(
+        #     ilastik_img, output_shape, order=1, mode="symmetric"
+        # )
+        ilastik_img = np.stack(
+            [
+                cv2.resize(
+                    ilastik_channel_img,
+                    None,
+                    fx=scale_factor,
+                    fy=scale_factor,
+                    interpolation=cv2.INTER_LINEAR,
+                )
+                for ilastik_channel_img in ilastik_img
+            ]
         )
-        ilastik_img = resize(
-            ilastik_img, output_shape, order=1, mode="symmetric"
-        )
+
     return io._to_dtype(ilastik_img, io.img_dtype)
 
 
