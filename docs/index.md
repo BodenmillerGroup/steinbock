@@ -25,7 +25,7 @@ At its core, *steinbock* provides the following functionality:
 While all *steinbock* functionality can be used in a modular fashion, the framework was designed for - and explicitly supports - the following image segmentation workflows:
 
  - **[Random forest-based object segmentation]** Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
- - **[Deep learning-based cell segmentation]** Greenwald et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. Nature, 2021. DOI: [10.1038/s41587-021-01094-0](https://doi.org/10.1038/s41587-021-01094-0).
+ - **[Deep learning-based cell segmentation]** Greenwald et al. Whole-cell segmentation of tissue images with human-level performance using large-scale data annotation and deep learning. Nature Biotechnology, 2021. DOI: [10.1038/s41587-021-01094-0](https://doi.org/10.1038/s41587-021-01094-0).
 
  The *steinbock* framework is extensible and support for further workflows may be added in the future. If you are missing support for a workflow, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
