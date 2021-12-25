@@ -53,7 +53,7 @@ def create_panel_from_imc_panel(
             _imc_panel_target_col: pd.StringDtype(),
             _imc_panel_keep_col: pd.BooleanDtype(),
             _imc_panel_ilastik_col: pd.BooleanDtype(),
-            _imc_panel_deepcell_col: pd.BooleanDtype(),
+            _imc_panel_deepcell_col: pd.UInt8Dtype(),
         },
         engine="python",
         true_values=["1"],
@@ -87,12 +87,6 @@ def create_panel_from_imc_panel(
         ilastik_mask = panel["ilastik"].astype(bool)
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
-    if "deepcell" in panel:
-        deepcell_mask = panel["deepcell"].astype(bool)
-        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
-        panel.loc[deepcell_mask, "deepcell"] = range(
-            1, deepcell_mask.sum() + 1
-        )
     return _clean_panel(panel)
 
 
@@ -271,14 +265,20 @@ def _create_panel_from_acquisition(
 
 def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     panel = panel.copy()
-    for _, g in panel.groupby("channel"):
+    for channel, g in panel.groupby("channel"):
         panel.loc[g.index, "name"] = " / ".join(g["name"].dropna().unique())
-        if "keep" in panel:
-            panel.loc[g.index, "keep"] = g["keep"].any()
-        if "ilastik" in panel:
-            panel.loc[g.index, "ilastik"] = g["ilastik"].notna().any()
-        if "deepcell" in panel:
-            panel.loc[g.index, "deepcell"] = g["deepcell"].notna().any()
+        if "keep" in panel and g["keep"].nunique(dropna=False) != 1:
+            raise ValueError(
+                f"Inconsistent 'keep' value for channel {channel}"
+            )
+        if "ilastik" in panel and g["ilastik"].nunique(dropna=False) != 1:
+            raise ValueError(
+                f"Inconsistent 'ilastik' value for channel {channel}"
+            )
+        if "deepcell" in panel and g["deepcell"].nunique(dropna=False) != 1:
+            raise ValueError(
+                f"Inconsistent 'deepcell' value for channel {channel}"
+            )
     panel = panel.groupby(panel["channel"].values).aggregate("first")
     panel.sort_values(
         "channel",
@@ -290,24 +290,11 @@ def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
     if "keep" not in panel:
         panel["keep"] = pd.Series(True, dtype=pd.BooleanDtype())
-    if "ilastik" in panel:
-        ilastik_mask = panel["ilastik"].astype(bool)
+    if "ilastik" not in panel:
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
-        panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
-    else:
-        panel["ilastik"] = pd.Series(
-            range(1, len(panel.index) + 1), dtype=pd.UInt8Dtype()
-        )
-    if "deepcell" in panel:
-        deepcell_mask = panel["deepcell"].astype(bool)
+        panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
+    if "deepcell" not in panel:
         panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
-        panel.loc[deepcell_mask, "deepcell"] = range(
-            1, deepcell_mask.sum() + 1
-        )
-    else:
-        panel["deepcell"] = pd.Series(
-            range(1, len(panel.index) + 1), dtype=pd.UInt8Dtype()
-        )
     next_column_index = 0
     for column in ("channel", "name", "keep", "ilastik", "deepcell"):
         if column in panel:
