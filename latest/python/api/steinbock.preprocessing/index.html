@@ -1373,7 +1373,6 @@
         <span class="n">_imc_panel_metal_col</span><span class="p">,</span>
         <span class="n">_imc_panel_keep_col</span><span class="p">,</span>
         <span class="n">_imc_panel_ilastik_col</span><span class="p">,</span>
-        <span class="n">_imc_panel_deepcell_col</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">notnan_col</span> <span class="ow">in</span> <span class="n">imc_panel</span> <span class="ow">and</span> <span class="n">imc_panel</span><span class="p">[</span><span class="n">notnan_col</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing values for &#39;</span><span class="si">{</span><span class="n">notnan_col</span><span class="si">}</span><span class="s2">&#39; in IMC panel&quot;</span><span class="p">)</span>
