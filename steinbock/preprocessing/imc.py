@@ -66,7 +66,6 @@ def create_panel_from_imc_panel(
         _imc_panel_metal_col,
         _imc_panel_keep_col,
         _imc_panel_ilastik_col,
-        _imc_panel_deepcell_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
