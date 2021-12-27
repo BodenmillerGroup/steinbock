@@ -104,7 +104,7 @@ def panel_cmd(
     panel_file,
 ):
     panel = None
-    if Path(imc_panel_file).exists():
+    if panel is None and Path(imc_panel_file).exists():
         panel = imc.create_panel_from_imc_panel(
             imc_panel_file,
             imc_panel_channel_col=imc_panel_channel_col,
@@ -112,11 +112,11 @@ def panel_cmd(
             imc_panel_keep_col=imc_panel_keep_col,
             imc_panel_ilastik_col=imc_panel_ilastik_col,
         )
-    if panel is None:
+    if panel is None and Path(mcd_dir).exists():
         mcd_files = _collect_mcd_files(mcd_dir)
         if len(mcd_files) > 0:
             panel = imc.create_panel_from_mcd_files(mcd_files)
-    if panel is None:
+    if panel is None and Path(txt_dir).exists():
         txt_files = _collect_txt_files(txt_dir)
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt_files(txt_files)

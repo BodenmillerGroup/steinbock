@@ -79,8 +79,15 @@ def create_panel_from_imc_panel(
         if panel_col in imc_panel.columns and panel_col != imc_panel_col
     ]
     panel = imc_panel.drop(columns=drop_columns).rename(columns=rename_columns)
+    for _, g in panel.groupby("channel"):
+        panel.loc[g.index, "name"] = " / ".join(g["name"].dropna().unique())
+        if "keep" in panel:
+            panel.loc[g.index, "keep"] = g["keep"].any()
+        if "ilastik" in panel:
+            panel.loc[g.index, "ilastik"] = g["ilastik"].any()
+    panel = panel.groupby(panel["channel"].values).aggregate("first")
     if "ilastik" in panel:
-        ilastik_mask = panel["ilastik"].fillna(False).astype(bool)
+        ilastik_mask = panel["ilastik"].astype(bool)
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
     return _clean_panel(panel)
@@ -260,22 +267,6 @@ def _create_panel_from_acquisition(
 
 
 def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
-    panel = panel.copy()
-    for channel, g in panel.groupby("channel"):
-        panel.loc[g.index, "name"] = " / ".join(g["name"].dropna().unique())
-        if "keep" in panel and g["keep"].nunique(dropna=False) != 1:
-            raise ValueError(
-                f"Inconsistent 'keep' value for channel {channel}"
-            )
-        if "ilastik" in panel and g["ilastik"].nunique(dropna=False) != 1:
-            raise ValueError(
-                f"Inconsistent 'ilastik' value for channel {channel}"
-            )
-        if "deepcell" in panel and g["deepcell"].nunique(dropna=False) != 1:
-            raise ValueError(
-                f"Inconsistent 'deepcell' value for channel {channel}"
-            )
-    panel = panel.groupby(panel["channel"].values).aggregate("first")
     panel.sort_values(
         "channel",
         key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
