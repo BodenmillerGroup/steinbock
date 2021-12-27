@@ -37,6 +37,38 @@ def imc_cmd_group():
     help="Path to the IMC panel file",
 )
 @click.option(
+    "--channelcol",
+    "imc_panel_channel_col",
+    type=click.STRING,
+    default="Metal Tag",
+    show_default=True,
+    help="IMC panel column containing the channel (required)",
+)
+@click.option(
+    "--namecol",
+    "imc_panel_name_col",
+    type=click.STRING,
+    default="Target",
+    show_default=True,
+    help="IMC panel column containing the channel name (required)",
+)
+@click.option(
+    "--keepcol",
+    "imc_panel_keep_col",
+    type=click.STRING,
+    default="full",
+    show_default=True,
+    help="IMC panel column indicating whether to keep the channel (0/1)",
+)
+@click.option(
+    "--ilastikcol",
+    "imc_panel_ilastik_col",
+    type=click.STRING,
+    default="ilastik",
+    show_default=True,
+    help="IMC panel column indicating Ilastik usage (0/1)",
+)
+@click.option(
     "--mcd",
     "mcd_dir",
     type=click.Path(exists=True, file_okay=False),
@@ -61,10 +93,25 @@ def imc_cmd_group():
     help="Path to the panel output file",
 )
 @check_steinbock_version
-def panel_cmd(imc_panel_file, mcd_dir, txt_dir, panel_file):
+def panel_cmd(
+    imc_panel_file,
+    imc_panel_channel_col,
+    imc_panel_name_col,
+    imc_panel_keep_col,
+    imc_panel_ilastik_col,
+    mcd_dir,
+    txt_dir,
+    panel_file,
+):
     panel = None
     if Path(imc_panel_file).exists():
-        panel = imc.create_panel_from_imc_panel(imc_panel_file)
+        panel = imc.create_panel_from_imc_panel(
+            imc_panel_file,
+            imc_panel_channel_col=imc_panel_channel_col,
+            imc_panel_name_col=imc_panel_name_col,
+            imc_panel_keep_col=imc_panel_keep_col,
+            imc_panel_ilastik_col=imc_panel_ilastik_col,
+        )
     if panel is None:
         mcd_files = _collect_mcd_files(mcd_dir)
         if len(mcd_files) > 0:

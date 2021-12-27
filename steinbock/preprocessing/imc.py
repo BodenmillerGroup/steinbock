@@ -26,11 +26,6 @@ except:
     imc_available = False
 
 
-_imc_panel_metal_col = "Metal Tag"
-_imc_panel_target_col = "Target"
-_imc_panel_keep_col = "full"
-_imc_panel_ilastik_col = "ilastik"
-_imc_panel_deepcell_col = "deepcell"
 _logger = logging.getLogger(__name__)
 
 
@@ -43,38 +38,40 @@ def list_txt_files(txt_dir: Union[str, PathLike]) -> List[Path]:
 
 
 def create_panel_from_imc_panel(
-    imc_panel_file: Union[str, PathLike]
+    imc_panel_file: Union[str, PathLike],
+    imc_panel_channel_col: str = "Metal Tag",
+    imc_panel_name_col: str = "Target",
+    imc_panel_keep_col: str = "full",
+    imc_panel_ilastik_col: str = "ilastik",
 ) -> pd.DataFrame:
     imc_panel = pd.read_csv(
         imc_panel_file,
         sep=",|;",
         dtype={
-            _imc_panel_metal_col: pd.StringDtype(),
-            _imc_panel_target_col: pd.StringDtype(),
-            _imc_panel_keep_col: pd.BooleanDtype(),
-            _imc_panel_ilastik_col: pd.BooleanDtype(),
-            _imc_panel_deepcell_col: pd.UInt8Dtype(),
+            imc_panel_channel_col: pd.StringDtype(),
+            imc_panel_name_col: pd.StringDtype(),
+            imc_panel_keep_col: pd.BooleanDtype(),
+            imc_panel_ilastik_col: pd.BooleanDtype(),
         },
         engine="python",
         true_values=["1"],
         false_values=["0"],
     )
-    for required_col in (_imc_panel_metal_col, _imc_panel_target_col):
+    for required_col in (imc_panel_channel_col, imc_panel_name_col):
         if required_col not in imc_panel:
             raise ValueError(f"Missing '{required_col}' column in IMC panel")
     for notnan_col in (
-        _imc_panel_metal_col,
-        _imc_panel_keep_col,
-        _imc_panel_ilastik_col,
+        imc_panel_channel_col,
+        imc_panel_keep_col,
+        imc_panel_ilastik_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
             raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
     rename_columns = {
-        _imc_panel_metal_col: "channel",
-        _imc_panel_target_col: "name",
-        _imc_panel_keep_col: "keep",
-        _imc_panel_ilastik_col: "ilastik",
-        _imc_panel_deepcell_col: "deepcell",
+        imc_panel_channel_col: "channel",
+        imc_panel_name_col: "name",
+        imc_panel_keep_col: "keep",
+        imc_panel_ilastik_col: "ilastik",
     }
     drop_columns = [
         panel_col
@@ -83,7 +80,7 @@ def create_panel_from_imc_panel(
     ]
     panel = imc_panel.drop(columns=drop_columns).rename(columns=rename_columns)
     if "ilastik" in panel:
-        ilastik_mask = panel["ilastik"].astype(bool)
+        ilastik_mask = panel["ilastik"].fillna(False).astype(bool)
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
     return _clean_panel(panel)
