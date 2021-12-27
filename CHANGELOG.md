@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.10.6] - 2021-12-27
+
+  - Customizable IMC panel columns
+
 ## [0.10.5] - 2021-12-25
 
   - Fix IMC panel preprocessing
@@ -255,6 +259,7 @@ Added:
 Initial release for beta testing
 
 
+[0.10.6]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.2...v0.10.3
