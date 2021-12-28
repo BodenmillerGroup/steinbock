@@ -61,7 +61,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
                 Path(csv_file_or_dir) / img_file_name, ".csv"
             )
             df.to_csv(csv_file, index=False)
-            click.echo(csv_file.name)
+            click.echo(csv_file)
         del df
 
 
@@ -119,7 +119,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
                 Path(fcs_file_or_dir) / img_file_name, ".fcs"
             )
             write_fcs(fcs_file, df.columns.values, df.values)
-            click.echo(fcs_file.name)
+            click.echo(fcs_file)
             del df
     if concatenate:
         df = pd.concat(dfs, ignore_index=True, copy=False)
@@ -275,7 +275,7 @@ def anndata_cmd(
                 Path(anndata_file_or_dir) / img_file_name, ".adata"
             )
             anndata_file = write_anndata(adata, anndata_file)
-            click.echo(anndata_file.name)
+            click.echo(anndata_file)
             del adata
     if concatenate:
         adata = anndata_concat(

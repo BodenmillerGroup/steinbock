@@ -61,7 +61,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
             Path(ome_dir) / img_file.name, ".ome.tiff"
         )
         to_tiff(img, ome_file, channel_names=channel_names)
-        click.echo(ome_file.name)
+        click.echo(ome_file)
         del img
 
 
@@ -133,7 +133,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
                 data=io._to_dtype(mask, np.uint16),
                 imagej=True,
             )
-        click.echo(img_file.name)
+        click.echo(img_file)
         del img, mask
 
 
