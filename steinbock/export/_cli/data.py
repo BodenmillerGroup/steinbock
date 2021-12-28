@@ -30,6 +30,8 @@ from steinbock.export import data
     help="Path to the CSV output file or directory",
 )
 def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
+    if not concatenate and str(csv_file_or_dir) == "objects.csv":
+        csv_file_or_dir = "objects"
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(csv_file_or_dir).is_dir():
@@ -86,6 +88,8 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     help="Path to the FCS output file or directory",
 )
 def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
+    if not concatenate and str(fcs_file_or_dir) == "objects.fcs":
+        fcs_file_or_dir = "objects"
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(fcs_file_or_dir).is_dir():
@@ -225,6 +229,8 @@ def anndata_cmd(
     else:
         raise NotImplementedError()
 
+    if not concatenate and str(anndata_file_or_dir) == "objects.h5ad":
+        anndata_file_or_dir = "objects"
     intensities_files = io.list_data_files(intensities_dir)
     data_file_lists = [
         io.list_data_files(data_dir, base_files=intensities_files)
