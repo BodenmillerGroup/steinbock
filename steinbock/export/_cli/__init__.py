@@ -1,5 +1,6 @@
 import click
 import numpy as np
+import re
 
 from pathlib import Path
 from tifffile import imwrite
@@ -117,6 +118,8 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         histocat_img_dir = Path(histocat_dir) / img_file.stem
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_name, channel_img in zip(channel_names, img):
+            channel_name = re.sub(r"\s*/\s*", "_", channel_name)
+            channel_name = re.sub(r"\s", "_", channel_name)
             imwrite(
                 histocat_img_dir / f"{channel_name}.tiff",
                 data=io._to_dtype(channel_img, np.float32),
