@@ -3,7 +3,6 @@ import click
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import check_steinbock_version
 from steinbock.measurement.neighbors import (
     NeighborhoodType,
     try_measure_neighbors_from_disk,
@@ -59,7 +58,7 @@ _neighborhood_types = {
     show_default=True,
     help="Path to the object neighbors output directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def neighbors_cmd(
     mask_dir, neighborhood_type_name, metric, dmax, kmax, neighbors_dir
 ):

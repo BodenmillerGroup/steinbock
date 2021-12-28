@@ -3,7 +3,6 @@ import click
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import check_steinbock_version
 from steinbock.measurement.intensities import (
     IntensityAggregation,
     try_measure_intensities_from_disk,
@@ -64,7 +63,7 @@ _intensity_aggregations = {
     show_default=True,
     help="Path to the object intensities output directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def intensities_cmd(
     img_dir, mask_dir, panel_file, intensity_aggregation_name, intensities_dir
 ):

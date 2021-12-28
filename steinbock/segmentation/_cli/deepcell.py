@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import check_steinbock_version, keras_models_dir
+from steinbock._env import keras_models_dir
 from steinbock.segmentation import deepcell
 
 if deepcell.deepcell_available:
@@ -121,7 +121,7 @@ _applications = {
     show_default=True,
     help="Path to the mask output directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def deepcell_cmd(
     application_name,
     model_path_or_name,

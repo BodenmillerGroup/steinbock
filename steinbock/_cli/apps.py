@@ -5,7 +5,6 @@ from steinbock._cli.utils import OrderedClickGroup
 from steinbock._env import (
     cellprofiler_binary,
     cellprofiler_plugin_dir,
-    check_steinbock_version,
     check_x11,
     ilastik_binary,
     run_captured,
@@ -27,7 +26,7 @@ def apps_cmd_group():
     add_help_option=False,
 )
 @click.argument("ilastik_args", nargs=-1, type=click.UNPROCESSED)
-@check_steinbock_version
+# @check_steinbock_version
 @check_x11
 @use_ilastik_env
 def ilastik_cmd(ilastik_args, ilastik_env):
@@ -43,7 +42,7 @@ def ilastik_cmd(ilastik_args, ilastik_env):
     add_help_option=False,
 )
 @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
-@check_steinbock_version
+# @check_steinbock_version
 @check_x11
 def cellprofiler_cmd(cellprofiler_args):
     args = [cellprofiler_binary] + list(cellprofiler_args)

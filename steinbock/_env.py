@@ -6,8 +6,6 @@ import sys
 from functools import wraps
 from pathlib import Path
 
-from steinbock._version import version as steinbock_version
-
 ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 cellprofiler_binary = "cellprofiler"
 cellprofiler_plugin_dir = "/opt/cellprofiler_plugins"
@@ -69,24 +67,24 @@ def use_ilastik_env(func):
     return use_ilastik_env_wrapper
 
 
-def check_steinbock_version(func):
-    @wraps(func)
-    def check_steinbock_version_wrapper(*args, **kwargs):
-        if Path(".steinbock_version").exists():
-            saved_steinbock_version = (
-                Path(".steinbock_version").read_text(encoding="utf-8").strip()
-            )
-            if saved_steinbock_version != steinbock_version:
-                click.echo(
-                    "WARNING: steinbock version change detected!\n"
-                    f"    previous: {saved_steinbock_version}\n"
-                    f"    current: {steinbock_version}",
-                    file=sys.stderr,
-                )
-        else:
-            Path(".steinbock_version").write_text(
-                steinbock_version, encoding="utf-8"
-            )
-        return func(*args, **kwargs)
+# def check_steinbock_version(func):
+#     @wraps(func)
+#     def check_steinbock_version_wrapper(*args, **kwargs):
+#         if Path(".steinbock_version").exists():
+#             saved_steinbock_version = (
+#                 Path(".steinbock_version").read_text(encoding="utf-8").strip()
+#             )
+#             if saved_steinbock_version != steinbock_version:
+#                 click.echo(
+#                     "WARNING: steinbock version change detected!\n"
+#                     f"    previous: {saved_steinbock_version}\n"
+#                     f"    current: {steinbock_version}",
+#                     file=sys.stderr,
+#                 )
+#         else:
+#             Path(".steinbock_version").write_text(
+#                 steinbock_version, encoding="utf-8"
+#             )
+#         return func(*args, **kwargs)
 
-    return check_steinbock_version_wrapper
+#     return check_steinbock_version_wrapper

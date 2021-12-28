@@ -7,11 +7,7 @@ from tifffile import imwrite
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    cellprofiler_binary,
-    cellprofiler_plugin_dir,
-    check_steinbock_version,
-)
+from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.measurement import cellprofiler
 
 
@@ -67,7 +63,7 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler input directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def prepare_cmd(
     img_dir,
     mask_dir,
@@ -126,7 +122,7 @@ def prepare_cmd(
     show_default=True,
     help="Path to the CellProfiler output directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def run_cmd(measurement_pipeline_file, cpdata_dir, cpout_dir):
     Path(cpout_dir).mkdir(exist_ok=True)
     result = cellprofiler.try_measure_objects(

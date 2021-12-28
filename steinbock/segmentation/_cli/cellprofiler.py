@@ -4,11 +4,7 @@ import sys
 from pathlib import Path
 
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    cellprofiler_binary,
-    cellprofiler_plugin_dir,
-    check_steinbock_version,
-)
+from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.segmentation import cellprofiler
 
 
@@ -32,7 +28,7 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler segmentation pipeline output file",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(
         segmentation_pipeline_file
@@ -66,7 +62,7 @@ def prepare_cmd(segmentation_pipeline_file):
     show_default=True,
     help="Path to the mask output directory",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def run_cmd(segmentation_pipeline_file, probabilities_dir, mask_dir):
     if probabilities_dir not in ("ilastik_probabilities"):
         click.echo(

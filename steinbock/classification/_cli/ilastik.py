@@ -7,11 +7,7 @@ from pathlib import Path
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    check_steinbock_version,
-    ilastik_binary,
-    use_ilastik_env,
-)
+from steinbock._env import ilastik_binary, use_ilastik_env
 from steinbock.classification import ilastik
 
 
@@ -107,7 +103,7 @@ def ilastik_cmd_group():
     help="Path to the Ilastik crop output directory",
 )
 @click.option("--seed", "seed", type=click.INT, help="Random seed")
-@check_steinbock_version
+# @check_steinbock_version
 def prepare_cmd(
     ilastik_project_file,
     img_dir,
@@ -216,7 +212,7 @@ def prepare_cmd(
     type=click.IntRange(min=0),
     help="Memory limit (in megabytes)",
 )
-@check_steinbock_version
+# @check_steinbock_version
 @use_ilastik_env
 def run_cmd(
     ilastik_project_file,
@@ -280,7 +276,7 @@ def run_cmd(
     type=click.STRING,
     help="Axis order of the existing crops (e.g. zyxc)",
 )
-@check_steinbock_version
+# @check_steinbock_version
 def fix_cmd(
     ilastik_project_file,
     ilastik_crop_dir,
