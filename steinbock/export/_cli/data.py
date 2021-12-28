@@ -29,7 +29,6 @@ from steinbock.export import data
     show_default=True,
     help="Path to the CSV output file or directory",
 )
-# @check_steinbock_version
 def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -86,7 +85,6 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     show_default=True,
     help="Path to the FCS output file or directory",
 )
-# @check_steinbock_version
 def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -190,7 +188,6 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     show_default=True,
     help="Path to the AnnData output file or directory",
 )
-# @check_steinbock_version
 def anndata_cmd(
     intensities_dir,
     data_dirs,

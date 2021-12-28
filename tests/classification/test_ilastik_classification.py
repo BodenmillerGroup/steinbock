@@ -5,8 +5,9 @@ import shutil
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import ilastik_binary
 from steinbock.classification import ilastik
+
+ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 
 
 class TestIlastikClassification:

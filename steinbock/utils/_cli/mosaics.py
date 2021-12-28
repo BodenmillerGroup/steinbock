@@ -41,7 +41,6 @@ def mosaics_cmd_group():
     required=True,
     help="Path to the tile output directory",
 )
-# @check_steinbock_version
 def tile_cmd(images, tile_size, tile_dir):
     img_files = _collect_img_files(images)
     Path(tile_dir).mkdir(exist_ok=True)
@@ -66,7 +65,6 @@ def tile_cmd(images, tile_size, tile_dir):
     required=True,
     help="Path to the tile output directory",
 )
-# @check_steinbock_version
 def stitch_cmd(tiles, img_dir):
     tile_info_groups = {}
     tile_files = _collect_img_files(tiles)

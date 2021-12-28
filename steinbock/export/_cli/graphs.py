@@ -39,7 +39,6 @@ from steinbock.export import graphs
     show_default=True,
     help="Path to the networkx output directory",
 )
-# @check_steinbock_version
 def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
     neighbors_files = io.list_neighbors_files(neighbors_dir)
     data_file_lists = [

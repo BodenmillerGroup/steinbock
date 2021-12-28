@@ -91,7 +91,6 @@ def imc_cmd_group():
     show_default=True,
     help="Path to the panel output file",
 )
-# @check_steinbock_version
 def panel_cmd(
     imc_panel_file,
     imc_panel_channel_col,
@@ -182,7 +181,6 @@ def panel_cmd(
     show_default=True,
     help="Path to the image information output file",
 )
-# @check_steinbock_version
 def images_cmd(
     mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
 ):

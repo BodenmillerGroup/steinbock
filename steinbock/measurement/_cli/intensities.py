@@ -63,7 +63,6 @@ _intensity_aggregations = {
     show_default=True,
     help="Path to the object intensities output directory",
 )
-# @check_steinbock_version
 def intensities_cmd(
     img_dir, mask_dir, panel_file, intensity_aggregation_name, intensities_dir
 ):

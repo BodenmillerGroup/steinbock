@@ -32,7 +32,6 @@ from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
     show_default=True,
     help="Path to the object region properties output directory",
 )
-# @check_steinbock_version
 def regionprops_cmd(img_dir, mask_dir, skimage_regionprops, regionprops_dir):
     img_files = io.list_image_files(img_dir)
     mask_files = io.list_mask_files(mask_dir, base_files=img_files)

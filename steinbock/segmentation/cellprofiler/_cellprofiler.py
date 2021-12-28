@@ -37,7 +37,9 @@ def try_segment_objects(
         "-o",
         str(mask_dir),
     ]
-    if cellprofiler_plugin_dir is not None:
-        args.append("--plugins-directory")
-        args.append(str(cellprofiler_plugin_dir))
+    if (
+        cellprofiler_plugin_dir is not None
+        and Path(cellprofiler_plugin_dir).exists()
+    ):
+        args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     return run_captured(args)

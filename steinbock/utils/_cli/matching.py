@@ -20,7 +20,6 @@ from steinbock.utils import matching
     required=True,
     help="Path to the object table CSV output directory",
 )
-# @check_steinbock_version
 def match_cmd(masks1, masks2, csv_dir):
     if Path(masks1).is_file() and Path(masks2).is_file():
         mask_files1 = [Path(masks1)]

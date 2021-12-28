@@ -45,7 +45,6 @@ def export_cmd_group():
     show_default=True,
     help="Path to the OME-TIFF export directory",
 )
-# @check_steinbock_version
 def ome_cmd(img_dir, panel_file, ome_dir):
     panel = io.read_panel(panel_file)
     channel_names = [
@@ -100,7 +99,6 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     show_default=True,
     help="Path to the histoCAT export directory",
 )
-# @check_steinbock_version
 def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
     panel = io.read_panel(panel_file)
     channel_names = [

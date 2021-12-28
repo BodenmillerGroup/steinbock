@@ -3,8 +3,10 @@ import shutil
 
 from pathlib import Path
 
-from steinbock._env import cellprofiler_binary, cellprofiler_plugin_dir
 from steinbock.segmentation import cellprofiler
+
+cellprofiler_binary = "cellprofiler"
+cellprofiler_plugin_dir = "/opt/cellprofiler_plugins"
 
 
 class TestCellprofilerSegmentation:
