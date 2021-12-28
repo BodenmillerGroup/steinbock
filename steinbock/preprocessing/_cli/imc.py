@@ -9,7 +9,6 @@ from zipfile import ZipFile
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import check_steinbock_version
 from steinbock.preprocessing import imc
 
 
@@ -71,7 +70,7 @@ def imc_cmd_group():
 @click.option(
     "--mcd",
     "mcd_dir",
-    type=click.Path(exists=True, file_okay=False),
+    type=click.Path(file_okay=False),
     default="raw",
     show_default=True,
     help="Path to the IMC .mcd file directory",
@@ -79,7 +78,7 @@ def imc_cmd_group():
 @click.option(
     "--txt",
     "txt_dir",
-    type=click.Path(exists=True, file_okay=False),
+    type=click.Path(file_okay=False),
     default="raw",
     show_default=True,
     help="Path to the IMC .txt file directory",
@@ -92,7 +91,6 @@ def imc_cmd_group():
     show_default=True,
     help="Path to the panel output file",
 )
-@check_steinbock_version
 def panel_cmd(
     imc_panel_file,
     imc_panel_channel_col,
@@ -183,7 +181,6 @@ def panel_cmd(
     show_default=True,
     help="Path to the image information output file",
 )
-@check_steinbock_version
 def images_cmd(
     mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
 ):

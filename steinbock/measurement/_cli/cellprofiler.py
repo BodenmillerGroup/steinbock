@@ -7,11 +7,6 @@ from tifffile import imwrite
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    cellprofiler_binary,
-    cellprofiler_plugin_dir,
-    check_steinbock_version,
-)
 from steinbock.measurement import cellprofiler
 
 
@@ -36,7 +31,7 @@ def cellprofiler_cmd_group():
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
     default="masks",
@@ -67,7 +62,6 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler input directory",
 )
-@check_steinbock_version
 def prepare_cmd(
     img_dir,
     mask_dir,
@@ -103,6 +97,22 @@ def prepare_cmd(
     name="run", help="Run an object measurement batch using CellProfiler"
 )
 @click.option(
+    "--cellprofiler",
+    "cellprofiler_binary",
+    type=click.STRING,
+    default="cellprofiler",
+    show_default=True,
+    help="CellProfiler binary",
+)
+@click.option(
+    "--plugins-directory",
+    "cellprofiler_plugin_dir",
+    type=click.Path(file_okay=False),
+    default="/opt/cellprofiler_plugins",
+    show_default=True,
+    help="Path to the CellProfiler plugin directory",
+)
+@click.option(
     "--pipe",
     "measurement_pipeline_file",
     type=click.Path(exists=True, dir_okay=False),
@@ -126,8 +136,13 @@ def prepare_cmd(
     show_default=True,
     help="Path to the CellProfiler output directory",
 )
-@check_steinbock_version
-def run_cmd(measurement_pipeline_file, cpdata_dir, cpout_dir):
+def run_cmd(
+    cellprofiler_binary,
+    cellprofiler_plugin_dir,
+    measurement_pipeline_file,
+    cpdata_dir,
+    cpout_dir,
+):
     Path(cpout_dir).mkdir(exist_ok=True)
     result = cellprofiler.try_measure_objects(
         cellprofiler_binary,

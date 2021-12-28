@@ -4,7 +4,6 @@ import numpy as np
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import check_steinbock_version, keras_models_dir
 from steinbock.segmentation import deepcell
 
 if deepcell.deepcell_available:
@@ -13,10 +12,6 @@ else:
     yaml = None
 
 deepcell_cli_available = deepcell.deepcell_available
-
-_model_paths = {}
-if Path(keras_models_dir).is_dir():
-    _model_paths.update({x.name: x for x in Path(keras_models_dir).iterdir()})
 
 _applications = {
     "mesmer": deepcell.Application.MESMER,
@@ -41,10 +36,15 @@ _applications = {
     type=click.STRING,
     default="MultiplexSegmentation",
     show_default=True,
-    help=(
-        "Path to custom Keras model or name of Keras model stored in "
-        f"{keras_models_dir} [{', '.join(_model_paths.keys())}]"
-    ),
+    help="Path/name of custom Keras model",
+)
+@click.option(
+    "--modeldir",
+    "keras_model_dir",
+    type=click.Path(file_okay=False),
+    default="/opt/keras/models",
+    show_default=True,
+    help="Path to Keras model directory",
 )
 @click.option(
     "--img",
@@ -121,10 +121,10 @@ _applications = {
     show_default=True,
     help="Path to the mask output directory",
 )
-@check_steinbock_version
 def deepcell_cmd(
     application_name,
     model_path_or_name,
+    keras_model_dir,
     img_dir,
     channelwise_minmax,
     channelwise_zscore,
@@ -149,8 +149,11 @@ def deepcell_cmd(
 
         if Path(model_path_or_name).exists():
             model = load_model(model_path_or_name, compile=False)
-        elif model_path_or_name in _model_paths:
-            model = load_model(_model_paths[model_path_or_name], compile=False)
+        elif Path(keras_model_dir).joinpath(model_path_or_name).exists():
+            model = load_model(
+                Path(keras_model_dir).joinpath(model_path_or_name),
+                compile=False,
+            )
     preprocess_kwargs = None
     if preprocess_file is not None:
         with Path(preprocess_file).open() as f:

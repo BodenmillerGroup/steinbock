@@ -3,7 +3,7 @@ click==8.0.3
 # deepcell==0.11.0  # install manually first, to avoid version conflicts
 fcswrite==0.6.1
 h5py==3.2.1  # cellprofiler 4.2.1 requires 3.2.1 (note: deepcell 0.11.0 requires tensorflow ~=2.5.1, which requires ~=3.1.0)
-imageio==2.13.3
+imageio==2.13.5
 networkx==2.6.3
 numpy==1.21.5  # note: deepcell 0.11.0 technically requires <1.20.0
 opencv-contrib-python==4.5.4.60

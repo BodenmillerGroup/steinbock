@@ -86,11 +86,11 @@ def create_panel_from_imc_panel(
         if "ilastik" in panel:
             panel.loc[g.index, "ilastik"] = g["ilastik"].any()
     panel = panel.groupby(panel["channel"].values).aggregate("first")
-    if "ilastik" in panel:
-        ilastik_mask = panel["ilastik"].astype(bool)
-        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
-        panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
-    return _clean_panel(panel)
+    panel = _clean_panel(panel)  # ilastik column may be nullable uint8 now
+    ilastik_mask = panel["ilastik"].fillna(False).astype(bool)
+    panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
+    panel.loc[ilastik_mask, "ilastik"] = range(1, ilastik_mask.sum() + 1)
+    return panel
 
 
 def create_panel_from_mcd_files(

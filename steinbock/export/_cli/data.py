@@ -7,7 +7,6 @@ from fcswrite import write_fcs
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import check_steinbock_version
 from steinbock.export import data
 
 
@@ -26,11 +25,9 @@ from steinbock.export import data
     "-o",
     "csv_file_or_dir",
     type=click.Path(),
-    default="objects.csv",
-    show_default=True,
+    required=True,
     help="Path to the CSV output file or directory",
 )
-@check_steinbock_version
 def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -83,11 +80,9 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     "-o",
     "fcs_file_or_dir",
     type=click.Path(),
-    default="objects.fcs",
-    show_default=True,
+    required=True,
     help="Path to the FCS output file or directory",
 )
-@check_steinbock_version
 def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -187,11 +182,9 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     "-o",
     "anndata_file_or_dir",
     type=click.Path(),
-    default="objects.h5ad",
-    show_default=True,
+    required=True,
     help="Path to the AnnData output file or directory",
 )
-@check_steinbock_version
 def anndata_cmd(
     intensities_dir,
     data_dirs,
@@ -255,8 +248,7 @@ def anndata_cmd(
         return click.echo("ERROR: Output directory is a file", file=sys.stderr)
     if concatenate:
         click.echo(
-            "WARNING: The anndata package currently does not support on-disk "
-            "concatenation (https://github.com/theislab/anndata/issues/312); "
+            "WARNING: The anndata package currently does not support on-disk; "
             "all files will be loaded into memory"
         )
     else:

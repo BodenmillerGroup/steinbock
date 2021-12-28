@@ -4,11 +4,6 @@ import sys
 from pathlib import Path
 
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    cellprofiler_binary,
-    cellprofiler_plugin_dir,
-    check_steinbock_version,
-)
 from steinbock.segmentation import cellprofiler
 
 
@@ -32,7 +27,6 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler segmentation pipeline output file",
 )
-@check_steinbock_version
 def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(
         segmentation_pipeline_file
@@ -43,6 +37,22 @@ def prepare_cmd(segmentation_pipeline_file):
     name="run", help="Run a object segmentation batch using CellProfiler"
 )
 @click.option(
+    "--cellprofiler",
+    "cellprofiler_binary",
+    type=click.STRING,
+    default="cellprofiler",
+    show_default=True,
+    help="CellProfiler binary",
+)
+@click.option(
+    "--plugins-directory",
+    "cellprofiler_plugin_dir",
+    type=click.Path(file_okay=False),
+    default="/opt/cellprofiler_plugins",
+    show_default=True,
+    help="Path to the CellProfiler plugin directory",
+)
+@click.option(
     "--pipe",
     "segmentation_pipeline_file",
     type=click.Path(exists=True, dir_okay=False),
@@ -51,7 +61,7 @@ def prepare_cmd(segmentation_pipeline_file):
     help="Path to the CellProfiler segmentation pipeline file",
 )
 @click.option(
-    "--probab",
+    "--probabs",
     "probabilities_dir",
     type=click.Path(exists=True, file_okay=False),
     default="ilastik_probabilities",
@@ -66,8 +76,13 @@ def prepare_cmd(segmentation_pipeline_file):
     show_default=True,
     help="Path to the mask output directory",
 )
-@check_steinbock_version
-def run_cmd(segmentation_pipeline_file, probabilities_dir, mask_dir):
+def run_cmd(
+    cellprofiler_binary,
+    cellprofiler_plugin_dir,
+    segmentation_pipeline_file,
+    probabilities_dir,
+    mask_dir,
+):
     if probabilities_dir not in ("ilastik_probabilities"):
         click.echo(
             "WARNING: When using custom probabilities from unknown origins, "

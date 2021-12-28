@@ -6,7 +6,6 @@ from pathlib import Path
 from steinbock import io
 from steinbock.preprocessing import external
 from steinbock._cli import OrderedClickGroup
-from steinbock._env import check_steinbock_version
 
 
 @click.group(
@@ -37,7 +36,6 @@ def external_cmd_group():
     show_default=True,
     help="Path to the panel output file",
 )
-@check_steinbock_version
 def panel_cmd(ext_img_dir, panel_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     panel = external.create_panel_from_image_files(ext_img_files)
@@ -77,7 +75,6 @@ def panel_cmd(ext_img_dir, panel_file):
     show_default=True,
     help="Path to the image information output file",
 )
-@check_steinbock_version
 def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
     channel_indices = None
     if Path(panel_file).exists():

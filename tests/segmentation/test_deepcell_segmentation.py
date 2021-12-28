@@ -4,9 +4,10 @@ import pytest
 from pathlib import Path
 
 from steinbock import io
-from steinbock._env import keras_models_dir
 from steinbock.segmentation import deepcell
 from steinbock.segmentation.deepcell import Application
+
+keras_models_dir = "/opt/keras/models"
 
 
 @pytest.mark.skipif(

@@ -1,5 +1,6 @@
 import click
 import numpy as np
+import re
 
 from pathlib import Path
 from tifffile import imwrite
@@ -9,7 +10,6 @@ from steinbock import io
 from steinbock.export._cli.data import anndata_cmd, csv_cmd, fcs_cmd
 from steinbock.export._cli.graphs import graphs_cmd
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import check_steinbock_version
 
 
 @click.group(
@@ -46,7 +46,6 @@ def export_cmd_group():
     show_default=True,
     help="Path to the OME-TIFF export directory",
 )
-@check_steinbock_version
 def ome_cmd(img_dir, panel_file, ome_dir):
     panel = io.read_panel(panel_file)
     channel_names = [
@@ -78,7 +77,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(file_okay=False),
     default="masks",
@@ -101,7 +100,6 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     show_default=True,
     help="Path to the histoCAT export directory",
 )
-@check_steinbock_version
 def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
     panel = io.read_panel(panel_file)
     channel_names = [
@@ -120,6 +118,8 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         histocat_img_dir = Path(histocat_dir) / img_file.stem
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_name, channel_img in zip(channel_names, img):
+            channel_name = re.sub(r"\s*/\s*", "_", channel_name)
+            channel_name = re.sub(r"\s", "_", channel_name)
             imwrite(
                 histocat_img_dir / f"{channel_name}.tiff",
                 data=io._to_dtype(channel_img, np.float32),

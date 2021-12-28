@@ -22,7 +22,7 @@ This will create a histoCAT-compatible folder structure (defaults to `histocat`)
 
 To export specified object data from all images as a single .csv file:
 
-    steinbock export csv intensities regionprops
+    steinbock export csv intensities regionprops -o objects.csv
 
 This will collect object data from the `intensities` and `regionprops` directories and create a single object data table in [object data format](../file-types.md#object-data), with an additional first column indicating the source image.
 
@@ -30,17 +30,17 @@ This will collect object data from the `intensities` and `regionprops` directori
 
 To export specified object data from all images as a single .fcs file:
 
-    steinbock export fcs intensities regionprops
+    steinbock export fcs intensities regionprops -o objects.fcs
 
-This will collect object data from the `intensities` and `regionprops` directories and create a single FCS file (defaults to `objects.fcs`) using the [fcswrite](https://github.com/ZELLMECHANIK-DRESDEN/fcswrite) package.
+This will collect object data from the `intensities` and `regionprops` directories and create a single FCS file using the [fcswrite](https://github.com/ZELLMECHANIK-DRESDEN/fcswrite) package.
 
 ## AnnData
 
 To export specified object data to [AnnData](https://github.com/theislab/anndata):
 
-    steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors
+    steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors -o objects.h5ad
 
-This will generate a single .h5ad file (defaults to `objects.h5ad`), with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in `adj`, distances in `dists`).
+This will generate a single .h5ad file, with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in `adj`, distances in `dists`).
 
 !!! note "AnnData file format"
     To export the data as .loom or .zarr, specify `--format loom` or `--format zarr`, respectively.

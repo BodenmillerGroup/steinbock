@@ -7,11 +7,7 @@ from pathlib import Path
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import (
-    check_steinbock_version,
-    ilastik_binary,
-    use_ilastik_env,
-)
+from steinbock._env import use_ilastik_env
 from steinbock.classification import ilastik
 
 
@@ -107,7 +103,6 @@ def ilastik_cmd_group():
     help="Path to the Ilastik crop output directory",
 )
 @click.option("--seed", "seed", type=click.INT, help="Random seed")
-@check_steinbock_version
 def prepare_cmd(
     ilastik_project_file,
     img_dir,
@@ -181,6 +176,14 @@ def prepare_cmd(
     name="run", help="Run a pixel classification batch using Ilastik"
 )
 @click.option(
+    "--ilastik",
+    "ilastik_binary",
+    type=click.STRING,
+    default="/opt/ilastik/run_ilastik.sh",
+    show_default=True,
+    help="Ilastik binary",
+)
+@click.option(
     "--ilp",
     "ilastik_project_file",
     type=click.Path(exists=True, dir_okay=False),
@@ -216,9 +219,9 @@ def prepare_cmd(
     type=click.IntRange(min=0),
     help="Memory limit (in megabytes)",
 )
-@check_steinbock_version
 @use_ilastik_env
 def run_cmd(
+    ilastik_binary,
     ilastik_project_file,
     ilastik_img_dir,
     ilastik_probab_dir,
@@ -260,7 +263,7 @@ def run_cmd(
     help="Path to the Ilastik crop directory",
 )
 @click.option(
-    "--probab",
+    "--probabs",
     "ilastik_probab_dir",
     type=click.Path(file_okay=False),
     default="ilastik_probabilities",
@@ -280,7 +283,6 @@ def run_cmd(
     type=click.STRING,
     help="Axis order of the existing crops (e.g. zyxc)",
 )
-@check_steinbock_version
 def fix_cmd(
     ilastik_project_file,
     ilastik_crop_dir,

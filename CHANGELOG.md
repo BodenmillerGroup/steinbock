@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.11.0] - 2021-12-28
+
+  - Removed steinbock version check
+  - Fix IMC panel preprocessing (channel order)
+  - Make CLI usable when using PyPI package install
+  - Renamed `--mask` and `--probab` parameters to `--masks` and `--probabs`, respectively 
+  - Clean histoCAT export file names
+  - Required `-o` parameter for data export
+
 ## [0.10.7] - 2021-12-27
 
   - Fix IMC panel preprocessing
@@ -263,6 +272,7 @@ Added:
 Initial release for beta testing
 
 
+[0.11.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.7...v0.11.0
 [0.10.7]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.6...v0.10.7
 [0.10.6]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.5...v0.10.6
 [0.10.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.10.4...v0.10.5
