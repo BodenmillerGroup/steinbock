@@ -1334,6 +1334,20 @@ IntensityAggregation            (<span title="enum.Enum">Enum</span>)
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>steinbock/measurement/intensities.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">IntensityAggregation</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="n">SUM</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">sum_labels</span><span class="p">)</span>
+    <span class="n">MIN</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">maximum</span><span class="p">)</span>
+    <span class="n">MEAN</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+    <span class="n">MEDIAN</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+    <span class="n">STD</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">standard_deviation</span><span class="p">)</span>
+    <span class="n">VAR</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variance</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -1616,6 +1630,20 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>steinbock/measurement/neighbors.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NeighborhoodType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="n">CENTROID_DISTANCE</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_measure_centroid_distance_neighbors</span><span class="p">)</span>
+    <span class="n">EUCLIDEAN_BORDER_DISTANCE</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">_measure_euclidean_border_distance_neighbors</span>
+    <span class="p">)</span>
+    <span class="n">EUCLIDEAN_PIXEL_EXPANSION</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">_measure_euclidean_pixel_expansion_neighbors</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 

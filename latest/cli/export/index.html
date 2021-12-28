@@ -976,19 +976,19 @@
 <p>This will create a histoCAT-compatible folder structure (defaults to <code>histocat</code>), with one subfolder per image, where each subfolder contains one image file per channel. Additionally, if masks are available, each image subfolder contains a single mask file.</p>
 <h2 id="csv">CSV</h2>
 <p>To export specified object data from all images as a single .csv file:</p>
-<pre><code>steinbock export csv intensities regionprops
+<pre><code>steinbock export csv intensities regionprops -o objects.csv
 </code></pre>
 <p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single object data table in <a href="../../file-types/#object-data">object data format</a>, with an additional first column indicating the source image.</p>
 <h2 id="fcs">FCS</h2>
 <p>To export specified object data from all images as a single .fcs file:</p>
-<pre><code>steinbock export fcs intensities regionprops
+<pre><code>steinbock export fcs intensities regionprops -o objects.fcs
 </code></pre>
-<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single FCS file (defaults to <code>objects.fcs</code>) using the <a href="https://github.com/ZELLMECHANIK-DRESDEN/fcswrite">fcswrite</a> package.</p>
+<p>This will collect object data from the <code>intensities</code> and <code>regionprops</code> directories and create a single FCS file using the <a href="https://github.com/ZELLMECHANIK-DRESDEN/fcswrite">fcswrite</a> package.</p>
 <h2 id="anndata">AnnData</h2>
 <p>To export specified object data to <a href="https://github.com/theislab/anndata">AnnData</a>:</p>
-<pre><code>steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors
+<pre><code>steinbock export anndata --intensities intensities --data regionprops --neighbors neighbors -o objects.h5ad
 </code></pre>
-<p>This will generate a single .h5ad file (defaults to <code>objects.h5ad</code>), with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in <code>adj</code>, distances in <code>dists</code>).</p>
+<p>This will generate a single .h5ad file, with object intensities as main data, object regionprops as observation annotations, and neighbors as pairwise observation annotations (adjacency matrix in <code>adj</code>, distances in <code>dists</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">AnnData file format</p>
 <p>To export the data as .loom or .zarr, specify <code>--format loom</code> or <code>--format zarr</code>, respectively.</p>
