@@ -16,7 +16,7 @@ from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
     default="masks",

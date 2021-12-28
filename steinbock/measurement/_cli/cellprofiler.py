@@ -31,7 +31,7 @@ def cellprofiler_cmd_group():
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
     default="masks",

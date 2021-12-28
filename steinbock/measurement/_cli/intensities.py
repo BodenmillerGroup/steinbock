@@ -30,7 +30,7 @@ _intensity_aggregations = {
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(exists=True, file_okay=False),
     default="masks",

@@ -263,7 +263,7 @@ def run_cmd(
     help="Path to the Ilastik crop directory",
 )
 @click.option(
-    "--probab",
+    "--probabs",
     "ilastik_probab_dir",
     type=click.Path(file_okay=False),
     default="ilastik_probabilities",

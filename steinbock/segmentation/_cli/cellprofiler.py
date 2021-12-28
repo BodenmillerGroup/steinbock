@@ -61,7 +61,7 @@ def prepare_cmd(segmentation_pipeline_file):
     help="Path to the CellProfiler segmentation pipeline file",
 )
 @click.option(
-    "--probab",
+    "--probabs",
     "probabilities_dir",
     type=click.Path(exists=True, file_okay=False),
     default="ilastik_probabilities",

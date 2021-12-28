@@ -76,7 +76,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     help="Path to the image directory",
 )
 @click.option(
-    "--mask",
+    "--masks",
     "mask_dir",
     type=click.Path(file_okay=False),
     default="masks",
