@@ -170,6 +170,7 @@ def prepare_cmd(
     ilastik.create_and_save_ilastik_project(
         ilastik_crop_files, ilastik_project_file
     )
+    click.echo(ilastik_project_file)
 
 
 @ilastik_cmd_group.command(
@@ -340,3 +341,4 @@ def fix_cmd(
         ilastik_crop_shapes,
         last_transpose_axes,
     )
+    click.echo(ilastik_project_file)

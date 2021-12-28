@@ -40,6 +40,7 @@ def panel_cmd(ext_img_dir, panel_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     panel = external.create_panel_from_image_files(ext_img_files)
     io.write_panel(panel, panel_file)
+    click.echo(panel_file)
 
 
 @external_cmd_group.command(name="images", help="Extract external images")

@@ -120,20 +120,25 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         for channel_name, channel_img in zip(channel_names, img):
             channel_name = re.sub(r"\s*/\s*", "_", channel_name)
             channel_name = re.sub(r"\s", "_", channel_name)
+            histocat_img_file = histocat_img_dir / f"{channel_name}.tiff"
             imwrite(
-                histocat_img_dir / f"{channel_name}.tiff",
+                histocat_img_file,
                 data=io._to_dtype(channel_img, np.float32),
                 imagej=True,
             )
+            click.echo(histocat_img_file)
         mask = None
         if mask_files is not None:
             mask = io.read_mask(mask_files[i])
+            histocat_mask_file = (
+                histocat_img_dir / f"{img_file.stem}_mask.tiff"
+            )
             imwrite(
-                histocat_img_dir / f"{img_file.stem}_mask.tiff",
+                histocat_mask_file,
                 data=io._to_dtype(mask, np.uint16),
                 imagej=True,
             )
-        click.echo(img_file)
+            click.echo(histocat_mask_file)
         del img, mask
 
 

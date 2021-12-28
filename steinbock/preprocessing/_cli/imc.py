@@ -123,6 +123,7 @@ def panel_cmd(
             "ERROR: No panel/.mcd/.txt file found", file=sys.stderr
         )
     io.write_panel(panel, panel_file)
+    click.echo(panel_file)
 
 
 @imc_cmd_group.command(
@@ -259,6 +260,7 @@ def images_cmd(
             del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
+    click.echo(image_info_file)
 
 
 def _extract_zips(path, suffix, dest):

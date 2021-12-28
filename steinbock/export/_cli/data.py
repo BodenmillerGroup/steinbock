@@ -55,7 +55,6 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
                 df.to_csv(csv_file_or_dir, index=False)
             else:
                 df.to_csv(csv_file_or_dir, header=False, index=False, mode="a")
-            click.echo(img_file_name)
         else:
             csv_file = io._as_path_with_suffix(
                 Path(csv_file_or_dir) / img_file_name, ".csv"
@@ -63,6 +62,8 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
             df.to_csv(csv_file, index=False)
             click.echo(csv_file)
         del df
+    if concatenate:
+        click.echo(csv_file_or_dir)
 
 
 @click.command(name="fcs", help="Merge and export object data to FCS")
@@ -112,7 +113,6 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
         df,
     ) in data.try_convert_to_dataframe_from_disk(*data_file_lists):
         if concatenate:
-            click.echo(img_file_name)
             dfs.append(df)
         else:
             fcs_file = io._as_path_with_suffix(
@@ -124,6 +124,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if concatenate:
         df = pd.concat(dfs, ignore_index=True, copy=False)
         write_fcs(fcs_file_or_dir, df.columns.values, df.values)
+        click.echo(fcs_file_or_dir)
 
 
 @click.command(name="anndata", help="Merge and export object data to AnnData")
@@ -269,7 +270,6 @@ def anndata_cmd(
     ):
         if concatenate:
             adatas[img_file_name] = adata
-            click.echo(img_file_name)
         else:
             anndata_file = io._as_path_with_suffix(
                 Path(anndata_file_or_dir) / img_file_name, ".adata"
@@ -285,3 +285,4 @@ def anndata_cmd(
         obs_cols.insert(0, obs_cols.pop(obs_cols.index("Image")))
         adata.obs = adata.obs.loc[:, obs_cols]
         write_anndata(adata, anndata_file_or_dir, keep_suffix=True)
+        click.echo(anndata_file_or_dir)

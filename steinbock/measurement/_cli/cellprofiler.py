@@ -75,22 +75,29 @@ def prepare_cmd(
     Path(cpdata_dir).mkdir(exist_ok=True)
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file, native_dtype=True)
+        cp_img_file = Path(cpdata_dir) / img_file.name
         imwrite(
-            Path(cpdata_dir) / img_file.name,
+            cp_img_file,
             data=io._to_dtype(img, np.uint16),
             imagej=True,
         )
+        click.echo(cp_img_file)
         del img
         mask = io.read_mask(mask_file)
+        cp_mask_file = (
+            Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
+        )
         imwrite(
-            Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}",
+            cp_mask_file,
             data=io._to_dtype(mask, np.uint16),
             imagej=True,
         )
+        click.echo(cp_mask_file)
         del mask
     cellprofiler.create_and_save_measurement_pipeline(
         measurement_pipeline_file, len(panel.index)
     )
+    click.echo(measurement_pipeline_file)
 
 
 @cellprofiler_cmd_group.command(
