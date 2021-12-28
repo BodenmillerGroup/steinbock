@@ -251,8 +251,7 @@ def anndata_cmd(
         return click.echo("ERROR: Output directory is a file", file=sys.stderr)
     if concatenate:
         click.echo(
-            "WARNING: The anndata package currently does not support on-disk "
-            "concatenation (https://github.com/theislab/anndata/issues/312); "
+            "WARNING: The anndata package currently does not support on-disk; "
             "all files will be loaded into memory"
         )
     else:
