@@ -16,7 +16,7 @@ mask_dtype = np.dtype(os.environ.get("STEINBOCK_MASK_DTYPE", "uint16"))
 
 def _as_path_with_suffix(path: Union[str, PathLike], suffix: str) -> Path:
     path = Path(path)
-    if re.fullmatch(r".+\.ome\.[^.]+", flags=re.IGNORECASE):
+    if re.fullmatch(r".+\.ome\.[^.]+", path.name, flags=re.IGNORECASE):
         stem, ome_suffix, suffix = path.name.rpartition(".ome.")
         if ome_suffix:
             path = path.with_name(f"{stem}.{suffix}")
