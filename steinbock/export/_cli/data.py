@@ -198,24 +198,24 @@ def anndata_cmd(
 ):
     if anndata_format == "h5ad":
 
-        def write_anndata(adata, anndata_file, keep_suffix=False):
-            suffix = Path(anndata_file).suffix if keep_suffix else ".h5ad"
+        def write_anndata(adata, anndata_file, ignore_suffix=False):
+            suffix = Path(anndata_file).suffix if ignore_suffix else ".h5ad"
             anndata_file = io._as_path_with_suffix(anndata_file, suffix)
             adata.write_h5ad(anndata_file)
             return anndata_file
 
     elif anndata_format == "loom":
 
-        def write_anndata(adata, anndata_file, keep_suffix=False):
-            suffix = Path(anndata_file).suffix if keep_suffix else ".loom"
+        def write_anndata(adata, anndata_file, ignore_suffix=False):
+            suffix = Path(anndata_file).suffix if ignore_suffix else ".loom"
             anndata_file = io._as_path_with_suffix(anndata_file, suffix)
             adata.write_loom(anndata_file)
             return anndata_file
 
     elif anndata_format == "zarr":
 
-        def write_anndata(adata, anndata_file, keep_suffix=False):
-            suffix = Path(anndata_file).suffix if keep_suffix else ".zarr"
+        def write_anndata(adata, anndata_file, ignore_suffix=False):
+            suffix = Path(anndata_file).suffix if ignore_suffix else ".zarr"
             anndata_file = io._as_path_with_suffix(anndata_file, suffix)
             adata.write_zarr(anndata_file)
             return anndata_file
@@ -284,5 +284,5 @@ def anndata_cmd(
         obs_cols = list(adata.obs.columns)
         obs_cols.insert(0, obs_cols.pop(obs_cols.index("Image")))
         adata.obs = adata.obs.loc[:, obs_cols]
-        write_anndata(adata, anndata_file_or_dir, keep_suffix=True)
+        write_anndata(adata, anndata_file_or_dir, ignore_suffix=True)
         click.echo(anndata_file_or_dir)

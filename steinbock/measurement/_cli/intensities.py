@@ -77,7 +77,9 @@ def intensities_cmd(
         channel_names,
         _intensity_aggregations[intensity_aggregation_name],
     ):
-        intensities_stem = Path(intensities_dir) / img_file.stem
-        intensities_file = io.write_data(intensities, intensities_stem)
+        intensities_file = io._as_path_with_suffix(
+            Path(intensities_dir) / img_file.name, ".csv"
+        )
+        io.write_data(intensities, intensities_file)
         click.echo(intensities_file)
         del intensities

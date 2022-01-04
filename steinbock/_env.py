@@ -7,7 +7,9 @@ from functools import wraps
 from pathlib import Path
 
 
-def run_captured(args, *popen_args, file=sys.stdout, **popen_kwargs):
+def run_captured(
+    args, *popen_args, file=sys.stdout, **popen_kwargs
+) -> subprocess.CompletedProcess:
     with subprocess.Popen(
         args,
         *popen_args,

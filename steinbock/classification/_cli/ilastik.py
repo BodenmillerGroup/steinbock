@@ -133,10 +133,10 @@ def prepare_cmd(
         mean_factor=mean_factor,
         scale_factor=scale_factor,
     ):
-        ilastik_img_stem = Path(ilastik_img_dir) / f"{img_file.stem}"
-        ilastik_img_file = ilastik.write_ilastik_image(
-            ilastik_img, ilastik_img_stem
+        ilastik_img_file = io._as_path_with_suffix(
+            Path(ilastik_img_dir) / img_file.name, ".h5"
         )
+        ilastik.write_ilastik_image(ilastik_img, ilastik_img_file)
         ilastik_img_files.append(ilastik_img_file)
         click.echo(ilastik_img_file)
         del ilastik_img
@@ -151,14 +151,12 @@ def prepare_cmd(
         ilastik_img_files, ilastik_crop_size, np.random.default_rng(seed=seed)
     ):
         if ilastik_crop is not None:
-            ilastik_crop_stem = Path(ilastik_crop_dir) / (
+            ilastik_crop_file = Path(ilastik_crop_dir) / (
                 f"{ilastik_img_file.stem}"
                 f"_x{ilastik_crop_x}_y{ilastik_crop_y}"
-                f"_w{ilastik_crop_size}_h{ilastik_crop_size}"
+                f"_w{ilastik_crop_size}_h{ilastik_crop_size}.h5"
             )
-            ilastik_crop_file = ilastik.write_ilastik_crop(
-                ilastik_crop, ilastik_crop_stem
-            )
+            ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
             ilastik_crop_files.append(ilastik_crop_file)
             click.echo(ilastik_crop_file)
             del ilastik_crop
@@ -327,9 +325,7 @@ def fix_cmd(
             return click.echo(
                 "ERROR: Inconsistent axis orders across crops", file=sys.stderr
             )
-        ilastik_crop_file = ilastik.write_ilastik_crop(
-            ilastik_crop, ilastik_crop_file
-        )
+        ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
         ilastik_crop_shapes[ilastik_crop_file.stem] = ilastik_crop.shape
         last_transpose_axes = transpose_axes
         click.echo(ilastik_crop_file)

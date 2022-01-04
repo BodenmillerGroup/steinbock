@@ -69,23 +69,20 @@ def list_ilastik_crop_files(
     return sorted(Path(ilastik_crop_dir).rglob("*.h5"))
 
 
-def read_ilastik_image(ilastik_img_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_img_file = io._as_path_with_suffix(ilastik_img_stem, ".h5")
+def read_ilastik_image(ilastik_img_file: Union[str, PathLike]) -> np.ndarray:
     with h5py.File(ilastik_img_file, mode="r", libver=_h5py_libver) as f:
         return io._to_dtype(f[str(_img_dataset_path)][()], io.img_dtype)
 
 
-def read_ilastik_crop(ilastik_crop_stem: Union[str, PathLike]) -> np.ndarray:
-    ilastik_crop_file = io._as_path_with_suffix(ilastik_crop_stem, ".h5")
+def read_ilastik_crop(ilastik_crop_file: Union[str, PathLike]) -> np.ndarray:
     with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
         return io._to_dtype(f[str(_crop_dataset_path)][()], io.img_dtype)
 
 
 def write_ilastik_image(
-    ilastik_img: np.ndarray, ilastik_img_stem: Union[str, PathLike]
-) -> Path:
+    ilastik_img: np.ndarray, ilastik_img_file: Union[str, PathLike]
+) -> None:
     ilastik_img = io._to_dtype(ilastik_img, io.img_dtype)
-    ilastik_img_file = io._as_path_with_suffix(ilastik_img_stem, ".h5")
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
         dataset = _create_or_replace_dataset(f, _img_dataset_path, ilastik_img)
         dataset.attrs["display_mode"] = _str_encode(
@@ -93,14 +90,12 @@ def write_ilastik_image(
         )
         dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
-    return ilastik_img_file
 
 
 def write_ilastik_crop(
-    ilastik_crop: np.ndarray, ilastik_crop_stem: Union[str, PathLike]
-):
+    ilastik_crop: np.ndarray, ilastik_crop_file: Union[str, PathLike]
+) -> None:
     ilastik_crop = io._to_dtype(ilastik_crop, io.img_dtype)
-    ilastik_crop_file = io._as_path_with_suffix(ilastik_crop_stem, ".h5")
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
         dataset = _create_or_replace_dataset(
             f, _crop_dataset_path, ilastik_crop
@@ -110,7 +105,6 @@ def write_ilastik_crop(
         )
         dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
-    return ilastik_crop_file
 
 
 def create_ilastik_image(
@@ -240,7 +234,7 @@ def try_create_ilastik_crops_from_disk(
 def create_and_save_ilastik_project(
     ilastik_crop_files: Sequence[Union[str, PathLike]],
     ilastik_project_file: Union[str, PathLike],
-):
+) -> None:
     dataset_id = str(uuid1())
     shutil.copyfile(_project_file_template, ilastik_project_file)
     with h5py.File(ilastik_project_file, mode="a", libver=_h5py_libver) as f:
@@ -386,7 +380,7 @@ def fix_ilastik_project_file_inplace(
     ilastik_probab_dir: Union[str, PathLike],
     ilastik_crop_shapes: Dict[str, Tuple[int, ...]],
     transpose_axes: List[int],
-):
+) -> None:
     rel_ilastik_crop_dir = Path(ilastik_crop_dir).relative_to(
         Path(ilastik_project_file).parent
     )
@@ -415,7 +409,7 @@ def _fix_input_data_group_inplace(
     input_data_group: h5py.Group,
     rel_ilastik_crop_dir: Path,
     ilastik_crop_shapes: Dict[str, Tuple[int, ...]],
-):
+) -> None:
     infos_group = input_data_group.get("infos")
     if infos_group is not None:
         for lane_group in infos_group.values():
@@ -440,7 +434,7 @@ def _fix_input_data_group_inplace(
 
 def _fix_pixel_classification_group_inplace(
     pixel_classification_group: h5py.Group, transpose_axes: List[int]
-):
+) -> None:
     label_sets_group = pixel_classification_group.get("LabelSets")
     if label_sets_group is not None:
         for labels_group in label_sets_group.values():
@@ -467,7 +461,7 @@ def _fix_pixel_classification_group_inplace(
 
 def _fix_prediction_export_group_inplace(
     prediction_export_group: h5py.Group, rel_ilastik_probab_dir: Path
-):
+) -> None:
     _logger.warning(
         "When exporting data from the graphical user interface of Ilastik, "
         "please manually edit the export image settings and enable "
@@ -522,7 +516,7 @@ def _fix_raw_data_group_inplace(
     file_path: Optional[str] = None,
     nickname: Optional[str] = None,
     shape: Optional[Tuple[int, ...]] = None,
-):
+) -> None:
     _create_or_replace_dataset(
         raw_data_group,
         "__class__",

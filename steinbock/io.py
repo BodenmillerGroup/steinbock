@@ -2,6 +2,7 @@ import imageio
 import numpy as np
 import os
 import pandas as pd
+import re
 import tifffile
 
 from os import PathLike
@@ -13,12 +14,15 @@ img_dtype = np.dtype(os.environ.get("STEINBOCK_IMG_DTYPE", "float32"))
 mask_dtype = np.dtype(os.environ.get("STEINBOCK_MASK_DTYPE", "uint16"))
 
 
-def _as_path_with_suffix(
-    path: Union[str, PathLike], suffix: str, replace_ome_suffix: bool = True
-) -> Path:
+def _as_path_with_suffix(path: Union[str, PathLike], suffix: str) -> Path:
     path = Path(path)
-    if replace_ome_suffix and path.name.endswith(".ome.tiff"):
-        path = path.with_name(path.name[:-9] + ".tiff")
+    if re.fullmatch(r".+\.ome\.[^.]+", flags=re.IGNORECASE):
+        stem, ome_suffix, suffix = path.name.rpartition(".ome.")
+        if ome_suffix:
+            path = path.with_name(f"{stem}.{suffix}")
+        stem, ome_suffix, suffix = path.name.rpartition(".OME.")
+        if ome_suffix:
+            path = path.with_name(f"{stem}.{suffix}")
     return path.with_suffix(suffix)
 
 
@@ -59,9 +63,8 @@ def _list_related_files(
 
 
 def read_panel(
-    panel_stem: Union[str, PathLike], kept_only: bool = True
+    panel_file: Union[str, PathLike], unfiltered: bool = False
 ) -> pd.DataFrame:
-    panel_file = _as_path_with_suffix(panel_stem, ".csv")
     panel = pd.read_csv(
         panel_file,
         sep=",|;",
@@ -90,19 +93,17 @@ def read_panel(
                 raise ValueError(
                     f"Duplicated values for '{unique_col}' in {panel_file}"
                 )
-    if kept_only and "keep" in panel:
+    if not unfiltered and "keep" in panel:
         panel = panel.loc[panel["keep"].astype(bool), :]
     return panel
 
 
-def write_panel(panel: pd.DataFrame, panel_stem: Union[str, PathLike]) -> Path:
-    panel_file = _as_path_with_suffix(panel_stem, ".csv")
+def write_panel(panel: pd.DataFrame, panel_file: Union[str, PathLike]) -> None:
     panel = panel.copy()
     for col in panel.columns:
         if panel[col].convert_dtypes().dtype == pd.BooleanDtype():
             panel[col] = panel[col].astype(pd.UInt8Dtype())
     panel.to_csv(panel_file, index=False)
-    return panel_file
 
 
 def list_image_files(
@@ -116,14 +117,9 @@ def list_image_files(
 
 def read_image(
     img_file: Union[str, PathLike],
-    keep_suffix: bool = False,
     use_imageio: bool = False,
     native_dtype: bool = False,
 ) -> np.ndarray:
-    if not keep_suffix:
-        img_file = _as_path_with_suffix(
-            img_file, ".tiff", replace_ome_suffix=False
-        )
     if use_imageio:
         img = imageio.volread(img_file)
     else:
@@ -142,17 +138,16 @@ def read_image(
 
 
 def write_image(
-    img: np.ndarray, img_stem: Union[str, PathLike], ignore_dtype: bool = False
-) -> Path:
+    img: np.ndarray,
+    img_file: Union[str, PathLike],
+    ignore_dtype: bool = False,
+) -> None:
     if not ignore_dtype:
         img = _to_dtype(img, img_dtype)
-    img_file = _as_path_with_suffix(img_stem, ".tiff")
     tifffile.imwrite(img_file, data=img, imagej=True)
-    return img_file
 
 
-def read_image_info(image_info_stem: Union[str, PathLike]) -> pd.DataFrame:
-    image_info_file = _as_path_with_suffix(image_info_stem, ".csv")
+def read_image_info(image_info_file: Union[str, PathLike]) -> pd.DataFrame:
     image_info = pd.read_csv(
         image_info_file,
         sep=",|;",
@@ -185,11 +180,9 @@ def read_image_info(image_info_stem: Union[str, PathLike]) -> pd.DataFrame:
 
 
 def write_image_info(
-    image_info: pd.DataFrame, image_info_stem: Union[str, PathLike]
-) -> Path:
-    image_info_file = _as_path_with_suffix(image_info_stem, ".csv")
+    image_info: pd.DataFrame, image_info_file: Union[str, PathLike]
+) -> None:
     image_info.to_csv(image_info_file, index=False)
-    return image_info_file
 
 
 def list_mask_files(
@@ -201,8 +194,7 @@ def list_mask_files(
     return sorted(Path(mask_dir).rglob("*.tiff"))
 
 
-def read_mask(mask_stem: Union[str, PathLike]) -> np.ndarray:
-    mask_file = _as_path_with_suffix(mask_stem, ".tiff")
+def read_mask(mask_file: Union[str, PathLike]) -> np.ndarray:
     mask = tifffile.imread(mask_file)
     while mask.ndim > 2 and mask.shape[0] == 1:
         mask = mask.sqeeze(axis=0)
@@ -213,11 +205,9 @@ def read_mask(mask_stem: Union[str, PathLike]) -> np.ndarray:
     return _to_dtype(mask, mask_dtype)
 
 
-def write_mask(mask: np.ndarray, mask_stem: Union[str, PathLike]) -> Path:
+def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> None:
     mask = _to_dtype(mask, mask_dtype)
-    mask_file = _as_path_with_suffix(mask_stem, ".tiff")
     tifffile.imwrite(mask_file, data=mask, imagej=True)
-    return mask_file
 
 
 def list_data_files(
@@ -229,18 +219,15 @@ def list_data_files(
     return sorted(Path(data_dir).rglob("*.csv"))
 
 
-def read_data(data_stem: Union[str, PathLike]) -> pd.DataFrame:
-    data_file = _as_path_with_suffix(data_stem, ".csv")
+def read_data(data_file: Union[str, PathLike]) -> pd.DataFrame:
     return pd.read_csv(
         data_file, sep=",|;", index_col="Object", engine="python"
     )
 
 
-def write_data(data: pd.DataFrame, data_stem: Union[str, PathLike]) -> Path:
-    data_file = _as_path_with_suffix(data_stem, ".csv")
+def write_data(data: pd.DataFrame, data_file: Union[str, PathLike]) -> None:
     data = data.reset_index()
     data.to_csv(data_file, index=False)
-    return data_file
 
 
 def list_neighbors_files(
@@ -252,8 +239,7 @@ def list_neighbors_files(
     return sorted(Path(neighbors_dir).rglob("*.csv"))
 
 
-def read_neighbors(neighbors_stem: Union[str, PathLike]) -> pd.DataFrame:
-    neighbors_file = _as_path_with_suffix(neighbors_stem, ".csv")
+def read_neighbors(neighbors_file: Union[str, PathLike]) -> pd.DataFrame:
     return pd.read_csv(
         neighbors_file,
         sep=",|;",
@@ -268,9 +254,8 @@ def read_neighbors(neighbors_stem: Union[str, PathLike]) -> pd.DataFrame:
 
 
 def write_neighbors(
-    neighbors: pd.DataFrame, neighbors_stem: Union[str, PathLike]
-) -> Path:
-    neighbors_file = _as_path_with_suffix(neighbors_stem, ".csv")
+    neighbors: pd.DataFrame, neighbors_file: Union[str, PathLike]
+) -> None:
     neighbors = neighbors.loc[:, ["Object", "Neighbor", "Distance"]].astype(
         {
             "Object": mask_dtype,
@@ -279,4 +264,3 @@ def write_neighbors(
         }
     )
     neighbors.to_csv(neighbors_file, index=False)
-    return neighbors_file

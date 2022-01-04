@@ -88,8 +88,10 @@ def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
     for ext_img_file, ext_img in external.try_preprocess_images_from_disk(
         ext_img_files, channel_indices=channel_indices
     ):
-        img_file = Path(img_dir) / Path(ext_img_file).stem
-        img_file = io.write_image(ext_img, img_file)
+        img_file = io._as_path_with_suffix(
+            Path(img_dir) / Path(ext_img_file).name, ".tiff"
+        )
+        io.write_image(ext_img)
         image_info_row = {
             "image": img_file.name,
             "width_px": ext_img.shape[2],

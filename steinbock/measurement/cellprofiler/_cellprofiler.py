@@ -1,3 +1,5 @@
+import subprocess
+
 from os import PathLike
 from pathlib import Path
 from typing import Union
@@ -11,7 +13,7 @@ _measurement_pipeline_file_template = (
 
 def create_and_save_measurement_pipeline(
     measurement_pipeline_file: Union[str, PathLike], num_channels: int
-):
+) -> None:
     with _measurement_pipeline_file_template.open(mode="r") as f:
         s = f.read()
     s = s.replace("{{NUM_CHANNELS}}", str(num_channels))
@@ -25,7 +27,7 @@ def try_measure_objects(
     cpdata_dir: Union[str, PathLike],
     cpout_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
-):
+) -> subprocess.CompletedProcess:
     args = [
         cellprofiler_binary,
         "-c",

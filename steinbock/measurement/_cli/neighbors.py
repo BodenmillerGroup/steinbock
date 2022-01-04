@@ -70,7 +70,9 @@ def neighbors_cmd(
         dmax=dmax,
         kmax=kmax,
     ):
-        neighbors_stem = Path(neighbors_dir) / Path(mask_file).stem
-        neighbors_file = io.write_neighbors(neighbors, neighbors_stem)
+        neighbors_file = io._as_path_with_suffix(
+            Path(neighbors_dir) / Path(mask_file).name, ".csv"
+        )
+        io.write_neighbors(neighbors, neighbors_file)
         click.echo(neighbors_file)
         del neighbors

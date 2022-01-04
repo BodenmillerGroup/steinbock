@@ -176,6 +176,8 @@ def deepcell_cmd(
         preprocess_kwargs=preprocess_kwargs,
         postprocess_kwargs=postprocess_kwargs,
     ):
-        mask_stem = Path(mask_dir) / img_file.stem
-        mask_file = io.write_mask(mask, mask_stem)
+        mask_file = io._as_path_with_suffix(
+            Path(mask_dir) / img_file.name, ".tiff"
+        )
+        io.write_mask(mask, mask_file)
         click.echo(mask_file)

@@ -297,11 +297,13 @@ def _match_txt_file(
     acquisition: Acquisition,
     txt_files: Sequence[Union[str, PathLike]],
 ) -> Union[str, PathLike, None]:
-    pattern = re.compile(rf"{Path(mcd_file).stem}.*_0*{acquisition.id}.txt")
+    txt_file_name_pattern = re.compile(
+        rf"{Path(mcd_file).stem}.*_0*{acquisition.id}.txt"
+    )
     filtered_txt_files = [
         txt_file
         for txt_file in txt_files
-        if pattern.match(Path(txt_file).name)
+        if txt_file_name_pattern.match(Path(txt_file).name)
     ]
     if len(filtered_txt_files) == 1:
         return filtered_txt_files[0]

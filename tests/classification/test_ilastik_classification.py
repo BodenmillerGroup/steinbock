@@ -27,7 +27,7 @@ class TestIlastikClassification:
         ilastik.read_ilastik_image(
             imc_test_data_steinbock_path
             / "ilastik_img"
-            / "20210305_NE_mockData1_1"
+            / "20210305_NE_mockData1_1.h5"
         )  # TODO
 
     def test_read_ilastik_crop(self, imc_test_data_steinbock_path: Path):
@@ -49,7 +49,7 @@ class TestIlastikClassification:
             dtype=io.img_dtype,
         )
         ilastik.write_ilastik_image(
-            ilastik_img, tmp_path / "ilastik_img"
+            ilastik_img, tmp_path / "ilastik_img.h5"
         )  # TODO
 
     def test_write_ilastik_crop(self, tmp_path: Path):
@@ -64,7 +64,7 @@ class TestIlastikClassification:
             dtype=io.img_dtype,
         )
         ilastik.write_ilastik_crop(
-            ilastik_crop, tmp_path / "ilastik_crop"
+            ilastik_crop, tmp_path / "ilastik_crop.h5"
         )  # TODO
 
     def test_create_ilastik_image(self):

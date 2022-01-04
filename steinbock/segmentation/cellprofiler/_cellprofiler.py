@@ -1,4 +1,5 @@
 import shutil
+import subprocess
 
 from os import PathLike
 from pathlib import Path
@@ -13,7 +14,7 @@ _segmentation_pipeline_file_template = (
 
 def create_and_save_segmentation_pipeline(
     segmentation_pipeline_file: Union[str, PathLike]
-):
+) -> None:
     shutil.copyfile(
         _segmentation_pipeline_file_template, segmentation_pipeline_file
     )
@@ -25,7 +26,7 @@ def try_segment_objects(
     probabilities_dir: Union[str, PathLike],
     mask_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
-):
+) -> subprocess.CompletedProcess:
     args = [
         str(cellprofiler_binary),
         "-c",

@@ -3,8 +3,10 @@ import pandas as pd
 import sys
 
 from contextlib import nullcontext
+from os import PathLike
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import List, Union
 from zipfile import ZipFile
 
 from steinbock import io
@@ -212,7 +214,7 @@ def images_cmd(
             if img_file_stem in mcd_txt_files:
                 num_dupl += 1
                 first_mcd_txt_file = mcd_txt_files[img_file_stem][0]
-                img_file_stem = f"DUPLICATE{num_dupl:03d}_" + img_file_stem
+                img_file_stem = f"DUPLICATE{num_dupl:03d}_{img_file_stem}"
                 click.echo(
                     f"WARNING: File {mcd_txt_file} is a duplicate of "
                     f"{first_mcd_txt_file}, saving as {img_file_stem}",
@@ -221,7 +223,8 @@ def images_cmd(
                 mcd_txt_files[img_file_stem].append(mcd_txt_file)
             else:
                 mcd_txt_files[img_file_stem] = [mcd_txt_file]
-            img_file = io.write_image(img, Path(img_dir) / img_file_stem)
+            img_file = Path(img_dir) / f"{img_file_stem}.tiff"
+            io.write_image(img, img_file)
             recovery_file_name = None
             if recovery_file is not None:
                 recovery_file_name = recovery_file.name
@@ -263,20 +266,25 @@ def images_cmd(
     click.echo(image_info_file)
 
 
-def _extract_zips(path, suffix, dest):
+def _extract_zips(
+    path: Union[str, PathLike], suffix: str, dest: Union[str, PathLike]
+) -> List[Path]:
     extracted_files = []
     for zip_file_path in Path(path).rglob("*.zip"):
         with ZipFile(zip_file_path) as zip_file:
             zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
             for zip_info in zip_infos:
-                zip_info_suffix = Path(zip_info.filename).suffix
-                if not zip_info.is_dir() and zip_info_suffix == suffix:
+                if not zip_info.is_dir() and zip_info.filename.endswith(
+                    suffix
+                ):
                     extracted_file = zip_file.extract(zip_info, path=dest)
                     extracted_files.append(Path(extracted_file))
     return extracted_files
 
 
-def _collect_mcd_files(mcd_dir, unzip_dir=None):
+def _collect_mcd_files(
+    mcd_dir: Union[str, PathLike], unzip_dir: bool = None
+) -> List[Path]:
     mcd_files = imc.list_mcd_files(mcd_dir)
     if unzip_dir is not None:
         mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
@@ -291,7 +299,9 @@ def _collect_mcd_files(mcd_dir, unzip_dir=None):
     return mcd_files
 
 
-def _collect_txt_files(txt_dir, unzip_dir=None):
+def _collect_txt_files(
+    txt_dir: Union[str, PathLike], unzip_dir: bool = None
+) -> List[Path]:
     txt_files = imc.list_txt_files(txt_dir)
     if unzip_dir is not None:
         txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)

@@ -15,7 +15,9 @@ class TestIO:
 
     def test_read_image(self, imc_test_data_steinbock_path: Path):
         io.read_image(
-            imc_test_data_steinbock_path / "img" / "20210305_NE_mockData1_1"
+            imc_test_data_steinbock_path
+            / "img"
+            / "20210305_NE_mockData1_1.tiff"
         )  # TODO
 
     def test_write_image(self, imc_test_data_steinbock_path: Path):
@@ -32,7 +34,9 @@ class TestIO:
 
     def test_read_mask(self, imc_test_data_steinbock_path: Path):
         io.read_mask(
-            imc_test_data_steinbock_path / "masks" / "20210305_NE_mockData1_1"
+            imc_test_data_steinbock_path
+            / "masks"
+            / "20210305_NE_mockData1_1.tiff"
         )  # TODO
 
     def test_write_mask(self, imc_test_data_steinbock_path: Path):
@@ -47,7 +51,7 @@ class TestIO:
         io.read_data(
             imc_test_data_steinbock_path
             / "intensities"
-            / "20210305_NE_mockData1_1"
+            / "20210305_NE_mockData1_1.csv"
         )  # TODO
 
     def test_write_data(self, imc_test_data_steinbock_path: Path):
@@ -55,16 +59,14 @@ class TestIO:
 
     def test_list_neighbors_files(self, imc_test_data_steinbock_path: Path):
         io.list_neighbors_files(
-            imc_test_data_steinbock_path
-            / "neighbors"
-            / "20210305_NE_mockData1_1"
+            imc_test_data_steinbock_path / "neighbors"
         )  # TODO
 
     def test_read_neighbors(self, imc_test_data_steinbock_path: Path):
         io.read_neighbors(
             imc_test_data_steinbock_path
             / "neighbors"
-            / "20210305_NE_mockData1_1"
+            / "20210305_NE_mockData1_1.csv"
         )  # TODO
 
     def test_write_neighbors(self, imc_test_data_steinbock_path: Path):
