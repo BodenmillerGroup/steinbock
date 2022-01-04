@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
-    Dict,
     Generator,
     List,
+    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -266,7 +266,7 @@ def run_pixel_classification(
     ilastik_probab_dir: Union[str, PathLike],
     num_threads: Optional[int] = None,
     memory_limit: Optional[int] = None,
-    ilastik_env: Optional[Dict[str, str]] = None,
+    ilastik_env: Optional[Mapping[str, str]] = None,
 ) -> subprocess.CompletedProcess:
     output_filename_format = Path(ilastik_probab_dir) / "{nickname}.tiff"
     args = [
@@ -378,8 +378,8 @@ def fix_ilastik_project_file_inplace(
     ilastik_project_file: Union[str, PathLike],
     ilastik_crop_dir: Union[str, PathLike],
     ilastik_probab_dir: Union[str, PathLike],
-    ilastik_crop_shapes: Dict[str, Tuple[int, ...]],
-    transpose_axes: List[int],
+    ilastik_crop_shapes: Mapping[str, Tuple[int, ...]],
+    transpose_axes: Sequence[int],
 ) -> None:
     rel_ilastik_crop_dir = Path(ilastik_crop_dir).relative_to(
         Path(ilastik_project_file).parent
@@ -408,7 +408,7 @@ def fix_ilastik_project_file_inplace(
 def _fix_input_data_group_inplace(
     input_data_group: h5py.Group,
     rel_ilastik_crop_dir: Path,
-    ilastik_crop_shapes: Dict[str, Tuple[int, ...]],
+    ilastik_crop_shapes: Mapping[str, Tuple[int, ...]],
 ) -> None:
     infos_group = input_data_group.get("infos")
     if infos_group is not None:

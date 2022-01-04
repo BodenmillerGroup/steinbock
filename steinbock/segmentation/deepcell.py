@@ -9,8 +9,8 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
-    Dict,
     Generator,
+    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -39,8 +39,8 @@ def _mesmer_application(model=None):
         *,
         pixel_size_um: Optional[float] = None,
         segmentation_type: Optional[str] = None,
-        preprocess_kwargs: Optional[Dict[str, Any]] = None,
-        postprocess_kwargs: Optional[Dict[str, Any]] = None,
+        preprocess_kwargs: Optional[Mapping[str, Any]] = None,
+        postprocess_kwargs: Optional[Mapping[str, Any]] = None,
     ) -> np.ndarray:
         assert img.ndim == 3
         if pixel_size_um is None:
