@@ -40,8 +40,8 @@ def try_extract_tiles_from_disk(
                         tile.shape[-2],
                     )
                     yield Path(img_file), tile_info, tile
-                    del tile
-            del img_reshaped
+                    del tile, tile_reshaped
+            del img, img_reshaped
         except:
             _logger.exception(f"Error extracting tiles: {img_file}")
 
