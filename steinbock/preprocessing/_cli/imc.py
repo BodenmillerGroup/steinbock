@@ -121,9 +121,10 @@ def panel_cmd(
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt_files(txt_files)
     if panel is None:
-        return click.echo(
+        click.echo(
             "ERROR: No panel/.mcd/.txt file found", file=sys.stderr
         )
+        return
     io.write_panel(panel, panel_file)
     click.echo(panel_file)
 
@@ -288,14 +289,6 @@ def _collect_mcd_files(
     mcd_files = imc.list_mcd_files(mcd_dir)
     if unzip_dir is not None:
         mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
-    # unique_mcd_stem_names = []
-    # for mcd_file in mcd_files:
-    #     if mcd_file.stem in unique_mcd_stem_names:
-    #         return click.echo(
-    #             f"ERROR: Duplicated file stem {mcd_file.stem}",
-    #             file=sys.stderr
-    #         )
-    #     unique_mcd_stem_names.append(mcd_file.stem)
     return mcd_files
 
 
@@ -305,12 +298,4 @@ def _collect_txt_files(
     txt_files = imc.list_txt_files(txt_dir)
     if unzip_dir is not None:
         txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
-    # unique_txt_stem_names = []
-    # for txt_file in txt_files:
-    #     if txt_file.stem in unique_txt_stem_names:
-    #         return click.echo(
-    #             f"ERROR: Duplicated file stem {txt_file.stem}",
-    #             file=sys.stderr
-    #         )
-    #     unique_txt_stem_names.append(txt_file.stem)
     return txt_files

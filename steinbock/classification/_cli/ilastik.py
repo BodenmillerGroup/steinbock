@@ -295,16 +295,18 @@ def fix_cmd(
             Path(ilastik_project_file).name + ".bak"
         )
         if ilastik_project_backup_file.exists():
-            return click.echo(
+            click.echo(
                 "ERROR: Ilastik project backup file exists", file=sys.stderr
             )
+            return
         ilastik_crop_backup_dir = Path(ilastik_crop_dir).with_name(
             Path(ilastik_crop_dir).name + ".bak"
         )
         if ilastik_crop_backup_dir.exists():
-            return click.echo(
+            click.echo(
                 "ERROR: Ilastik crop backup directory exists", file=sys.stderr
             )
+            return
         shutil.copyfile(ilastik_project_file, ilastik_project_backup_file)
         ilastik_crop_backup_dir.mkdir()
         for ilastik_crop_file in ilastik_crop_files:
@@ -322,9 +324,10 @@ def fix_cmd(
         ilastik_crop_files, orig_axis_order=orig_axis_order
     ):
         if last_transpose_axes not in (None, transpose_axes):
-            return click.echo(
+            click.echo(
                 "ERROR: Inconsistent axis orders across crops", file=sys.stderr
             )
+            return
         ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
         ilastik_crop_shapes[ilastik_crop_file.stem] = ilastik_crop.shape
         last_transpose_axes = transpose_axes

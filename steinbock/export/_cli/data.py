@@ -32,12 +32,14 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(csv_file_or_dir).is_dir():
-        return click.echo(
+        click.echo(
             "ERROR: Specify a single output file when concatenating",
             file=sys.stderr,
         )
+        return
     elif not concatenate and Path(csv_file_or_dir).is_file():
-        return click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        return
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
@@ -88,12 +90,14 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(fcs_file_or_dir).is_dir():
-        return click.echo(
+        click.echo(
             "ERROR: Specify a single output file when concatenating",
             file=sys.stderr,
         )
+        return
     elif not concatenate and Path(fcs_file_or_dir).is_file():
-        return click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        return
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
@@ -241,12 +245,14 @@ def anndata_cmd(
     # if image_info_file is not None and Path(image_info_file).is_file():
     #     image_info = io.read_image_info(image_info_file)
     if concatenate and Path(anndata_file_or_dir).is_dir():
-        return click.echo(
+        click.echo(
             "ERROR: Specify a single output file when concatenating",
             file=sys.stderr,
         )
+        return
     elif not concatenate and Path(anndata_file_or_dir).is_file():
-        return click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        click.echo("ERROR: Output directory is a file", file=sys.stderr)
+        return
     if concatenate:
         click.echo(
             "WARNING: The anndata package currently does not support on-disk; "
