@@ -99,10 +99,10 @@ def stitch_cmd(tiles, img_dir, relabel):
             continue
         tile_info = TileInfo(
             m.group("img_file_stem"),
-            m.group("x"),
-            m.group("y"),
-            m.group("width"),
-            m.group("height"),
+            int(m.group("x")),
+            int(m.group("y")),
+            int(m.group("width")),
+            int(m.group("height")),
         )
         if tile_info.img_file_stem not in img_file_stems:
             img_file_stems.append(tile_info.img_file_stem)
