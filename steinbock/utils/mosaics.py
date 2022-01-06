@@ -65,11 +65,13 @@ def try_stitch_tiles_from_disk(
                 max(ti.y + ti.height for ti in tile_infos),
             ) + first_tile_reshaped.shape[2:]
             if use_mmap:
+                buffer_size = (
+                    np.prod(img_reshaped_shape) * first_tile.dtype.itemsize
+                )
                 buffer_file = tempfile.TemporaryFile()
+                buffer_file.write(b"\x00" * (buffer_size + 1))
                 buffer = mmap.mmap(
-                    buffer_file.fileno(),
-                    np.prod(img_reshaped_shape) * first_tile.dtype.itemsize,
-                    access=mmap.ACCESS_WRITE,
+                    buffer_file.fileno(), buffer_size, access=mmap.ACCESS_WRITE
                 )
                 img_reshaped = np.ndarray(
                     img_reshaped_shape, dtype=first_tile.dtype, buffer=buffer
