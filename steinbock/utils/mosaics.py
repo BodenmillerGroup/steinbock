@@ -1,6 +1,7 @@
 import logging
 import mmap
 import numpy as np
+import tempfile
 import tifffile
 
 from os import PathLike
@@ -64,8 +65,9 @@ def try_stitch_tiles_from_disk(
                 max(ti.y + ti.height for ti in tile_infos),
             ) + first_tile_reshaped.shape[2:]
             if use_mmap:
+                buffer_file = tempfile.TemporaryFile()
                 buffer = mmap.mmap(
-                    -1,
+                    buffer_file.fileno(),
                     np.prod(img_reshaped_shape) * first_tile.dtype.itemsize,
                     access=mmap.ACCESS_WRITE,
                 )
@@ -96,6 +98,7 @@ def try_stitch_tiles_from_disk(
             yield img_file_stem, img
             del img, img_reshaped
             if use_mmap:
-                del buffer
+                buffer_file.close()
+                del buffer, buffer_file
         except:
             _logger.exception(f"Error stitching tiles: {img_file_stem}")
