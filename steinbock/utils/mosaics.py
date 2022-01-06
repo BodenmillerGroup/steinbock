@@ -64,13 +64,13 @@ def try_stitch_tiles_from_disk(
                 max(ti.y + ti.height for ti in tile_infos),
             ) + first_tile_reshaped.shape[2:]
             if use_mmap:
-                length = (
-                    np.prod(img_reshaped_shape) * first_tile.dtype.itemsize
+                buffer = mmap.mmap(
+                    -1,
+                    np.prod(img_reshaped_shape) * first_tile.dtype.itemsize,
+                    access=mmap.ACCESS_WRITE,
                 )
                 img_reshaped = np.ndarray(
-                    img_reshaped_shape,
-                    dtype=first_tile.dtype,
-                    buffer=mmap.mmap(-1, length, access=mmap.ACCESS_WRITE),
+                    img_reshaped_shape, dtype=first_tile.dtype, buffer=buffer
                 )
             else:
                 img_reshaped = np.empty(
@@ -81,6 +81,8 @@ def try_stitch_tiles_from_disk(
                 tile_infos[0].x : tile_infos[0].x + tile_infos[0].width,
                 tile_infos[0].y : tile_infos[0].y + tile_infos[0].height,
             ] = first_tile_reshaped
+            if use_mmap:
+                buffer.flush()
             for tile_file, tile_info in zip(tile_files[1:], tile_infos[1:]):
                 tile = tifffile.imread(tile_file)
                 tile_reshaped = np.moveaxis(tile, (-1, -2), (0, 1))
@@ -88,8 +90,12 @@ def try_stitch_tiles_from_disk(
                     tile_info.x : tile_info.x + tile_info.width,
                     tile_info.y : tile_info.y + tile_info.height,
                 ] = tile_reshaped
+                if use_mmap:
+                    buffer.flush()
             img = np.moveaxis(img_reshaped, (0, 1), (-1, -2))
             yield img_file_stem, img
             del img, img_reshaped
+            if use_mmap:
+                del buffer
         except:
             _logger.exception(f"Error stitching tiles: {img_file_stem}")
