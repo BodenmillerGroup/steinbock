@@ -79,7 +79,14 @@ def tile_cmd(images, tile_size, tile_dir):
     show_default=True,
     help="Relabel objects",
 )
-def stitch_cmd(tiles, img_dir, relabel):
+@click.option(
+    "--mmap/--no-mmap",
+    "use_mmap",
+    default=False,
+    show_default=True,
+    help="Use memory mapping",
+)
+def stitch_cmd(tiles, img_dir, relabel, use_mmap):
     tile_files = _collect_img_files(tiles)
     Path(img_dir).mkdir(exist_ok=True)
     tile_file_stem_pattern = re.compile(
@@ -111,7 +118,7 @@ def stitch_cmd(tiles, img_dir, relabel):
         img_tile_files[tile_info.img_file_stem].append(tile_file)
         img_tile_infos[tile_info.img_file_stem].append(tile_info)
     for img_file_stem, img in mosaics.try_stitch_tiles_from_disk(
-        img_file_stems, img_tile_files, img_tile_infos
+        img_file_stems, img_tile_files, img_tile_infos, use_mmap=use_mmap
     ):
         if relabel:
             if img.ndim != 2:

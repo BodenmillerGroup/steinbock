@@ -1,4 +1,5 @@
 import logging
+import mmap
 import numpy as np
 import tifffile
 
@@ -50,6 +51,7 @@ def try_stitch_tiles_from_disk(
     img_file_stems: Sequence[str],
     img_tile_files: Mapping[str, Sequence[Union[str, PathLike]]],
     img_tile_infos: Mapping[str, Sequence[TileInfo]],
+    use_mmap: bool = False,
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
     for img_file_stem in img_file_stems:
         tile_files = img_tile_files[img_file_stem]
@@ -57,19 +59,28 @@ def try_stitch_tiles_from_disk(
         try:
             first_tile = tifffile.imread(tile_files[0])
             first_tile_reshaped = np.moveaxis(first_tile, (-1, -2), (0, 1))
-            img_reshaped = np.zeros(
-                (
-                    max(ti.x + ti.width for ti in tile_infos),
-                    max(ti.y + ti.height for ti in tile_infos),
+            img_reshaped_shape = (
+                max(ti.x + ti.width for ti in tile_infos),
+                max(ti.y + ti.height for ti in tile_infos),
+            ) + first_tile_reshaped.shape[2:]
+            if use_mmap:
+                length = (
+                    np.prod(img_reshaped_shape) * first_tile.dtype.itemsize
                 )
-                + first_tile_reshaped.shape[2:],
-                dtype=first_tile_reshaped.dtype,
-            )
+                img_reshaped = np.ndarray(
+                    img_reshaped_shape,
+                    dtype=first_tile.dtype,
+                    buffer=mmap.mmap(-1, length, access=mmap.ACCESS_WRITE),
+                )
+            else:
+                img_reshaped = np.empty(
+                    img_reshaped_shape, dtype=first_tile.dtype
+                )
+            img_reshaped.fill(0)
             img_reshaped[
                 tile_infos[0].x : tile_infos[0].x + tile_infos[0].width,
                 tile_infos[0].y : tile_infos[0].y + tile_infos[0].height,
             ] = first_tile_reshaped
-            del first_tile, first_tile_reshaped
             for tile_file, tile_info in zip(tile_files[1:], tile_infos[1:]):
                 tile = tifffile.imread(tile_file)
                 tile_reshaped = np.moveaxis(tile, (-1, -2), (0, 1))
@@ -77,7 +88,6 @@ def try_stitch_tiles_from_disk(
                     tile_info.x : tile_info.x + tile_info.width,
                     tile_info.y : tile_info.y + tile_info.height,
                 ] = tile_reshaped
-                del tile, tile_reshaped
             img = np.moveaxis(img_reshaped, (0, 1), (-1, -2))
             yield img_file_stem, img
             del img, img_reshaped
