@@ -1,10 +1,10 @@
 import click
 import numpy as np
 import re
+import tifffile
+import xtiff
 
 from pathlib import Path
-from tifffile import imwrite
-from xtiff import to_tiff
 
 from steinbock import io
 from steinbock.export._cli.data import anndata_cmd, csv_cmd, fcs_cmd
@@ -60,7 +60,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
         ome_file = io._as_path_with_suffix(
             Path(ome_dir) / img_file.name, ".ome.tiff"
         )
-        to_tiff(img, ome_file, channel_names=channel_names)
+        xtiff.to_tiff(img, ome_file, channel_names=channel_names)
         click.echo(ome_file)
         del img
 
@@ -121,7 +121,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             channel_name = re.sub(r"\s*/\s*", "_", channel_name)
             channel_name = re.sub(r"\s", "_", channel_name)
             histocat_img_file = histocat_img_dir / f"{channel_name}.tiff"
-            imwrite(
+            tifffile.imwrite(
                 histocat_img_file,
                 data=io._to_dtype(channel_img, np.float32),
                 imagej=True,
@@ -133,7 +133,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             histocat_mask_file = (
                 histocat_img_dir / f"{img_file.stem}_mask.tiff"
             )
-            imwrite(
+            tifffile.imwrite(
                 histocat_mask_file,
                 data=io._to_dtype(mask, np.uint16),
                 imagej=True,

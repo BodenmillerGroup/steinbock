@@ -1,9 +1,9 @@
 import click
 import numpy as np
 import sys
+import tifffile
 
 from pathlib import Path
-from tifffile import imwrite
 
 from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
@@ -76,10 +76,8 @@ def prepare_cmd(
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file, native_dtype=True)
         cp_img_file = Path(cpdata_dir) / img_file.name
-        imwrite(
-            cp_img_file,
-            data=io._to_dtype(img, np.uint16),
-            imagej=True,
+        tifffile.imwrite(
+            cp_img_file, data=io._to_dtype(img, np.uint16), imagej=True
         )
         click.echo(cp_img_file)
         del img
@@ -87,10 +85,8 @@ def prepare_cmd(
         cp_mask_file = (
             Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
         )
-        imwrite(
-            cp_mask_file,
-            data=io._to_dtype(mask, np.uint16),
-            imagej=True,
+        tifffile.imwrite(
+            cp_mask_file, data=io._to_dtype(mask, np.uint16), imagej=True
         )
         click.echo(cp_mask_file)
         del mask
