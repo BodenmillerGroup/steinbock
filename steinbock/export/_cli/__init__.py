@@ -123,7 +123,9 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             histocat_img_file = histocat_img_dir / f"{channel_name}.tiff"
             tifffile.imwrite(
                 histocat_img_file,
-                data=io._to_dtype(channel_img, np.float32),
+                data=io._to_dtype(channel_img, np.float32)[
+                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+                ],
                 imagej=True,
             )
             click.echo(histocat_img_file)
@@ -135,7 +137,9 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             )
             tifffile.imwrite(
                 histocat_mask_file,
-                data=io._to_dtype(mask, np.uint16),
+                data=io._to_dtype(mask, np.uint16)[
+                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+                ],
                 imagej=True,
             )
             click.echo(histocat_mask_file)

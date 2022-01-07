@@ -77,7 +77,11 @@ def prepare_cmd(
         img = io.read_image(img_file, native_dtype=True)
         cp_img_file = Path(cpdata_dir) / img_file.name
         tifffile.imwrite(
-            cp_img_file, data=io._to_dtype(img, np.uint16), imagej=True
+            cp_img_file,
+            data=io._to_dtype(img, np.uint16)[
+                np.newaxis, np.newaxis, :, :, :, np.newaxis
+            ],
+            imagej=True,
         )
         click.echo(cp_img_file)
         del img
@@ -86,7 +90,11 @@ def prepare_cmd(
             Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
         )
         tifffile.imwrite(
-            cp_mask_file, data=io._to_dtype(mask, np.uint16), imagej=True
+            cp_mask_file,
+            data=io._to_dtype(mask, np.uint16)[
+                np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+            ],
+            imagej=True,
         )
         click.echo(cp_mask_file)
         del mask

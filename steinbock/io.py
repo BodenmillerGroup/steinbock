@@ -151,7 +151,7 @@ def read_image(
                     f"{img_file}: unsupported TZCYXS shape {img.shape}"
                 )
             img = img[0, 0, :, :, :, 0]
-        else:
+        elif img.ndim != 3:
             raise ValueError(
                 f"{img_file}: unsupported number of dimensions ({img.ndim})"
             )
@@ -167,7 +167,11 @@ def write_image(
 ) -> None:
     if not ignore_dtype:
         img = _to_dtype(img, img_dtype)
-    tifffile.imwrite(img_file, data=img, imagej=True)
+    tifffile.imwrite(
+        img_file,
+        data=img[np.newaxis, np.newaxis, :, :, :, np.newaxis],
+        imagej=True,
+    )
 
 
 def read_image_info(image_info_file: Union[str, PathLike]) -> pd.DataFrame:
@@ -246,7 +250,11 @@ def read_mask(
 
 def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> None:
     mask = _to_dtype(mask, mask_dtype)
-    tifffile.imwrite(mask_file, data=mask, imagej=True)
+    tifffile.imwrite(
+        mask_file,
+        data=mask[np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis],
+        imagej=True,
+    )
 
 
 def list_data_files(
