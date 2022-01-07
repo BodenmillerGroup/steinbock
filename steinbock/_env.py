@@ -57,6 +57,7 @@ def use_ilastik_env(func):
             kwargs["ilastik_env"] = os.environ.copy()
         kwargs["ilastik_env"].pop("PYTHONPATH", None)
         kwargs["ilastik_env"].pop("PYTHONHOME", None)
+        kwargs["ilastik_env"].pop("LD_LIBRARY_PATH", None)
         return func(*args, **kwargs)
 
     return use_ilastik_env_wrapper
