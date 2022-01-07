@@ -122,16 +122,39 @@ def read_image(
 ) -> np.ndarray:
     if use_imageio:
         img = imageio.volread(img_file)
+        orig_img_shape = img.shape
+        while img.ndim > 3 and img.shape[0] == 1:
+            img = img.sqeeze(axis=0)
+        while img.ndim > 3 and img.shape[-1] == 1:
+            img = img.sqeeze(axis=img.ndim - 1)
+        if img.ndim == 2:
+            img = img[np.newaxis, :, :]
+        elif img.ndim != 3:
+            raise ValueError(
+                f"Unsupported shape {orig_img_shape} for image {img_file}"
+            )
     else:
-        img = tifffile.imread(img_file)
-    while img.ndim > 3 and img.shape[0] == 1:
-        img = img.sqeeze(axis=0)
-    while img.ndim > 3 and img.shape[-1] == 1:
-        img = img.sqeeze(axis=img.ndim - 1)
-    if img.ndim == 2:
-        img = img[np.newaxis, :, :]
-    elif img.ndim != 3:
-        raise ValueError(f"Unsupported number of image dimensions: {img_file}")
+        img = tifffile.imread(img_file, squeeze=False)
+        if img.ndim == 2:
+            img = img[np.newaxis, :, :]
+        elif img.ndim == 5:
+            size_t, size_z, size_c, size_y, size_x = img.shape
+            if size_t != 1 or size_z != 1:
+                raise ValueError(
+                    f"{img_file}: unsupported TZCYX shape {img.shape}"
+                )
+            img = img[0, 0, :, :, :]
+        elif img.ndim == 6:
+            size_t, size_z, size_c, size_y, size_x, size_s = img.shape
+            if size_t != 1 or size_z != 1 or size_s != 1:
+                raise ValueError(
+                    f"{img_file}: unsupported TZCYXS shape {img.shape}"
+                )
+            img = img[0, 0, :, :, :, 0]
+        else:
+            raise ValueError(
+                f"{img_file}: unsupported number of dimensions ({img.ndim})"
+            )
     if not native_dtype:
         img = _to_dtype(img, img_dtype)
     return img
@@ -194,15 +217,31 @@ def list_mask_files(
     return sorted(Path(mask_dir).rglob("*.tiff"))
 
 
-def read_mask(mask_file: Union[str, PathLike]) -> np.ndarray:
-    mask = tifffile.imread(mask_file)
-    while mask.ndim > 2 and mask.shape[0] == 1:
-        mask = mask.sqeeze(axis=0)
-    while mask.ndim > 2 and mask.shape[-1] == 1:
-        mask = mask.sqeeze(axis=mask.ndim - 1)
-    if mask.ndim != 2:
-        raise ValueError(f"Unsupported number of mask dimensions: {mask_file}")
-    return _to_dtype(mask, mask_dtype)
+def read_mask(
+    mask_file: Union[str, PathLike], native_dtype: bool = False
+) -> np.ndarray:
+    mask = tifffile.imread(mask_file, squeeze=False)
+    if mask.ndim == 5:
+        size_t, size_z, size_c, size_y, size_x = mask.shape
+        if size_t != 1 or size_z != 1 or size_c != 1:
+            raise ValueError(
+                f"{mask_file}: unsupported TZCYX shape {mask.shape}"
+            )
+        mask = mask[0, 0, 0, :, :]
+    elif mask.ndim == 6:
+        size_t, size_z, size_c, size_y, size_x, size_s = mask.shape
+        if size_t != 1 or size_z != 1 or size_c != 1 or size_s != 1:
+            raise ValueError(
+                f"{mask_file}: unsupported TZCYXS shape {mask.shape}"
+            )
+        mask = mask[0, 0, 0, :, :, 0]
+    elif mask.ndim != 2:
+        raise ValueError(
+            f"{mask_file}: unsupported number of dimensions ({mask.ndim})"
+        )
+    if not native_dtype:
+        mask = _to_dtype(mask, mask_dtype)
+    return mask
 
 
 def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> None:

@@ -11,6 +11,39 @@ from typing import Generator, NamedTuple, Sequence, Tuple, Union
 _logger = logging.getLogger(__name__)
 
 
+class _TileInfo(NamedTuple):
+    tile_file: Path
+    x: int
+    y: int
+    width: int
+    height: int
+
+
+def _read_tile(tile_file):
+    tile = tifffile.imread(tile_file, squeeze=False)
+    if tile.ndim == 2:
+        tile = tile[np.newaxis, :, :]
+    elif tile.ndim == 5:
+        size_t, size_z, size_c, size_y, size_x = tile.shape
+        if size_t != 1 or size_z != 1:
+            raise ValueError(
+                f"{tile_file}: unsupported TZCYX shape {tile.shape}"
+            )
+        tile = tile[0, 0, :, :, :]
+    elif tile.ndim == 6:
+        size_t, size_z, size_c, size_y, size_x, size_s = tile.shape
+        if size_t != 1 or size_z != 1 or size_s != 1:
+            raise ValueError(
+                f"{tile_file}: unsupported TZCYXS shape {tile.shape}"
+            )
+        tile = tile[0, 0, :, :, :, 0]
+    else:
+        raise ValueError(
+            f"{tile_file}: unsupported number of dimensions ({tile.ndim})"
+        )
+    return tile
+
+
 def try_extract_tiles_from_disk_to_disk(
     img_files: Sequence[Union[str, PathLike]],
     tile_dir: Union[str, PathLike],
@@ -42,13 +75,6 @@ def try_stitch_tiles_from_disk_to_disk(
     tile_files: Sequence[Union[str, PathLike]],
     img_dir: Union[str, PathLike],
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
-    class TileInfo(NamedTuple):
-        tile_file: Path
-        x: int
-        y: int
-        width: int
-        height: int
-
     tile_file_stem_pattern = re.compile(
         r"(?P<img_file_stem>.*)_tx(?P<x>\d*)_ty(?P<y>\d*)"
         r"_tw(?P<width>\d*)_th(?P<height>\d*)"
@@ -59,7 +85,7 @@ def try_stitch_tiles_from_disk_to_disk(
         if m is None:
             raise ValueError(f"Malformed tile file name: {tile_file}")
         img_file_stem = m.group("img_file_stem")
-        tile_info = TileInfo(
+        tile_info = _TileInfo(
             Path(tile_file),
             int(m.group("x")),
             int(m.group("y")),
@@ -72,7 +98,7 @@ def try_stitch_tiles_from_disk_to_disk(
     for img_file_stem, tile_infos in img_tile_infos.items():
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
         try:
-            first_tile = tifffile.imread(tile_infos[0].tile_file)
+            first_tile = _read_tile(tile_infos[0].tile_file)
             img = tifffile.memmap(
                 img_file,
                 shape=first_tile.shape[:-2]
@@ -94,7 +120,7 @@ def try_stitch_tiles_from_disk_to_disk(
                     ...,
                     tile_info.y : tile_info.y + tile_info.height,
                     tile_info.x : tile_info.x + tile_info.width,
-                ] = tifffile.imread(tile_info.tile_file)
+                ] = _read_tile(tile_info.tile_file)
                 img.flush()
             yield img_file, img
             del img
