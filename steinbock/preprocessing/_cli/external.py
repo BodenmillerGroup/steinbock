@@ -95,7 +95,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     image_info_data = []
     Path(img_dir).mkdir(exist_ok=True)
     for ext_img_file, img in external.try_preprocess_images_from_disk(
-        ext_img_files, channel_indices=channel_indices
+        ext_img_files
     ):
         # filter channels here rather than in try_preprocess_images_from_disk,
         # to avoid advanced indexing creating a copy of img (relevant for mmap)
