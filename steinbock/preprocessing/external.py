@@ -1,3 +1,4 @@
+import imageio
 import logging
 import numpy as np
 import pandas as pd
@@ -6,10 +7,23 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, List, Optional, Sequence, Tuple, Union
 
-from steinbock import io
-
-
 _logger = logging.getLogger(__name__)
+
+
+def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
+    ext_img = imageio.volread(ext_img_file)
+    orig_img_shape = ext_img.shape
+    while ext_img.ndim > 3 and ext_img.shape[0] == 1:
+        ext_img = np.squeeze(ext_img, axis=0)
+    while ext_img.ndim > 3 and ext_img.shape[-1] == 1:
+        ext_img = np.squeeze(ext_img, axis=-1)
+    if ext_img.ndim == 2:
+        ext_img = ext_img[np.newaxis, :, :]
+    elif ext_img.ndim != 3:
+        raise ValueError(
+            f"Unsupported shape {orig_img_shape} for image {ext_img_file}"
+        )
+    return ext_img
 
 
 def list_image_files(ext_img_dir: Union[str, PathLike]) -> List[Path]:
@@ -22,14 +36,11 @@ def create_panel_from_image_files(
     num_channels = None
     for ext_img_file in ext_img_files:
         try:
-            ext_img = io.read_image(
-                ext_img_file, use_imageio=True, native_dtype=True
-            )
-            if ext_img is not None:
-                num_channels = ext_img.shape[0]
-                break
+            ext_img = _read_external_image(ext_img_file)
+            num_channels = ext_img.shape[0]
+            break
         except:
-            pass
+            pass  # skipped intentionally
     if num_channels is None:
         raise IOError("No valid images found")
     panel = pd.DataFrame(
@@ -55,22 +66,16 @@ def try_preprocess_images_from_disk(
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for ext_img_file in ext_img_files:
         try:
-            ext_img = io.read_image(
-                ext_img_file, use_imageio=True, native_dtype=True
-            )
-            if ext_img is None:
-                _logger.warning(
-                    f"Unsupported image data in file {ext_img_file}"
-                )
-                continue
-            if channel_indices is not None:
-                if max(channel_indices) > ext_img.shape[0]:
-                    _logger.warning(
-                        f"Channel indices out of bounds for file "
-                        f"{ext_img_file} with {ext_img.shape[0]} channels"
-                    )
-                ext_img = ext_img[channel_indices, :, :]
-            yield ext_img_file, ext_img
-            del ext_img
+            ext_img = _read_external_image(ext_img_file)
         except:
-            _logger.exception(f"Error reading file {ext_img_file}")
+            _logger.warning(f"Unsupported image data in file {ext_img_file}")
+            continue
+        if channel_indices is not None:
+            if max(channel_indices) > ext_img.shape[0]:
+                _logger.warning(
+                    f"Channel indices out of bounds for file "
+                    f"{ext_img_file} with {ext_img.shape[0]} channels"
+                )
+            ext_img = ext_img[channel_indices, :, :]
+        yield ext_img_file, ext_img
+        del ext_img

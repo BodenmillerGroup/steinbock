@@ -1,4 +1,4 @@
-import imageio
+import logging
 import numpy as np
 import os
 import pandas as pd
@@ -8,6 +8,8 @@ import tifffile
 from os import PathLike
 from pathlib import Path
 from typing import List, Optional, Sequence, Union
+
+_logger = logging.getLogger(__name__)
 
 
 img_dtype = np.dtype(os.environ.get("STEINBOCK_IMG_DTYPE", "float32"))
@@ -115,48 +117,58 @@ def list_image_files(
     return sorted(Path(img_dir).rglob("*.tiff"))
 
 
+def _fix_image_shape(
+    img_file: Union[str, PathLike], img: np.ndarray
+) -> np.ndarray:
+    if img.ndim == 2:
+        img = img[np.newaxis, :, :]
+    elif img.ndim == 5:
+        size_t, size_z, size_c, size_y, size_x = img.shape
+        if size_t != 1 or size_z != 1:
+            raise ValueError(
+                f"{img_file}: unsupported TZCYX shape {img.shape}"
+            )
+        img = img[0, 0, :, :, :]
+    elif img.ndim == 6:
+        size_t, size_z, size_c, size_y, size_x, size_s = img.shape
+        if size_t != 1 or size_z != 1 or size_s != 1:
+            raise ValueError(
+                f"{img_file}: unsupported TZCYXS shape {img.shape}"
+            )
+        img = img[0, 0, :, :, :, 0]
+    elif img.ndim != 3:
+        raise ValueError(
+            f"{img_file}: unsupported number of dimensions ({img.ndim})"
+        )
+    return img
+
+
 def read_image(
     img_file: Union[str, PathLike],
-    use_imageio: bool = False,
     native_dtype: bool = False,
 ) -> np.ndarray:
-    if use_imageio:
-        img = imageio.volread(img_file)
-        orig_img_shape = img.shape
-        while img.ndim > 3 and img.shape[0] == 1:
-            img = img.sqeeze(axis=0)
-        while img.ndim > 3 and img.shape[-1] == 1:
-            img = img.sqeeze(axis=img.ndim - 1)
-        if img.ndim == 2:
-            img = img[np.newaxis, :, :]
-        elif img.ndim != 3:
-            raise ValueError(
-                f"Unsupported shape {orig_img_shape} for image {img_file}"
-            )
-    else:
-        img = tifffile.imread(img_file, squeeze=False)
-        if img.ndim == 2:
-            img = img[np.newaxis, :, :]
-        elif img.ndim == 5:
-            size_t, size_z, size_c, size_y, size_x = img.shape
-            if size_t != 1 or size_z != 1:
-                raise ValueError(
-                    f"{img_file}: unsupported TZCYX shape {img.shape}"
-                )
-            img = img[0, 0, :, :, :]
-        elif img.ndim == 6:
-            size_t, size_z, size_c, size_y, size_x, size_s = img.shape
-            if size_t != 1 or size_z != 1 or size_s != 1:
-                raise ValueError(
-                    f"{img_file}: unsupported TZCYXS shape {img.shape}"
-                )
-            img = img[0, 0, :, :, :, 0]
-        elif img.ndim != 3:
-            raise ValueError(
-                f"{img_file}: unsupported number of dimensions ({img.ndim})"
-            )
+    img = tifffile.imread(img_file, squeeze=False)
+    img = _fix_image_shape(img_file, img)
     if not native_dtype:
         img = _to_dtype(img, img_dtype)
+    return img
+
+
+def mmap_image(
+    img_file: Union[str, PathLike], mode="r", **kwargs
+) -> np.ndarray:
+    kwargs["imagej"] = True
+    img_exists = Path(img_file).exists()
+    img = tifffile.memmap(img_file, mode=mode, **kwargs)
+    if img.dtype != img_dtype:
+        _logger.warning(
+            "Data type of memory-mapped image %s (%s) is different from %s",
+            img_file,
+            img.dtype,
+            img_dtype,
+        )
+    if img_exists:
+        img = _fix_image_shape(img_file, img)
     return img
 
 
@@ -221,10 +233,9 @@ def list_mask_files(
     return sorted(Path(mask_dir).rglob("*.tiff"))
 
 
-def read_mask(
-    mask_file: Union[str, PathLike], native_dtype: bool = False
+def _fix_mask_shape(
+    mask_file: Union[str, PathLike], mask: np.ndarray
 ) -> np.ndarray:
-    mask = tifffile.imread(mask_file, squeeze=False)
     if mask.ndim == 5:
         size_t, size_z, size_c, size_y, size_x = mask.shape
         if size_t != 1 or size_z != 1 or size_c != 1:
@@ -243,13 +254,45 @@ def read_mask(
         raise ValueError(
             f"{mask_file}: unsupported number of dimensions ({mask.ndim})"
         )
+    return mask
+
+
+def read_mask(
+    mask_file: Union[str, PathLike],
+    native_dtype: bool = False,
+) -> np.ndarray:
+    mask = tifffile.imread(mask_file, squeeze=False)
+    mask = _fix_mask_shape(mask_file, mask)
     if not native_dtype:
         mask = _to_dtype(mask, mask_dtype)
     return mask
 
 
-def write_mask(mask: np.ndarray, mask_file: Union[str, PathLike]) -> None:
-    mask = _to_dtype(mask, mask_dtype)
+def mmap_mask(
+    mask_file: Union[str, PathLike], mode="r", **kwargs
+) -> np.ndarray:
+    kwargs["imagej"] = True
+    mask_exists = Path(mask_file).exists()
+    mask = tifffile.memmap(mask_file, mode=mode, **kwargs)
+    if mask.dtype != mask_dtype:
+        _logger.warning(
+            "Data type of memory-mapped mask %s (%s) is different from %s",
+            mask_file,
+            mask.dtype,
+            mask_dtype,
+        )
+    if mask_exists:
+        mask = _fix_mask_shape(mask_file, mask)
+    return mask
+
+
+def write_mask(
+    mask: np.ndarray,
+    mask_file: Union[str, PathLike],
+    ignore_dtype: bool = False,
+) -> None:
+    if not ignore_dtype:
+        mask = _to_dtype(mask, mask_dtype)
     tifffile.imwrite(
         mask_file,
         data=mask[np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis],

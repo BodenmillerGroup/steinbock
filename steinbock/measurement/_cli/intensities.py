@@ -56,6 +56,13 @@ _intensity_aggregations = {
     help="Function for aggregating cell pixels",
 )
 @click.option(
+    "--mmap/--no-mmap",
+    "mmap",
+    default=False,
+    show_default=True,
+    help="Use memory mapping for reading images/masks",
+)
+@click.option(
     "-o",
     "intensities_dir",
     type=click.Path(file_okay=False),
@@ -64,7 +71,12 @@ _intensity_aggregations = {
     help="Path to the object intensities output directory",
 )
 def intensities_cmd(
-    img_dir, mask_dir, panel_file, intensity_aggregation_name, intensities_dir
+    img_dir,
+    mask_dir,
+    panel_file,
+    intensity_aggregation_name,
+    mmap,
+    intensities_dir,
 ):
     panel = io.read_panel(panel_file)
     channel_names = panel["name"].tolist()
@@ -76,6 +88,7 @@ def intensities_cmd(
         mask_files,
         channel_names,
         _intensity_aggregations[intensity_aggregation_name],
+        mmap=mmap,
     ):
         intensities_file = io._as_path_with_suffix(
             Path(intensities_dir) / img_file.name, ".csv"

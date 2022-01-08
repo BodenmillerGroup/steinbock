@@ -51,15 +51,20 @@ def try_measure_intensities_from_disk(
     mask_files: Sequence[Union[str, PathLike]],
     channel_names: Sequence[str],
     intensity_aggregation: IntensityAggregation,
+    mmap: bool = False,
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
         try:
+            if mmap:
+                img = io.mmap_image(img_file)
+                mask = io.mmap_mask(mask_file)
+            else:
+                img = io.read_image(img_file)
+                mask = io.read_mask(mask_file)
             intensities = measure_intensites(
-                io.read_image(img_file),
-                io.read_mask(mask_file),
-                channel_names,
-                intensity_aggregation,
+                img, mask, channel_names, intensity_aggregation
             )
+            del img, mask
             yield Path(img_file), Path(mask_file), intensities
             del intensities
         except:
