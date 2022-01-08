@@ -7,10 +7,17 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, List, Optional, Sequence, Tuple, Union
 
+from steinbock import io
+
 _logger = logging.getLogger(__name__)
 
 
 def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
+    # try tifffile-based reading first, for memory reasons
+    try:
+        return io.read_image(ext_img_file, native_dtype=True)
+    except:
+        pass  # skipped intentionally
     ext_img = imageio.volread(ext_img_file)
     orig_img_shape = ext_img.shape
     while ext_img.ndim > 3 and ext_img.shape[0] == 1:
@@ -68,7 +75,7 @@ def try_preprocess_images_from_disk(
         try:
             img = _read_external_image(ext_img_file)
         except:
-            _logger.warning(f"Unsupported image data in file {ext_img_file}")
+            _logger.warning(f"Unsupported file format: {ext_img_file}")
             continue
         if channel_indices is not None:
             if max(channel_indices) > img.shape[0]:
