@@ -61,6 +61,13 @@ def panel_cmd(ext_img_dir, panel_file):
     help="Path to the steinbock panel file",
 )
 @click.option(
+    "--mmap/--no-mmap",
+    "mmap",
+    default=False,
+    show_default=True,
+    help="Use memory mapping for writing images",
+)
+@click.option(
     "--imgout",
     "img_dir",
     type=click.Path(file_okay=False),
@@ -76,7 +83,7 @@ def panel_cmd(ext_img_dir, panel_file):
     show_default=True,
     help="Path to the image information output file",
 )
-def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
+def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     channel_indices = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
@@ -91,7 +98,15 @@ def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
         img_file = io._as_path_with_suffix(
             Path(img_dir) / Path(ext_img_file).name, ".tiff"
         )
-        io.write_image(img, img_file)
+        if mmap:
+            out = io.mmap_image(
+                img_file, mode="r+", shape=img.shape, dtype=img.dtype
+            )
+            for i, channel_img in img:
+                out[i] = channel_img
+                out.flush()
+        else:
+            io.write_image(img, img_file)
         image_info_row = {
             "image": img_file.name,
             "width_px": img.shape[2],
