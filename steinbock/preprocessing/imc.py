@@ -312,7 +312,7 @@ def _match_txt_file(
 
 def _get_channel_indices(
     acquisition: AcquisitionBase, channel_names: Sequence[str]
-) -> Union[Sequence[int], str]:
+) -> Union[List[int], str]:
     channel_indices = []
     for channel_name in channel_names:
         if channel_name not in acquisition.channel_names:

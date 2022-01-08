@@ -83,6 +83,6 @@ def try_preprocess_images_from_disk(
                     f"Channel indices out of bounds for file "
                     f"{ext_img_file} with {img.shape[0]} channels"
                 )
-            img = img[channel_indices, :, :]
+            img = img[list(channel_indices), :, :]
         yield ext_img_file, img
         del img
