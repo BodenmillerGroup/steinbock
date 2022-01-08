@@ -31,6 +31,7 @@ def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(
         segmentation_pipeline_file
     )
+    click.echo(segmentation_pipeline_file)
 
 
 @cellprofiler_cmd_group.command(

@@ -29,7 +29,7 @@ This *steinbock* utility for tiling and stitching images allows the processing o
 
 The following command will split all images in `img_full` into tiles of 4096x4096 pixels (the recommended maximum image size for *steinbock* on local installations) and save them to `img`:
 
-    steinbock utils mosaics tile img_full -s 4096 -o img
+    steinbock utils mosaics tile img_full --size 4096 -o img
 
 The created image tiles will have the following file name, where `{IMG}` is the original file name (without extension), `{X}` and `{Y}` indicate the tile position (in pixels) and `{W}` and `{H}` indicate the tile width and height, respectively:
 

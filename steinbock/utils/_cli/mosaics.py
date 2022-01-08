@@ -1,20 +1,24 @@
 import click
-import re
+import sys
 
+from os import PathLike
 from pathlib import Path
+from skimage import measure
+from typing import List, Sequence, Union
 
-from steinbock import io
 from steinbock._cli.utils import OrderedClickGroup
 from steinbock.utils import mosaics
 
 
-def _collect_img_files(img_files_or_dirs):
+def _collect_tiff_files(
+    img_files_or_dirs: Sequence[Union[str, PathLike]]
+) -> List[Path]:
     img_files = []
     for img_file_or_dir in img_files_or_dirs:
         if Path(img_file_or_dir).is_file():
             img_files.append(Path(img_file_or_dir))
         else:
-            img_files += io.list_image_files(img_file_or_dir)
+            img_files += sorted(Path(img_file_or_dir).rglob("*.tiff"))
     return img_files
 
 
@@ -42,16 +46,11 @@ def mosaics_cmd_group():
     help="Path to the tile output directory",
 )
 def tile_cmd(images, tile_size, tile_dir):
-    img_files = _collect_img_files(images)
+    img_files = _collect_tiff_files(images)
     Path(tile_dir).mkdir(exist_ok=True)
-    for img_file, x, y, tile in mosaics.try_extract_tiles_from_disk(
-        img_files, tile_size
+    for tile_file, tile in mosaics.try_extract_tiles_from_disk_to_disk(
+        img_files, tile_dir, tile_size
     ):
-        tile_stem = (
-            Path(tile_dir)
-            / f"{img_file.stem}_tx{x}_ty{y}_tw{tile_size}_th{tile_size}"
-        )
-        tile_file = io.write_image(tile, tile_stem, ignore_dtype=True)
         click.echo(tile_file)
         del tile
 
@@ -65,23 +64,27 @@ def tile_cmd(images, tile_size, tile_dir):
     required=True,
     help="Path to the tile output directory",
 )
-def stitch_cmd(tiles, img_dir):
-    tile_info_groups = {}
-    tile_files = _collect_img_files(tiles)
-    pattern = re.compile(r"(.*)_tx(\d*)_ty(\d*)_tw(\d*)_th(\d*)")
-    for tile_file in tile_files:
-        match = pattern.match(tile_file.stem)
-        if match:
-            img_stem_name = match.group(1)
-            x, y, w, h = [int(g) for g in match.group(2, 3, 4, 5)]
-            if img_stem_name not in tile_info_groups:
-                tile_info_groups[img_stem_name] = []
-            tile_info_groups[img_stem_name].append((tile_file, x, y, w, h))
+@click.option(
+    "--relabel/--no-relabel",
+    "relabel",
+    default=False,
+    show_default=True,
+    help="Relabel objects",
+)
+def stitch_cmd(tiles, img_dir, relabel):
+    tile_files = _collect_tiff_files(tiles)
     Path(img_dir).mkdir(exist_ok=True)
-    for img_stem_name, img in mosaics.try_stitch_tiles_from_disk(
-        tile_info_groups
+    for img_file, img in mosaics.try_stitch_tiles_from_disk_to_disk(
+        tile_files, img_dir
     ):
-        img_stem = Path(img_dir) / img_stem_name
-        img_file = io.write_image(img, img_stem, ignore_dtype=True)
+        if relabel:
+            if img.ndim != 2:
+                click.echo(
+                    f"WARNING: Failed to relabel image with shape {img.shape}",
+                    file=sys.stderr,
+                )
+                continue
+            img[:] = measure.label(img)
+            img.flush()
         click.echo(img_file)
         del img

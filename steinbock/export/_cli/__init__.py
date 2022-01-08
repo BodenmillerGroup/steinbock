@@ -1,10 +1,10 @@
 import click
 import numpy as np
 import re
+import tifffile
+import xtiff
 
 from pathlib import Path
-from tifffile import imwrite
-from xtiff import to_tiff
 
 from steinbock import io
 from steinbock.export._cli.data import anndata_cmd, csv_cmd, fcs_cmd
@@ -60,8 +60,8 @@ def ome_cmd(img_dir, panel_file, ome_dir):
         ome_file = io._as_path_with_suffix(
             Path(ome_dir) / img_file.name, ".ome.tiff"
         )
-        to_tiff(img, ome_file, channel_names=channel_names)
-        click.echo(ome_file.name)
+        xtiff.to_tiff(img, ome_file, channel_names=channel_names)
+        click.echo(ome_file)
         del img
 
 
@@ -120,20 +120,29 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         for channel_name, channel_img in zip(channel_names, img):
             channel_name = re.sub(r"\s*/\s*", "_", channel_name)
             channel_name = re.sub(r"\s", "_", channel_name)
-            imwrite(
-                histocat_img_dir / f"{channel_name}.tiff",
-                data=io._to_dtype(channel_img, np.float32),
+            histocat_img_file = histocat_img_dir / f"{channel_name}.tiff"
+            tifffile.imwrite(
+                histocat_img_file,
+                data=io._to_dtype(channel_img, np.float32)[
+                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+                ],
                 imagej=True,
             )
+            click.echo(histocat_img_file)
         mask = None
         if mask_files is not None:
             mask = io.read_mask(mask_files[i])
-            imwrite(
-                histocat_img_dir / f"{img_file.stem}_mask.tiff",
-                data=io._to_dtype(mask, np.uint16),
+            histocat_mask_file = (
+                histocat_img_dir / f"{img_file.stem}_mask.tiff"
+            )
+            tifffile.imwrite(
+                histocat_mask_file,
+                data=io._to_dtype(mask, np.uint16)[
+                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+                ],
                 imagej=True,
             )
-        click.echo(img_file.name)
+            click.echo(histocat_mask_file)
         del img, mask
 
 

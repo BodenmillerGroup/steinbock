@@ -57,7 +57,7 @@ Furthermore, this commands also creates an image information table as described 
   - `source_file`: the raw .mcd/.txt file name
   - `recovery_file`: the corresponding .txt file name, if available
   - `recovered`: *True* if the .mcd acquisition was recovered from the corresponding .txt file
-  - Acquisition-specific information: 
+  - Acquisition-specific information (only for images extracted from .mcd files): 
     - `acquisition_id`: numeric acquisition ID
     - `acquisition_description`: user-specified acquisition description
     - `acquisition_posx_um`, `acquisition_posy_um`: start position, in micrometers

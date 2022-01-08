@@ -47,7 +47,9 @@ def regionprops_cmd(img_dir, mask_dir, skimage_regionprops, regionprops_dir):
     for img_file, mask_file, regionprops in try_measure_regionprops_from_disk(
         img_files, mask_files, skimage_regionprops
     ):
-        regionprops_stem = Path(regionprops_dir) / img_file.stem
-        regionprops_file = io.write_data(regionprops, regionprops_stem)
+        regionprops_file = io._as_path_with_suffix(
+            Path(regionprops_dir) / img_file.name, ".csv"
+        )
+        io.write_data(regionprops, regionprops_file)
         click.echo(regionprops_file)
         del regionprops

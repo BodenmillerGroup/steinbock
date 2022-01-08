@@ -23,10 +23,7 @@ def create_panel_from_image_files(
     for ext_img_file in ext_img_files:
         try:
             ext_img = io.read_image(
-                ext_img_file,
-                keep_suffix=True,
-                use_imageio=True,
-                native_dtype=True,
+                ext_img_file, use_imageio=True, native_dtype=True
             )
             if ext_img is not None:
                 num_channels = ext_img.shape[0]
@@ -59,10 +56,7 @@ def try_preprocess_images_from_disk(
     for ext_img_file in ext_img_files:
         try:
             ext_img = io.read_image(
-                ext_img_file,
-                keep_suffix=True,
-                use_imageio=True,
-                native_dtype=True,
+                ext_img_file, use_imageio=True, native_dtype=True
             )
             if ext_img is None:
                 _logger.warning(
