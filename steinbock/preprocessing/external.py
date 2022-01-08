@@ -66,16 +66,16 @@ def try_preprocess_images_from_disk(
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for ext_img_file in ext_img_files:
         try:
-            ext_img = _read_external_image(ext_img_file)
+            img = _read_external_image(ext_img_file)
         except:
             _logger.warning(f"Unsupported image data in file {ext_img_file}")
             continue
         if channel_indices is not None:
-            if max(channel_indices) > ext_img.shape[0]:
+            if max(channel_indices) > img.shape[0]:
                 _logger.warning(
                     f"Channel indices out of bounds for file "
-                    f"{ext_img_file} with {ext_img.shape[0]} channels"
+                    f"{ext_img_file} with {img.shape[0]} channels"
                 )
-            ext_img = ext_img[channel_indices, :, :]
-        yield ext_img_file, ext_img
-        del ext_img
+            img = img[channel_indices, :, :]
+        yield ext_img_file, img
+        del img

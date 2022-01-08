@@ -85,21 +85,21 @@ def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     image_info_data = []
     Path(img_dir).mkdir(exist_ok=True)
-    for ext_img_file, ext_img in external.try_preprocess_images_from_disk(
+    for ext_img_file, img in external.try_preprocess_images_from_disk(
         ext_img_files, channel_indices=channel_indices
     ):
         img_file = io._as_path_with_suffix(
             Path(img_dir) / Path(ext_img_file).name, ".tiff"
         )
-        io.write_image(ext_img)
+        io.write_image(img_file, img)
         image_info_row = {
             "image": img_file.name,
-            "width_px": ext_img.shape[2],
-            "height_px": ext_img.shape[1],
-            "num_channels": ext_img.shape[0],
+            "width_px": img.shape[2],
+            "height_px": img.shape[1],
+            "num_channels": img.shape[0],
         }
         image_info_data.append(image_info_row)
         click.echo(img_file)
-        del ext_img
+        del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
