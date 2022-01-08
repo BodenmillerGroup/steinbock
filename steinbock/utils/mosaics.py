@@ -16,10 +16,14 @@ def try_extract_tiles_from_disk_to_disk(
     img_files: Sequence[Union[str, PathLike]],
     tile_dir: Union[str, PathLike],
     tile_size: int,
+    mmap: bool = False,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for img_file in img_files:
         try:
-            img = io.mmap_image(img_file)
+            if mmap:
+                img = io.mmap_image(img_file)
+            else:
+                img = io.read_image(img_file, native_dtype=True)
             if (
                 img.shape[-1] % tile_size == 1
                 or img.shape[-2] % tile_size == 1
@@ -50,6 +54,7 @@ def try_extract_tiles_from_disk_to_disk(
 def try_stitch_tiles_from_disk_to_disk(
     tile_files: Sequence[Union[str, PathLike]],
     img_dir: Union[str, PathLike],
+    mmap: bool = False,
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
     class TileInfo(NamedTuple):
         tile_file: Path
@@ -82,16 +87,17 @@ def try_stitch_tiles_from_disk_to_disk(
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
         try:
             tile = io.read_image(tile_infos[0].tile_file, native_dtype=True)
-            img = io.mmap_image(
-                img_file,
-                mode="r+",
-                shape=(
-                    tile.shape[0],
-                    max(ti.y + ti.height for ti in tile_infos),
-                    max(ti.x + ti.width for ti in tile_infos),
-                ),
-                dtype=tile.dtype,
+            img_shape = (
+                tile.shape[0],
+                max(ti.y + ti.height for ti in tile_infos),
+                max(ti.x + ti.width for ti in tile_infos),
             )
+            if mmap:
+                img = io.mmap_image(
+                    img_file, mode="r+", shape=img_shape, dtype=tile.dtype
+                )
+            else:
+                img = np.zeros(img_shape, dtype=tile.dtype)
             for i, tile_info in enumerate(tile_infos):
                 if i > 0:
                     tile = io.read_image(
@@ -102,7 +108,10 @@ def try_stitch_tiles_from_disk_to_disk(
                     tile_info.y : tile_info.y + tile_info.height,
                     tile_info.x : tile_info.x + tile_info.width,
                 ] = tile
-                img.flush()
+                if mmap:
+                    img.flush()
+            if not mmap:
+                io.write_image(img, img_file, ignore_dtype=True)
             yield img_file, img
             del img
         except:
