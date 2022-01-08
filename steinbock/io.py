@@ -161,14 +161,14 @@ def mmap_image(
         kwargs["imagej"] = True
     img_exists = Path(img_file).exists()
     img = tifffile.memmap(img_file, mode=mode, **kwargs)
-    if img.dtype != img_dtype:
-        _logger.warning(
-            "Data type of memory-mapped image %s (%s) is different from %s",
-            img_file,
-            img.dtype,
-            img_dtype,
-        )
     if img_exists:
+        if img.dtype != img_dtype:
+            _logger.warning(
+                "Data type of memory-mapped image file %s (%s) is not %s",
+                img_file,
+                img.dtype,
+                img_dtype,
+            )
         img = _fix_image_shape(img_file, img)
     return img
 
@@ -276,14 +276,14 @@ def mmap_mask(
         kwargs["imagej"] = True
     mask_exists = Path(mask_file).exists()
     mask = tifffile.memmap(mask_file, mode=mode, **kwargs)
-    if mask.dtype != mask_dtype:
-        _logger.warning(
-            "Data type of memory-mapped mask %s (%s) is different from %s",
-            mask_file,
-            mask.dtype,
-            mask_dtype,
-        )
     if mask_exists:
+        if mask.dtype != mask_dtype:
+            _logger.warning(
+                "Data type of memory-mapped mask file %s (%s) is not %s",
+                mask_file,
+                mask.dtype,
+                mask_dtype,
+            )
         mask = _fix_mask_shape(mask_file, mask)
     return mask
 
