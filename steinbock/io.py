@@ -157,7 +157,8 @@ def read_image(
 def mmap_image(
     img_file: Union[str, PathLike], mode="r", **kwargs
 ) -> np.ndarray:
-    kwargs["imagej"] = True
+    if mode == "r+":
+        kwargs["imagej"] = True
     img_exists = Path(img_file).exists()
     img = tifffile.memmap(img_file, mode=mode, **kwargs)
     if img.dtype != img_dtype:
@@ -271,7 +272,8 @@ def read_mask(
 def mmap_mask(
     mask_file: Union[str, PathLike], mode="r", **kwargs
 ) -> np.ndarray:
-    kwargs["imagej"] = True
+    if mode == "r+":
+        kwargs["imagej"] = True
     mask_exists = Path(mask_file).exists()
     mask = tifffile.memmap(mask_file, mode=mode, **kwargs)
     if mask.dtype != mask_dtype:
