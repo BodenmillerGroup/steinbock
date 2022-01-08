@@ -115,6 +115,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
         )
         out_shape = list(img.shape)
         out_shape[0] = len(cur_channel_indices)
+        out_shape = tuple(out_shape)
         if mmap:
             out = io.mmap_image(
                 img_file, mode="r+", shape=out_shape, dtype=img.dtype
@@ -122,7 +123,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
         else:
             out = np.empty(out_shape, dtype=img.dtype)
         for i, channel_index in enumerate(cur_channel_indices):
-            out[i] = img[channel_index]
+            out[i, :, :] = img[channel_index, :, :]
             if mmap:
                 out.flush()
         if not mmap:
