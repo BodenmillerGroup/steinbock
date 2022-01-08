@@ -91,7 +91,7 @@ def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
         img_file = io._as_path_with_suffix(
             Path(img_dir) / Path(ext_img_file).name, ".tiff"
         )
-        io.write_image(img_file, img)
+        io.write_image(img, img_file)
         image_info_row = {
             "image": img_file.name,
             "width_px": img.shape[2],
