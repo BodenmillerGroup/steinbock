@@ -5,7 +5,7 @@ import pandas as pd
 
 from os import PathLike
 from pathlib import Path
-from typing import Generator, List, Optional, Sequence, Tuple, Union
+from typing import Generator, List, Sequence, Tuple, Union
 
 from steinbock import io
 
@@ -68,8 +68,7 @@ def create_panel_from_image_files(
 
 
 def try_preprocess_images_from_disk(
-    ext_img_files: Sequence[Union[str, PathLike]],
-    channel_indices: Optional[Sequence[int]] = None,
+    ext_img_files: Sequence[Union[str, PathLike]]
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for ext_img_file in ext_img_files:
         try:
@@ -77,12 +76,5 @@ def try_preprocess_images_from_disk(
         except:
             _logger.warning(f"Unsupported file format: {ext_img_file}")
             continue
-        if channel_indices is not None:
-            if max(channel_indices) > img.shape[0]:
-                _logger.warning(
-                    f"Channel indices out of bounds for file "
-                    f"{ext_img_file} with {img.shape[0]} channels"
-                )
-            img = img[list(channel_indices), :, :]
         yield ext_img_file, img
         del img

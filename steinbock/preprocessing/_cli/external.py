@@ -1,5 +1,7 @@
 import click
+import numpy as np
 import pandas as pd
+import sys
 
 from pathlib import Path
 
@@ -95,18 +97,36 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     for ext_img_file, img in external.try_preprocess_images_from_disk(
         ext_img_files, channel_indices=channel_indices
     ):
+        # filter channels here rather than in try_preprocess_images_from_disk,
+        # to avoid advanced indexing creating a copy of img (relevant for mmap)
+        if channel_indices is not None:
+            if max(channel_indices) > img.shape[0]:
+                click.echo(
+                    f"WARNING: Channel indices out of bounds for file "
+                    f"{ext_img_file} with {img.shape[0]} channels",
+                    file=sys.stderr,
+                )
+                continue
+            cur_channel_indices = channel_indices
+        else:
+            cur_channel_indices = list(range(img.shape[0]))
         img_file = io._as_path_with_suffix(
             Path(img_dir) / Path(ext_img_file).name, ".tiff"
         )
+        out_shape = list(img.shape)
+        out_shape[0] = len(cur_channel_indices)
         if mmap:
             out = io.mmap_image(
-                img_file, mode="r+", shape=img.shape, dtype=img.dtype
+                img_file, mode="r+", shape=out_shape, dtype=img.dtype
             )
-            for i, channel_img in img:
-                out[i] = channel_img
-                out.flush()
         else:
-            io.write_image(img, img_file)
+            out = np.empty(out_shape, dtype=img.dtype)
+        for i, channel_index in enumerate(cur_channel_indices):
+            out[i] = img[channel_index]
+            if mmap:
+                out.flush()
+        if not mmap:
+            io.write_image(out, img_file)
         image_info_row = {
             "image": img_file.name,
             "width_px": img.shape[2],
