@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1313,7 +1313,7 @@
 
 
 <h2 id="steinbock.io.read_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_data</span><span class="p">(</span><span class="n">data_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1323,8 +1323,7 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">data_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">data_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">data_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
         <span class="n">data_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,|;&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span>
     <span class="p">)</span>
@@ -1341,7 +1340,7 @@
 
 
 <h2 id="steinbock.io.read_image" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">keep_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1353,26 +1352,44 @@
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_image</span><span class="p">(</span>
     <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
-    <span class="n">keep_suffix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">use_imageio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_suffix</span><span class="p">:</span>
-        <span class="n">img_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span>
-            <span class="n">img_file</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">,</span> <span class="n">replace_ome_suffix</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span>
     <span class="k">if</span> <span class="n">use_imageio</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">volread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+        <span class="n">orig_img_shape</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported shape </span><span class="si">{</span><span class="n">orig_img_shape</span><span class="si">}</span><span class="s2"> for image </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-    <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported number of image dimensions: </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported TZCYX shape </span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span><span class="p">,</span> <span class="n">size_s</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_s</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported TZCYXS shape </span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported number of dimensions (</span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">native_dtype</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_dtype</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">img</span>
@@ -1389,7 +1406,7 @@
 
 
 <h2 id="steinbock.io.read_image_info" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_image_info</span><span class="p">(</span><span class="n">image_info_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_image_info</span><span class="p">(</span><span class="n">image_info_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1399,8 +1416,7 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_image_info</span><span class="p">(</span><span class="n">image_info_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">image_info_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">image_info_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_image_info</span><span class="p">(</span><span class="n">image_info_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">image_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
         <span class="n">image_info_file</span><span class="p">,</span>
         <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,|;&quot;</span><span class="p">,</span>
@@ -1443,7 +1459,7 @@
 
 
 <h2 id="steinbock.io.read_mask" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1453,16 +1469,31 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_mask</span><span class="p">(</span><span class="n">mask_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="n">mask_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">mask_stem</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported number of mask dimensions: </span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_mask</span><span class="p">(</span>
+    <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_c</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported TZCYX shape </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span><span class="p">,</span> <span class="n">size_s</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_c</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_s</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported TZCYXS shape </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported number of dimensions (</span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">native_dtype</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span>
 </code></pre></div>
         </details>
     </div>
@@ -1476,7 +1507,7 @@
 
 
 <h2 id="steinbock.io.read_neighbors" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1486,8 +1517,7 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_neighbors</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
         <span class="n">neighbors_file</span><span class="p">,</span>
         <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,|;&quot;</span><span class="p">,</span>
@@ -1512,7 +1542,7 @@
 
 
 <h2 id="steinbock.io.read_panel" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_panel</span><span class="p">(</span><span class="n">panel_stem</span><span class="p">,</span> <span class="n">kept_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_panel</span><span class="p">(</span><span class="n">panel_file</span><span class="p">,</span> <span class="n">unfiltered</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1523,9 +1553,8 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_panel</span><span class="p">(</span>
-    <span class="n">panel_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">kept_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">panel_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">unfiltered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">panel_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">panel_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
         <span class="n">panel_file</span><span class="p">,</span>
         <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,|;&quot;</span><span class="p">,</span>
@@ -1554,7 +1583,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Duplicated values for &#39;</span><span class="si">{</span><span class="n">unique_col</span><span class="si">}</span><span class="s2">&#39; in </span><span class="si">{</span><span class="n">panel_file</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-    <span class="k">if</span> <span class="n">kept_only</span> <span class="ow">and</span> <span class="s2">&quot;keep&quot;</span> <span class="ow">in</span> <span class="n">panel</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">unfiltered</span> <span class="ow">and</span> <span class="s2">&quot;keep&quot;</span> <span class="ow">in</span> <span class="n">panel</span><span class="p">:</span>
         <span class="n">panel</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">panel</span><span class="p">[</span><span class="s2">&quot;keep&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">),</span> <span class="p">:]</span>
     <span class="k">return</span> <span class="n">panel</span>
 </code></pre></div>
@@ -1570,7 +1599,7 @@
 
 
 <h2 id="steinbock.io.write_data" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1580,11 +1609,9 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">data_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">data_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">data_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">data_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
     <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data_file</span>
 </code></pre></div>
         </details>
     </div>
@@ -1598,7 +1625,7 @@
 
 
 <h2 id="steinbock.io.write_image" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_stem</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1609,13 +1636,17 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_image</span><span class="p">(</span>
-    <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">img_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">ignore_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ignore_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_dtype</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_dtype</span><span class="p">)</span>
-    <span class="n">img_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">img_stem</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
-    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">img</span><span class="p">,</span> <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">img_file</span>
+    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+        <span class="n">img_file</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
+        <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1629,7 +1660,7 @@
 
 
 <h2 id="steinbock.io.write_image_info" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_image_info</span><span class="p">(</span><span class="n">image_info</span><span class="p">,</span> <span class="n">image_info_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_image_info</span><span class="p">(</span><span class="n">image_info</span><span class="p">,</span> <span class="n">image_info_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1640,11 +1671,9 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_image_info</span><span class="p">(</span>
-    <span class="n">image_info</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">image_info_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">image_info_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">image_info_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+    <span class="n">image_info</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">image_info_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">image_info</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">image_info_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">image_info_file</span>
 </code></pre></div>
         </details>
     </div>
@@ -1658,7 +1687,7 @@
 
 
 <h2 id="steinbock.io.write_mask" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1668,11 +1697,13 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
-    <span class="n">mask_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">mask_stem</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
-    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mask_file</span>
+    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+        <span class="n">mask_file</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">mask</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
+        <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1686,7 +1717,7 @@
 
 
 <h2 id="steinbock.io.write_neighbors" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_neighbors</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">neighbors_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_neighbors</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">neighbors_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1697,9 +1728,8 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_neighbors</span><span class="p">(</span>
-    <span class="n">neighbors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">neighbors_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">neighbors_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">neighbors_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+    <span class="n">neighbors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">neighbors_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">neighbors</span> <span class="o">=</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="s2">&quot;Neighbor&quot;</span><span class="p">,</span> <span class="s2">&quot;Distance&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;Object&quot;</span><span class="p">:</span> <span class="n">mask_dtype</span><span class="p">,</span>
@@ -1708,7 +1738,6 @@
         <span class="p">}</span>
     <span class="p">)</span>
     <span class="n">neighbors</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">neighbors_file</span>
 </code></pre></div>
         </details>
     </div>
@@ -1722,7 +1751,7 @@
 
 
 <h2 id="steinbock.io.write_panel" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">panel_stem</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">panel_file</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1732,14 +1761,12 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">panel_stem</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="n">panel_file</span> <span class="o">=</span> <span class="n">_as_path_with_suffix</span><span class="p">(</span><span class="n">panel_stem</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">panel_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">panel</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">panel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">BooleanDtype</span><span class="p">():</span>
             <span class="n">panel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">UInt8Dtype</span><span class="p">())</span>
     <span class="n">panel</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">panel_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">panel_file</span>
 </code></pre></div>
         </details>
     </div>
@@ -1811,10 +1838,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.0bbba5b5.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>
