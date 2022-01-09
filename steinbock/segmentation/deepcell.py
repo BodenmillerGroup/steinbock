@@ -86,18 +86,14 @@ def try_segment_objects(
                 channel_mins = np.nanmin(img, axis=(1, 2))
                 channel_maxs = np.nanmax(img, axis=(1, 2))
                 channel_ranges = channel_maxs - channel_mins
-                img[channel_ranges > 0] -= channel_mins[
-                    channel_ranges > 0, np.newaxis, np.newaxis
-                ]
+                img -= channel_mins[:, np.newaxis, np.newaxis]
                 img[channel_ranges > 0] /= channel_ranges[
                     channel_ranges > 0, np.newaxis, np.newaxis
                 ]
             if channelwise_zscore:
                 channel_means = np.nanmean(img, axis=(1, 2))
                 channel_stds = np.nanstd(img, axis=(1, 2))
-                img[channel_stds > 0] -= channel_means[
-                    channel_stds > 0, np.newaxis, np.newaxis
-                ]
+                img -= channel_means[:, np.newaxis, np.newaxis]
                 img[channel_stds > 0] /= channel_stds[
                     channel_stds > 0, np.newaxis, np.newaxis
                 ]
