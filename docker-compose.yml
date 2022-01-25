@@ -36,7 +36,7 @@ services:
     command: ['-c', 'python -m pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m steinbock']
     ports:
       - '5678:5678'
-  steinbock-gpu-debug:
+  steinbock-debug-gpu:
     image: ghcr.io/bodenmillergroup/steinbock-gpu:latest
     volumes:
       - ./data:/data:rw
@@ -74,7 +74,7 @@ services:
       - '5678:5678'
     working_dir: /app/steinbock
     user: root
-  pytest-gpu-debug:
+  pytest-debug-gpu:
     image: ghcr.io/bodenmillergroup/steinbock-gpu:latest
     volumes:
       - ./tests:/app/steinbock/tests
