@@ -4,6 +4,9 @@ The *steinbock* framework can be used programmatically using the *steinbock* Pyt
 
 In this section, the installation of the *steinbock* Python package is described.
 
+!!! danger "For scripting use only"
+    Installing/using the *steinbock* Python package directly is not recommended for regular users. Please use the *steinbock* Docker containers instead.
+
 ## Requirements
 
 [Python](https://www.python.org) 3.8 or newer
