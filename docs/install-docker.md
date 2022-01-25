@@ -28,6 +28,8 @@ Make Docker available to non-root users: Linux users can follow the [post-instal
 		
 	Replace `<username>` with the name of the user (for domain accounts, use the `<domain>\<username>` format).
 
+To run the *steinbock* Docker container with NVIDIA GPU support (Linux only), install the proper drivers and verify that your GPU is running and accessible. Install the `nvidia-container-runtime` as described [here](https://docs.docker.com/config/containers/resource_constraints/#access-an-nvidia-gpu) and restart your system.
+
 ## Installation
 
 In principle, the *steinbock* Docker container can be run on any Docker-enabled platform:
@@ -37,6 +39,10 @@ In principle, the *steinbock* Docker container can be run on any Docker-enabled 
 For reproducibility, it is recommended to always pull a specific release, e.g.:
 
     docker run ghcr.io/bodenmillergroup/steinbock:0.12.0
+
+To run the *steinbock* Docker container with NVIDIA GPU support (Linux only):
+
+    docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.12.0
 
 [Bind mounts](https://docs.docker.com/storage/bind-mounts/) can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to `docker run` as outlined in the following.
 
@@ -64,9 +70,17 @@ On the terminal, use the following command to run the *steinbock* Docker contain
 
     docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.12.0
 
-In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.12.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+To run the *steinbock* Docker container with NVIDIA GPU support, use `steinbock-gpu` Docker image instead:
+
+    docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.12.0
+
+In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.12.0`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
     alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.12.0"
+
+To run the *steinbock* Docker container with NVIDIA GPU support, use `steinbock-gpu` Docker image instead:
+
+    alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.12.0"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
