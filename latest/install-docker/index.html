@@ -1008,18 +1008,18 @@
 <pre><code>docker run ghcr.io/bodenmillergroup/steinbock
 </code></pre>
 <p>For reproducibility, it is recommended to always pull a specific release, e.g.:</p>
-<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.13.0
+<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.13.1
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support (Linux only):</p>
-<pre><code>docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.0
+<pre><code>docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.1
 </code></pre>
 <p><a href="https://docs.docker.com/storage/bind-mounts/">Bind mounts</a> can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to <code>docker run</code> as outlined in the following.</p>
 <h3 id="windows">Windows</h3>
 <p>On the command line, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.13.0
+<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.13.1
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.13.0 $*
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.13.1 $*
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current command line without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -1030,16 +1030,16 @@
 </div>
 <h3 id="linux">Linux</h3>
 <p>On the terminal, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.13.0
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.13.1
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support, use <code>steinbock-gpu</code> Docker image instead:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.0
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.1
 </code></pre>
-<p>In the commands above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.13.0"
+<p>In the commands above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.13.1"
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support, use <code>steinbock-gpu</code> Docker image instead:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.0"
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.13.1"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -1052,10 +1052,10 @@
 </div>
 <h3 id="macos">MacOS</h3>
 <p>On the terminal, use the following command to run the <em>steinbock</em> Docker container (Docker must be running):</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.13.0
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.13.1
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.13.0"
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.13.1</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.13.1"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
