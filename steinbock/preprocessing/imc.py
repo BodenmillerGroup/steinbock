@@ -101,9 +101,21 @@ def create_panel_from_mcd_files(
         with MCDFile(mcd_file) as f:
             for slide in f.slides:
                 for acquisition in slide.acquisitions:
-                    panel = _create_panel_from_acquisition(acquisition)
+                    panel = pd.DataFrame(
+                        data={
+                            "channel": pd.Series(
+                                data=acquisition.channel_names,
+                                dtype=pd.StringDtype(),
+                            ),
+                            "name": pd.Series(
+                                data=acquisition.channel_labels,
+                                dtype=pd.StringDtype(),
+                            ),
+                        },
+                    )
                     panels.append(panel)
     panel = pd.concat(panels, ignore_index=True, copy=False)
+    panel.drop_duplicates(inplace=True, ignore_index=True)
     return _clean_panel(panel)
 
 
@@ -113,9 +125,19 @@ def create_panel_from_txt_files(
     panels = []
     for txt_file in txt_files:
         with TXTFile(txt_file) as f:
-            panel = _create_panel_from_acquisition(f)
+            panel = pd.DataFrame(
+                data={
+                    "channel": pd.Series(
+                        data=f.channel_names, dtype=pd.StringDtype()
+                    ),
+                    "name": pd.Series(
+                        data=f.channel_labels, dtype=pd.StringDtype()
+                    ),
+                },
+            )
             panels.append(panel)
     panel = pd.concat(panels, ignore_index=True, copy=False)
+    panel.drop_duplicates(inplace=True, ignore_index=True)
     return _clean_panel(panel)
 
 
@@ -241,31 +263,6 @@ def try_preprocess_images_from_disk(
             _logger.exception(f"Error reading file {txt_file}")
 
 
-def _create_panel_from_acquisition(
-    acquisition: "AcquisitionBase",
-) -> pd.DataFrame:
-    panel = pd.DataFrame(
-        data={
-            "channel": acquisition.channel_names,
-            "name": acquisition.channel_labels,
-            "keep": True,
-            "ilastik": range(1, acquisition.num_channels + 1),
-            "deepcell": np.nan,
-        },
-    )
-    panel["channel"] = panel["channel"].astype(pd.StringDtype())
-    panel["name"] = panel["name"].astype(pd.StringDtype())
-    panel["keep"] = panel["keep"].astype(pd.BooleanDtype())
-    panel["ilastik"] = panel["ilastik"].astype(pd.UInt8Dtype())
-    panel["deepcell"] = panel["deepcell"].astype(pd.UInt8Dtype())
-    panel.sort_values(
-        "channel",
-        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
-        inplace=True,
-    )
-    return panel
-
-
 def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     panel.sort_values(
         "channel",
@@ -276,7 +273,8 @@ def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
     panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
     if "keep" not in panel:
-        panel["keep"] = pd.Series(True, dtype=pd.BooleanDtype())
+        panel["keep"] = pd.Series(dtype=pd.BooleanDtype())
+        panel.loc[:, "keep"] = True
     if "ilastik" not in panel:
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
