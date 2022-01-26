@@ -27,7 +27,7 @@ RUN addgroup --gid 1000 steinbock && \
 RUN python3.8 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel && \
-    python -m pip install tensorflow${TENSORFLOW_SUFFIX}==${TENSORFLOW_VERSION}
+    python -m pip install --upgrade tensorflow${TENSORFLOW_SUFFIX}==${TENSORFLOW_VERSION}
 
 RUN mkdir /data && \
     chown steinbock:steinbock /data
@@ -65,7 +65,9 @@ RUN mkdir /opt/cellprofiler_plugins && \
 # steinbock
 
 COPY requirements.txt /app/steinbock/requirements.txt
-RUN python -m pip install --upgrade deepcell==0.11.0 && \
+COPY requirements-deepcell.txt /app/steinbock/requirements-deepcell.txt
+RUN python -m pip install --upgrade -r /app/steinbock/requirements-deepcell.txt && \
+    python -m pip install --upgrade --no-deps deepcell==0.11.0 && \
     python -m pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
