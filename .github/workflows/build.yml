@@ -1,67 +1,93 @@
 name: build
+
 on:
+  
   push:
     branches:
       - main
     tags:
       - "v*"
+  
   pull_request:
     branches:
       - main
+  
   workflow_dispatch:
+
 jobs:
+
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: docker-compose build steinbock
+
+      - name: Build container
+        run: docker-compose build steinbock
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
-      - run: docker-compose run pytest
+
+      - name: Run pytest
+        run: docker-compose run pytest
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
-      - uses: codecov/codecov-action@v2
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: tests/coverage.xml
+
   pypi:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
           python-version: 3.8
+
       - name: Build package
         run: |
           python -m pip install --upgrade pip
           python -m pip install build
           python -m build
-      - uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
   ghcr:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/metadata-action@v3
+
+      - name: Extract steinbock metadata
+        id: steinbock_meta
+        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+      
+      - name: Extract Docker metadata
+        uses: docker/metadata-action@v3
         id: docker_meta
         with:
           images: ghcr.io/${{ github.repository }}
@@ -69,10 +95,28 @@ jobs:
             type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
-      - name: Extract steinbock metadata
-        id: steinbock_meta
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
-      - uses: docker/build-push-action@v2
+
+      - name: Extract Docker metadata (GPU)
+        uses: docker/metadata-action@v3
+        id: docker_meta_gpu
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            suffix=-gpu,onlatest=true
+          tags: |
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish container
+        uses: docker/build-push-action@v2
         with:
           context: .
           push: true
@@ -80,3 +124,14 @@ jobs:
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+
+      - name: Build and publish container (GPU)
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          build-args: |
+            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
+            TENSORFLOW_SUFFIX=-gpu
+          tags: ${{ steps.docker_meta_gpu.outputs.tags }}
+          labels: ${{ steps.docker_meta_gpu.outputs.labels }}
