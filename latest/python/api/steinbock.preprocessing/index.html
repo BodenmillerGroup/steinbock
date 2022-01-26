@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1168,14 +1168,11 @@
     <span class="n">num_channels</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">ext_img_file</span> <span class="ow">in</span> <span class="n">ext_img_files</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ext_img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span>
-                <span class="n">ext_img_file</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">ext_img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">num_channels</span> <span class="o">=</span> <span class="n">ext_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">break</span>
+            <span class="n">ext_img</span> <span class="o">=</span> <span class="n">_read_external_image</span><span class="p">(</span><span class="n">ext_img_file</span><span class="p">)</span>
+            <span class="n">num_channels</span> <span class="o">=</span> <span class="n">ext_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">break</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span>
+            <span class="k">pass</span>  <span class="c1"># skipped intentionally</span>
     <span class="k">if</span> <span class="n">num_channels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;No valid images found&quot;</span><span class="p">)</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -1231,7 +1228,7 @@
 
 
 <h3 id="steinbock.preprocessing.external.try_preprocess_images_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_preprocess_images_from_disk</span><span class="p">(</span><span class="n">ext_img_files</span><span class="p">,</span> <span class="n">channel_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_preprocess_images_from_disk</span><span class="p">(</span><span class="n">ext_img_files</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1242,30 +1239,16 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/preprocessing/external.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_preprocess_images_from_disk</span><span class="p">(</span>
-    <span class="n">ext_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
-    <span class="n">channel_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ext_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">ext_img_file</span> <span class="ow">in</span> <span class="n">ext_img_files</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ext_img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span>
-                <span class="n">ext_img_file</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">ext_img</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Unsupported image data in file </span><span class="si">{</span><span class="n">ext_img_file</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">channel_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">channel_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ext_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Channel indices out of bounds for file &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ext_img_file</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">ext_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> channels&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">ext_img</span> <span class="o">=</span> <span class="n">ext_img</span><span class="p">[</span><span class="n">channel_indices</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="k">yield</span> <span class="n">ext_img_file</span><span class="p">,</span> <span class="n">ext_img</span>
-            <span class="k">del</span> <span class="n">ext_img</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">_read_external_image</span><span class="p">(</span><span class="n">ext_img_file</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading file </span><span class="si">{</span><span class="n">ext_img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file format: </span><span class="si">{</span><span class="n">ext_img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">ext_img_file</span><span class="p">,</span> <span class="n">img</span>
+        <span class="k">del</span> <span class="n">img</span>
 </code></pre></div>
         </details>
     </div>
@@ -1428,9 +1411,21 @@
         <span class="k">with</span> <span class="n">MCDFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">slide</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">slides</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">acquisition</span> <span class="ow">in</span> <span class="n">slide</span><span class="o">.</span><span class="n">acquisitions</span><span class="p">:</span>
-                    <span class="n">panel</span> <span class="o">=</span> <span class="n">_create_panel_from_acquisition</span><span class="p">(</span><span class="n">acquisition</span><span class="p">)</span>
+                    <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">acquisition</span><span class="o">.</span><span class="n">channel_names</span><span class="p">,</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+                            <span class="p">),</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">acquisition</span><span class="o">.</span><span class="n">channel_labels</span><span class="p">,</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+                            <span class="p">),</span>
+                        <span class="p">},</span>
+                    <span class="p">)</span>
                     <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">panels</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_clean_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -1461,9 +1456,19 @@
     <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">txt_file</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">TXTFile</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">panel</span> <span class="o">=</span> <span class="n">_create_panel_from_acquisition</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">()</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">channel_labels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">()</span>
+                    <span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
             <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
     <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">panels</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_clean_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -1795,10 +1800,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
     
   </body>

@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1543,7 +1543,7 @@ IntensityAggregation            (<span title="enum.Enum">Enum</span>)
 
 
 <h3 id="steinbock.measurement.intensities.try_measure_intensities_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_measure_intensities_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">,</span> <span class="n">channel_names</span><span class="p">,</span> <span class="n">intensity_aggregation</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_measure_intensities_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">,</span> <span class="n">channel_names</span><span class="p">,</span> <span class="n">intensity_aggregation</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1558,15 +1558,20 @@ IntensityAggregation            (<span title="enum.Enum">Enum</span>)
     <span class="n">mask_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">channel_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">intensity_aggregation</span><span class="p">:</span> <span class="n">IntensityAggregation</span><span class="p">,</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">img_file</span><span class="p">,</span> <span class="n">mask_file</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
             <span class="n">intensities</span> <span class="o">=</span> <span class="n">measure_intensites</span><span class="p">(</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span>
-                <span class="n">channel_names</span><span class="p">,</span>
-                <span class="n">intensity_aggregation</span><span class="p">,</span>
+                <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">channel_names</span><span class="p">,</span> <span class="n">intensity_aggregation</span>
             <span class="p">)</span>
+            <span class="k">del</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span>
             <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">intensities</span>
             <span class="k">del</span> <span class="n">intensities</span>
         <span class="k">except</span><span class="p">:</span>
@@ -1758,7 +1763,7 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
 
 
 <h3 id="steinbock.measurement.neighbors.try_measure_neighbors_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_measure_neighbors_from_disk</span><span class="p">(</span><span class="n">mask_files</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_measure_neighbors_from_disk</span><span class="p">(</span><span class="n">mask_files</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1774,17 +1779,18 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <span class="n">metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dmax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">kmax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">mask_file</span> <span class="ow">in</span> <span class="n">mask_files</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
             <span class="n">neighbors</span> <span class="o">=</span> <span class="n">measure_neighbors</span><span class="p">(</span>
-                <span class="n">mask</span><span class="p">,</span>
-                <span class="n">neighborhood_type</span><span class="p">,</span>
-                <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
-                <span class="n">dmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">,</span>
-                <span class="n">kmax</span><span class="o">=</span><span class="n">kmax</span><span class="p">,</span>
+                <span class="n">mask</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="n">kmax</span>
             <span class="p">)</span>
+            <span class="k">del</span> <span class="n">mask</span>
             <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">neighbors</span>
             <span class="k">del</span> <span class="n">neighbors</span>
         <span class="k">except</span><span class="p">:</span>
@@ -1877,7 +1883,7 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
 
 
 <h3 id="steinbock.measurement.regionprops.try_measure_regionprops_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_measure_regionprops_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">,</span> <span class="n">skimage_regionprops</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_measure_regionprops_from_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">,</span> <span class="n">skimage_regionprops</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1891,14 +1897,18 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <span class="n">img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">mask_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">skimage_regionprops</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">img_file</span><span class="p">,</span> <span class="n">mask_file</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">mask_files</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">regionprops</span> <span class="o">=</span> <span class="n">measure_regionprops</span><span class="p">(</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span>
-                <span class="n">skimage_regionprops</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+            <span class="n">regionprops</span> <span class="o">=</span> <span class="n">measure_regionprops</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">skimage_regionprops</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span>
             <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">regionprops</span>
             <span class="k">del</span> <span class="n">regionprops</span>
         <span class="k">except</span><span class="p">:</span>
@@ -1998,10 +2008,10 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
     
   </body>

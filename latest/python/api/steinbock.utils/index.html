@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1079,7 +1079,7 @@
 
 
 <h3 id="steinbock.utils.matching.try_match_masks_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_match_masks_from_disk</span><span class="p">(</span><span class="n">mask_files1</span><span class="p">,</span> <span class="n">mask_files2</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_match_masks_from_disk</span><span class="p">(</span><span class="n">mask_files1</span><span class="p">,</span> <span class="n">mask_files2</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1092,12 +1092,18 @@
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_match_masks_from_disk</span><span class="p">(</span>
     <span class="n">mask_files1</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">mask_files2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">mask_file1</span><span class="p">,</span> <span class="n">mask_file2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mask_files1</span><span class="p">,</span> <span class="n">mask_files2</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">match_masks</span><span class="p">(</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file1</span><span class="p">),</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file2</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">mask1</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file1</span><span class="p">)</span>
+                <span class="n">mask2</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask1</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file1</span><span class="p">)</span>
+                <span class="n">mask2</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_mask</span><span class="p">(</span><span class="n">mask_file2</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">match_masks</span><span class="p">(</span><span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span>
             <span class="k">yield</span> <span class="n">mask_file1</span><span class="p">,</span> <span class="n">mask_file2</span><span class="p">,</span> <span class="n">df</span>
             <span class="k">del</span> <span class="n">df</span>
         <span class="k">except</span><span class="p">:</span>
@@ -1151,7 +1157,7 @@
 
 
 <h3 id="steinbock.utils.mosaics.try_extract_tiles_from_disk_to_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_extract_tiles_from_disk_to_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">tile_dir</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_extract_tiles_from_disk_to_disk</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">tile_dir</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1165,51 +1171,34 @@
     <span class="n">img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">tile_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
     <span class="n">tile_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">for</span> <span class="n">img_file</span> <span class="ow">in</span> <span class="n">img_files</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                <span class="n">img_width</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">img_height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">img_width</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">img_height</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">img_width</span> <span class="o">%</span> <span class="n">tile_size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">img_height</span> <span class="o">%</span> <span class="n">tile_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">tile_size</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="ow">or</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span> <span class="n">tile_size</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">):</span>
                 <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Chosen tile size yields UNSTITCHABLE tiles of 1 pixel &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;width or height for image </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="k">for</span> <span class="n">tile_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img_width</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">tile_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img_height</span><span class="p">,</span> <span class="n">tile_size</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                        <span class="n">tile</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span>
-                            <span class="p">:,</span>
-                            <span class="p">:,</span>
-                            <span class="p">:,</span>
-                            <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
-                            <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
-                            <span class="p">:,</span>
-                        <span class="p">]</span>
-                        <span class="n">tile_width</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                        <span class="n">tile_height</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">tile</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span>
-                            <span class="o">...</span><span class="p">,</span>
-                            <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
-                            <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
-                        <span class="p">]</span>
-                        <span class="n">tile_width</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                        <span class="n">tile_height</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="k">while</span> <span class="n">tile</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
-                        <span class="n">tile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                    <span class="k">while</span> <span class="n">tile</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
-                        <span class="n">tile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tile_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">tile_size</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">tile_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">tile_size</span><span class="p">):</span>
+                    <span class="n">tile</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span>
+                        <span class="p">:,</span>
+                        <span class="n">tile_y</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_y</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
+                        <span class="n">tile_x</span> <span class="p">:</span> <span class="p">(</span><span class="n">tile_x</span> <span class="o">+</span> <span class="n">tile_size</span><span class="p">),</span>
+                    <span class="p">]</span>
                     <span class="n">tile_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tile_dir</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_tx</span><span class="si">{</span><span class="n">tile_x</span><span class="si">}</span><span class="s2">_ty</span><span class="si">{</span><span class="n">tile_y</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;_tw</span><span class="si">{</span><span class="n">tile_width</span><span class="si">}</span><span class="s2">_th</span><span class="si">{</span><span class="n">tile_height</span><span class="si">}</span><span class="s2">.tiff&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;_tw</span><span class="si">{</span><span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">_th</span><span class="si">{</span><span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">.tiff&quot;</span>
                     <span class="p">)</span>
-                    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">tile</span><span class="p">,</span> <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">tile_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="k">yield</span> <span class="n">tile_file</span><span class="p">,</span> <span class="n">tile</span>
                     <span class="k">del</span> <span class="n">tile</span>
             <span class="k">del</span> <span class="n">img</span>
@@ -1228,7 +1217,7 @@
 
 
 <h3 id="steinbock.utils.mosaics.try_stitch_tiles_from_disk_to_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_stitch_tiles_from_disk_to_disk</span><span class="p">(</span><span class="n">tile_files</span><span class="p">,</span> <span class="n">img_dir</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_stitch_tiles_from_disk_to_disk</span><span class="p">(</span><span class="n">tile_files</span><span class="p">,</span> <span class="n">img_dir</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1241,6 +1230,7 @@
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_stitch_tiles_from_disk_to_disk</span><span class="p">(</span>
     <span class="n">tile_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="n">img_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">mmap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="k">class</span> <span class="nc">TileInfo</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
         <span class="n">tile_file</span><span class="p">:</span> <span class="n">Path</span>
@@ -1272,41 +1262,32 @@
     <span class="k">for</span> <span class="n">img_file_stem</span><span class="p">,</span> <span class="n">tile_infos</span> <span class="ow">in</span> <span class="n">img_tile_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">img_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_dir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file_stem</span><span class="si">}</span><span class="s2">.tiff&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">tile</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">tile_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">img_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                <span class="n">img_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">)</span>
-                <span class="n">img_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">height</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">img_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">)</span>
-                <span class="n">img_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">height</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">)</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span>
-                <span class="n">img_file</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">img_shape</span><span class="p">),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">tile</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">imagej</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tile</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">tile_infos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">img_shape</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">tile</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">height</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">),</span>
+                <span class="nb">max</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">ti</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="n">tile_infos</span><span class="p">),</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">mmap_image</span><span class="p">(</span>
+                    <span class="n">img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r+&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">img_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tile</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">img_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tile</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tile_infos</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">tile</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">tile_info</span><span class="o">.</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                    <span class="n">img</span><span class="p">[</span>
-                        <span class="p">:,</span>
-                        <span class="p">:,</span>
-                        <span class="p">:,</span>
-                        <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
-                        <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
-                        <span class="p">:,</span>
-                    <span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">img</span><span class="p">[</span>
-                        <span class="p">:,</span>
-                        <span class="p">:,</span>
-                        <span class="p">:,</span>
-                        <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
-                        <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
-                    <span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
-                <span class="n">img</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                    <span class="n">tile</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span>
+                        <span class="n">tile_info</span><span class="o">.</span><span class="n">tile_file</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                <span class="n">img</span><span class="p">[</span>
+                    <span class="p">:,</span>
+                    <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                    <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="p">:</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+                <span class="k">if</span> <span class="n">mmap</span><span class="p">:</span>
+                    <span class="n">img</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mmap</span><span class="p">:</span>
+                <span class="n">io</span><span class="o">.</span><span class="n">write_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">img_file</span><span class="p">,</span> <span class="n">img</span>
             <span class="k">del</span> <span class="n">img</span>
         <span class="k">except</span><span class="p">:</span>
@@ -1406,10 +1387,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
     
   </body>

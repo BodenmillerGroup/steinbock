@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -862,6 +862,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#steinbock.io.mmap_image" class="md-nav__link">
+    mmap_image()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.mmap_mask" class="md-nav__link">
+    mmap_mask()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#steinbock.io.read_data" class="md-nav__link">
     read_data()
   </a>
@@ -1031,6 +1045,20 @@
         <li class="md-nav__item">
   <a href="#steinbock.io.list_neighbors_files" class="md-nav__link">
     list_neighbors_files()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.mmap_image" class="md-nav__link">
+    mmap_image()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.io.mmap_mask" class="md-nav__link">
+    mmap_mask()
   </a>
   
 </li>
@@ -1312,6 +1340,86 @@
 
 
 
+<h2 id="steinbock.io.mmap_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">mmap_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">mmap_image</span><span class="p">(</span>
+    <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;imagej&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;r+&quot;</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;imagej&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">img_exists</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">img_exists</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">img_dtype</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Data type of memory-mapped image file </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) is not </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">img_file</span><span class="p">,</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">img_dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">_fix_image_shape</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="steinbock.io.mmap_mask" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">mmap_mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">mmap_mask</span><span class="p">(</span>
+    <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;imagej&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;r+&quot;</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;imagej&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">mask_exists</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mask_exists</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">mask_dtype</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Data type of memory-mapped mask file </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">) is not </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">mask_file</span><span class="p">,</span>
+                <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">mask_dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">_fix_mask_shape</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="steinbock.io.read_data" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">read_data</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span></code>
 
@@ -1340,7 +1448,7 @@
 
 
 <h2 id="steinbock.io.read_image" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">use_imageio</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">read_image</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">native_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1352,44 +1460,10 @@
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_image</span><span class="p">(</span>
     <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
-    <span class="n">use_imageio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">use_imageio</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">volread</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span>
-        <span class="n">orig_img_shape</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">sqeeze</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unsupported shape </span><span class="si">{</span><span class="n">orig_img_shape</span><span class="si">}</span><span class="s2"> for image </span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-            <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-            <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported TZCYX shape </span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span><span class="p">,</span> <span class="n">size_s</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-            <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_s</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported TZCYXS shape </span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">img_file</span><span class="si">}</span><span class="s2">: unsupported number of dimensions (</span><span class="si">{</span><span class="n">img</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">)&quot;</span>
-            <span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">_fix_image_shape</span><span class="p">(</span><span class="n">img_file</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">native_dtype</span><span class="p">:</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">img_dtype</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">img</span>
@@ -1470,27 +1544,11 @@
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">read_mask</span><span class="p">(</span>
-    <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">native_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_c</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported TZCYX shape </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
-    <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="n">size_t</span><span class="p">,</span> <span class="n">size_z</span><span class="p">,</span> <span class="n">size_c</span><span class="p">,</span> <span class="n">size_y</span><span class="p">,</span> <span class="n">size_x</span><span class="p">,</span> <span class="n">size_s</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">if</span> <span class="n">size_t</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_z</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_c</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">size_s</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported TZCYXS shape </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_file</span><span class="si">}</span><span class="s2">: unsupported number of dimensions (</span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">_fix_mask_shape</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">native_dtype</span><span class="p">:</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mask</span>
@@ -1687,7 +1745,7 @@
 
 
 <h2 id="steinbock.io.write_mask" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_file</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_file</span><span class="p">,</span> <span class="n">ignore_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 </h2>
@@ -1697,8 +1755,13 @@
 
         <details class="quote">
           <summary>Source code in <code>steinbock/io.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write_mask</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mask_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">ignore_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_dtype</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">_to_dtype</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mask_dtype</span><span class="p">)</span>
     <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
         <span class="n">mask_file</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">mask</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
@@ -1838,10 +1901,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
     
   </body>
