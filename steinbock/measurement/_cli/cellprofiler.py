@@ -85,7 +85,7 @@ def prepare_cmd(
         )
         click.echo(cp_img_file)
         del img
-        mask = io.read_mask(mask_file)
+        mask = io.read_mask(mask_file, native_dtype=True)
         cp_mask_file = (
             Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
         )

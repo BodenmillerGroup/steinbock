@@ -178,17 +178,18 @@ def try_measure_neighbors_from_disk(
     metric: Optional[str] = None,
     dmax: Optional[float] = None,
     kmax: Optional[int] = None,
+    mmap: bool = False,
 ) -> Generator[Tuple[Path, pd.DataFrame], None, None]:
     for mask_file in mask_files:
         try:
-            mask = io.read_mask(mask_file)
+            if mmap:
+                mask = io.mmap_mask(mask_file)
+            else:
+                mask = io.read_mask(mask_file)
             neighbors = measure_neighbors(
-                mask,
-                neighborhood_type,
-                metric=metric,
-                dmax=dmax,
-                kmax=kmax,
+                mask, neighborhood_type, metric=metric, dmax=dmax, kmax=kmax
             )
+            del mask
             yield Path(mask_file), neighbors
             del neighbors
         except:

@@ -1,5 +1,7 @@
 import click
+import numpy as np
 import pandas as pd
+import sys
 
 from pathlib import Path
 
@@ -61,6 +63,13 @@ def panel_cmd(ext_img_dir, panel_file):
     help="Path to the steinbock panel file",
 )
 @click.option(
+    "--mmap/--no-mmap",
+    "mmap",
+    default=False,
+    show_default=True,
+    help="Use memory mapping for writing images",
+)
+@click.option(
     "--imgout",
     "img_dir",
     type=click.Path(file_okay=False),
@@ -76,7 +85,7 @@ def panel_cmd(ext_img_dir, panel_file):
     show_default=True,
     help="Path to the image information output file",
 )
-def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
+def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     channel_indices = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
@@ -85,21 +94,48 @@ def images_cmd(ext_img_dir, panel_file, img_dir, image_info_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     image_info_data = []
     Path(img_dir).mkdir(exist_ok=True)
-    for ext_img_file, ext_img in external.try_preprocess_images_from_disk(
-        ext_img_files, channel_indices=channel_indices
+    for ext_img_file, img in external.try_preprocess_images_from_disk(
+        ext_img_files
     ):
+        # filter channels here rather than in try_preprocess_images_from_disk,
+        # to avoid advanced indexing creating a copy of img (relevant for mmap)
+        if channel_indices is not None:
+            if max(channel_indices) > img.shape[0]:
+                click.echo(
+                    f"WARNING: Channel indices out of bounds for file "
+                    f"{ext_img_file} with {img.shape[0]} channels",
+                    file=sys.stderr,
+                )
+                continue
+            cur_channel_indices = channel_indices
+        else:
+            cur_channel_indices = list(range(img.shape[0]))
         img_file = io._as_path_with_suffix(
             Path(img_dir) / Path(ext_img_file).name, ".tiff"
         )
-        io.write_image(ext_img)
+        out_shape = list(img.shape)
+        out_shape[0] = len(cur_channel_indices)
+        out_shape = tuple(out_shape)
+        if mmap:
+            out = io.mmap_image(
+                img_file, mode="r+", shape=out_shape, dtype=img.dtype
+            )
+        else:
+            out = np.empty(out_shape, dtype=img.dtype)
+        for i, channel_index in enumerate(cur_channel_indices):
+            out[i, :, :] = img[channel_index, :, :]
+            if mmap:
+                out.flush()
+        if not mmap:
+            io.write_image(out, img_file)
         image_info_row = {
             "image": img_file.name,
-            "width_px": ext_img.shape[2],
-            "height_px": ext_img.shape[1],
-            "num_channels": ext_img.shape[0],
+            "width_px": img.shape[2],
+            "height_px": img.shape[1],
+            "num_channels": img.shape[0],
         }
         image_info_data.append(image_info_row)
         click.echo(img_file)
-        del ext_img
+        del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)

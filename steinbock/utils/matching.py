@@ -33,12 +33,18 @@ def match_masks(mask1: np.ndarray, mask2: np.ndarray) -> pd.DataFrame:
 def try_match_masks_from_disk(
     mask_files1: Sequence[Union[str, PathLike]],
     mask_files2: Sequence[Union[str, PathLike]],
+    mmap: bool = False,
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for mask_file1, mask_file2 in zip(mask_files1, mask_files2):
         try:
-            df = match_masks(
-                io.read_mask(mask_file1), io.read_mask(mask_file2)
-            )
+            if mmap:
+                mask1 = io.mmap_mask(mask_file1)
+                mask2 = io.mmap_mask(mask_file2)
+            else:
+                mask1 = io.read_mask(mask_file1)
+                mask2 = io.read_mask(mask_file2)
+            df = match_masks(mask1, mask2)
+            del mask1, mask2
             yield mask_file1, mask_file2, df
             del df
         except:

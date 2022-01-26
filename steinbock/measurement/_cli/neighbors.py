@@ -51,6 +51,13 @@ _neighborhood_types = {
     help="Maximum number of neighbors per object",
 )
 @click.option(
+    "--mmap/--no-mmap",
+    "mmap",
+    default=False,
+    show_default=True,
+    help="Use memory mapping for reading images/masks",
+)
+@click.option(
     "-o",
     "neighbors_dir",
     type=click.Path(file_okay=False),
@@ -59,7 +66,7 @@ _neighborhood_types = {
     help="Path to the object neighbors output directory",
 )
 def neighbors_cmd(
-    mask_dir, neighborhood_type_name, metric, dmax, kmax, neighbors_dir
+    mask_dir, neighborhood_type_name, metric, dmax, kmax, mmap, neighbors_dir
 ):
     mask_files = io.list_mask_files(mask_dir)
     Path(neighbors_dir).mkdir(exist_ok=True)
@@ -69,6 +76,7 @@ def neighbors_cmd(
         metric=metric,
         dmax=dmax,
         kmax=kmax,
+        mmap=mmap,
     ):
         neighbors_file = io._as_path_with_suffix(
             Path(neighbors_dir) / Path(mask_file).name, ".csv"

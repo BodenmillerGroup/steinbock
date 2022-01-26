@@ -35,14 +35,18 @@ def try_measure_regionprops_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     mask_files: Sequence[Union[str, PathLike]],
     skimage_regionprops: Sequence[str],
+    mmap: bool = False,
 ) -> Generator[Tuple[Path, Path, pd.DataFrame], None, None]:
     for img_file, mask_file in zip(img_files, mask_files):
         try:
-            regionprops = measure_regionprops(
-                io.read_image(img_file),
-                io.read_mask(mask_file),
-                skimage_regionprops,
-            )
+            if mmap:
+                img = io.mmap_image(img_file)
+                mask = io.mmap_mask(mask_file)
+            else:
+                img = io.read_image(img_file)
+                mask = io.read_mask(mask_file)
+            regionprops = measure_regionprops(img, mask, skimage_regionprops)
+            del img, mask
             yield Path(img_file), Path(mask_file), regionprops
             del regionprops
         except:
