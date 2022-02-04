@@ -51,7 +51,7 @@ services:
   pytest:
     image: ghcr.io/bodenmillergroup/steinbock:latest
     volumes:
-      - ./tests:/app/steinbock/tests
+      - .:/app/steinbock
     entrypoint: /bin/bash
     command: ['-c', 'python -m pip install -r requirements_test.txt && python -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     working_dir: /app/steinbock
@@ -59,7 +59,7 @@ services:
   pytest-gpu:
     image: ghcr.io/bodenmillergroup/steinbock-gpu:latest
     volumes:
-      - ./tests:/app/steinbock/tests
+      - .:/app/steinbock
     entrypoint: /bin/bash
     command: ['-c', 'python -m pip install -r requirements_test.txt && python -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     working_dir: /app/steinbock
@@ -67,7 +67,7 @@ services:
   pytest-debug:
     image: ghcr.io/bodenmillergroup/steinbock:latest
     volumes:
-      - ./tests:/app/steinbock/tests
+      - .:/app/steinbock
     entrypoint: /bin/bash
     command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r requirements_test.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     ports:
@@ -77,7 +77,7 @@ services:
   pytest-debug-gpu:
     image: ghcr.io/bodenmillergroup/steinbock-gpu:latest
     volumes:
-      - ./tests:/app/steinbock/tests
+      - .:/app/steinbock
     entrypoint: /bin/bash
     command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r requirements_test.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     ports:
