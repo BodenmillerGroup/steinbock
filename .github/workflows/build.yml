@@ -41,7 +41,7 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: tests/coverage.xml
+          files: coverage.xml
 
   pypi:
     needs: test

@@ -2,11 +2,8 @@ import click
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.measurement.intensities import (
-    IntensityAggregation,
-    try_measure_intensities_from_disk,
-)
+from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
+from ... import io
 
 
 _intensity_aggregations = {
@@ -48,9 +45,7 @@ _intensity_aggregations = {
 @click.option(
     "--aggr",
     "intensity_aggregation_name",
-    type=click.Choice(
-        list(_intensity_aggregations.keys()), case_sensitive=True
-    ),
+    type=click.Choice(list(_intensity_aggregations.keys()), case_sensitive=True),
     default="mean",
     show_default=True,
     help="Function for aggregating cell pixels",

@@ -2,11 +2,8 @@ import click
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.measurement.neighbors import (
-    NeighborhoodType,
-    try_measure_neighbors_from_disk,
-)
+from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
+from ... import io
 
 _neighborhood_types = {
     "centroids": NeighborhoodType.CENTROID_DISTANCE,

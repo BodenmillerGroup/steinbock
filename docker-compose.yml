@@ -53,7 +53,7 @@ services:
     volumes:
       - ./tests:/app/steinbock/tests
     entrypoint: /bin/bash
-    command: ['-c', 'python -m pip install -r tests/requirements.txt && python -m pytest tests']
+    command: ['-c', 'python -m pip install -r requirements_test.txt && python -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     working_dir: /app/steinbock
     user: root
   pytest-gpu:
@@ -61,7 +61,7 @@ services:
     volumes:
       - ./tests:/app/steinbock/tests
     entrypoint: /bin/bash
-    command: ['-c', 'python -m pip install -r tests/requirements.txt && python -m pytest tests']
+    command: ['-c', 'python -m pip install -r requirements_test.txt && python -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     working_dir: /app/steinbock
     user: root
   pytest-debug:
@@ -69,7 +69,7 @@ services:
     volumes:
       - ./tests:/app/steinbock/tests
     entrypoint: /bin/bash
-    command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r tests/requirements.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests']
+    command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r requirements_test.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     ports:
       - '5678:5678'
     working_dir: /app/steinbock
@@ -79,7 +79,7 @@ services:
     volumes:
       - ./tests:/app/steinbock/tests
     entrypoint: /bin/bash
-    command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r tests/requirements.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests']
+    command: ['-c', 'python -m pip install debugpy -t /tmp && python -m pip install -r requirements_test.txt && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m pytest tests --cov=steinbock --cov-report xml:coverage.xml']
     ports:
       - '5678:5678'
     working_dir: /app/steinbock

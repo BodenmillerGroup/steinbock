@@ -21,9 +21,7 @@ class TestDataExport:
         for img_file_name, data_files, df in gen:
             pass  # TODO
 
-    def test_try_convert_to_anndata_from_disk(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_try_convert_to_anndata_from_disk(self, imc_test_data_steinbock_path: Path):
         intensities_files = io.list_data_files(
             imc_test_data_steinbock_path / "intensities"
         )
@@ -43,7 +41,7 @@ class TestDataExport:
         for (
             img_file_name,
             intensities_file,
-            (regionprops_file, ),
+            (regionprops_file,),
             neighbors_file,
             adata,
         ) in gen:

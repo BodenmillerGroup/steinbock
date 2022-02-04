@@ -6,7 +6,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)

@@ -2,17 +2,13 @@ import click
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.utils import matching
+from ... import io
+from .. import matching
 
 
 @click.command(name="match", help="Match mask objects")
-@click.argument(
-    "masks1", nargs=1, type=click.Path(exists=True, file_okay=False)
-)
-@click.argument(
-    "masks2", nargs=1, type=click.Path(exists=True, file_okay=False)
-)
+@click.argument("masks1", nargs=1, type=click.Path(exists=True, file_okay=False))
+@click.argument("masks2", nargs=1, type=click.Path(exists=True, file_okay=False))
 @click.option(
     "--mmap/--no-mmap",
     "mmap",
@@ -38,9 +34,7 @@ def match_cmd(masks1, masks2, mmap, csv_dir):
     for mask_file1, mask_file2, df in matching.try_match_masks_from_disk(
         mask_files1, mask_files2, mmap=mmap
     ):
-        csv_file = io._as_path_with_suffix(
-            Path(csv_dir) / mask_file1.name, ".csv"
-        )
+        csv_file = io._as_path_with_suffix(Path(csv_dir) / mask_file1.name, ".csv")
         df.columns = [Path(masks1).name, Path(masks2).name]
         df.to_csv(csv_file, index=False)
         click.echo(csv_file)

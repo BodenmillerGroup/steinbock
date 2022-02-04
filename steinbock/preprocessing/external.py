@@ -7,7 +7,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, List, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 _logger = logging.getLogger(__name__)
 
@@ -27,9 +27,7 @@ def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
     if ext_img.ndim == 2:
         ext_img = ext_img[np.newaxis, :, :]
     elif ext_img.ndim != 3:
-        raise ValueError(
-            f"Unsupported shape {orig_img_shape} for image {ext_img_file}"
-        )
+        raise ValueError(f"Unsupported shape {orig_img_shape} for image {ext_img_file}")
     return ext_img
 
 

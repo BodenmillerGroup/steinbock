@@ -9,9 +9,9 @@ from tempfile import TemporaryDirectory
 from typing import List, Union
 from zipfile import ZipFile
 
-from steinbock import io
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.preprocessing import imc
+from .. import imc
+from ... import io
+from ..._cli.utils import OrderedClickGroup
 
 
 imc_cli_available = imc.imc_available
@@ -26,9 +26,7 @@ def imc_cmd_group():
     pass
 
 
-@imc_cmd_group.command(
-    name="panel", help="Create a panel from IMC panel/image data"
-)
+@imc_cmd_group.command(name="panel", help="Create a panel from IMC panel/image data")
 @click.option(
     "--imcpanel",
     "imc_panel_file",
@@ -121,9 +119,7 @@ def panel_cmd(
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt_files(txt_files)
     if panel is None:
-        click.echo(
-            "ERROR: No panel/.mcd/.txt file found", file=sys.stderr
-        )
+        click.echo("ERROR: No panel/.mcd/.txt file found", file=sys.stderr)
         return
     io.write_panel(panel, panel_file)
     click.echo(panel_file)
@@ -185,9 +181,7 @@ def panel_cmd(
     show_default=True,
     help="Path to the image information output file",
 )
-def images_cmd(
-    mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file
-):
+def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file):
     channel_names = None
     if Path(panel_file).exists():
         panel = io.read_panel(panel_file)
@@ -243,18 +237,10 @@ def images_cmd(
                     {
                         "acquisition_id": acquisition.id,
                         "acquisition_description": acquisition.description,
-                        "acquisition_start_x_um": (
-                            acquisition.roi_points_um[0][0]
-                        ),
-                        "acquisition_start_y_um": (
-                            acquisition.roi_points_um[0][1]
-                        ),
-                        "acquisition_end_x_um": (
-                            acquisition.roi_points_um[2][0]
-                        ),
-                        "acquisition_end_y_um": (
-                            acquisition.roi_points_um[2][1]
-                        ),
+                        "acquisition_start_x_um": (acquisition.roi_points_um[0][0]),
+                        "acquisition_start_y_um": (acquisition.roi_points_um[0][1]),
+                        "acquisition_end_x_um": (acquisition.roi_points_um[2][0]),
+                        "acquisition_end_y_um": (acquisition.roi_points_um[2][1]),
                         "acquisition_width_um": acquisition.width_um,
                         "acquisition_height_um": acquisition.height_um,
                     }
@@ -275,9 +261,7 @@ def _extract_zips(
         with ZipFile(zip_file_path) as zip_file:
             zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
             for zip_info in zip_infos:
-                if not zip_info.is_dir() and zip_info.filename.endswith(
-                    suffix
-                ):
+                if not zip_info.is_dir() and zip_info.filename.endswith(suffix):
                     extracted_file = zip_file.extract(zip_info, path=dest)
                     extracted_files.append(Path(extracted_file))
     return extracted_files

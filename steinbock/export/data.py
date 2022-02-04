@@ -8,7 +8,7 @@ from pathlib import Path
 from scipy.sparse import csr_matrix
 from typing import Generator, Optional, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)
@@ -33,8 +33,7 @@ def try_convert_to_dataframe_from_disk(
             del df
         except:
             _logger.exception(
-                f"Error creating DataFrame for image {img_file_name}; "
-                "skipping image"
+                f"Error creating DataFrame for image {img_file_name}; " "skipping image"
             )
 
 
@@ -44,9 +43,7 @@ def try_convert_to_anndata_from_disk(
     neighbors_files: Optional[Sequence[Union[str, PathLike]]] = None,
     # panel: Optional[pd.DataFrame] = None,
     # image_info: Optional[pd.DataFrame] = None,
-) -> Generator[
-    Tuple[str, Path, Tuple[Path, ...], Optional[Path], AnnData], None, None
-]:
+) -> Generator[Tuple[str, Path, Tuple[Path, ...], Optional[Path], AnnData], None, None]:
     # if panel is not None:
     #     panel = panel.set_index("name", drop=False, verify_integrity=True)
     # if image_info is not None:

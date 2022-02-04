@@ -18,7 +18,7 @@ from typing import (
     Union,
 )
 
-from steinbock import io
+from .. import io
 
 if TYPE_CHECKING:
     from tensorflow.keras.models import Model

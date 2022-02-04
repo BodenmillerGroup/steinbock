@@ -6,8 +6,8 @@ from pathlib import Path
 from skimage import measure
 from typing import List, Sequence, Union
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.utils import mosaics
+from .. import mosaics
+from ..._cli.utils import OrderedClickGroup
 
 
 def _collect_tiff_files(
@@ -22,9 +22,7 @@ def _collect_tiff_files(
     return img_files
 
 
-@click.group(
-    name="mosaics", cls=OrderedClickGroup, help="Mosaic tiling/stitching"
-)
+@click.group(name="mosaics", cls=OrderedClickGroup, help="Mosaic tiling/stitching")
 def mosaics_cmd_group():
     pass
 

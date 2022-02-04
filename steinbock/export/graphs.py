@@ -7,7 +7,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)
@@ -27,9 +27,7 @@ def convert_to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
     if len(data_list) > 0:
         merged_data = data_list[0]
         for data in data_list[1:]:
-            merged_data = pd.merge(
-                merged_data, data, left_index=True, right_index=True
-            )
+            merged_data = pd.merge(merged_data, data, left_index=True, right_index=True)
         node_attributes = {
             int(object_id): object_data.to_dict()
             for object_id, object_data in merged_data.iterrows()

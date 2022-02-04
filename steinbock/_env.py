@@ -30,9 +30,7 @@ def check_x11(func):
     @wraps(func)
     def check_x11_wrapper(*args, **kwargs):
         if "DISPLAY" not in os.environ:
-            click.echo(
-                "WARNING: X11 required; did you set $DISPLAY?", file=sys.stderr
-            )
+            click.echo("WARNING: X11 required; did you set $DISPLAY?", file=sys.stderr)
         x11_path = Path("/tmp/.X11-unix")
         if not x11_path.exists():
             click.echo(

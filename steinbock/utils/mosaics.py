@@ -6,7 +6,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Generator, NamedTuple, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)
@@ -24,10 +24,7 @@ def try_extract_tiles_from_disk_to_disk(
                 img = io.mmap_image(img_file)
             else:
                 img = io.read_image(img_file, native_dtype=True)
-            if (
-                img.shape[-1] % tile_size == 1
-                or img.shape[-2] % tile_size == 1
-            ):
+            if img.shape[-1] % tile_size == 1 or img.shape[-2] % tile_size == 1:
                 _logger.warning(
                     "Chosen tile size yields UNSTITCHABLE tiles of 1 pixel "
                     f"width or height for image {img_file}"
@@ -100,9 +97,7 @@ def try_stitch_tiles_from_disk_to_disk(
                 img = np.zeros(img_shape, dtype=tile.dtype)
             for i, tile_info in enumerate(tile_infos):
                 if i > 0:
-                    tile = io.read_image(
-                        tile_info.tile_file, native_dtype=True
-                    )
+                    tile = io.read_image(tile_info.tile_file, native_dtype=True)
                 img[
                     :,
                     tile_info.y : tile_info.y + tile_info.height,

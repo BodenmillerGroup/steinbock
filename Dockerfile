@@ -1,4 +1,4 @@
-ARG TENSORFLOW_VERSION=2.5.1
+ARG TENSORFLOW_VERSION=2.5.3
 ARG TENSORFLOW_SUFFIX=
 
 FROM tensorflow/tensorflow:${TENSORFLOW_VERSION}${TENSORFLOW_SUFFIX}
@@ -65,9 +65,9 @@ RUN mkdir /opt/cellprofiler_plugins && \
 # steinbock
 
 COPY requirements.txt /app/steinbock/requirements.txt
-COPY requirements-deepcell.txt /app/steinbock/requirements-deepcell.txt
-RUN python -m pip install --upgrade -r /app/steinbock/requirements-deepcell.txt && \
-    python -m pip install --upgrade --no-deps deepcell==0.11.0 && \
+COPY requirements_deepcell${TENSORFLOW_SUFFIX}.txt /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt
+RUN python -m pip install --upgrade -r /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt && \
+    python -m pip install --no-deps deepcell==0.11.0 && \
     python -m pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
@@ -77,7 +77,7 @@ RUN mkdir -p /opt/keras/models && \
 
 COPY conftest.py MANIFEST.in pyproject.toml setup.cfg setup.py /app/steinbock/
 COPY steinbock /app/steinbock/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install --upgrade -e "/app/steinbock[all]"
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install -e "/app/steinbock[all]"
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh

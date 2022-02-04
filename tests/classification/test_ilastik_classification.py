@@ -11,9 +11,7 @@ ilastik_binary = "/opt/ilastik/run_ilastik.sh"
 
 
 class TestIlastikClassification:
-    def test_list_ilastik_image_files(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_list_ilastik_image_files(self, imc_test_data_steinbock_path: Path):
         ilastik.list_ilastik_image_files(
             imc_test_data_steinbock_path / "ilastik_img"
         )  # TODO
@@ -25,9 +23,7 @@ class TestIlastikClassification:
 
     def test_read_ilastik_image(self, imc_test_data_steinbock_path: Path):
         ilastik.read_ilastik_image(
-            imc_test_data_steinbock_path
-            / "ilastik_img"
-            / "20210305_NE_mockData1_1.h5"
+            imc_test_data_steinbock_path / "ilastik_img" / "20210305_NE_mockData1_1.h5"
         )  # TODO
 
     def test_read_ilastik_crop(self, imc_test_data_steinbock_path: Path):
@@ -48,9 +44,7 @@ class TestIlastikClassification:
             ],
             dtype=io.img_dtype,
         )
-        ilastik.write_ilastik_image(
-            ilastik_img, tmp_path / "ilastik_img.h5"
-        )  # TODO
+        ilastik.write_ilastik_image(ilastik_img, tmp_path / "ilastik_img.h5")  # TODO
 
     def test_write_ilastik_crop(self, tmp_path: Path):
         ilastik_crop = np.array(
@@ -63,9 +57,7 @@ class TestIlastikClassification:
             ],
             dtype=io.img_dtype,
         )
-        ilastik.write_ilastik_crop(
-            ilastik_crop, tmp_path / "ilastik_crop.h5"
-        )  # TODO
+        ilastik.write_ilastik_crop(ilastik_crop, tmp_path / "ilastik_crop.h5")  # TODO
 
     def test_create_ilastik_image(self):
         img = np.array(
@@ -146,9 +138,7 @@ class TestIlastikClassification:
             imc_test_data_steinbock_path / "ilastik_img"
         )
         rng = np.random.default_rng(seed=123)
-        gen = ilastik.try_create_ilastik_crops_from_disk(
-            ilastik_img_files, 50, rng
-        )
+        gen = ilastik.try_create_ilastik_crops_from_disk(ilastik_img_files, 50, rng)
         for ilastik_img_file, x, y, ilastik_crop in gen:
             pass  # TODO
 
@@ -159,9 +149,7 @@ class TestIlastikClassification:
             imc_test_data_steinbock_path / "ilastik_crops",
             tmp_path / "ilastik_crops",
         )
-        ilastik_crop_files = ilastik.list_ilastik_crop_files(
-            tmp_path / "ilastik_crops"
-        )
+        ilastik_crop_files = ilastik.list_ilastik_crop_files(tmp_path / "ilastik_crops")
         ilastik.create_and_save_ilastik_project(
             ilastik_crop_files, tmp_path / "pixel_classifier.ilp"
         )  # TODO
@@ -177,9 +165,7 @@ class TestIlastikClassification:
             imc_test_data_steinbock_path / "ilastik_img",
             tmp_path / "ilastik_img",
         )
-        ilastik_img_files = ilastik.list_ilastik_image_files(
-            tmp_path / "ilastik_img"
-        )
+        ilastik_img_files = ilastik.list_ilastik_image_files(tmp_path / "ilastik_img")
         ilastik.run_pixel_classification(
             ilastik_binary,
             imc_test_data_steinbock_path / "pixel_classifier.ilp",
@@ -187,12 +173,8 @@ class TestIlastikClassification:
             tmp_path / "ilastik_probabilities",
         )  # TODO
 
-    def test_try_fix_ilastik_crops_from_disk(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_try_fix_ilastik_crops_from_disk(self, imc_test_data_steinbock_path: Path):
         pass  # TODO
 
-    def test_fix_ilastik_project_file_inplace(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_fix_ilastik_project_file_inplace(self, imc_test_data_steinbock_path: Path):
         pass  # TODO

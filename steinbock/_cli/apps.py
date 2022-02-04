@@ -3,13 +3,11 @@ import sys
 
 from pathlib import Path
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import check_x11, run_captured, use_ilastik_env
+from .utils import OrderedClickGroup
+from .._env import check_x11, run_captured, use_ilastik_env
 
 
-@click.group(
-    name="apps", cls=OrderedClickGroup, help="Third-party applications"
-)
+@click.group(name="apps", cls=OrderedClickGroup, help="Third-party applications")
 def apps_cmd_group():
     pass
 
@@ -61,9 +59,7 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
 )
 @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @check_x11
-def cellprofiler_cmd(
-    cellprofiler_binary, cellprofiler_plugin_dir, cellprofiler_args
-):
+def cellprofiler_cmd(cellprofiler_binary, cellprofiler_plugin_dir, cellprofiler_args):
     args = [cellprofiler_binary] + list(cellprofiler_args)
     if Path(cellprofiler_plugin_dir).exists():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")

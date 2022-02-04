@@ -7,7 +7,7 @@ from pathlib import Path
 from skimage.measure import regionprops_table
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)

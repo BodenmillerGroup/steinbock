@@ -5,9 +5,9 @@ import tifffile
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.measurement import cellprofiler
+from .. import cellprofiler
+from ... import io
+from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(
@@ -86,9 +86,7 @@ def prepare_cmd(
         click.echo(cp_img_file)
         del img
         mask = io.read_mask(mask_file, native_dtype=True)
-        cp_mask_file = (
-            Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
-        )
+        cp_mask_file = Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
         tifffile.imwrite(
             cp_mask_file,
             data=io._to_dtype(mask, np.uint16)[

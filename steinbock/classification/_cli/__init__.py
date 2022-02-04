@@ -1,7 +1,7 @@
 import click
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.classification._cli.ilastik import ilastik_cmd_group
+from .ilastik import ilastik_cmd_group
+from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(

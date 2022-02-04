@@ -1,10 +1,10 @@
 import click
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.measurement._cli.cellprofiler import cellprofiler_cmd_group
-from steinbock.measurement._cli.intensities import intensities_cmd
-from steinbock.measurement._cli.neighbors import neighbors_cmd
-from steinbock.measurement._cli.regionprops import regionprops_cmd
+from .cellprofiler import cellprofiler_cmd_group
+from .intensities import intensities_cmd
+from .neighbors import neighbors_cmd
+from .regionprops import regionprops_cmd
+from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(

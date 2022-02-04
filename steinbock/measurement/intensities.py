@@ -9,7 +9,7 @@ from pathlib import Path
 from scipy.ndimage import measurements
 from typing import Generator, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)
@@ -35,9 +35,7 @@ def measure_intensites(
 ) -> pd.DataFrame:
     object_ids = np.unique(mask[mask != 0])
     data = {
-        channel_name: intensity_aggregation.value(
-            img[i], labels=mask, index=object_ids
-        )
+        channel_name: intensity_aggregation.value(img[i], labels=mask, index=object_ids)
         for i, channel_name in enumerate(channel_names)
     }
     return pd.DataFrame(

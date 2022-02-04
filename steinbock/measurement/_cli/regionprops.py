@@ -2,8 +2,8 @@ import click
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
+from ..regionprops import try_measure_regionprops_from_disk
+from ... import io
 
 
 @click.command(name="regionprops", help="Measure object region properties")
@@ -39,9 +39,7 @@ from steinbock.measurement.regionprops import try_measure_regionprops_from_disk
     show_default=True,
     help="Path to the object region properties output directory",
 )
-def regionprops_cmd(
-    img_dir, mask_dir, mmap, skimage_regionprops, regionprops_dir
-):
+def regionprops_cmd(img_dir, mask_dir, mmap, skimage_regionprops, regionprops_dir):
     img_files = io.list_image_files(img_dir)
     mask_files = io.list_mask_files(mask_dir, base_files=img_files)
     Path(regionprops_dir).mkdir(exist_ok=True)

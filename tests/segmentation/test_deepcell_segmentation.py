@@ -10,15 +10,11 @@ from steinbock.segmentation.deepcell import Application
 keras_models_dir = "/opt/keras/models"
 
 
-@pytest.mark.skipif(
-    not deepcell.deepcell_available, reason="DeepCell is not available"
-)
+@pytest.mark.skipif(not deepcell.deepcell_available, reason="DeepCell is not available")
 class TestDeepcellSegmentation:
     @pytest.mark.skip(reason="Test would take too long")
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
-    def test_try_segment_objects_mesmer(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_try_segment_objects_mesmer(self, imc_test_data_steinbock_path: Path):
         from tensorflow.keras.models import load_model
 
         img_files = io.list_image_files(imc_test_data_steinbock_path / "img")

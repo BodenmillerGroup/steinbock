@@ -3,8 +3,8 @@ import networkx as nx
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.export import graphs
+from .. import graphs
+from ... import io
 
 
 @click.command(name="graphs", help="Export neighbors as spatial object graphs")
@@ -50,9 +50,7 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
         neighbors_file,
         data_files,
         graph,
-    ) in graphs.try_convert_to_networkx_from_disk(
-        neighbors_files, *data_file_lists
-    ):
+    ) in graphs.try_convert_to_networkx_from_disk(neighbors_files, *data_file_lists):
         graph_file = Path(graph_dir) / neighbors_file.name
         if graph_format == "graphml":
             graph_file = io._as_path_with_suffix(graph_file, ".graphml")

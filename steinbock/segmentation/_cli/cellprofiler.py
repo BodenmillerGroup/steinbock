@@ -3,8 +3,8 @@ import sys
 
 from pathlib import Path
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.segmentation import cellprofiler
+from .. import cellprofiler
+from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(
@@ -28,9 +28,7 @@ def cellprofiler_cmd_group():
     help="Path to the CellProfiler segmentation pipeline output file",
 )
 def prepare_cmd(segmentation_pipeline_file):
-    cellprofiler.create_and_save_segmentation_pipeline(
-        segmentation_pipeline_file
-    )
+    cellprofiler.create_and_save_segmentation_pipeline(segmentation_pipeline_file)
     click.echo(segmentation_pipeline_file)
 
 

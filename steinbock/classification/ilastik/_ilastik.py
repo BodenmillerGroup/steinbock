@@ -23,8 +23,8 @@ from typing import (
 )
 from uuid import uuid1
 
-from steinbock import io
-from steinbock._env import run_captured
+from ... import io
+from ..._env import run_captured
 
 
 class _VigraAxisInfo(IntEnum):
@@ -42,9 +42,7 @@ _logger = logging.getLogger(__name__)
 _img_dataset_path = "img"
 _crop_dataset_path = "crop"
 _dataset_display_mode = "grayscale"
-_project_file_template = (
-    Path(__file__).parent / "data" / "pixel_classifier.ilp"
-)
+_project_file_template = Path(__file__).parent / "data" / "pixel_classifier.ilp"
 _dataset_axistags = json.dumps(
     {
         "axes": [
@@ -57,15 +55,11 @@ _dataset_axistags = json.dumps(
 _h5py_libver = "earliest"
 
 
-def list_ilastik_image_files(
-    ilastik_img_dir: Union[str, PathLike]
-) -> List[Path]:
+def list_ilastik_image_files(ilastik_img_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(ilastik_img_dir).rglob("*.h5"))
 
 
-def list_ilastik_crop_files(
-    ilastik_crop_dir: Union[str, PathLike]
-) -> List[Path]:
+def list_ilastik_crop_files(ilastik_crop_dir: Union[str, PathLike]) -> List[Path]:
     return sorted(Path(ilastik_crop_dir).rglob("*.h5"))
 
 
@@ -85,9 +79,7 @@ def write_ilastik_image(
     ilastik_img = io._to_dtype(ilastik_img, io.img_dtype)
     with h5py.File(ilastik_img_file, mode="w", libver=_h5py_libver) as f:
         dataset = _create_or_replace_dataset(f, _img_dataset_path, ilastik_img)
-        dataset.attrs["display_mode"] = _str_encode(
-            _dataset_display_mode, ascii=True
-        )
+        dataset.attrs["display_mode"] = _str_encode(_dataset_display_mode, ascii=True)
         dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
 
@@ -97,12 +89,8 @@ def write_ilastik_crop(
 ) -> None:
     ilastik_crop = io._to_dtype(ilastik_crop, io.img_dtype)
     with h5py.File(ilastik_crop_file, mode="w", libver=_h5py_libver) as f:
-        dataset = _create_or_replace_dataset(
-            f, _crop_dataset_path, ilastik_crop
-        )
-        dataset.attrs["display_mode"] = _str_encode(
-            _dataset_display_mode, ascii=True
-        )
+        dataset = _create_or_replace_dataset(f, _crop_dataset_path, ilastik_crop)
+        dataset.attrs["display_mode"] = _str_encode(_dataset_display_mode, ascii=True)
         dataset.attrs["axistags"] = _str_encode(_dataset_axistags, ascii=True)
         dataset.attrs["steinbock"] = True
 
@@ -175,9 +163,7 @@ def try_create_ilastik_images_from_disk(
             yield Path(img_file), ilastik_img
             del ilastik_img
         except:
-            _logger.exception(
-                f"Error creating Ilastik image from file {img_file}"
-            )
+            _logger.exception(f"Error creating Ilastik image from file {img_file}")
 
 
 def create_ilastik_crop(
@@ -186,14 +172,10 @@ def create_ilastik_crop(
     if all(shape >= ilastik_crop_size for shape in ilastik_img.shape[1:]):
         ilastik_crop_x = 0
         if ilastik_img.shape[2] > ilastik_crop_size:
-            ilastik_crop_x = rng.integers(
-                ilastik_img.shape[2] - ilastik_crop_size
-            )
+            ilastik_crop_x = rng.integers(ilastik_img.shape[2] - ilastik_crop_size)
         ilastik_crop_y = 0
         if ilastik_img.shape[1] > ilastik_crop_size:
-            ilastik_crop_y = rng.integers(
-                ilastik_img.shape[1] - ilastik_crop_size
-            )
+            ilastik_crop_y = rng.integers(ilastik_img.shape[1] - ilastik_crop_size)
         ilastik_crop = ilastik_img[
             :,
             ilastik_crop_y : (ilastik_crop_y + ilastik_crop_size),
@@ -221,9 +203,7 @@ def try_create_ilastik_crops_from_disk(
             ilastik_crop_x, ilastik_crop_y, ilastik_crop = create_ilastik_crop(
                 read_ilastik_image(ilastik_img_file), ilastik_crop_size, rng
             )
-            yield Path(
-                ilastik_img_file
-            ), ilastik_crop_x, ilastik_crop_y, ilastik_crop
+            yield Path(ilastik_img_file), ilastik_crop_x, ilastik_crop_y, ilastik_crop
             del ilastik_crop
         except:
             _logger.exception(
@@ -243,9 +223,7 @@ def create_and_save_ilastik_project(
             rel_ilastik_crop_file = Path(ilastik_crop_file).relative_to(
                 Path(ilastik_project_file).parent
             )
-            with h5py.File(
-                ilastik_crop_file, mode="r", libver=_h5py_libver
-            ) as f_crop:
+            with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f_crop:
                 ilastik_crop_shape = f_crop[_crop_dataset_path].shape
             lane_group = infos_group.create_group(f"lane{i:04d}")
             lane_group.create_group("Prediction Mask")
@@ -292,9 +270,7 @@ def run_pixel_classification(
         if memory_limit is not None:
             ilastik_env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
     result = run_captured(args, env=ilastik_env)
-    ilastik_probab_files = Path(ilastik_probab_dir).rglob(
-        f"*-{_img_dataset_path}.tiff"
-    )
+    ilastik_probab_files = Path(ilastik_probab_dir).rglob(f"*-{_img_dataset_path}.tiff")
     for ilastik_probab_file in sorted(ilastik_probab_files):
         ilastik_probab_file.rename(
             ilastik_probab_file.with_name(
@@ -310,9 +286,7 @@ def try_fix_ilastik_crops_from_disk(
 ) -> Generator[Tuple[Path, Tuple[int, ...], np.ndarray], None, None]:
     for ilastik_crop_file in ilastik_crop_files:
         try:
-            with h5py.File(
-                ilastik_crop_file, mode="r", libver=_h5py_libver
-            ) as f:
+            with h5py.File(ilastik_crop_file, mode="r", libver=_h5py_libver) as f:
                 ilastik_crop_dataset = None
                 if _crop_dataset_path in f:
                     ilastik_crop_dataset = f[_crop_dataset_path]
@@ -328,21 +302,15 @@ def try_fix_ilastik_crops_from_disk(
                 if orig_axis_order is not None:
                     orig_axis_order = list(orig_axis_order)
                 elif "axistags" in ilastik_crop_dataset.attrs:
-                    axis_tags, _ = _str_decode(
-                        ilastik_crop_dataset.attrs["axistags"]
-                    )
+                    axis_tags, _ = _str_decode(ilastik_crop_dataset.attrs["axistags"])
                     axis_tags_json = json.loads(axis_tags)
                     orig_axis_order = [
                         a_json["key"] for a_json in axis_tags_json["axes"]
                     ]
                 else:
-                    raise ValueError(
-                        f"Unknown axis order: {ilastik_crop_file}"
-                    )
+                    raise ValueError(f"Unknown axis order: {ilastik_crop_file}")
             if len(orig_axis_order) != ilastik_crop.ndim:
-                raise ValueError(
-                    f"Incompatible axis order: {ilastik_crop_file}"
-                )
+                raise ValueError(f"Incompatible axis order: {ilastik_crop_file}")
             channel_axis_index = orig_axis_order.index("c")
             num_channels = ilastik_crop.size // (
                 ilastik_crop.shape[orig_axis_order.index("x")]
@@ -352,8 +320,7 @@ def try_fix_ilastik_crops_from_disk(
                 channel_axis_indices = (
                     i
                     for i, a in enumerate(orig_axis_order)
-                    if ilastik_crop.shape[i] == num_channels
-                    and a not in ("x", "y")
+                    if ilastik_crop.shape[i] == num_channels and a not in ("x", "y")
                 )
                 channel_axis_index = next(channel_axis_indices, None)
             if channel_axis_index is None:
@@ -528,23 +495,15 @@ def _fix_raw_data_group_inplace(
         raw_data_group, "axistags", _dataset_axistags, ascii=True
     )
     if dataset_id is not None:
-        _create_or_replace_dataset(
-            raw_data_group, "datasetId", dataset_id, ascii=True
-        )
+        _create_or_replace_dataset(raw_data_group, "datasetId", dataset_id, ascii=True)
     _create_or_replace_dataset(
         raw_data_group, "display_mode", _dataset_display_mode, ascii=True
     )
     if file_path is not None:
-        _create_or_replace_dataset(
-            raw_data_group, "filePath", file_path, ascii=True
-        )
-    _create_or_replace_dataset(
-        raw_data_group, "location", "FileSystem", ascii=True
-    )
+        _create_or_replace_dataset(raw_data_group, "filePath", file_path, ascii=True)
+    _create_or_replace_dataset(raw_data_group, "location", "FileSystem", ascii=True)
     if nickname is not None:
-        _create_or_replace_dataset(
-            raw_data_group, "nickname", nickname, ascii=True
-        )
+        _create_or_replace_dataset(raw_data_group, "nickname", nickname, ascii=True)
     _create_or_replace_dataset(raw_data_group, "normalizeDisplay", False)
     if shape is not None:
         _create_or_replace_dataset(

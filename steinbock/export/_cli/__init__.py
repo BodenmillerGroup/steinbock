@@ -6,10 +6,10 @@ import xtiff
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.export._cli.data import anndata_cmd, csv_cmd, fcs_cmd
-from steinbock.export._cli.graphs import graphs_cmd
-from steinbock._cli.utils import OrderedClickGroup
+from .data import anndata_cmd, csv_cmd, fcs_cmd
+from .graphs import graphs_cmd
+from ..._cli.utils import OrderedClickGroup
+from ... import io
 
 
 @click.group(
@@ -57,9 +57,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     Path(ome_dir).mkdir(exist_ok=True)
     for img_file in io.list_image_files(img_dir):
         img = io.read_image(img_file, native_dtype=True)
-        ome_file = io._as_path_with_suffix(
-            Path(ome_dir) / img_file.name, ".ome.tiff"
-        )
+        ome_file = io._as_path_with_suffix(Path(ome_dir) / img_file.name, ".ome.tiff")
         xtiff.to_tiff(
             io._to_dtype(img, np.float32),
             ome_file,
@@ -69,9 +67,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
         del img
 
 
-@export_cmd_group.command(
-    name="histocat", help="Export images to histoCAT for MATLAB"
-)
+@export_cmd_group.command(name="histocat", help="Export images to histoCAT for MATLAB")
 @click.option(
     "--img",
     "img_dir",
@@ -136,9 +132,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         mask = None
         if mask_files is not None:
             mask = io.read_mask(mask_files[i], native_dtype=True)
-            histocat_mask_file = (
-                histocat_img_dir / f"{img_file.stem}_mask.tiff"
-            )
+            histocat_mask_file = histocat_img_dir / f"{img_file.stem}_mask.tiff"
             tifffile.imwrite(
                 histocat_mask_file,
                 data=io._to_dtype(mask, np.uint16)[

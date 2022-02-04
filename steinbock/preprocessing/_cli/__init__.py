@@ -1,8 +1,8 @@
 import click
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.preprocessing._cli.external import external_cmd_group
-from steinbock.preprocessing._cli.imc import imc_cli_available, imc_cmd_group
+from .external import external_cmd_group
+from .imc import imc_cli_available, imc_cmd_group
+from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(

@@ -1,13 +1,11 @@
 import click
 
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock.utils._cli.matching import match_cmd
-from steinbock.utils._cli.mosaics import mosaics_cmd_group
+from .matching import match_cmd
+from .mosaics import mosaics_cmd_group
+from ..._cli.utils import OrderedClickGroup
 
 
-@click.group(
-    name="utils", cls=OrderedClickGroup, help="Various utilities and tools"
-)
+@click.group(name="utils", cls=OrderedClickGroup, help="Various utilities and tools")
 def utils_cmd_group():
     pass
 

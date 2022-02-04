@@ -6,14 +6,12 @@ from anndata import concat as anndata_concat
 from fcswrite import write_fcs
 from pathlib import Path
 
-from steinbock import io
-from steinbock.export import data
+from .. import data
+from ... import io
 
 
 @click.command(name="csv", help="Merge and export object data to CSV")
-@click.argument(
-    "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
-)
+@click.argument("data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False))
 @click.option(
     "--concat/--no-concat",
     "concatenate",
@@ -69,9 +67,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
 
 
 @click.command(name="fcs", help="Merge and export object data to FCS")
-@click.argument(
-    "data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False)
-)
+@click.argument("data_dirs", nargs=-1, type=click.Path(exists=True, file_okay=False))
 @click.option(
     "--concat/--no-concat",
     "concatenate",

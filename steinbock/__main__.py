@@ -1,4 +1,4 @@
-from steinbock._cli import steinbock_cmd_group
+from ._cli import steinbock_cmd_group
 
 
 if __name__ == "__main__":

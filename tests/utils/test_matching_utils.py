@@ -26,12 +26,8 @@ class TestMatchingUtils:
         )
         matching.match_masks(mask1, mask2)  # TODO
 
-    def test_try_match_masks_from_disk(
-        self, imc_test_data_steinbock_path: Path
-    ):
-        mask_files1 = io.list_mask_files(
-            imc_test_data_steinbock_path / "masks"
-        )
+    def test_try_match_masks_from_disk(self, imc_test_data_steinbock_path: Path):
+        mask_files1 = io.list_mask_files(imc_test_data_steinbock_path / "masks")
         mask_files2 = io.list_mask_files(
             imc_test_data_steinbock_path / "masks", base_files=mask_files1
         )

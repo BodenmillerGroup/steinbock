@@ -1,4 +1,4 @@
-from steinbock.classification.ilastik._ilastik import (
+from ._ilastik import (
     list_ilastik_image_files,
     list_ilastik_crop_files,
     read_ilastik_image,

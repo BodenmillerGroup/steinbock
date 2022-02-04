@@ -5,10 +5,10 @@ import sys
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock._cli.utils import OrderedClickGroup
-from steinbock._env import use_ilastik_env
-from steinbock.classification import ilastik
+from .. import ilastik
+from ... import io
+from ..._cli.utils import OrderedClickGroup
+from ..._env import use_ilastik_env
 
 
 @click.group(
@@ -165,9 +165,7 @@ def prepare_cmd(
                 f"WARNING: Image {ilastik_img_file} too small for crop size",
                 file=sys.stderr,
             )
-    ilastik.create_and_save_ilastik_project(
-        ilastik_crop_files, ilastik_project_file
-    )
+    ilastik.create_and_save_ilastik_project(ilastik_crop_files, ilastik_project_file)
     click.echo(ilastik_project_file)
 
 
@@ -295,17 +293,13 @@ def fix_cmd(
             Path(ilastik_project_file).name + ".bak"
         )
         if ilastik_project_backup_file.exists():
-            click.echo(
-                "ERROR: Ilastik project backup file exists", file=sys.stderr
-            )
+            click.echo("ERROR: Ilastik project backup file exists", file=sys.stderr)
             return
         ilastik_crop_backup_dir = Path(ilastik_crop_dir).with_name(
             Path(ilastik_crop_dir).name + ".bak"
         )
         if ilastik_crop_backup_dir.exists():
-            click.echo(
-                "ERROR: Ilastik crop backup directory exists", file=sys.stderr
-            )
+            click.echo("ERROR: Ilastik crop backup directory exists", file=sys.stderr)
             return
         shutil.copyfile(ilastik_project_file, ilastik_project_backup_file)
         ilastik_crop_backup_dir.mkdir()
@@ -324,9 +318,7 @@ def fix_cmd(
         ilastik_crop_files, orig_axis_order=orig_axis_order
     ):
         if last_transpose_axes not in (None, transpose_axes):
-            click.echo(
-                "ERROR: Inconsistent axis orders across crops", file=sys.stderr
-            )
+            click.echo("ERROR: Inconsistent axis orders across crops", file=sys.stderr)
             return
         ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
         ilastik_crop_shapes[ilastik_crop_file.stem] = ilastik_crop.shape

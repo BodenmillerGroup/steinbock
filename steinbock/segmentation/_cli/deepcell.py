@@ -3,8 +3,8 @@ import numpy as np
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.segmentation import deepcell
+from .. import deepcell
+from ... import io
 
 if deepcell.deepcell_available:
     import yaml
@@ -18,9 +18,7 @@ _applications = {
 }
 
 
-@click.command(
-    name="deepcell", help="Run a object segmentation batch using DeepCell"
-)
+@click.command(name="deepcell", help="Run a object segmentation batch using DeepCell")
 @click.option(
     "--app",
     "application_name",
@@ -176,8 +174,6 @@ def deepcell_cmd(
         preprocess_kwargs=preprocess_kwargs,
         postprocess_kwargs=postprocess_kwargs,
     ):
-        mask_file = io._as_path_with_suffix(
-            Path(mask_dir) / img_file.name, ".tiff"
-        )
+        mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
         click.echo(mask_file)

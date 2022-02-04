@@ -4,7 +4,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Union
 
-from steinbock._env import run_captured
+from ..._env import run_captured
 
 _measurement_pipeline_file_template = (
     Path(__file__).parent / "data" / "cell_measurement.cppipe"
@@ -39,9 +39,6 @@ def try_measure_objects(
         "-o",
         str(cpout_dir),
     ]
-    if (
-        cellprofiler_plugin_dir is not None
-        and Path(cellprofiler_plugin_dir).exists()
-    ):
+    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).exists():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     return run_captured(args)

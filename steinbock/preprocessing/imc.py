@@ -15,7 +15,7 @@ from typing import (
     Union,
 )
 
-from steinbock import io
+from .. import io
 
 try:
     from readimc import MCDFile, TXTFile
@@ -127,12 +127,8 @@ def create_panel_from_txt_files(
         with TXTFile(txt_file) as f:
             panel = pd.DataFrame(
                 data={
-                    "channel": pd.Series(
-                        data=f.channel_names, dtype=pd.StringDtype()
-                    ),
-                    "name": pd.Series(
-                        data=f.channel_labels, dtype=pd.StringDtype()
-                    ),
+                    "channel": pd.Series(data=f.channel_names, dtype=pd.StringDtype()),
+                    "name": pd.Series(data=f.channel_labels, dtype=pd.StringDtype()),
                 },
             )
             panels.append(panel)
@@ -148,9 +144,7 @@ def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
     return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
 
 
-def preprocess_image(
-    img: np.ndarray, hpf: Optional[float] = None
-) -> np.ndarray:
+def preprocess_image(img: np.ndarray, hpf: Optional[float] = None) -> np.ndarray:
     img = img.astype(np.float32)
     if hpf is not None:
         img = filter_hot_pixels(img, hpf)
@@ -221,8 +215,7 @@ def try_preprocess_images_from_disk(
                                     recovered = True
                                 except IOError:
                                     _logger.exception(
-                                        "Error reading file "
-                                        f"{matched_txt_file}"
+                                        "Error reading file " f"{matched_txt_file}"
                                     )
                         if img is not None:  # exceptions ...
                             if channel_ind is not None:

@@ -63,33 +63,25 @@ class TestIMCPreprocessing:
         )
         assert np.all(preprocessed_img == expected_preprocessed_img)
 
-    def test_try_preprocess_images_from_disk(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_try_preprocess_images_from_disk(self, imc_test_data_steinbock_path: Path):
         mcd_files = imc.list_mcd_files(imc_test_data_steinbock_path / "raw")
         txt_files = imc.list_txt_files(imc_test_data_steinbock_path / "raw")
         gen = imc.try_preprocess_images_from_disk(mcd_files, txt_files)
         for mcd_txt_file, acquisition, img, recovery_file, recovered in gen:
             pass  # TODO
 
-    def test_create_panel_from_imc_panel(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_create_panel_from_imc_panel(self, imc_test_data_steinbock_path: Path):
         imc.create_panel_from_imc_panel(
             imc_test_data_steinbock_path / "raw" / "panel.csv"
         )  # TODO
 
-    def test_create_panel_from_mcd_file(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_create_panel_from_mcd_file(self, imc_test_data_steinbock_path: Path):
         mcd_files = imc.list_mcd_files(
             imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
         )
         imc.create_panel_from_mcd_files(mcd_files)  # TODO
 
-    def test_create_panel_from_txt_file(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_create_panel_from_txt_file(self, imc_test_data_steinbock_path: Path):
         txt_files = imc.list_txt_files(
             imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
         )

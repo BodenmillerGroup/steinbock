@@ -11,7 +11,7 @@ from scipy.spatial.distance import pdist, squareform
 from skimage.measure import regionprops
 from typing import Generator, Optional, Sequence, Tuple, Union
 
-from steinbock import io
+from .. import io
 
 
 _logger = logging.getLogger(__name__)
@@ -141,9 +141,7 @@ def _measure_euclidean_pixel_expansion_neighbors(
     if dmax is None:
         raise ValueError("Maximum distance required for pixel expansion")
     if kmax is not None:
-        raise ValueError(
-            "k-nearest neighbors is not supported by pixel expansion"
-        )
+        raise ValueError("k-nearest neighbors is not supported by pixel expansion")
     mask = _expand_mask_euclidean(mask, dmax)
     neighbors = _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
     neighbors["Distance"] = np.nan
@@ -154,12 +152,8 @@ class NeighborhoodType(Enum):
     """"""
 
     CENTROID_DISTANCE = partial(_measure_centroid_distance_neighbors)
-    EUCLIDEAN_BORDER_DISTANCE = partial(
-        _measure_euclidean_border_distance_neighbors
-    )
-    EUCLIDEAN_PIXEL_EXPANSION = partial(
-        _measure_euclidean_pixel_expansion_neighbors
-    )
+    EUCLIDEAN_BORDER_DISTANCE = partial(_measure_euclidean_border_distance_neighbors)
+    EUCLIDEAN_PIXEL_EXPANSION = partial(_measure_euclidean_pixel_expansion_neighbors)
 
 
 def measure_neighbors(

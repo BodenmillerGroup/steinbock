@@ -5,7 +5,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Union
 
-from steinbock._env import run_captured
+from ..._env import run_captured
 
 _segmentation_pipeline_file_template = (
     Path(__file__).parent / "data" / "cell_segmentation.cppipe"
@@ -15,9 +15,7 @@ _segmentation_pipeline_file_template = (
 def create_and_save_segmentation_pipeline(
     segmentation_pipeline_file: Union[str, PathLike]
 ) -> None:
-    shutil.copyfile(
-        _segmentation_pipeline_file_template, segmentation_pipeline_file
-    )
+    shutil.copyfile(_segmentation_pipeline_file_template, segmentation_pipeline_file)
 
 
 def try_segment_objects(
@@ -38,9 +36,6 @@ def try_segment_objects(
         "-o",
         str(mask_dir),
     ]
-    if (
-        cellprofiler_plugin_dir is not None
-        and Path(cellprofiler_plugin_dir).exists()
-    ):
+    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).exists():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     return run_captured(args)

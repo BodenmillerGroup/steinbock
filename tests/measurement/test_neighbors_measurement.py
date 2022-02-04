@@ -56,9 +56,7 @@ class TestNeighborsMeasurement:
             dmax=1.0,
         )  # TODO
 
-    def test_try_measure_neighbors_from_disk(
-        self, imc_test_data_steinbock_path: Path
-    ):
+    def test_try_measure_neighbors_from_disk(self, imc_test_data_steinbock_path: Path):
         mask_files = io.list_mask_files(imc_test_data_steinbock_path / "masks")
         gen = neighbors.try_measure_neighbors_from_disk(
             mask_files,

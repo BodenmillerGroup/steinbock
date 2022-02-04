@@ -81,14 +81,10 @@ def read_panel(
     )
     for required_col in ("channel", "name"):
         if required_col not in panel:
-            raise ValueError(
-                f"Missing '{required_col}' column in {panel_file}"
-            )
+            raise ValueError(f"Missing '{required_col}' column in {panel_file}")
     for notnan_col in ("channel", "keep"):
         if notnan_col in panel and panel[notnan_col].isna().any():
-            raise ValueError(
-                f"Missing values for '{notnan_col}' in {panel_file}"
-            )
+            raise ValueError(f"Missing values for '{notnan_col}' in {panel_file}")
     for unique_col in ("channel", "name"):
         if unique_col in panel:
             if panel[unique_col].dropna().duplicated().any():
@@ -117,29 +113,21 @@ def list_image_files(
     return sorted(Path(img_dir).rglob("*.tiff"))
 
 
-def _fix_image_shape(
-    img_file: Union[str, PathLike], img: np.ndarray
-) -> np.ndarray:
+def _fix_image_shape(img_file: Union[str, PathLike], img: np.ndarray) -> np.ndarray:
     if img.ndim == 2:
         img = img[np.newaxis, :, :]
     elif img.ndim == 5:
         size_t, size_z, size_c, size_y, size_x = img.shape
         if size_t != 1 or size_z != 1:
-            raise ValueError(
-                f"{img_file}: unsupported TZCYX shape {img.shape}"
-            )
+            raise ValueError(f"{img_file}: unsupported TZCYX shape {img.shape}")
         img = img[0, 0, :, :, :]
     elif img.ndim == 6:
         size_t, size_z, size_c, size_y, size_x, size_s = img.shape
         if size_t != 1 or size_z != 1 or size_s != 1:
-            raise ValueError(
-                f"{img_file}: unsupported TZCYXS shape {img.shape}"
-            )
+            raise ValueError(f"{img_file}: unsupported TZCYXS shape {img.shape}")
         img = img[0, 0, :, :, :, 0]
     elif img.ndim != 3:
-        raise ValueError(
-            f"{img_file}: unsupported number of dimensions ({img.ndim})"
-        )
+        raise ValueError(f"{img_file}: unsupported number of dimensions ({img.ndim})")
     return img
 
 
@@ -154,9 +142,7 @@ def read_image(
     return img
 
 
-def mmap_image(
-    img_file: Union[str, PathLike], mode="r", **kwargs
-) -> np.ndarray:
+def mmap_image(img_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray:
     if "imagej" not in kwargs and mode == "r+":
         kwargs["imagej"] = True
     img_exists = Path(img_file).exists()
@@ -201,20 +187,15 @@ def read_image_info(image_info_file: Union[str, PathLike]) -> pd.DataFrame:
     )
     for required_col in ("image", "width_px", "height_px", "num_channels"):
         if required_col not in image_info:
-            raise ValueError(
-                f"Missing '{required_col}' column in {image_info_file}"
-            )
+            raise ValueError(f"Missing '{required_col}' column in {image_info_file}")
     for notnan_col in ("image", "width_px", "height_px", "num_channels"):
         if notnan_col in image_info and image_info[notnan_col].isna().any():
-            raise ValueError(
-                f"Missing values for '{notnan_col}' in {image_info_file}"
-            )
+            raise ValueError(f"Missing values for '{notnan_col}' in {image_info_file}")
     for unique_col in ("image",):
         if unique_col in image_info:
             if image_info[unique_col].dropna().duplicated().any():
                 raise ValueError(
-                    f"Duplicated values for '{unique_col}'"
-                    f" in {image_info_file}"
+                    f"Duplicated values for '{unique_col}'" f" in {image_info_file}"
                 )
     return image_info
 
@@ -234,27 +215,19 @@ def list_mask_files(
     return sorted(Path(mask_dir).rglob("*.tiff"))
 
 
-def _fix_mask_shape(
-    mask_file: Union[str, PathLike], mask: np.ndarray
-) -> np.ndarray:
+def _fix_mask_shape(mask_file: Union[str, PathLike], mask: np.ndarray) -> np.ndarray:
     if mask.ndim == 5:
         size_t, size_z, size_c, size_y, size_x = mask.shape
         if size_t != 1 or size_z != 1 or size_c != 1:
-            raise ValueError(
-                f"{mask_file}: unsupported TZCYX shape {mask.shape}"
-            )
+            raise ValueError(f"{mask_file}: unsupported TZCYX shape {mask.shape}")
         mask = mask[0, 0, 0, :, :]
     elif mask.ndim == 6:
         size_t, size_z, size_c, size_y, size_x, size_s = mask.shape
         if size_t != 1 or size_z != 1 or size_c != 1 or size_s != 1:
-            raise ValueError(
-                f"{mask_file}: unsupported TZCYXS shape {mask.shape}"
-            )
+            raise ValueError(f"{mask_file}: unsupported TZCYXS shape {mask.shape}")
         mask = mask[0, 0, 0, :, :, 0]
     elif mask.ndim != 2:
-        raise ValueError(
-            f"{mask_file}: unsupported number of dimensions ({mask.ndim})"
-        )
+        raise ValueError(f"{mask_file}: unsupported number of dimensions ({mask.ndim})")
     return mask
 
 
@@ -269,9 +242,7 @@ def read_mask(
     return mask
 
 
-def mmap_mask(
-    mask_file: Union[str, PathLike], mode="r", **kwargs
-) -> np.ndarray:
+def mmap_mask(mask_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray:
     if "imagej" not in kwargs and mode == "r+":
         kwargs["imagej"] = True
     mask_exists = Path(mask_file).exists()
@@ -312,9 +283,7 @@ def list_data_files(
 
 
 def read_data(data_file: Union[str, PathLike]) -> pd.DataFrame:
-    return pd.read_csv(
-        data_file, sep=",|;", index_col="Object", engine="python"
-    )
+    return pd.read_csv(data_file, sep=",|;", index_col="Object", engine="python")
 
 
 def write_data(data: pd.DataFrame, data_file: Union[str, PathLike]) -> None:

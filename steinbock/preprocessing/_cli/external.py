@@ -5,9 +5,9 @@ import sys
 
 from pathlib import Path
 
-from steinbock import io
-from steinbock.preprocessing import external
-from steinbock._cli import OrderedClickGroup
+from .. import external
+from ... import io
+from ..._cli import OrderedClickGroup
 
 
 @click.group(
@@ -94,9 +94,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     image_info_data = []
     Path(img_dir).mkdir(exist_ok=True)
-    for ext_img_file, img in external.try_preprocess_images_from_disk(
-        ext_img_files
-    ):
+    for ext_img_file, img in external.try_preprocess_images_from_disk(ext_img_files):
         # filter channels here rather than in try_preprocess_images_from_disk,
         # to avoid advanced indexing creating a copy of img (relevant for mmap)
         if channel_indices is not None:
@@ -117,9 +115,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
         out_shape[0] = len(cur_channel_indices)
         out_shape = tuple(out_shape)
         if mmap:
-            out = io.mmap_image(
-                img_file, mode="r+", shape=out_shape, dtype=img.dtype
-            )
+            out = io.mmap_image(img_file, mode="r+", shape=out_shape, dtype=img.dtype)
         else:
             out = np.empty(out_shape, dtype=img.dtype)
         for i, channel_index in enumerate(cur_channel_indices):
