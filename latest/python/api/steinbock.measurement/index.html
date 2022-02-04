@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1521,9 +1521,7 @@ IntensityAggregation            (<span title="enum.Enum">Enum</span>)
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">object_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">mask</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">channel_name</span><span class="p">:</span> <span class="n">intensity_aggregation</span><span class="o">.</span><span class="n">value</span><span class="p">(</span>
-            <span class="n">img</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">object_ids</span>
-        <span class="p">)</span>
+        <span class="n">channel_name</span><span class="p">:</span> <span class="n">intensity_aggregation</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">object_ids</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">channel_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">channel_names</span><span class="p">)</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -1641,12 +1639,8 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="n">CENTROID_DISTANCE</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_measure_centroid_distance_neighbors</span><span class="p">)</span>
-    <span class="n">EUCLIDEAN_BORDER_DISTANCE</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
-        <span class="n">_measure_euclidean_border_distance_neighbors</span>
-    <span class="p">)</span>
-    <span class="n">EUCLIDEAN_PIXEL_EXPANSION</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
-        <span class="n">_measure_euclidean_pixel_expansion_neighbors</span>
-    <span class="p">)</span>
+    <span class="n">EUCLIDEAN_BORDER_DISTANCE</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_measure_euclidean_border_distance_neighbors</span><span class="p">)</span>
+    <span class="n">EUCLIDEAN_PIXEL_EXPANSION</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_measure_euclidean_pixel_expansion_neighbors</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -2011,7 +2005,7 @@ NeighborhoodType            (<span title="enum.Enum">Enum</span>)
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
       
     
   </body>

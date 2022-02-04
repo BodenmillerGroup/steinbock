@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2b4465f4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1056,9 +1056,7 @@
     <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="c1"># panel: Optional[pd.DataFrame] = None,</span>
     <span class="c1"># image_info: Optional[pd.DataFrame] = None,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
-    <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-<span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="c1"># if panel is not None:</span>
     <span class="c1">#     panel = panel.set_index(&quot;name&quot;, drop=False, verify_integrity=True)</span>
     <span class="c1"># if image_info is not None:</span>
@@ -1188,8 +1186,7 @@
             <span class="k">del</span> <span class="n">df</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Error creating DataFrame for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span>
-                <span class="s2">&quot;skipping image&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating DataFrame for image </span><span class="si">{</span><span class="n">img_file_name</span><span class="si">}</span><span class="s2">; &quot;</span> <span class="s2">&quot;skipping image&quot;</span>
             <span class="p">)</span>
 </code></pre></div>
         </details>
@@ -1264,9 +1261,7 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">merged_data</span> <span class="o">=</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">merged_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">merged_data</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span>
+            <span class="n">merged_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">merged_data</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">node_attributes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="nb">int</span><span class="p">(</span><span class="n">object_id</span><span class="p">):</span> <span class="n">object_data</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">object_data</span> <span class="ow">in</span> <span class="n">merged_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
@@ -1407,7 +1402,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
       
     
   </body>
