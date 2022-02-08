@@ -162,7 +162,11 @@ def try_preprocess_images_from_disk(
     None,
 ]:
     unmatched_txt_files = list(txt_files)
-    for mcd_file in mcd_files:
+    # process mcd files in descending order to avoid ambiguous txt file matching
+    # see https://github.com/BodenmillerGroup/steinbock/issues/100
+    for mcd_file in sorted(
+        mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
+    ):
         try:
             with MCDFile(mcd_file) as f_mcd:
                 for slide in f_mcd.slides:
@@ -298,6 +302,12 @@ def _match_txt_file(
     ]
     if len(filtered_txt_files) == 1:
         return filtered_txt_files[0]
+    if len(filtered_txt_files) > 1:
+        _logger.warning(
+            "Ambiguous txt file matching for %s: %s; continuing without a match",
+            mcd_file,
+            ", ".join(filtered_txt_files),
+        )
     return None
 
 
