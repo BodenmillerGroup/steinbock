@@ -155,11 +155,11 @@ def deepcell_cmd(
     preprocess_kwargs = None
     if preprocess_file is not None:
         with Path(preprocess_file).open() as f:
-            preprocess_kwargs = yaml.load(f)
+            preprocess_kwargs = yaml.load(f, yaml.Loader)
     postprocess_kwargs = None
     if postprocess_file is not None:
         with Path(postprocess_file).open() as f:
-            postprocess_kwargs = yaml.load(f)
+            postprocess_kwargs = yaml.load(f, yaml.Loader)
     Path(mask_dir).mkdir(exist_ok=True)
     for img_file, mask in deepcell.try_segment_objects(
         img_files,
