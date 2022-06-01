@@ -3,6 +3,7 @@ import logging
 import shutil
 import subprocess
 from enum import IntEnum
+from importlib import resources
 from os import PathLike
 from pathlib import Path
 from typing import (
@@ -24,6 +25,7 @@ import numpy as np
 
 from ... import io
 from ..._env import run_captured
+from . import data as ilastik_data
 
 
 class _VigraAxisInfo(IntEnum):
@@ -41,7 +43,6 @@ _logger = logging.getLogger(__name__)
 _img_dataset_path = "img"
 _crop_dataset_path = "crop"
 _dataset_display_mode = "grayscale"
-_project_file_template = Path(__file__).parent / "data" / "pixel_classifier.ilp"
 _dataset_axistags = json.dumps(
     {
         "axes": [
@@ -215,7 +216,9 @@ def create_and_save_ilastik_project(
     ilastik_project_file: Union[str, PathLike],
 ) -> None:
     dataset_id = str(uuid1())
-    shutil.copyfile(_project_file_template, ilastik_project_file)
+    with resources.open_binary(ilastik_data, "pixel_classifier.ilp") as fsrc:
+        with open(ilastik_project_file, mode="wb") as fdst:
+            shutil.copyfileobj(fsrc, fdst)
     with h5py.File(ilastik_project_file, mode="a", libver=_h5py_libver) as f:
         infos_group = f["Input Data/infos"]
         for i, ilastik_crop_file in enumerate(ilastik_crop_files):

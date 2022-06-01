@@ -1,20 +1,20 @@
 import shutil
 import subprocess
+from importlib import resources
 from os import PathLike
 from pathlib import Path
 from typing import Union
 
 from ..._env import run_captured
-
-_segmentation_pipeline_file_template = (
-    Path(__file__).parent / "data" / "cell_segmentation.cppipe"
-)
+from . import data as cellprofiler_data
 
 
 def create_and_save_segmentation_pipeline(
     segmentation_pipeline_file: Union[str, PathLike]
 ) -> None:
-    shutil.copyfile(_segmentation_pipeline_file_template, segmentation_pipeline_file)
+    with resources.open_binary(cellprofiler_data, "cell_segmentation.cppipe") as fsrc:
+        with open(segmentation_pipeline_file, mode="wb") as fdst:
+            shutil.copyfileobj(fsrc, fdst)
 
 
 def try_segment_objects(
