@@ -1,13 +1,13 @@
 import logging
-import numpy as np
 import os
-import pandas as pd
 import re
-import tifffile
-
 from os import PathLike
 from pathlib import Path
 from typing import List, Optional, Sequence, Union
+
+import numpy as np
+import pandas as pd
+import tifffile
 
 _logger = logging.getLogger(__name__)
 

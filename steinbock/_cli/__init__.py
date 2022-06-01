@@ -1,14 +1,14 @@
 import click
 
+from .._version import version as steinbock_version
+from ..classification._cli import classify_cmd_group
+from ..export._cli import export_cmd_group
+from ..measurement._cli import measure_cmd_group
+from ..preprocessing._cli import preprocess_cmd_group
+from ..segmentation._cli import segment_cmd_group
+from ..utils._cli import utils_cmd_group
 from .apps import apps_cmd_group
 from .utils import OrderedClickGroup
-from ..preprocessing._cli import preprocess_cmd_group
-from ..classification._cli import classify_cmd_group
-from ..segmentation._cli import segment_cmd_group
-from ..measurement._cli import measure_cmd_group
-from ..export._cli import export_cmd_group
-from ..utils._cli import utils_cmd_group
-from .._version import version as steinbock_version
 
 
 @click.group(name="steinbock", cls=OrderedClickGroup)

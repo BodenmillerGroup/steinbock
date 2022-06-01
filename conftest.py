@@ -1,10 +1,9 @@
-import pytest
-import requests
 import shutil
-
 from pathlib import Path
 from typing import Generator
 
+import pytest
+import requests
 
 _imc_test_data_steinbock_url = (
     "https://github.com/BodenmillerGroup/TestData"

@@ -1,13 +1,13 @@
+import sys
+from pathlib import Path
+
 import click
 import numpy as np
 import pandas as pd
-import sys
 
-from pathlib import Path
-
-from .. import external
 from ... import io
 from ..._cli import OrderedClickGroup
+from .. import external
 
 
 @click.group(

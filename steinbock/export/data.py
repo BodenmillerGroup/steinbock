@@ -1,15 +1,14 @@
 import logging
-import numpy as np
-import pandas as pd
-
-from anndata import AnnData
 from os import PathLike
 from pathlib import Path
-from scipy.sparse import csr_matrix
 from typing import Generator, Optional, Sequence, Tuple, Union
 
-from .. import io
+import numpy as np
+import pandas as pd
+from anndata import AnnData
+from scipy.sparse import csr_matrix
 
+from .. import io
 
 _logger = logging.getLogger(__name__)
 

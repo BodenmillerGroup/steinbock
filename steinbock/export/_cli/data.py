@@ -1,13 +1,13 @@
-import click
-import pandas as pd
 import sys
-
-from anndata import concat as anndata_concat
-from fcswrite import write_fcs
 from pathlib import Path
 
-from .. import data
+import click
+import pandas as pd
+from anndata import concat as anndata_concat
+from fcswrite import write_fcs
+
 from ... import io
+from .. import data
 
 
 @click.command(name="csv", help="Merge and export object data to CSV")

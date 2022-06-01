@@ -1,10 +1,10 @@
+from pathlib import Path
+
 import click
 import numpy as np
 
-from pathlib import Path
-
-from .. import deepcell
 from ... import io
+from .. import deepcell
 
 if deepcell.deepcell_available:
     import yaml
@@ -143,7 +143,7 @@ def deepcell_cmd(
     img_files = io.list_image_files(img_dir)
     model = None
     if model_path_or_name is not None:
-        from tensorflow.keras.models import load_model
+        from tensorflow.keras.models import load_model  # type: ignore
 
         if Path(model_path_or_name).exists():
             model = load_model(model_path_or_name, compile=False)

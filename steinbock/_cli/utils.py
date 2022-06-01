@@ -1,8 +1,8 @@
-import click
-
-from click.core import Command
 from collections import OrderedDict
 from typing import Dict
+
+import click
+from click.core import Command
 
 
 class OrderedClickGroup(click.Group):

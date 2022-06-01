@@ -1,8 +1,8 @@
 import click
 
+from ..._cli.utils import OrderedClickGroup
 from .cellprofiler import cellprofiler_cmd_group
 from .deepcell import deepcell_cli_available, deepcell_cmd
-from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(

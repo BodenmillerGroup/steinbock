@@ -1,12 +1,11 @@
 import logging
-import numpy as np
-
 from enum import Enum
 from functools import partial
 from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Generator,
@@ -14,14 +13,15 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
-    TYPE_CHECKING,
     Union,
 )
+
+import numpy as np
 
 from .. import io
 
 if TYPE_CHECKING:
-    from tensorflow.keras.models import Model
+    from tensorflow.keras.models import Model  # type: ignore
 
 
 _logger = logging.getLogger(__name__)

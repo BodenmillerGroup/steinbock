@@ -1,10 +1,10 @@
-import click
 import sys
-
 from pathlib import Path
 
-from .. import cellprofiler
+import click
+
 from ..._cli.utils import OrderedClickGroup
+from .. import cellprofiler
 
 
 @click.group(

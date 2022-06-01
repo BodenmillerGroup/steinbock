@@ -1,7 +1,7 @@
 import click
 
-from .ilastik import ilastik_cmd_group
 from ..._cli.utils import OrderedClickGroup
+from .ilastik import ilastik_cmd_group
 
 
 @click.group(

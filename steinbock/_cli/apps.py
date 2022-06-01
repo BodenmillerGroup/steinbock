@@ -1,10 +1,10 @@
-import click
 import sys
-
 from pathlib import Path
 
-from .utils import OrderedClickGroup
+import click
+
 from .._env import check_x11, run_captured, use_ilastik_env
+from .utils import OrderedClickGroup
 
 
 @click.group(name="apps", cls=OrderedClickGroup, help="Third-party applications")

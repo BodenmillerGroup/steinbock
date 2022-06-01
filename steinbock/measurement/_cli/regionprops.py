@@ -1,9 +1,9 @@
-import click
-
 from pathlib import Path
 
-from ..regionprops import try_measure_regionprops_from_disk
+import click
+
 from ... import io
+from ..regionprops import try_measure_regionprops_from_disk
 
 
 @click.command(name="regionprops", help="Measure object region properties")

@@ -1,15 +1,15 @@
+import re
+from pathlib import Path
+
 import click
 import numpy as np
-import re
 import tifffile
 import xtiff
 
-from pathlib import Path
-
+from ... import io
+from ..._cli.utils import OrderedClickGroup
 from .data import anndata_cmd, csv_cmd, fcs_cmd
 from .graphs import graphs_cmd
-from ..._cli.utils import OrderedClickGroup
-from ... import io
 
 
 @click.group(

@@ -1,10 +1,9 @@
-import click
-
 from pathlib import Path
 
-from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
-from ... import io
+import click
 
+from ... import io
+from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
 
 _intensity_aggregations = {
     "sum": IntensityAggregation.SUM,

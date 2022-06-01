@@ -1,7 +1,6 @@
-import numpy as np
-
 from pathlib import Path
 
+import numpy as np
 from steinbock import io
 from steinbock.measurement import intensities
 from steinbock.measurement.intensities import IntensityAggregation

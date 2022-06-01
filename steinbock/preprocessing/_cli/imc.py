@@ -1,7 +1,4 @@
-import click
-import pandas as pd
 import sys
-
 from contextlib import nullcontext
 from os import PathLike
 from pathlib import Path
@@ -9,10 +6,12 @@ from tempfile import TemporaryDirectory
 from typing import List, Union
 from zipfile import ZipFile
 
-from .. import imc
+import click
+import pandas as pd
+
 from ... import io
 from ..._cli.utils import OrderedClickGroup
-
+from .. import imc
 
 imc_cli_available = imc.imc_available
 

@@ -1,14 +1,13 @@
 import logging
-import networkx as nx
-import pandas as pd
-
 from collections import Counter
 from os import PathLike
 from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
-from .. import io
+import networkx as nx
+import pandas as pd
 
+from .. import io
 
 _logger = logging.getLogger(__name__)
 

@@ -1,13 +1,13 @@
-import click
-import numpy as np
 import sys
-import tifffile
-
 from pathlib import Path
 
-from .. import cellprofiler
+import click
+import numpy as np
+import tifffile
+
 from ... import io
 from ..._cli.utils import OrderedClickGroup
+from .. import cellprofiler
 
 
 @click.group(

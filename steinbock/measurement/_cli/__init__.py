@@ -1,10 +1,10 @@
 import click
 
+from ..._cli.utils import OrderedClickGroup
 from .cellprofiler import cellprofiler_cmd_group
 from .intensities import intensities_cmd
 from .neighbors import neighbors_cmd
 from .regionprops import regionprops_cmd
-from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(

@@ -1,10 +1,10 @@
+from pathlib import Path
+
 import click
 import networkx as nx
 
-from pathlib import Path
-
-from .. import graphs
 from ... import io
+from .. import graphs
 
 
 @click.command(name="graphs", help="Export neighbors as spatial object graphs")

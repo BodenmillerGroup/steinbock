@@ -1,10 +1,10 @@
-import click
 import os
 import subprocess
 import sys
-
 from functools import wraps
 from pathlib import Path
+
+import click
 
 
 def run_captured(

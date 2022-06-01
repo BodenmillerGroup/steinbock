@@ -1,11 +1,11 @@
-import imageio
 import logging
-import numpy as np
-import pandas as pd
-
 from os import PathLike
 from pathlib import Path
 from typing import Generator, List, Sequence, Tuple, Union
+
+import imageio
+import numpy as np
+import pandas as pd
 
 from .. import io
 

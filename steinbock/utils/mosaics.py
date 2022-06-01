@@ -1,13 +1,12 @@
 import logging
-import numpy as np
 import re
-
 from os import PathLike
 from pathlib import Path
 from typing import Generator, NamedTuple, Sequence, Tuple, Union
 
-from .. import io
+import numpy as np
 
+from .. import io
 
 _logger = logging.getLogger(__name__)
 

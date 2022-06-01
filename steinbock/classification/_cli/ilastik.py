@@ -1,14 +1,14 @@
-import click
-import numpy as np
 import shutil
 import sys
-
 from pathlib import Path
 
-from .. import ilastik
+import click
+import numpy as np
+
 from ... import io
 from ..._cli.utils import OrderedClickGroup
 from ..._env import use_ilastik_env
+from .. import ilastik
 
 
 @click.group(

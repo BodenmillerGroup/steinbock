@@ -1,18 +1,17 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from enum import Enum
 from functools import partial
 from os import PathLike
 from pathlib import Path
+from typing import Generator, Optional, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial.distance import pdist, squareform
 from skimage.measure import regionprops
-from typing import Generator, Optional, Sequence, Tuple, Union
 
 from .. import io
-
 
 _logger = logging.getLogger(__name__)
 

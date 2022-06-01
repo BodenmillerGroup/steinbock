@@ -1,16 +1,15 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from enum import Enum
 from functools import partial
 from os import PathLike
 from pathlib import Path
-from scipy.ndimage import measurements
 from typing import Generator, Sequence, Tuple, Union
 
-from .. import io
+import numpy as np
+import pandas as pd
+from scipy.ndimage import measurements
 
+from .. import io
 
 _logger = logging.getLogger(__name__)
 

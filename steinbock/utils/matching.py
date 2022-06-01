@@ -1,13 +1,12 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from os import PathLike
 from pathlib import Path
 from typing import Generator, Sequence, Tuple, Union
 
-from .. import io
+import numpy as np
+import pandas as pd
 
+from .. import io
 
 _logger = logging.getLogger(__name__)
 

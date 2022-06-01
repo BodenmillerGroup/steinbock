@@ -1,9 +1,9 @@
-import click
-
 from pathlib import Path
 
-from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
+import click
+
 from ... import io
+from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
 
 _neighborhood_types = {
     "centroids": NeighborhoodType.CENTROID_DISTANCE,

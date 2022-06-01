@@ -1,12 +1,7 @@
-import cv2
-import h5py
 import json
 import logging
-import numpy as np
-
 import shutil
 import subprocess
-
 from enum import IntEnum
 from os import PathLike
 from pathlib import Path
@@ -22,6 +17,10 @@ from typing import (
     Union,
 )
 from uuid import uuid1
+
+import cv2
+import h5py
+import numpy as np
 
 from ... import io
 from ..._env import run_captured
