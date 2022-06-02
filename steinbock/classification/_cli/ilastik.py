@@ -7,7 +7,12 @@ import click_log
 import numpy as np
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._cli.utils import (
+    OrderedClickGroup,
+    SteinbockCLIException,
+    catch_exception,
+    logger,
+)
 from ..._env import use_ilastik_env
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
@@ -143,7 +148,7 @@ def prepare_cmd(
         )
         ilastik.write_ilastik_image(ilastik_img, ilastik_img_file)
         ilastik_img_files.append(ilastik_img_file)
-        click.echo(ilastik_img_file)
+        logger.info(ilastik_img_file)
         del ilastik_img
     Path(ilastik_crop_dir).mkdir(exist_ok=True)
     ilastik_crop_files = []
@@ -163,15 +168,12 @@ def prepare_cmd(
             )
             ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
             ilastik_crop_files.append(ilastik_crop_file)
-            click.echo(ilastik_crop_file)
+            logger.info(ilastik_crop_file)
             del ilastik_crop
         else:
-            click.echo(
-                f"WARNING: Image {ilastik_img_file} too small for crop size",
-                file=sys.stderr,
-            )
+            logger.warning(f"Image {ilastik_img_file} too small for crop size")
     ilastik.create_and_save_ilastik_project(ilastik_crop_files, ilastik_project_file)
-    click.echo(ilastik_project_file)
+    logger.info(ilastik_project_file)
 
 
 @ilastik_cmd_group.command(
@@ -302,14 +304,12 @@ def fix_cmd(
             Path(ilastik_project_file).name + ".bak"
         )
         if ilastik_project_backup_file.exists():
-            click.echo("ERROR: Ilastik project backup file exists", file=sys.stderr)
-            return
+            raise SteinbockCLIException("Ilastik project backup file exists")
         ilastik_crop_backup_dir = Path(ilastik_crop_dir).with_name(
             Path(ilastik_crop_dir).name + ".bak"
         )
         if ilastik_crop_backup_dir.exists():
-            click.echo("ERROR: Ilastik crop backup directory exists", file=sys.stderr)
-            return
+            raise SteinbockCLIException("Ilastik crop backup directory exists")
         shutil.copyfile(ilastik_project_file, ilastik_project_backup_file)
         ilastik_crop_backup_dir.mkdir()
         for ilastik_crop_file in ilastik_crop_files:
@@ -327,12 +327,11 @@ def fix_cmd(
         ilastik_crop_files, orig_axis_order=orig_axis_order
     ):
         if last_transpose_axes not in (None, transpose_axes):
-            click.echo("ERROR: Inconsistent axis orders across crops", file=sys.stderr)
-            return
+            raise SteinbockCLIException("Inconsistent axis orders across crops")
         ilastik.write_ilastik_crop(ilastik_crop, ilastik_crop_file)
         ilastik_crop_shapes[ilastik_crop_file.stem] = ilastik_crop.shape
         last_transpose_axes = transpose_axes
-        click.echo(ilastik_crop_file)
+        logger.info(ilastik_crop_file)
         del ilastik_crop
     ilastik.fix_ilastik_project_file_inplace(
         ilastik_project_file,
@@ -341,4 +340,4 @@ def fix_cmd(
         ilastik_crop_shapes,
         last_transpose_axes,
     )
-    click.echo(ilastik_project_file)
+    logger.info(ilastik_project_file)

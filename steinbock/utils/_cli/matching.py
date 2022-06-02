@@ -4,7 +4,7 @@ import click
 import click_log
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import matching
@@ -43,5 +43,5 @@ def match_cmd(masks1, masks2, mmap, csv_dir):
         csv_file = io._as_path_with_suffix(Path(csv_dir) / mask_file1.name, ".csv")
         df.columns = [Path(masks1).name, Path(masks2).name]
         df.to_csv(csv_file, index=False)
-        click.echo(csv_file)
+        logger.info(csv_file)
         del df

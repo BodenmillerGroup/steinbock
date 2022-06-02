@@ -194,10 +194,10 @@ def try_preprocess_images_from_disk(
                         recovered = False
                         try:
                             img = f_mcd.read_acquisition(acquisition)
-                        except IOError:
+                        except IOError as e:
                             logger.warning(
                                 f"Error reading acquisition {acquisition.id} "
-                                f"from file {mcd_file}"
+                                f"from file {mcd_file}: {e}"
                             )
                             if matched_txt_file is not None:
                                 logger.warning(
@@ -219,9 +219,9 @@ def try_preprocess_images_from_disk(
                                                 )
                                                 continue
                                     recovered = True
-                                except IOError:
+                                except IOError as e2:
                                     logger.exception(
-                                        "Error reading file " f"{matched_txt_file}"
+                                        f"Error reading file {matched_txt_file}: {e2}"
                                     )
                         if img is not None:  # exceptions ...
                             if channel_ind is not None:

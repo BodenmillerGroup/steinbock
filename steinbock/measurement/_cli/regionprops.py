@@ -4,7 +4,7 @@ import click
 import click_log
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from ..regionprops import try_measure_regionprops_from_disk
@@ -64,5 +64,5 @@ def regionprops_cmd(img_dir, mask_dir, mmap, skimage_regionprops, regionprops_di
             Path(regionprops_dir) / img_file.name, ".csv"
         )
         io.write_data(regionprops, regionprops_file)
-        click.echo(regionprops_file)
+        logger.info(regionprops_file)
         del regionprops

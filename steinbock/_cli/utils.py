@@ -1,3 +1,4 @@
+import logging
 from collections import OrderedDict
 from functools import partial, wraps
 from typing import Dict
@@ -6,6 +7,13 @@ import click
 from click.core import Command
 
 from .._steinbock import SteinbockException
+
+
+logger = logging.getLogger(__name__.rpartition(".")[0])
+
+
+class SteinbockCLIException(SteinbockException):
+    pass
 
 
 class OrderedClickGroup(click.Group):

@@ -4,7 +4,7 @@ import click
 import click_log
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
@@ -94,5 +94,5 @@ def intensities_cmd(
             Path(intensities_dir) / img_file.name, ".csv"
         )
         io.write_data(intensities, intensities_file)
-        click.echo(intensities_file)
+        logger.info(intensities_file)
         del intensities

@@ -8,7 +8,7 @@ import tifffile
 import xtiff
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .data import anndata_cmd, csv_cmd, fcs_cmd
@@ -68,7 +68,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
             ome_file,
             channel_names=channel_names,
         )
-        click.echo(ome_file)
+        logger.info(ome_file)
         del img
 
 
@@ -135,7 +135,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
                 ],
                 imagej=True,
             )
-            click.echo(histocat_img_file)
+            logger.info(histocat_img_file)
         mask = None
         if mask_files is not None:
             mask = io.read_mask(mask_files[i], native_dtype=True)
@@ -147,7 +147,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
                 ],
                 imagej=True,
             )
-            click.echo(histocat_mask_file)
+            logger.info(histocat_mask_file)
         del img, mask
 
 

@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 
 import click
@@ -8,7 +7,7 @@ from anndata import concat as anndata_concat
 from fcswrite import write_fcs
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import SteinbockCLIException, catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import data
@@ -36,14 +35,9 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(csv_file_or_dir).is_dir():
-        click.echo(
-            "ERROR: Specify a single output file when concatenating",
-            file=sys.stderr,
-        )
-        return
+        raise SteinbockCLIException("Specify a single output file when concatenating")
     elif not concatenate and Path(csv_file_or_dir).is_file():
-        click.echo("ERROR: Output directory is a file", file=sys.stderr)
-        return
+        raise SteinbockCLIException("Output directory is a file")
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
@@ -66,10 +60,10 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
                 Path(csv_file_or_dir) / img_file_name, ".csv"
             )
             df.to_csv(csv_file, index=False)
-            click.echo(csv_file)
+            logger.info(csv_file)
         del df
     if concatenate:
-        click.echo(csv_file_or_dir)
+        logger.info(csv_file_or_dir)
 
 
 @click.command(name="fcs", help="Merge and export object data to FCS")
@@ -94,23 +88,18 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
     if concatenate and Path(fcs_file_or_dir).is_dir():
-        click.echo(
-            "ERROR: Specify a single output file when concatenating",
-            file=sys.stderr,
-        )
-        return
+        raise SteinbockCLIException("Specify a single output file when concatenating")
     elif not concatenate and Path(fcs_file_or_dir).is_file():
-        click.echo("ERROR: Output directory is a file", file=sys.stderr)
-        return
+        raise SteinbockCLIException("Output directory is a file")
     first_data_files = io.list_data_files(data_dirs[0])
     data_file_lists = [first_data_files]
     for data_dir in data_dirs[1:]:
         data_files = io.list_data_files(data_dir, base_files=first_data_files)
         data_file_lists.append(data_files)
     if concatenate:
-        click.echo(
-            "WARNING: The fcswrite package currently does not support on-disk "
-            "concatenation; all files will be loaded into memory"
+        logger.warning(
+            "The fcswrite package currently does not support on-disk concatenation; "
+            "all files will be loaded into memory"
         )
     else:
         Path(fcs_file_or_dir).mkdir(exist_ok=True)
@@ -127,12 +116,12 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
                 Path(fcs_file_or_dir) / img_file_name, ".fcs"
             )
             write_fcs(fcs_file, df.columns.values, df.values)
-            click.echo(fcs_file)
+            logger.info(fcs_file)
             del df
     if concatenate:
         df = pd.concat(dfs, ignore_index=True, copy=False)
         write_fcs(fcs_file_or_dir, df.columns.values, df.values)
-        click.echo(fcs_file_or_dir)
+        logger.info(fcs_file_or_dir)
 
 
 @click.command(name="anndata", help="Merge and export object data to AnnData")
@@ -251,17 +240,12 @@ def anndata_cmd(
     # if image_info_file is not None and Path(image_info_file).is_file():
     #     image_info = io.read_image_info(image_info_file)
     if concatenate and Path(anndata_file_or_dir).is_dir():
-        click.echo(
-            "ERROR: Specify a single output file when concatenating",
-            file=sys.stderr,
-        )
-        return
+        raise SteinbockCLIException("Specify a single output file when concatenating")
     elif not concatenate and Path(anndata_file_or_dir).is_file():
-        click.echo("ERROR: Output directory is a file", file=sys.stderr)
-        return
+        raise SteinbockCLIException("Output directory is a file")
     if concatenate:
-        click.echo(
-            "WARNING: The anndata package currently does not support on-disk; "
+        logger.warning(
+            "The anndata package currently does not support on-disk; "
             "all files will be loaded into memory"
         )
     else:
@@ -287,7 +271,7 @@ def anndata_cmd(
                 Path(anndata_file_or_dir) / img_file_name, ".adata"
             )
             anndata_file = write_anndata(adata, anndata_file)
-            click.echo(anndata_file)
+            logger.info(anndata_file)
             del adata
     if concatenate:
         adata = anndata_concat(
@@ -297,4 +281,4 @@ def anndata_cmd(
         obs_cols.insert(0, obs_cols.pop(obs_cols.index("Image")))
         adata.obs = adata.obs.loc[:, obs_cols]
         write_anndata(adata, anndata_file_or_dir, ignore_suffix=True)
-        click.echo(anndata_file_or_dir)
+        logger.info(anndata_file_or_dir)

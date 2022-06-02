@@ -5,7 +5,7 @@ import click_log
 import networkx as nx
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import graphs
@@ -69,4 +69,4 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
             nx.write_gml(graph, str(graph_file))
         else:
             raise NotImplementedError()
-        click.echo(graph_file)
+        logger.info(graph_file)

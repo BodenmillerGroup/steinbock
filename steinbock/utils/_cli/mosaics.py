@@ -1,4 +1,3 @@
-import sys
 from os import PathLike
 from pathlib import Path
 from typing import List, Sequence, Union
@@ -7,7 +6,7 @@ import click
 import click_log
 from skimage import measure
 
-from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import mosaics
@@ -61,7 +60,7 @@ def tile_cmd(images, tile_size, mmap, tile_dir):
     for tile_file, tile in mosaics.try_extract_tiles_from_disk_to_disk(
         img_files, tile_dir, tile_size, mmap=mmap
     ):
-        click.echo(tile_file)
+        logger.info(tile_file)
         del tile
 
 
@@ -98,12 +97,9 @@ def stitch_cmd(tiles, relabel, mmap, img_dir):
     ):
         if relabel:
             if img.ndim != 2:
-                click.echo(
-                    f"WARNING: Failed to relabel image with shape {img.shape}",
-                    file=sys.stderr,
-                )
+                logger.warning(f"Failed to relabel image with shape {img.shape}")
                 continue
             img[:] = measure.label(img)
             img.flush()
-        click.echo(img_file)
+        logger.info(img_file)
         del img

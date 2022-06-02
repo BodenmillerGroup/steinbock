@@ -1,4 +1,3 @@
-import sys
 from contextlib import nullcontext
 from os import PathLike
 from pathlib import Path
@@ -11,7 +10,12 @@ import click_log
 import pandas as pd
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._cli.utils import (
+    OrderedClickGroup,
+    SteinbockCLIException,
+    catch_exception,
+    logger,
+)
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import imc
@@ -123,10 +127,9 @@ def panel_cmd(
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt_files(txt_files)
     if panel is None:
-        click.echo("ERROR: No panel/.mcd/.txt file found", file=sys.stderr)
-        return
+        raise SteinbockCLIException("No panel/.mcd/.txt file found")
     io.write_panel(panel, panel_file)
-    click.echo(panel_file)
+    logger.info(panel_file)
 
 
 @imc_cmd_group.command(
@@ -216,10 +219,9 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
                 num_dupl += 1
                 first_mcd_txt_file = mcd_txt_files[img_file_stem][0]
                 img_file_stem = f"DUPLICATE{num_dupl:03d}_{img_file_stem}"
-                click.echo(
-                    f"WARNING: File {mcd_txt_file} is a duplicate of "
-                    f"{first_mcd_txt_file}, saving as {img_file_stem}",
-                    file=sys.stderr,
+                logger.warning(
+                    f"File {mcd_txt_file} is a duplicate of {first_mcd_txt_file}, "
+                    f"saving as {img_file_stem}"
                 )
                 mcd_txt_files[img_file_stem].append(mcd_txt_file)
             else:
@@ -252,11 +254,11 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
                     }
                 )
             image_info_data.append(image_info_row)
-            click.echo(img_file)
+            logger.info(img_file)
             del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
-    click.echo(image_info_file)
+    logger.info(image_info_file)
 
 
 def _extract_zips(

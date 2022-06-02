@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 import click_log
 
-from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import cellprofiler
@@ -34,7 +34,7 @@ def cellprofiler_cmd_group():
 @catch_exception(handle=SteinbockException)
 def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(segmentation_pipeline_file)
-    click.echo(segmentation_pipeline_file)
+    logger.info(segmentation_pipeline_file)
 
 
 @cellprofiler_cmd_group.command(
@@ -90,10 +90,9 @@ def run_cmd(
     mask_dir,
 ):
     if probabilities_dir not in ("ilastik_probabilities"):
-        click.echo(
-            "WARNING: When using custom probabilities from unknown origins, "
-            "make sure to adapt the CellProfiler pipeline accordingly",
-            file=sys.stderr,
+        logger.warning(
+            "When using custom probabilities from unknown origins, "
+            "make sure to adapt the CellProfiler pipeline accordingly"
         )
     Path(mask_dir).mkdir(exist_ok=True)
     result = cellprofiler.try_segment_objects(

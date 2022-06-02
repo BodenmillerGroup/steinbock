@@ -4,7 +4,7 @@ import click
 import click_log
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
@@ -85,5 +85,5 @@ def neighbors_cmd(
             Path(neighbors_dir) / Path(mask_file).name, ".csv"
         )
         io.write_neighbors(neighbors, neighbors_file)
-        click.echo(neighbors_file)
+        logger.info(neighbors_file)
         del neighbors

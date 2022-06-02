@@ -5,7 +5,7 @@ import click_log
 import numpy as np
 
 from ... import io
-from ..._cli.utils import catch_exception
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import deepcell
@@ -182,4 +182,4 @@ def deepcell_cmd(
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
-        click.echo(mask_file)
+        logger.info(mask_file)
