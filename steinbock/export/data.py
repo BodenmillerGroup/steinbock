@@ -100,7 +100,7 @@ def try_convert_to_anndata_from_disk(
                 obs.index = [f"Object {object_id}" for object_id in x.index]
             if var is not None:
                 var.index = x.columns.astype(str).tolist()
-            adata = AnnData(X=x.values, obs=obs, var=var)
+            adata = AnnData(X=x.values, obs=obs, var=var, dtype=np.float32)
             if neighbors_file is not None:
                 neighbors = io.read_neighbors(neighbors_file)
                 row_ind = [x.index.get_loc(a) for a in neighbors["Object"]]
