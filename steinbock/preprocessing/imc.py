@@ -220,7 +220,7 @@ def try_preprocess_images_from_disk(
                                                 continue
                                     recovered = True
                                 except IOError as e2:
-                                    logger.exception(
+                                    logger.error(
                                         f"Error reading file {matched_txt_file}: {e2}"
                                     )
                         if img is not None:  # exceptions ...
