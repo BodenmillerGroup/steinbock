@@ -525,9 +525,9 @@ def _fix_raw_data_group_inplace(
 
 
 def _get_hdf5_file(hdf5_path: Union[str, PathLike]) -> Optional[Path]:
-    hdf5_file = hdf5_path
-    while hdf5_file is not None and Path(hdf5_file).suffix != ".h5":
-        hdf5_file = Path(hdf5_file).parent
+    hdf5_file = Path(hdf5_path)
+    while hdf5_file is not None and hdf5_file.suffix != ".h5":
+        hdf5_file = hdf5_file.parent
     return hdf5_file
 
 
