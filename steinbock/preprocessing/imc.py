@@ -19,7 +19,7 @@ except:
     imc_available = False
 
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -175,7 +175,7 @@ def try_preprocess_images_from_disk(
                                 acquisition, channel_names
                             )
                             if isinstance(channel_ind, str):
-                                _logger.warning(
+                                logger.warning(
                                     f"Channel {channel_ind} not found for "
                                     f"acquisition {acquisition.id} in file "
                                     "{mcd_file}; skipping acquisition"
@@ -186,12 +186,12 @@ def try_preprocess_images_from_disk(
                         try:
                             img = f_mcd.read_acquisition(acquisition)
                         except IOError:
-                            _logger.warning(
+                            logger.warning(
                                 f"Error reading acquisition {acquisition.id} "
                                 f"from file {mcd_file}"
                             )
                             if matched_txt_file is not None:
-                                _logger.warning(
+                                logger.warning(
                                     f"Restoring from file {matched_txt_file}"
                                 )
                                 try:
@@ -202,7 +202,7 @@ def try_preprocess_images_from_disk(
                                                 f_txt, channel_names
                                             )
                                             if isinstance(channel_ind, str):
-                                                _logger.warning(
+                                                logger.warning(
                                                     f"Channel {channel_ind} "
                                                     "not found in file "
                                                     f"{matched_txt_file}; "
@@ -211,7 +211,7 @@ def try_preprocess_images_from_disk(
                                                 continue
                                     recovered = True
                                 except IOError:
-                                    _logger.exception(
+                                    logger.exception(
                                         "Error reading file " f"{matched_txt_file}"
                                     )
                         if img is not None:  # exceptions ...
@@ -229,7 +229,7 @@ def try_preprocess_images_from_disk(
                             )
                             del img
         except:
-            _logger.exception(f"Error reading file {mcd_file}")
+            logger.exception(f"Error reading file {mcd_file}")
     while len(unmatched_txt_files) > 0:
         txt_file = unmatched_txt_files.pop(0)
         try:
@@ -238,7 +238,7 @@ def try_preprocess_images_from_disk(
                 if channel_names is not None:
                     channel_ind = _get_channel_indices(f, channel_names)
                     if isinstance(channel_ind, str):
-                        _logger.warning(
+                        logger.warning(
                             f"Channel {channel_ind} not found in file "
                             f"{txt_file}; skipping acquisition"
                         )
@@ -250,7 +250,7 @@ def try_preprocess_images_from_disk(
             yield Path(txt_file), None, img, None, False
             del img
         except:
-            _logger.exception(f"Error reading file {txt_file}")
+            logger.exception(f"Error reading file {txt_file}")
 
 
 def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
@@ -296,7 +296,7 @@ def _match_txt_file(
     if len(filtered_txt_files) == 1:
         return filtered_txt_files[0]
     if len(filtered_txt_files) > 1:
-        _logger.warning(
+        logger.warning(
             "Ambiguous txt file matching for %s: %s; continuing without a match",
             mcd_file,
             ", ".join(filtered_txt_files),

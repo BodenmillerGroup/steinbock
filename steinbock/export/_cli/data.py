@@ -2,11 +2,13 @@ import sys
 from pathlib import Path
 
 import click
+import click_log
 import pandas as pd
 from anndata import concat as anndata_concat
 from fcswrite import write_fcs
 
 from ... import io
+from ..._steinbock import logger as steinbock_logger
 from .. import data
 
 
@@ -26,6 +28,7 @@ from .. import data
     required=True,
     help="Path to the CSV output file or directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -82,6 +85,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     required=True,
     help="Path to the FCS output file or directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -186,6 +190,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     required=True,
     help="Path to the AnnData output file or directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def anndata_cmd(
     intensities_dir,
     data_dirs,

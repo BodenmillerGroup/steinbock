@@ -2,12 +2,14 @@ import re
 from pathlib import Path
 
 import click
+import click_log
 import numpy as np
 import tifffile
 import xtiff
 
 from ... import io
 from ..._cli.utils import OrderedClickGroup
+from ..._steinbock import logger as steinbock_logger
 from .data import anndata_cmd, csv_cmd, fcs_cmd
 from .graphs import graphs_cmd
 
@@ -46,6 +48,7 @@ def export_cmd_group():
     show_default=True,
     help="Path to the OME-TIFF export directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def ome_cmd(img_dir, panel_file, ome_dir):
     panel = io.read_panel(panel_file)
     channel_names = [
@@ -100,6 +103,7 @@ def ome_cmd(img_dir, panel_file, ome_dir):
     show_default=True,
     help="Path to the histoCAT export directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
     panel = io.read_panel(panel_file)
     channel_names = [

@@ -27,6 +27,8 @@ from ... import io
 from ..._env import run_captured
 from . import data as ilastik_data
 
+logger = logging.getLogger(__name__.rpartition(".")[0])
+
 
 class _VigraAxisInfo(IntEnum):
     CHANNELS = 1
@@ -37,8 +39,6 @@ class _VigraAxisInfo(IntEnum):
     EDGE = 32
     UNKNOWN_AXIS_TYPE = 64
 
-
-_logger = logging.getLogger(__name__)
 
 _img_dataset_path = "img"
 _crop_dataset_path = "crop"
@@ -163,7 +163,7 @@ def try_create_ilastik_images_from_disk(
             yield Path(img_file), ilastik_img
             del ilastik_img
         except:
-            _logger.exception(f"Error creating Ilastik image from file {img_file}")
+            logger.exception(f"Error creating Ilastik image from file {img_file}")
 
 
 def create_ilastik_crop(
@@ -206,7 +206,7 @@ def try_create_ilastik_crops_from_disk(
             yield Path(ilastik_img_file), ilastik_crop_x, ilastik_crop_y, ilastik_crop
             del ilastik_crop
         except:
-            _logger.exception(
+            logger.exception(
                 f"Error creating Ilastik crop from file {ilastik_img_file}"
             )
 
@@ -338,9 +338,7 @@ def try_fix_ilastik_crops_from_disk(
             yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
             del ilastik_crop
         except:
-            _logger.exception(
-                f"Error fixing Ilastik crop from file {ilastik_crop_file}"
-            )
+            logger.exception(f"Error fixing Ilastik crop from file {ilastik_crop_file}")
 
 
 def fix_ilastik_project_file_inplace(
@@ -431,7 +429,7 @@ def _fix_pixel_classification_group_inplace(
 def _fix_prediction_export_group_inplace(
     prediction_export_group: h5py.Group, rel_ilastik_probab_dir: Path
 ) -> None:
-    _logger.warning(
+    logger.warning(
         "When exporting data from the graphical user interface of Ilastik, "
         "please manually edit the export image settings and enable "
         "renormalizing [min, max] from [0.0, 1.0] to [0, 65535]"

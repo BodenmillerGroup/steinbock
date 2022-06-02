@@ -13,7 +13,7 @@ from skimage.measure import regionprops
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
@@ -186,4 +186,4 @@ def try_measure_neighbors_from_disk(
             yield Path(mask_file), neighbors
             del neighbors
         except:
-            _logger.exception(f"Error measuring neighbors in {mask_file}")
+            logger.exception(f"Error measuring neighbors in {mask_file}")

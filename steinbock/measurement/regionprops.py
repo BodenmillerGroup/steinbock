@@ -9,7 +9,7 @@ from skimage.measure import regionprops_table
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def measure_regionprops(
@@ -49,4 +49,4 @@ def try_measure_regionprops_from_disk(
             yield Path(img_file), Path(mask_file), regionprops
             del regionprops
         except:
-            _logger.exception(f"Error measuring regionprops in {img_file}")
+            logger.exception(f"Error measuring regionprops in {img_file}")

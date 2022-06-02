@@ -9,7 +9,7 @@ import pandas as pd
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def convert_to_networkx(neighbors: pd.DataFrame, *data_list) -> nx.Graph:
@@ -47,4 +47,4 @@ def try_convert_to_networkx_from_disk(
             yield Path(neighbors_file), data_files, graph
             del neighbors, data_list, graph
         except:
-            _logger.exception(f"Error converting {neighbors_file} to networkx")
+            logger.exception(f"Error converting {neighbors_file} to networkx")

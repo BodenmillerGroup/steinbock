@@ -1,8 +1,10 @@
 from pathlib import Path
 
 import click
+import click_log
 
 from ... import io
+from ..._steinbock import logger as steinbock_logger
 from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
 
 _neighborhood_types = {
@@ -62,6 +64,7 @@ _neighborhood_types = {
     show_default=True,
     help="Path to the object neighbors output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def neighbors_cmd(
     mask_dir, neighborhood_type_name, metric, dmax, kmax, mmap, neighbors_dir
 ):

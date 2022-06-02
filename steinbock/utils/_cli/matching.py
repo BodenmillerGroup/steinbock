@@ -1,8 +1,10 @@
-import click
-
 from pathlib import Path
 
+import click
+import click_log
+
 from ... import io
+from ..._steinbock import logger as steinbock_logger
 from .. import matching
 
 
@@ -23,6 +25,7 @@ from .. import matching
     required=True,
     help="Path to the object table CSV output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def match_cmd(masks1, masks2, mmap, csv_dir):
     if Path(masks1).is_file() and Path(masks2).is_file():
         mask_files1 = [Path(masks1)]

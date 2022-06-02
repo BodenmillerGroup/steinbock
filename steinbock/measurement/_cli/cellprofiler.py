@@ -2,11 +2,13 @@ import sys
 from pathlib import Path
 
 import click
+import click_log
 import numpy as np
 import tifffile
 
 from ... import io
 from ..._cli.utils import OrderedClickGroup
+from ..._steinbock import logger as steinbock_logger
 from .. import cellprofiler
 
 
@@ -62,6 +64,7 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler input directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def prepare_cmd(
     img_dir,
     mask_dir,
@@ -145,6 +148,7 @@ def prepare_cmd(
     show_default=True,
     help="Path to the CellProfiler output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def run_cmd(
     cellprofiler_binary,
     cellprofiler_plugin_dir,

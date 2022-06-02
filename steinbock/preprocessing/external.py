@@ -9,7 +9,7 @@ import pandas as pd
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
@@ -72,7 +72,7 @@ def try_preprocess_images_from_disk(
         try:
             img = _read_external_image(ext_img_file)
         except:
-            _logger.warning(f"Unsupported file format: {ext_img_file}")
+            logger.warning(f"Unsupported file format: {ext_img_file}")
             continue
         yield ext_img_file, img
         del img

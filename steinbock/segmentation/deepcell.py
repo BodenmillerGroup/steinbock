@@ -24,8 +24,7 @@ if TYPE_CHECKING:
     from tensorflow.keras.models import Model  # type: ignore
 
 
-_logger = logging.getLogger(__name__)
-
+logger = logging.getLogger(__name__)
 deepcell_available = find_spec("deepcell") is not None
 
 
@@ -109,4 +108,4 @@ def try_segment_objects(
             yield Path(img_file), mask
             del img, mask
         except:
-            _logger.exception(f"Error segmenting objects in {img_file}")
+            logger.exception(f"Error segmenting objects in {img_file}")

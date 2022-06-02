@@ -7,10 +7,12 @@ from typing import List, Union
 from zipfile import ZipFile
 
 import click
+import click_log
 import pandas as pd
 
 from ... import io
 from ..._cli.utils import OrderedClickGroup
+from ..._steinbock import logger as steinbock_logger
 from .. import imc
 
 imc_cli_available = imc.imc_available
@@ -90,6 +92,7 @@ def imc_cmd_group():
     show_default=True,
     help="Path to the panel output file",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def panel_cmd(
     imc_panel_file,
     imc_panel_channel_col,
@@ -180,6 +183,7 @@ def panel_cmd(
     show_default=True,
     help="Path to the image information output file",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file):
     channel_names = None
     if Path(panel_file).exists():

@@ -3,11 +3,13 @@ import sys
 from pathlib import Path
 
 import click
+import click_log
 import numpy as np
 
 from ... import io
 from ..._cli.utils import OrderedClickGroup
 from ..._env import use_ilastik_env
+from ..._steinbock import logger as steinbock_logger
 from .. import ilastik
 
 
@@ -103,6 +105,7 @@ def ilastik_cmd_group():
     help="Path to the Ilastik crop output directory",
 )
 @click.option("--seed", "seed", type=click.INT, help="Random seed")
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def prepare_cmd(
     ilastik_project_file,
     img_dir,
@@ -216,6 +219,7 @@ def prepare_cmd(
     type=click.IntRange(min=0),
     help="Memory limit (in megabytes)",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 @use_ilastik_env
 def run_cmd(
     ilastik_binary,
@@ -280,6 +284,7 @@ def run_cmd(
     type=click.STRING,
     help="Axis order of the existing crops (e.g. zyxc)",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def fix_cmd(
     ilastik_project_file,
     ilastik_crop_dir,

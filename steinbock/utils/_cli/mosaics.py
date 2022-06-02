@@ -1,13 +1,15 @@
-import click
 import sys
-
 from os import PathLike
 from pathlib import Path
-from skimage import measure
 from typing import List, Sequence, Union
 
-from .. import mosaics
+import click
+import click_log
+from skimage import measure
+
 from ..._cli.utils import OrderedClickGroup
+from ..._steinbock import logger as steinbock_logger
+from .. import mosaics
 
 
 def _collect_tiff_files(
@@ -50,6 +52,7 @@ def mosaics_cmd_group():
     required=True,
     help="Path to the tile output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def tile_cmd(images, tile_size, mmap, tile_dir):
     img_files = _collect_tiff_files(images)
     Path(tile_dir).mkdir(exist_ok=True)
@@ -83,6 +86,7 @@ def tile_cmd(images, tile_size, mmap, tile_dir):
     required=True,
     help="Path to the tile output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def stitch_cmd(tiles, relabel, mmap, img_dir):
     tile_files = _collect_tiff_files(tiles)
     Path(img_dir).mkdir(exist_ok=True)

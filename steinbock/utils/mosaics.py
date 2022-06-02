@@ -8,7 +8,7 @@ import numpy as np
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def try_extract_tiles_from_disk_to_disk(
@@ -24,7 +24,7 @@ def try_extract_tiles_from_disk_to_disk(
             else:
                 img = io.read_image(img_file, native_dtype=True)
             if img.shape[-1] % tile_size == 1 or img.shape[-2] % tile_size == 1:
-                _logger.warning(
+                logger.warning(
                     "Chosen tile size yields UNSTITCHABLE tiles of 1 pixel "
                     f"width or height for image {img_file}"
                 )
@@ -44,7 +44,7 @@ def try_extract_tiles_from_disk_to_disk(
                     del tile
             del img
         except:
-            _logger.exception(f"Error extracting tiles: {img_file}")
+            logger.exception(f"Error extracting tiles: {img_file}")
 
 
 def try_stitch_tiles_from_disk_to_disk(
@@ -109,4 +109,4 @@ def try_stitch_tiles_from_disk_to_disk(
             yield img_file, img
             del img
         except:
-            _logger.exception(f"Error stitching tiles: {img_file}")
+            logger.exception(f"Error stitching tiles: {img_file}")

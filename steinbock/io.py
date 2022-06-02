@@ -9,9 +9,7 @@ import numpy as np
 import pandas as pd
 import tifffile
 
-_logger = logging.getLogger(__name__)
-
-
+logger = logging.getLogger(__name__)
 img_dtype = np.dtype(os.environ.get("STEINBOCK_IMG_DTYPE", "float32"))
 mask_dtype = np.dtype(os.environ.get("STEINBOCK_MASK_DTYPE", "uint16"))
 
@@ -149,7 +147,7 @@ def mmap_image(img_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray
     img = tifffile.memmap(img_file, mode=mode, **kwargs)
     if img_exists:
         if img.dtype != img_dtype:
-            _logger.warning(
+            logger.warning(
                 "Data type of memory-mapped image file %s (%s) is not %s",
                 img_file,
                 img.dtype,
@@ -249,7 +247,7 @@ def mmap_mask(mask_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray
     mask = tifffile.memmap(mask_file, mode=mode, **kwargs)
     if mask_exists:
         if mask.dtype != mask_dtype:
-            _logger.warning(
+            logger.warning(
                 "Data type of memory-mapped mask file %s (%s) is not %s",
                 mask_file,
                 mask.dtype,

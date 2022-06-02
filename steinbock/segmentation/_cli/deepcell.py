@@ -1,9 +1,11 @@
 from pathlib import Path
 
 import click
+import click_log
 import numpy as np
 
 from ... import io
+from ..._steinbock import logger as steinbock_logger
 from .. import deepcell
 
 if deepcell.deepcell_available:
@@ -119,6 +121,7 @@ _applications = {
     show_default=True,
     help="Path to the mask output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def deepcell_cmd(
     application_name,
     model_path_or_name,

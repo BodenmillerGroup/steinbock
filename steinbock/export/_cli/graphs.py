@@ -1,9 +1,11 @@
 from pathlib import Path
 
 import click
+import click_log
 import networkx as nx
 
 from ... import io
+from ..._steinbock import logger as steinbock_logger
 from .. import graphs
 
 
@@ -39,6 +41,7 @@ from .. import graphs
     show_default=True,
     help="Path to the networkx output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
 def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
     neighbors_files = io.list_neighbors_files(neighbors_dir)
     data_file_lists = [

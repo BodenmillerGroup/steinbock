@@ -8,7 +8,7 @@ import pandas as pd
 
 from .. import io
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def match_masks(mask1: np.ndarray, mask2: np.ndarray) -> pd.DataFrame:
@@ -47,4 +47,4 @@ def try_match_masks_from_disk(
             yield mask_file1, mask_file2, df
             del df
         except:
-            _logger.exception(f"Error matching masks {mask_file1, mask_file2}")
+            logger.exception(f"Error matching masks {mask_file1, mask_file2}")
