@@ -1,0 +1,1120 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../img/steinbock-favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.16">
+    
+    
+      
+        <title>Preprocessing - steinbock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1c3799f8.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#preprocessing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="steinbock" class="md-header__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            steinbock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Preprocessing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../intro/" class="md-tabs__link md-tabs__link--active">
+        Command-line usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../python/intro/" class="md-tabs__link">
+        Python usage
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="steinbock" class="md-nav__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    steinbock
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Welcome
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../install-docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../install-python/" class="md-nav__link">
+        Python
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          Specifications
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Specifications" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../directories/" class="md-nav__link">
+        Directories
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../authors/" class="md-nav__link">
+        Authors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributors/" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Command-line usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Preprocessing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Preprocessing
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#imaging-mass-cytometry-imc" class="md-nav__link">
+    Imaging Mass Cytometry (IMC)
+  </a>
+  
+    <nav class="md-nav" aria-label="Imaging Mass Cytometry (IMC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#panel-creation" class="md-nav__link">
+    Panel creation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-conversion" class="md-nav__link">
+    Image conversion
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-images" class="md-nav__link">
+    External images
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../classification/" class="md-nav__link">
+        Pixel classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../segmentation/" class="md-nav__link">
+        Object segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../measurement/" class="md-nav__link">
+        Object measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../export/" class="md-nav__link">
+        Data export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        Utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/" class="md-nav__link">
+        Apps
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Python usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Python usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Python usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          API documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          API documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.preprocessing/" class="md-nav__link">
+        steinbock.preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.classification/" class="md-nav__link">
+        steinbock.classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.segmentation/" class="md-nav__link">
+        steinbock.segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.measurement/" class="md-nav__link">
+        steinbock.measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.export/" class="md-nav__link">
+        steinbock.export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.utils/" class="md-nav__link">
+        steinbock.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/api/steinbock.io/" class="md-nav__link">
+        steinbock.io
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#imaging-mass-cytometry-imc" class="md-nav__link">
+    Imaging Mass Cytometry (IMC)
+  </a>
+  
+    <nav class="md-nav" aria-label="Imaging Mass Cytometry (IMC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#panel-creation" class="md-nav__link">
+    Panel creation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-conversion" class="md-nav__link">
+    Image conversion
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-images" class="md-nav__link">
+    External images
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="preprocessing">Preprocessing</h1>
+<p>In this step, image data will be prepared for processing with <em>steinbock</em>.</p>
+<p>Various sources for raw data are supported by <em>steinbock</em>, each of which is described in the following. If you miss support for an imaging modality, please consider <a href="https://github.com/BodenmillerGroup/steinbock/issues">filing an issue on GitHub</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Optional preprocessing</p>
+<p>The <em>steinbock</em> framework natively supports input images saved in Tag Image File Format (TIFF), see <a href="../../file-types/#images">File types</a>. If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by <a href="https://imageio.readthedocs.io">imageio</a>, you need to convert them to <em>steinbock</em>-compatible TIFF files first, see <a href="#external-images">External images</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Computational resources</p>
+<p>Unless specified otherwise, <em>steinbock</em> converts all input images to 32-bit floating point images upon loading, see <a href="../../file-types/#images">File types</a>. For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see <a href="../utils/#mosaics">mosaics</a>.</p>
+</div>
+<h2 id="imaging-mass-cytometry-imc">Imaging Mass Cytometry (IMC)</h2>
+<p>Preprocessing of IMC data consists of two steps:</p>
+<ol>
+<li>Create a <em>steinbock</em> panel file and, optionally, edit it to select channels</li>
+<li>Extract images from .mcd/.txt files according to the created <em>steinbock</em> panel file</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Panel-based image extraction</p>
+<p>The <em>steinbock</em> panel determines the presence and order of channels in the extracted images.</p>
+</div>
+<h3 id="panel-creation">Panel creation</h3>
+<p>A <em>steinbock</em> panel file contains information about the channels in an image, such as channel ID (e.g. metal tag), channel name (e.g. antibody target), or whether a channel will be used in certain tasks (e.g. classification, segmentation). Multiple options exist for creating a <em>steinbock</em> panel file for IMC applications:</p>
+<ul>
+<li>Manual <em>steinbock</em> panel file creation, following the <a href="../../file-types/#panel"><em>steinbock</em> panel format specification</a></li>
+<li>Automatic <em>steinbock</em> panel file creation from metadata embedded in raw MCD/TXT files</li>
+<li>Conversion from an "IMC panel file" in <em>IMC Segmentation Pipeline</em><sup id="fnref4:1"><a class="footnote-ref" href="#fn:1">1</a></sup> format (undocumented)</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Panel file types</p>
+<p>The <em>steinbock</em> panel file is different from the "IMC panel file" used in the original <em>IMC Segmentation Pipeline</em><sup id="fnref3:1"><a class="footnote-ref" href="#fn:1">1</a></sup> in that it is ordered (i.e., the channel order in the panel matches the channel order in the images) and only requires <code>channel</code> and <code>name</code> columns (see <a href="../../file-types/#panel">File types</a>). By default, channels in a <em>steinbock</em> panel file generated from IMC raw data are sorted by mass. As the <em>steinbock</em> panel format allows for further arbitrary columns, unmapped columns from an original "IMC panel" will be "passed through" to the generated <em>steinbock</em> panel.</p>
+</div>
+<p>When manually creating the <em>steinbock</em> panel file, no further actions are required; proceed with image conversion. Otherwise, to create a <em>steinbock</em> panel file for IMC data processing:</p>
+<pre><code>steinbock preprocess imc panel
+</code></pre>
+<p>This will create a <em>steinbock</em> panel at the specified location (defaults to <code>panel.csv</code>) as follows:</p>
+<ul>
+<li>If an IMC panel file (in <em>IMC Segmentation Pipeline</em><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">1</a></sup> format, undocumented) exists at the specified location (defaults to <code>raw/panel.csv</code>), it is converted to the <a href="../../file-types/#panel"><em>steinbock</em> panel format</a>.</li>
+<li>If no IMC panel file was found, the <em>steinbock</em> panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to <code>raw</code>). </li>
+<li>If no IMC panel file and no .mcd file were found, the <em>steinbock</em> panel is created based on all .txt files found at the specified location (defaults to <code>raw</code>).</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Different panels</p>
+<p>In principle, IMC supports acquiring a different panel for each .mcd/.txt file and acquisition. When creating a <em>steinbock</em> panel from .mcd/.txt files, the created panel will contain all targets found in any of the input files. During image conversion (see below), only targets marked as <code>keep=1</code> in the panel file will be retained; imaging data with missing channels (identified by the <code>channel</code> column in the panel file) are skipped.</p>
+</div>
+<h3 id="image-conversion">Image conversion</h3>
+<p>To convert .mcd/.txt files in the raw data directory to TIFF and filter hot pixels:</p>
+<pre><code>steinbock preprocess imc images --hpf 50
+</code></pre>
+<p>This will extract images from raw files (source directory defaults to <code>raw</code>) and save them at the specified location (defaults to <code>img</code>). Each image corresponds to one acquisition in one file, with the image channels filtered (<code>keep</code> column) and sorted according to the <em>steinbock</em> panel file at the specified location (defaults to <code>panel.csv</code>). For corrupted .mcd files, <em>steinbock</em> will try to recover the missing acquisitions from matching .txt files. In a second step, images from <em>unmatched</em> .txt files are extracted as well.</p>
+<p>Furthermore, this commands also creates an image information table as described in <a href="../../file-types/#image-information">File types</a>. In addition to the default columns, the following IMC-specific columns will be added:</p>
+<ul>
+<li><code>source_file</code>: the raw .mcd/.txt file name</li>
+<li><code>recovery_file</code>: the corresponding .txt file name, if available</li>
+<li><code>recovered</code>: <em>True</em> if the .mcd acquisition was recovered from the corresponding .txt file</li>
+<li>Acquisition-specific information (only for images extracted from .mcd files): <ul>
+<li><code>acquisition_id</code>: numeric acquisition ID</li>
+<li><code>acquisition_description</code>: user-specified acquisition description</li>
+<li><code>acquisition_posx_um</code>, <code>acquisition_posy_um</code>: start position, in micrometers</li>
+<li><code>acquisition_width_um</code>, <code>acquisition_height_um</code>: dimensions, in micrometers</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">IMC file matching</p>
+<p>Matching of .txt files to .mcd files is performed by file name: If a .txt file name starts with the file name of an .mcd file (without extension) AND ends with <code>_{acquisition}.txt</code>, where <code>{acquisition}</code> is the numeric acquisition ID, it is considered matching that particular acquisition from the .mcd file.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">ZIP archives</p>
+<p>If .zip archives are found in the raw data directory, contained .txt/.mcd files will be automatically extracted to a temporary directory, unless disabled using the <code>--no-unzip</code> command-line option. After image extraction, this temporary directory and its contents will be removed.</p>
+</div>
+<p>After image extraction, if the <code>--hpf</code> option is specified, the images are filtered for hot pixels. The value of the <code>--hpf</code> option (<code>50</code> in the example above) determines the <em>hot pixel filtering threshold</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Hot pixel filtering</p>
+<p>Hot pixel filtering works by comparing each pixel to its 8-neighborhood (i.e., neighboring pixels at a <a href="https://en.wikipedia.org/wiki/Chebyshev_distance">Chebyshev distance</a> of 1). If the difference (not: absolute difference) between the pixel and any of its 8 neighbor pixels exceeds a <em>hot pixel filtering threshold</em>, the pixel is set to the maximum neighbor pixel value ("hot pixel-filtered"). In the original implementation of the <em>IMC Segmentation Pipeline</em><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, a <em>hot pixel filtering threshold</em> of 50 is recommended.</p>
+</div>
+<h2 id="external-images">External images</h2>
+<p><em>External images</em> are images preprocessed externally (i.e., without <em>steinbock</em>) that are saved in an image format supported by <a href="https://imageio.readthedocs.io">imageio</a>.</p>
+<p>For convenience, to create a template panel file based on external image data stored at the specified location (defaults to <code>external</code>):</p>
+<pre><code>steinbock preprocess external panel
+</code></pre>
+<p>To convert external image data to <em>steinbock</em>-supported TIFF files (see <a href="../../file-types/#images">File types</a>) and save them to the specified location (defaults to <code>external</code>):</p>
+<pre><code>steinbock preprocess external images
+</code></pre>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: <a href="https://doi.org/10.5281/zenodo.3841961">10.5281/zenodo.3841961</a>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref3:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref4:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../intro/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Introduction
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../classification/" class="md-footer__link md-footer__link--next" aria-label="Next: Pixel classification" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Pixel classification
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.3a4b43e5.min.js"></script>
+      
+    
+  </body>
+</html>
