@@ -101,8 +101,8 @@ def _measure_euclidean_border_distance_neighbors(
             ymin, ymax = np.amin(ys) - dmax_int, np.amax(ys) + dmax_int
             xmin, xmax = np.amin(xs) - dmax_int, np.amax(xs) + dmax_int
             mask_or_patch = mask[
-                max(0, ymin) : min(mask.shape[0], ymax),
-                max(0, xmin) : min(mask.shape[1], xmax),
+                max(0, ymin) : min(mask.shape[0], ymax + 1),
+                max(0, xmin) : min(mask.shape[1], xmax + 1),
             ]
             neighbor_labels = np.unique(mask_or_patch)
             neighbor_labels = neighbor_labels[neighbor_labels != 0]
