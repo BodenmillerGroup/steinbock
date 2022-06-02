@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2022-06-02
+
+  - [#111](https://github.com/BodenmillerGroup/steinbock/issues/111) Include package data in Python package
+  - [#122](https://github.com/BodenmillerGroup/steinbock/issues/122) Use logging instead of `click.echo`
+  - [#123](https://github.com/BodenmillerGroup/steinbock/issues/123) Custom exception handling
+  - [#124](https://github.com/BodenmillerGroup/steinbock/issues/124) Fix neighbor measurement
+  - [#125](https://github.com/BodenmillerGroup/steinbock/issues/125) Upgrade to DeepCell 0.12.0
+  - Various minor bugfixes and improvements
+  - Upgrade all dependencies
+
 ## [0.13.5] - 2022-02-21
 
   - Fix dependency version pinning
@@ -306,6 +316,7 @@ Added:
 Initial release for beta testing
 
 
+[0.14.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.13.5...v0.14.0
 [0.13.5]: https://github.com/BodenmillerGroup/steinbock/compare/v0.13.4...v0.13.5
 [0.13.4]: https://github.com/BodenmillerGroup/steinbock/compare/v0.13.3...v0.13.4
 [0.13.3]: https://github.com/BodenmillerGroup/steinbock/compare/v0.13.2...v0.13.3

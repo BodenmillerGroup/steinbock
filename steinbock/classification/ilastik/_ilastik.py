@@ -1,13 +1,9 @@
-import cv2
-import h5py
 import json
 import logging
-import numpy as np
-
 import shutil
 import subprocess
-
 from enum import IntEnum
+from importlib import resources
 from os import PathLike
 from pathlib import Path
 from typing import (
@@ -23,8 +19,20 @@ from typing import (
 )
 from uuid import uuid1
 
+import cv2
+import h5py
+import numpy as np
+
 from ... import io
 from ..._env import run_captured
+from .._classification import SteinbockClassificationException
+from . import data as ilastik_data
+
+logger = logging.getLogger(__name__.rpartition(".")[0])
+
+
+class SteinbockIlastikClassificationException(SteinbockClassificationException):
+    pass
 
 
 class _VigraAxisInfo(IntEnum):
@@ -37,12 +45,9 @@ class _VigraAxisInfo(IntEnum):
     UNKNOWN_AXIS_TYPE = 64
 
 
-_logger = logging.getLogger(__name__)
-
 _img_dataset_path = "img"
 _crop_dataset_path = "crop"
 _dataset_display_mode = "grayscale"
-_project_file_template = Path(__file__).parent / "data" / "pixel_classifier.ilp"
 _dataset_axistags = json.dumps(
     {
         "axes": [
@@ -163,7 +168,7 @@ def try_create_ilastik_images_from_disk(
             yield Path(img_file), ilastik_img
             del ilastik_img
         except:
-            _logger.exception(f"Error creating Ilastik image from file {img_file}")
+            logger.exception(f"Error creating Ilastik image from file {img_file}")
 
 
 def create_ilastik_crop(
@@ -206,7 +211,7 @@ def try_create_ilastik_crops_from_disk(
             yield Path(ilastik_img_file), ilastik_crop_x, ilastik_crop_y, ilastik_crop
             del ilastik_crop
         except:
-            _logger.exception(
+            logger.exception(
                 f"Error creating Ilastik crop from file {ilastik_img_file}"
             )
 
@@ -216,7 +221,9 @@ def create_and_save_ilastik_project(
     ilastik_project_file: Union[str, PathLike],
 ) -> None:
     dataset_id = str(uuid1())
-    shutil.copyfile(_project_file_template, ilastik_project_file)
+    with resources.open_binary(ilastik_data, "pixel_classifier.ilp") as fsrc:
+        with open(ilastik_project_file, mode="wb") as fdst:
+            shutil.copyfileobj(fsrc, fdst)
     with h5py.File(ilastik_project_file, mode="a", libver=_h5py_libver) as f:
         infos_group = f["Input Data/infos"]
         for i, ilastik_crop_file in enumerate(ilastik_crop_files):
@@ -295,7 +302,9 @@ def try_fix_ilastik_crops_from_disk(
                 elif len(f) == 1:
                     ilastik_crop_dataset = next(iter(f.values()))
                 else:
-                    raise ValueError(f"Unknown dataset: {ilastik_crop_file}")
+                    raise SteinbockIlastikClassificationException(
+                        f"Unknown dataset: {ilastik_crop_file}"
+                    )
                 if ilastik_crop_dataset.attrs.get("steinbock", False):
                     continue
                 ilastik_crop = ilastik_crop_dataset[()]
@@ -308,9 +317,13 @@ def try_fix_ilastik_crops_from_disk(
                         a_json["key"] for a_json in axis_tags_json["axes"]
                     ]
                 else:
-                    raise ValueError(f"Unknown axis order: {ilastik_crop_file}")
+                    raise SteinbockIlastikClassificationException(
+                        f"Unknown axis order: {ilastik_crop_file}"
+                    )
             if len(orig_axis_order) != ilastik_crop.ndim:
-                raise ValueError(f"Incompatible axis order: {ilastik_crop_file}")
+                raise SteinbockIlastikClassificationException(
+                    f"Incompatible axis order: {ilastik_crop_file}"
+                )
             channel_axis_index = orig_axis_order.index("c")
             num_channels = ilastik_crop.size // (
                 ilastik_crop.shape[orig_axis_order.index("x")]
@@ -324,7 +337,9 @@ def try_fix_ilastik_crops_from_disk(
                 )
                 channel_axis_index = next(channel_axis_indices, None)
             if channel_axis_index is None:
-                raise ValueError(f"Unknown channel axis: {ilastik_crop_file}")
+                raise SteinbockIlastikClassificationException(
+                    f"Unknown channel axis: {ilastik_crop_file}"
+                )
             axis_order = orig_axis_order.copy()
             axis_order.insert(0, axis_order.pop(channel_axis_index))
             axis_order.insert(1, axis_order.pop(axis_order.index("y")))
@@ -336,9 +351,7 @@ def try_fix_ilastik_crops_from_disk(
             yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
             del ilastik_crop
         except:
-            _logger.exception(
-                f"Error fixing Ilastik crop from file {ilastik_crop_file}"
-            )
+            logger.exception(f"Error fixing Ilastik crop from file {ilastik_crop_file}")
 
 
 def fix_ilastik_project_file_inplace(
@@ -429,7 +442,7 @@ def _fix_pixel_classification_group_inplace(
 def _fix_prediction_export_group_inplace(
     prediction_export_group: h5py.Group, rel_ilastik_probab_dir: Path
 ) -> None:
-    _logger.warning(
+    logger.warning(
         "When exporting data from the graphical user interface of Ilastik, "
         "please manually edit the export image settings and enable "
         "renormalizing [min, max] from [0.0, 1.0] to [0, 65535]"
@@ -512,9 +525,9 @@ def _fix_raw_data_group_inplace(
 
 
 def _get_hdf5_file(hdf5_path: Union[str, PathLike]) -> Optional[Path]:
-    hdf5_file = hdf5_path
-    while hdf5_file is not None and Path(hdf5_file).suffix != ".h5":
-        hdf5_file = Path(hdf5_file).parent
+    hdf5_file = Path(hdf5_path)
+    while hdf5_file is not None and hdf5_file.suffix != ".h5":
+        hdf5_file = hdf5_file.parent
     return hdf5_file
 
 

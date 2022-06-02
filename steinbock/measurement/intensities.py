@@ -1,18 +1,17 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from enum import Enum
 from functools import partial
 from os import PathLike
 from pathlib import Path
-from scipy.ndimage import measurements
 from typing import Generator, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
+from scipy.ndimage import measurements
 
 from .. import io
 
-
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class IntensityAggregation(Enum):
@@ -66,4 +65,4 @@ def try_measure_intensities_from_disk(
             yield Path(img_file), Path(mask_file), intensities
             del intensities
         except:
-            _logger.exception(f"Error measuring intensities in {img_file}")
+            logger.exception(f"Error measuring intensities in {img_file}")

@@ -1,9 +1,8 @@
-import numpy as np
-import pytest
 import shutil
-
 from pathlib import Path
 
+import numpy as np
+import pytest
 from steinbock import io
 from steinbock.classification import ilastik
 

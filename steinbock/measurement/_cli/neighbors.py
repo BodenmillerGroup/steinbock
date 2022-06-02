@@ -1,9 +1,13 @@
-import click
-
 from pathlib import Path
 
-from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
+import click
+import click_log
+
 from ... import io
+from ..._cli.utils import catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from ..neighbors import NeighborhoodType, try_measure_neighbors_from_disk
 
 _neighborhood_types = {
     "centroids": NeighborhoodType.CENTROID_DISTANCE,
@@ -62,6 +66,8 @@ _neighborhood_types = {
     show_default=True,
     help="Path to the object neighbors output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def neighbors_cmd(
     mask_dir, neighborhood_type_name, metric, dmax, kmax, mmap, neighbors_dir
 ):
@@ -79,5 +85,5 @@ def neighbors_cmd(
             Path(neighbors_dir) / Path(mask_file).name, ".csv"
         )
         io.write_neighbors(neighbors, neighbors_file)
-        click.echo(neighbors_file)
+        logger.info(neighbors_file)
         del neighbors

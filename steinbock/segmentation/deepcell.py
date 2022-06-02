@@ -1,12 +1,11 @@
 import logging
-import numpy as np
-
 from enum import Enum
 from functools import partial
 from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Generator,
@@ -14,19 +13,24 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
-    TYPE_CHECKING,
     Union,
 )
 
+import numpy as np
+
 from .. import io
+from ._segmentation import SteinbockSegmentationException
 
 if TYPE_CHECKING:
-    from tensorflow.keras.models import Model
+    from tensorflow.keras.models import Model  # type: ignore
 
 
-_logger = logging.getLogger(__name__)
-
+logger = logging.getLogger(__name__)
 deepcell_available = find_spec("deepcell") is not None
+
+
+class SteinbockDeepcellSegmentationException(SteinbockSegmentationException):
+    pass
 
 
 def _mesmer_application(model=None):
@@ -44,9 +48,9 @@ def _mesmer_application(model=None):
     ) -> np.ndarray:
         assert img.ndim == 3
         if pixel_size_um is None:
-            raise ValueError("Unknown pixel size")
+            raise SteinbockDeepcellSegmentationException("Unknown pixel size")
         if segmentation_type is None:
-            raise ValueError("Unknown segmentation type")
+            raise SteinbockDeepcellSegmentationException("Unknown segmentation type")
         mask = app.predict(
             np.expand_dims(np.moveaxis(img, 0, -1), 0),
             batch_size=1,
@@ -109,4 +113,4 @@ def try_segment_objects(
             yield Path(img_file), mask
             del img, mask
         except:
-            _logger.exception(f"Error segmenting objects in {img_file}")
+            logger.exception(f"Error segmenting objects in {img_file}")

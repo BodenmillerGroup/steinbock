@@ -1,15 +1,19 @@
 import logging
-import numpy as np
 import re
-
 from os import PathLike
 from pathlib import Path
 from typing import Generator, NamedTuple, Sequence, Tuple, Union
 
+import numpy as np
+
 from .. import io
+from ._utils import SteinbockUtilsException
+
+logger = logging.getLogger(__name__)
 
 
-_logger = logging.getLogger(__name__)
+class SteinbockMosaicsUtilsException(SteinbockUtilsException):
+    pass
 
 
 def try_extract_tiles_from_disk_to_disk(
@@ -25,7 +29,7 @@ def try_extract_tiles_from_disk_to_disk(
             else:
                 img = io.read_image(img_file, native_dtype=True)
             if img.shape[-1] % tile_size == 1 or img.shape[-2] % tile_size == 1:
-                _logger.warning(
+                logger.warning(
                     "Chosen tile size yields UNSTITCHABLE tiles of 1 pixel "
                     f"width or height for image {img_file}"
                 )
@@ -45,7 +49,7 @@ def try_extract_tiles_from_disk_to_disk(
                     del tile
             del img
         except:
-            _logger.exception(f"Error extracting tiles: {img_file}")
+            logger.exception(f"Error extracting tiles: {img_file}")
 
 
 def try_stitch_tiles_from_disk_to_disk(
@@ -68,7 +72,9 @@ def try_stitch_tiles_from_disk_to_disk(
     for tile_file in tile_files:
         m = tile_file_stem_pattern.fullmatch(tile_file.stem)
         if m is None:
-            raise ValueError(f"Malformed tile file name: {tile_file}")
+            raise SteinbockMosaicsUtilsException(
+                f"Malformed tile file name: {tile_file}"
+            )
         img_file_stem = m.group("img_file_stem")
         tile_info = TileInfo(
             Path(tile_file),
@@ -110,4 +116,4 @@ def try_stitch_tiles_from_disk_to_disk(
             yield img_file, img
             del img
         except:
-            _logger.exception(f"Error stitching tiles: {img_file}")
+            logger.exception(f"Error stitching tiles: {img_file}")

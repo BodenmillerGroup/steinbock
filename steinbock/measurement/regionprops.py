@@ -1,16 +1,15 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from os import PathLike
 from pathlib import Path
-from skimage.measure import regionprops_table
 from typing import Generator, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
+from skimage.measure import regionprops_table
 
 from .. import io
 
-
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def measure_regionprops(
@@ -50,4 +49,4 @@ def try_measure_regionprops_from_disk(
             yield Path(img_file), Path(mask_file), regionprops
             del regionprops
         except:
-            _logger.exception(f"Error measuring regionprops in {img_file}")
+            logger.exception(f"Error measuring regionprops in {img_file}")

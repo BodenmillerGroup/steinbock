@@ -1,3 +1,4 @@
-flake8
-black
 -e .
+black
+flake8
+isort

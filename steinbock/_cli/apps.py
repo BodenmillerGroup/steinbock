@@ -1,10 +1,13 @@
-import click
 import sys
-
 from pathlib import Path
 
-from .utils import OrderedClickGroup
+import click
+import click_log
+
 from .._env import check_x11, run_captured, use_ilastik_env
+from .._steinbock import SteinbockException
+from .._steinbock import logger as steinbock_logger
+from .utils import OrderedClickGroup, catch_exception
 
 
 @click.group(name="apps", cls=OrderedClickGroup, help="Third-party applications")
@@ -27,6 +30,8 @@ def apps_cmd_group():
     help="Ilastik binary",
 )
 @click.argument("ilastik_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 @check_x11
 @use_ilastik_env
 def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
@@ -58,6 +63,8 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     help="Path to the CellProfiler plugin directory",
 )
 @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 @check_x11
 def cellprofiler_cmd(cellprofiler_binary, cellprofiler_plugin_dir, cellprofiler_args):
     args = [cellprofiler_binary] + list(cellprofiler_args)

@@ -1,13 +1,16 @@
-import click
-import numpy as np
 import sys
-import tifffile
-
 from pathlib import Path
 
-from .. import cellprofiler
+import click
+import click_log
+import numpy as np
+import tifffile
+
 from ... import io
-from ..._cli.utils import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from .. import cellprofiler
 
 
 @click.group(
@@ -62,6 +65,8 @@ def cellprofiler_cmd_group():
     show_default=True,
     help="Path to the CellProfiler input directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def prepare_cmd(
     img_dir,
     mask_dir,
@@ -83,7 +88,7 @@ def prepare_cmd(
             ],
             imagej=True,
         )
-        click.echo(cp_img_file)
+        logger.info(cp_img_file)
         del img
         mask = io.read_mask(mask_file, native_dtype=True)
         cp_mask_file = Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
@@ -94,12 +99,12 @@ def prepare_cmd(
             ],
             imagej=True,
         )
-        click.echo(cp_mask_file)
+        logger.info(cp_mask_file)
         del mask
     cellprofiler.create_and_save_measurement_pipeline(
         measurement_pipeline_file, len(panel.index)
     )
-    click.echo(measurement_pipeline_file)
+    logger.info(measurement_pipeline_file)
 
 
 @cellprofiler_cmd_group.command(
@@ -145,6 +150,8 @@ def prepare_cmd(
     show_default=True,
     help="Path to the CellProfiler output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def run_cmd(
     cellprofiler_binary,
     cellprofiler_plugin_dir,

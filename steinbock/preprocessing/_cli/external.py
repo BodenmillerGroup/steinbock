@@ -1,13 +1,15 @@
-import click
-import numpy as np
-import pandas as pd
-import sys
-
 from pathlib import Path
 
-from .. import external
+import click
+import click_log
+import numpy as np
+import pandas as pd
+
 from ... import io
-from ..._cli import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from .. import external
 
 
 @click.group(
@@ -38,11 +40,13 @@ def external_cmd_group():
     show_default=True,
     help="Path to the panel output file",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def panel_cmd(ext_img_dir, panel_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     panel = external.create_panel_from_image_files(ext_img_files)
     io.write_panel(panel, panel_file)
-    click.echo(panel_file)
+    logger.info(panel_file)
 
 
 @external_cmd_group.command(name="images", help="Extract external images")
@@ -85,6 +89,8 @@ def panel_cmd(ext_img_dir, panel_file):
     show_default=True,
     help="Path to the image information output file",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     channel_indices = None
     if Path(panel_file).exists():
@@ -99,10 +105,9 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
         # to avoid advanced indexing creating a copy of img (relevant for mmap)
         if channel_indices is not None:
             if max(channel_indices) > img.shape[0]:
-                click.echo(
-                    f"WARNING: Channel indices out of bounds for file "
-                    f"{ext_img_file} with {img.shape[0]} channels",
-                    file=sys.stderr,
+                logger.warning(
+                    f"Channel indices out of bounds for file {ext_img_file} "
+                    f"with {img.shape[0]} channels"
                 )
                 continue
             cur_channel_indices = channel_indices
@@ -131,7 +136,7 @@ def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
             "num_channels": img.shape[0],
         }
         image_info_data.append(image_info_row)
-        click.echo(img_file)
+        logger.info(img_file)
         del img
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)

@@ -1,10 +1,14 @@
-import click
-import numpy as np
-
 from pathlib import Path
 
-from .. import deepcell
+import click
+import click_log
+import numpy as np
+
 from ... import io
+from ..._cli.utils import catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from .. import deepcell
 
 if deepcell.deepcell_available:
     import yaml
@@ -119,6 +123,8 @@ _applications = {
     show_default=True,
     help="Path to the mask output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def deepcell_cmd(
     application_name,
     model_path_or_name,
@@ -143,7 +149,7 @@ def deepcell_cmd(
     img_files = io.list_image_files(img_dir)
     model = None
     if model_path_or_name is not None:
-        from tensorflow.keras.models import load_model
+        from tensorflow.keras.models import load_model  # type: ignore
 
         if Path(model_path_or_name).exists():
             model = load_model(model_path_or_name, compile=False)
@@ -176,4 +182,4 @@ def deepcell_cmd(
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
-        click.echo(mask_file)
+        logger.info(mask_file)

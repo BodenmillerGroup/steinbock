@@ -1,8 +1,12 @@
-import click
-
 from pathlib import Path
 
+import click
+import click_log
+
 from ... import io
+from ..._cli.utils import catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
 from .. import matching
 
 
@@ -23,6 +27,8 @@ from .. import matching
     required=True,
     help="Path to the object table CSV output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def match_cmd(masks1, masks2, mmap, csv_dir):
     if Path(masks1).is_file() and Path(masks2).is_file():
         mask_files1 = [Path(masks1)]
@@ -37,5 +43,5 @@ def match_cmd(masks1, masks2, mmap, csv_dir):
         csv_file = io._as_path_with_suffix(Path(csv_dir) / mask_file1.name, ".csv")
         df.columns = [Path(masks1).name, Path(masks2).name]
         df.to_csv(csv_file, index=False)
-        click.echo(csv_file)
+        logger.info(csv_file)
         del df

@@ -1,10 +1,12 @@
-import click
 import os
+import logging
 import subprocess
 import sys
-
 from functools import wraps
 from pathlib import Path
+
+
+logger = logging.getLogger(__name__.rpartition(".")[0])
 
 
 def run_captured(
@@ -30,19 +32,13 @@ def check_x11(func):
     @wraps(func)
     def check_x11_wrapper(*args, **kwargs):
         if "DISPLAY" not in os.environ:
-            click.echo("WARNING: X11 required; did you set $DISPLAY?", file=sys.stderr)
+            logger.warning("X11 required; did you set $DISPLAY?")
         x11_path = Path("/tmp/.X11-unix")
         if not x11_path.exists():
-            click.echo(
-                f"WARNING: X11 required; did you bind-mount {x11_path}?",
-                file=sys.stderr,
-            )
+            logger.warning(f"X11 required; did you bind-mount {x11_path}?")
         xauth_path = Path("~/.Xauthority").expanduser()
         if not xauth_path.exists():
-            click.echo(
-                f"WARNING: X11 required; did you bind-mount {xauth_path}?",
-                file=sys.stderr,
-            )
+            logger.warning(f"X11 required; did you bind-mount {xauth_path}?")
         return func(*args, **kwargs)
 
     return check_x11_wrapper

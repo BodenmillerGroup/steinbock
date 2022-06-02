@@ -1,21 +1,15 @@
 import logging
-import numpy as np
-import pandas as pd
 import re
-
 from os import PathLike
 from pathlib import Path
+from typing import Generator, List, Optional, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
 from scipy.ndimage import maximum_filter
-from typing import (
-    Generator,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-)
 
 from .. import io
+from ._preprocessing import SteinbockPreprocessingException
 
 try:
     from readimc import MCDFile, TXTFile
@@ -26,7 +20,11 @@ except:
     imc_available = False
 
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+
+class SteinbockIMCPreprocessingException(SteinbockPreprocessingException):
+    pass
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -59,14 +57,18 @@ def create_panel_from_imc_panel(
     )
     for required_col in (imc_panel_channel_col, imc_panel_name_col):
         if required_col not in imc_panel:
-            raise ValueError(f"Missing '{required_col}' column in IMC panel")
+            raise SteinbockIMCPreprocessingException(
+                f"Missing '{required_col}' column in IMC panel"
+            )
     for notnan_col in (
         imc_panel_channel_col,
         imc_panel_keep_col,
         imc_panel_ilastik_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
-            raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
+            raise SteinbockIMCPreprocessingException(
+                f"Missing values for '{notnan_col}' in IMC panel"
+            )
     rename_columns = {
         imc_panel_channel_col: "channel",
         imc_panel_name_col: "name",
@@ -182,7 +184,7 @@ def try_preprocess_images_from_disk(
                                 acquisition, channel_names
                             )
                             if isinstance(channel_ind, str):
-                                _logger.warning(
+                                logger.warning(
                                     f"Channel {channel_ind} not found for "
                                     f"acquisition {acquisition.id} in file "
                                     "{mcd_file}; skipping acquisition"
@@ -192,13 +194,13 @@ def try_preprocess_images_from_disk(
                         recovered = False
                         try:
                             img = f_mcd.read_acquisition(acquisition)
-                        except IOError:
-                            _logger.warning(
+                        except IOError as e:
+                            logger.warning(
                                 f"Error reading acquisition {acquisition.id} "
-                                f"from file {mcd_file}"
+                                f"from file {mcd_file}: {e}"
                             )
                             if matched_txt_file is not None:
-                                _logger.warning(
+                                logger.warning(
                                     f"Restoring from file {matched_txt_file}"
                                 )
                                 try:
@@ -209,7 +211,7 @@ def try_preprocess_images_from_disk(
                                                 f_txt, channel_names
                                             )
                                             if isinstance(channel_ind, str):
-                                                _logger.warning(
+                                                logger.warning(
                                                     f"Channel {channel_ind} "
                                                     "not found in file "
                                                     f"{matched_txt_file}; "
@@ -217,9 +219,9 @@ def try_preprocess_images_from_disk(
                                                 )
                                                 continue
                                     recovered = True
-                                except IOError:
-                                    _logger.exception(
-                                        "Error reading file " f"{matched_txt_file}"
+                                except IOError as e2:
+                                    logger.error(
+                                        f"Error reading file {matched_txt_file}: {e2}"
                                     )
                         if img is not None:  # exceptions ...
                             if channel_ind is not None:
@@ -236,7 +238,7 @@ def try_preprocess_images_from_disk(
                             )
                             del img
         except:
-            _logger.exception(f"Error reading file {mcd_file}")
+            logger.exception(f"Error reading file {mcd_file}")
     while len(unmatched_txt_files) > 0:
         txt_file = unmatched_txt_files.pop(0)
         try:
@@ -245,7 +247,7 @@ def try_preprocess_images_from_disk(
                 if channel_names is not None:
                     channel_ind = _get_channel_indices(f, channel_names)
                     if isinstance(channel_ind, str):
-                        _logger.warning(
+                        logger.warning(
                             f"Channel {channel_ind} not found in file "
                             f"{txt_file}; skipping acquisition"
                         )
@@ -257,7 +259,7 @@ def try_preprocess_images_from_disk(
             yield Path(txt_file), None, img, None, False
             del img
         except:
-            _logger.exception(f"Error reading file {txt_file}")
+            logger.exception(f"Error reading file {txt_file}")
 
 
 def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
@@ -303,7 +305,7 @@ def _match_txt_file(
     if len(filtered_txt_files) == 1:
         return filtered_txt_files[0]
     if len(filtered_txt_files) > 1:
-        _logger.warning(
+        logger.warning(
             "Ambiguous txt file matching for %s: %s; continuing without a match",
             mcd_file,
             ", ".join(filtered_txt_files),

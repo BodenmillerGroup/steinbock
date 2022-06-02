@@ -1,20 +1,24 @@
 import logging
-import numpy as np
-import pandas as pd
-
 from enum import Enum
 from functools import partial
 from os import PathLike
 from pathlib import Path
+from typing import Generator, Optional, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial.distance import pdist, squareform
 from skimage.measure import regionprops
-from typing import Generator, Optional, Sequence, Tuple, Union
 
 from .. import io
+from ._measurement import SteinbockMeasurementException
+
+logger = logging.getLogger(__name__)
 
 
-_logger = logging.getLogger(__name__)
+class SteinbockNeighborsMeasurementException(SteinbockMeasurementException):
+    pass
 
 
 def _expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
@@ -37,7 +41,7 @@ def _measure_centroid_distance_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric is None:
-        raise ValueError("Metric is required")
+        raise SteinbockNeighborsMeasurementException("Metric is required")
     props = regionprops(mask)
     labels = np.array([p.label for p in props])
     centroids = np.array([p.centroid for p in props])
@@ -65,7 +69,9 @@ def _measure_centroid_distance_neighbors(
             np.concatenate((distances, distances)),
         )
     else:
-        raise ValueError("Specify either dmax or kmax (or both)")
+        raise SteinbockNeighborsMeasurementException(
+            "Specify either dmax or kmax (or both)"
+        )
     return pd.DataFrame(
         data={
             "Object": np.asarray(labels[indices1], dtype=io.mask_dtype),
@@ -82,7 +88,7 @@ def _measure_euclidean_border_distance_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric not in (None, "euclidean"):
-        raise ValueError("Metric has to be euclidean")
+        raise SteinbockNeighborsMeasurementException("Metric has to be euclidean")
     labels1 = []
     labels2 = []
     distances = []
@@ -95,8 +101,8 @@ def _measure_euclidean_border_distance_neighbors(
             ymin, ymax = np.amin(ys) - dmax_int, np.amax(ys) + dmax_int
             xmin, xmax = np.amin(xs) - dmax_int, np.amax(xs) + dmax_int
             mask_or_patch = mask[
-                max(0, ymin) : min(mask.shape[0], ymax),
-                max(0, xmin) : min(mask.shape[1], xmax),
+                max(0, ymin) : min(mask.shape[0], ymax + 1),
+                max(0, xmin) : min(mask.shape[1], xmax + 1),
             ]
             neighbor_labels = np.unique(mask_or_patch)
             neighbor_labels = neighbor_labels[neighbor_labels != 0]
@@ -137,11 +143,17 @@ def _measure_euclidean_pixel_expansion_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric not in (None, "euclidean"):
-        raise ValueError("Metric has to be Euclidean for pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "Metric has to be Euclidean for pixel expansion"
+        )
     if dmax is None:
-        raise ValueError("Maximum distance required for pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "Maximum distance required for pixel expansion"
+        )
     if kmax is not None:
-        raise ValueError("k-nearest neighbors is not supported by pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "k-nearest neighbors is not supported by pixel expansion"
+        )
     mask = _expand_mask_euclidean(mask, dmax)
     neighbors = _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
     neighbors["Distance"] = np.nan
@@ -187,4 +199,4 @@ def try_measure_neighbors_from_disk(
             yield Path(mask_file), neighbors
             del neighbors
         except:
-            _logger.exception(f"Error measuring neighbors in {mask_file}")
+            logger.exception(f"Error measuring neighbors in {mask_file}")

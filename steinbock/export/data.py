@@ -1,17 +1,16 @@
 import logging
-import numpy as np
-import pandas as pd
-
-from anndata import AnnData
 from os import PathLike
 from pathlib import Path
-from scipy.sparse import csr_matrix
 from typing import Generator, Optional, Sequence, Tuple, Union
+
+import numpy as np
+import pandas as pd
+from anndata import AnnData
+from scipy.sparse import csr_matrix
 
 from .. import io
 
-
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def try_convert_to_dataframe_from_disk(
@@ -32,7 +31,7 @@ def try_convert_to_dataframe_from_disk(
             yield img_file_name, data_files, df
             del df
         except:
-            _logger.exception(
+            logger.exception(
                 f"Error creating DataFrame for image {img_file_name}; " "skipping image"
             )
 
@@ -101,7 +100,7 @@ def try_convert_to_anndata_from_disk(
                 obs.index = [f"Object {object_id}" for object_id in x.index]
             if var is not None:
                 var.index = x.columns.astype(str).tolist()
-            adata = AnnData(X=x.values, obs=obs, var=var)
+            adata = AnnData(X=x.values, obs=obs, var=var, dtype=np.float32)
             if neighbors_file is not None:
                 neighbors = io.read_neighbors(neighbors_file)
                 row_ind = [x.index.get_loc(a) for a in neighbors["Object"]]
@@ -127,7 +126,7 @@ def try_convert_to_anndata_from_disk(
             )
             del x, obs, var, adata
         except:
-            _logger.exception(
+            logger.exception(
                 f"Error creating AnnData object for image {img_file_name}; "
                 "skipping image"
             )

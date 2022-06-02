@@ -1,10 +1,14 @@
-import click
-import networkx as nx
-
 from pathlib import Path
 
-from .. import graphs
+import click
+import click_log
+import networkx as nx
+
 from ... import io
+from ..._cli.utils import catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from .. import graphs
 
 
 @click.command(name="graphs", help="Export neighbors as spatial object graphs")
@@ -39,6 +43,8 @@ from ... import io
     show_default=True,
     help="Path to the networkx output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
     neighbors_files = io.list_neighbors_files(neighbors_dir)
     data_file_lists = [
@@ -63,4 +69,4 @@ def graphs_cmd(neighbors_dir, data_dirs, graph_format, graph_dir):
             nx.write_gml(graph, str(graph_file))
         else:
             raise NotImplementedError()
-        click.echo(graph_file)
+        logger.info(graph_file)

@@ -1,10 +1,13 @@
-import click
-
 from pathlib import Path
 
-from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
-from ... import io
+import click
+import click_log
 
+from ... import io
+from ..._cli.utils import catch_exception, logger
+from ..._steinbock import SteinbockException
+from ..._steinbock import logger as steinbock_logger
+from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
 
 _intensity_aggregations = {
     "sum": IntensityAggregation.SUM,
@@ -65,6 +68,8 @@ _intensity_aggregations = {
     show_default=True,
     help="Path to the object intensities output directory",
 )
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def intensities_cmd(
     img_dir,
     mask_dir,
@@ -89,5 +94,5 @@ def intensities_cmd(
             Path(intensities_dir) / img_file.name, ".csv"
         )
         io.write_data(intensities, intensities_file)
-        click.echo(intensities_file)
+        logger.info(intensities_file)
         del intensities

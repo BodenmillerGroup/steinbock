@@ -1,4 +1,4 @@
-ARG TENSORFLOW_VERSION=2.5.1
+ARG TENSORFLOW_VERSION=2.8.0
 ARG TENSORFLOW_SUFFIX=
 
 FROM tensorflow/tensorflow:${TENSORFLOW_VERSION}${TENSORFLOW_SUFFIX}
@@ -51,7 +51,7 @@ RUN mkdir /opt/ilastik && \
 RUN apt-get install -y libmysqlclient-dev libnotify-dev libsdl2-dev libwebkitgtk-3.0 openjdk-11-jdk-headless
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 
-RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
+RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     python -m pip install --upgrade numpy wheel wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 
@@ -67,13 +67,12 @@ RUN mkdir /opt/cellprofiler_plugins && \
 COPY requirements.txt /app/steinbock/requirements.txt
 COPY requirements_deepcell${TENSORFLOW_SUFFIX}.txt /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt
 RUN python -m pip install --upgrade -r /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt && \
-    python -m pip install --no-deps deepcell==0.11.0 && \
+    python -m pip install --no-deps deepcell==0.12.0 && \
     python -m pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
 RUN mkdir -p /opt/keras/models && \
-    curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-7.tar.gz | tar -C /opt/keras/models -xzf - && \
-    rm /opt/keras/models/._MultiplexSegmentation
+    curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
 
 COPY conftest.py MANIFEST.in pyproject.toml setup.cfg setup.py /app/steinbock/
 COPY steinbock /app/steinbock/steinbock/
