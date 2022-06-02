@@ -4,7 +4,8 @@ from pathlib import Path
 import click
 import click_log
 
-from ..._cli.utils import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import cellprofiler
 
@@ -30,6 +31,7 @@ def cellprofiler_cmd_group():
     help="Path to the CellProfiler segmentation pipeline output file",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def prepare_cmd(segmentation_pipeline_file):
     cellprofiler.create_and_save_segmentation_pipeline(segmentation_pipeline_file)
     click.echo(segmentation_pipeline_file)
@@ -79,6 +81,7 @@ def prepare_cmd(segmentation_pipeline_file):
     help="Path to the mask output directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def run_cmd(
     cellprofiler_binary,
     cellprofiler_plugin_dir,

@@ -5,6 +5,8 @@ import click_log
 import numpy as np
 
 from ... import io
+from ..._cli.utils import catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import deepcell
 
@@ -122,6 +124,7 @@ _applications = {
     help="Path to the mask output directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def deepcell_cmd(
     application_name,
     model_path_or_name,

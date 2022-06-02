@@ -4,6 +4,8 @@ import click
 import click_log
 
 from ... import io
+from ..._cli.utils import catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from ..intensities import IntensityAggregation, try_measure_intensities_from_disk
 
@@ -67,6 +69,7 @@ _intensity_aggregations = {
     help="Path to the object intensities output directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def intensities_cmd(
     img_dir,
     mask_dir,

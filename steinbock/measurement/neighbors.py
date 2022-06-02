@@ -12,8 +12,13 @@ from scipy.spatial.distance import pdist, squareform
 from skimage.measure import regionprops
 
 from .. import io
+from ._measurement import SteinbockMeasurementException
 
 logger = logging.getLogger(__name__)
+
+
+class SteinbockNeighborsMeasurementException(SteinbockMeasurementException):
+    pass
 
 
 def _expand_mask_euclidean(mask: np.ndarray, dmax: float) -> np.ndarray:
@@ -36,7 +41,7 @@ def _measure_centroid_distance_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric is None:
-        raise ValueError("Metric is required")
+        raise SteinbockNeighborsMeasurementException("Metric is required")
     props = regionprops(mask)
     labels = np.array([p.label for p in props])
     centroids = np.array([p.centroid for p in props])
@@ -64,7 +69,9 @@ def _measure_centroid_distance_neighbors(
             np.concatenate((distances, distances)),
         )
     else:
-        raise ValueError("Specify either dmax or kmax (or both)")
+        raise SteinbockNeighborsMeasurementException(
+            "Specify either dmax or kmax (or both)"
+        )
     return pd.DataFrame(
         data={
             "Object": np.asarray(labels[indices1], dtype=io.mask_dtype),
@@ -81,7 +88,7 @@ def _measure_euclidean_border_distance_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric not in (None, "euclidean"):
-        raise ValueError("Metric has to be euclidean")
+        raise SteinbockNeighborsMeasurementException("Metric has to be euclidean")
     labels1 = []
     labels2 = []
     distances = []
@@ -136,11 +143,17 @@ def _measure_euclidean_pixel_expansion_neighbors(
     kmax: Optional[int] = None,
 ) -> pd.DataFrame:
     if metric not in (None, "euclidean"):
-        raise ValueError("Metric has to be Euclidean for pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "Metric has to be Euclidean for pixel expansion"
+        )
     if dmax is None:
-        raise ValueError("Maximum distance required for pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "Maximum distance required for pixel expansion"
+        )
     if kmax is not None:
-        raise ValueError("k-nearest neighbors is not supported by pixel expansion")
+        raise SteinbockNeighborsMeasurementException(
+            "k-nearest neighbors is not supported by pixel expansion"
+        )
     mask = _expand_mask_euclidean(mask, dmax)
     neighbors = _measure_euclidean_border_distance_neighbors(mask, dmax=1.0)
     neighbors["Distance"] = np.nan

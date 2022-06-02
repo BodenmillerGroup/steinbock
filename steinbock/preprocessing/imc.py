@@ -9,6 +9,7 @@ import pandas as pd
 from scipy.ndimage import maximum_filter
 
 from .. import io
+from ._preprocessing import SteinbockPreprocessingException
 
 try:
     from readimc import MCDFile, TXTFile
@@ -20,6 +21,10 @@ except:
 
 
 logger = logging.getLogger(__name__)
+
+
+class SteinbockIMCPreprocessingException(SteinbockPreprocessingException):
+    pass
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
@@ -52,14 +57,18 @@ def create_panel_from_imc_panel(
     )
     for required_col in (imc_panel_channel_col, imc_panel_name_col):
         if required_col not in imc_panel:
-            raise ValueError(f"Missing '{required_col}' column in IMC panel")
+            raise SteinbockIMCPreprocessingException(
+                f"Missing '{required_col}' column in IMC panel"
+            )
     for notnan_col in (
         imc_panel_channel_col,
         imc_panel_keep_col,
         imc_panel_ilastik_col,
     ):
         if notnan_col in imc_panel and imc_panel[notnan_col].isna().any():
-            raise ValueError(f"Missing values for '{notnan_col}' in IMC panel")
+            raise SteinbockIMCPreprocessingException(
+                f"Missing values for '{notnan_col}' in IMC panel"
+            )
     rename_columns = {
         imc_panel_channel_col: "channel",
         imc_panel_name_col: "name",

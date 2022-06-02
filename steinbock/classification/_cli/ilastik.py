@@ -7,8 +7,9 @@ import click_log
 import numpy as np
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception
 from ..._env import use_ilastik_env
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import ilastik
 
@@ -106,6 +107,7 @@ def ilastik_cmd_group():
 )
 @click.option("--seed", "seed", type=click.INT, help="Random seed")
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def prepare_cmd(
     ilastik_project_file,
     img_dir,
@@ -220,6 +222,7 @@ def prepare_cmd(
     help="Memory limit (in megabytes)",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 @use_ilastik_env
 def run_cmd(
     ilastik_binary,
@@ -285,6 +288,7 @@ def run_cmd(
     help="Axis order of the existing crops (e.g. zyxc)",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def fix_cmd(
     ilastik_project_file,
     ilastik_crop_dir,

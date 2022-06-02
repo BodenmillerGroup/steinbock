@@ -7,8 +7,13 @@ from typing import Generator, NamedTuple, Sequence, Tuple, Union
 import numpy as np
 
 from .. import io
+from ._utils import SteinbockUtilsException
 
 logger = logging.getLogger(__name__)
+
+
+class SteinbockMosaicsUtilsException(SteinbockUtilsException):
+    pass
 
 
 def try_extract_tiles_from_disk_to_disk(
@@ -67,7 +72,9 @@ def try_stitch_tiles_from_disk_to_disk(
     for tile_file in tile_files:
         m = tile_file_stem_pattern.fullmatch(tile_file.stem)
         if m is None:
-            raise ValueError(f"Malformed tile file name: {tile_file}")
+            raise SteinbockMosaicsUtilsException(
+                f"Malformed tile file name: {tile_file}"
+            )
         img_file_stem = m.group("img_file_stem")
         tile_info = TileInfo(
             Path(tile_file),

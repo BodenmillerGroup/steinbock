@@ -1,10 +1,12 @@
 from ._ilastik import (
+    SteinbockIlastikClassificationException,
     create_and_save_ilastik_project,
     create_ilastik_crop,
     create_ilastik_image,
     fix_ilastik_project_file_inplace,
     list_ilastik_crop_files,
     list_ilastik_image_files,
+    logger,
     read_ilastik_crop,
     read_ilastik_image,
     run_pixel_classification,
@@ -16,12 +18,14 @@ from ._ilastik import (
 )
 
 __all__ = [
+    "SteinbockIlastikClassificationException",
     "create_and_save_ilastik_project",
     "create_ilastik_crop",
     "create_ilastik_image",
     "fix_ilastik_project_file_inplace",
     "list_ilastik_crop_files",
     "list_ilastik_image_files",
+    "logger",
     "read_ilastik_crop",
     "read_ilastik_image",
     "run_pixel_classification",

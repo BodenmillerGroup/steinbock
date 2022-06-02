@@ -25,9 +25,14 @@ import numpy as np
 
 from ... import io
 from ..._env import run_captured
+from .._classification import SteinbockClassificationException
 from . import data as ilastik_data
 
 logger = logging.getLogger(__name__.rpartition(".")[0])
+
+
+class SteinbockIlastikClassificationException(SteinbockClassificationException):
+    pass
 
 
 class _VigraAxisInfo(IntEnum):
@@ -297,7 +302,9 @@ def try_fix_ilastik_crops_from_disk(
                 elif len(f) == 1:
                     ilastik_crop_dataset = next(iter(f.values()))
                 else:
-                    raise ValueError(f"Unknown dataset: {ilastik_crop_file}")
+                    raise SteinbockIlastikClassificationException(
+                        f"Unknown dataset: {ilastik_crop_file}"
+                    )
                 if ilastik_crop_dataset.attrs.get("steinbock", False):
                     continue
                 ilastik_crop = ilastik_crop_dataset[()]
@@ -310,9 +317,13 @@ def try_fix_ilastik_crops_from_disk(
                         a_json["key"] for a_json in axis_tags_json["axes"]
                     ]
                 else:
-                    raise ValueError(f"Unknown axis order: {ilastik_crop_file}")
+                    raise SteinbockIlastikClassificationException(
+                        f"Unknown axis order: {ilastik_crop_file}"
+                    )
             if len(orig_axis_order) != ilastik_crop.ndim:
-                raise ValueError(f"Incompatible axis order: {ilastik_crop_file}")
+                raise SteinbockIlastikClassificationException(
+                    f"Incompatible axis order: {ilastik_crop_file}"
+                )
             channel_axis_index = orig_axis_order.index("c")
             num_channels = ilastik_crop.size // (
                 ilastik_crop.shape[orig_axis_order.index("x")]
@@ -326,7 +337,9 @@ def try_fix_ilastik_crops_from_disk(
                 )
                 channel_axis_index = next(channel_axis_indices, None)
             if channel_axis_index is None:
-                raise ValueError(f"Unknown channel axis: {ilastik_crop_file}")
+                raise SteinbockIlastikClassificationException(
+                    f"Unknown channel axis: {ilastik_crop_file}"
+                )
             axis_order = orig_axis_order.copy()
             axis_order.insert(0, axis_order.pop(channel_axis_index))
             axis_order.insert(1, axis_order.pop(axis_order.index("y")))

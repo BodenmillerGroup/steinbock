@@ -19,6 +19,7 @@ from typing import (
 import numpy as np
 
 from .. import io
+from ._segmentation import SteinbockSegmentationException
 
 if TYPE_CHECKING:
     from tensorflow.keras.models import Model  # type: ignore
@@ -26,6 +27,10 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 deepcell_available = find_spec("deepcell") is not None
+
+
+class SteinbockDeepcellSegmentationException(SteinbockSegmentationException):
+    pass
 
 
 def _mesmer_application(model=None):
@@ -43,9 +48,9 @@ def _mesmer_application(model=None):
     ) -> np.ndarray:
         assert img.ndim == 3
         if pixel_size_um is None:
-            raise ValueError("Unknown pixel size")
+            raise SteinbockDeepcellSegmentationException("Unknown pixel size")
         if segmentation_type is None:
-            raise ValueError("Unknown segmentation type")
+            raise SteinbockDeepcellSegmentationException("Unknown segmentation type")
         mask = app.predict(
             np.expand_dims(np.moveaxis(img, 0, -1), 0),
             batch_size=1,

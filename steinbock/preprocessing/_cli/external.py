@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 
 from ... import io
-from ..._cli import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import external
 
@@ -41,6 +42,7 @@ def external_cmd_group():
     help="Path to the panel output file",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def panel_cmd(ext_img_dir, panel_file):
     ext_img_files = external.list_image_files(ext_img_dir)
     panel = external.create_panel_from_image_files(ext_img_files)
@@ -89,6 +91,7 @@ def panel_cmd(ext_img_dir, panel_file):
     help="Path to the image information output file",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     channel_indices = None
     if Path(panel_file).exists():

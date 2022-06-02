@@ -8,8 +8,13 @@ import numpy as np
 import pandas as pd
 
 from .. import io
+from ._preprocessing import SteinbockPreprocessingException
 
 logger = logging.getLogger(__name__)
+
+
+class SteinbockExternalPreprocessingException(SteinbockPreprocessingException):
+    pass
 
 
 def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
@@ -27,7 +32,9 @@ def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
     if ext_img.ndim == 2:
         ext_img = ext_img[np.newaxis, :, :]
     elif ext_img.ndim != 3:
-        raise ValueError(f"Unsupported shape {orig_img_shape} for image {ext_img_file}")
+        raise SteinbockExternalPreprocessingException(
+            f"Unsupported shape {orig_img_shape} for image {ext_img_file}"
+        )
     return ext_img
 
 
@@ -47,7 +54,7 @@ def create_panel_from_image_files(
         except:
             pass  # skipped intentionally
     if num_channels is None:
-        raise IOError("No valid images found")
+        raise SteinbockExternalPreprocessingException("No valid images found")
     panel = pd.DataFrame(
         data={
             "channel": range(1, num_channels + 1),

@@ -1,14 +1,3 @@
-import click
+from ._cli import utils_cmd_group
 
-from .matching import match_cmd
-from .mosaics import mosaics_cmd_group
-from ..._cli.utils import OrderedClickGroup
-
-
-@click.group(name="utils", cls=OrderedClickGroup, help="Various utilities and tools")
-def utils_cmd_group():
-    pass
-
-
-utils_cmd_group.add_command(match_cmd)
-utils_cmd_group.add_command(mosaics_cmd_group)
+__all__ = ["utils_cmd_group"]

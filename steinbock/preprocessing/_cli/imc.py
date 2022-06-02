@@ -11,7 +11,8 @@ import click_log
 import pandas as pd
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import imc
 
@@ -93,6 +94,7 @@ def imc_cmd_group():
     help="Path to the panel output file",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def panel_cmd(
     imc_panel_file,
     imc_panel_channel_col,
@@ -184,6 +186,7 @@ def panel_cmd(
     help="Path to the image information output file",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file):
     channel_names = None
     if Path(panel_file).exists():

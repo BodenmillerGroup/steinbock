@@ -8,6 +8,8 @@ from anndata import concat as anndata_concat
 from fcswrite import write_fcs
 
 from ... import io
+from ..._cli.utils import catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import data
 
@@ -29,6 +31,7 @@ from .. import data
     help="Path to the CSV output file or directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -86,6 +89,7 @@ def csv_cmd(data_dirs, concatenate, csv_file_or_dir):
     help="Path to the FCS output file or directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     if not data_dirs:
         return  # empty variadic argument, gracefully degrade into noop
@@ -191,6 +195,7 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     help="Path to the AnnData output file or directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def anndata_cmd(
     intensities_dir,
     data_dirs,

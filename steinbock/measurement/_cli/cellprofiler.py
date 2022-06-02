@@ -7,7 +7,8 @@ import numpy as np
 import tifffile
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup
+from ..._cli.utils import OrderedClickGroup, catch_exception
+from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import cellprofiler
 
@@ -65,6 +66,7 @@ def cellprofiler_cmd_group():
     help="Path to the CellProfiler input directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def prepare_cmd(
     img_dir,
     mask_dir,
@@ -149,6 +151,7 @@ def prepare_cmd(
     help="Path to the CellProfiler output directory",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
 def run_cmd(
     cellprofiler_binary,
     cellprofiler_plugin_dir,
