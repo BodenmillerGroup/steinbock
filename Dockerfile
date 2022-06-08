@@ -14,7 +14,9 @@ ARG TZ=Europe/Zurich
 
 ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
 
-RUN apt-get update && apt-get install -y build-essential git locales python3.8 python3.8-dev python3.8-venv
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub && \
+    apt-get update && \
+    apt-get install -y build-essential git locales python3.8 python3.8-dev python3.8-venv
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:en" LC_ALL="en_US.UTF-8"
