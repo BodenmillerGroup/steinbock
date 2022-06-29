@@ -69,7 +69,7 @@ RUN mkdir /opt/cellprofiler_plugins && \
 COPY requirements.txt /app/steinbock/requirements.txt
 COPY requirements_deepcell${TENSORFLOW_SUFFIX}.txt /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt
 RUN python -m pip install --upgrade -r /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt && \
-    python -m pip install --no-deps deepcell==0.12.0 && \
+    python -m pip install --no-deps deepcell==0.12.2 && \
     python -m pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
