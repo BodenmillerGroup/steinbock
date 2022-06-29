@@ -7,7 +7,7 @@ from typing import Generator, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from scipy.ndimage import measurements
+import scipy.ndimage
 
 from .. import io
 
@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 class IntensityAggregation(Enum):
     """"""
 
-    SUM = partial(measurements.sum_labels)
-    MIN = partial(measurements.minimum)
-    MAX = partial(measurements.maximum)
-    MEAN = partial(measurements.mean)
-    MEDIAN = partial(measurements.median)
-    STD = partial(measurements.standard_deviation)
-    VAR = partial(measurements.variance)
+    SUM = partial(scipy.ndimage.sum_labels)
+    MIN = partial(scipy.ndimage.minimum)
+    MAX = partial(scipy.ndimage.maximum)
+    MEAN = partial(scipy.ndimage.mean)
+    MEDIAN = partial(scipy.ndimage.median)
+    STD = partial(scipy.ndimage.standard_deviation)
+    VAR = partial(scipy.ndimage.variance)
 
 
 def measure_intensites(
