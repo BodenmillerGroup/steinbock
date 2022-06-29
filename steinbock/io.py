@@ -183,7 +183,7 @@ def write_image(
     tifffile.imwrite(
         img_file,
         data=img[np.newaxis, np.newaxis, :, :, :, np.newaxis],
-        imagej=True,
+        imagej=img.dtype in (np.uint8, np.uint16, np.float32),
     )
 
 
@@ -293,7 +293,7 @@ def write_mask(
     tifffile.imwrite(
         mask_file,
         data=mask[np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis],
-        imagej=True,
+        imagej=mask.dtype in (np.uint8, np.uint16, np.float32),
     )
 
 

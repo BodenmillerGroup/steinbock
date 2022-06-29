@@ -80,24 +80,26 @@ def prepare_cmd(
     Path(cpdata_dir).mkdir(exist_ok=True)
     for img_file, mask_file in zip(img_files, mask_files):
         img = io.read_image(img_file, native_dtype=True)
+        cp_img = io._to_dtype(img, np.uint16)[
+            np.newaxis, np.newaxis, :, :, :, np.newaxis
+        ]
         cp_img_file = Path(cpdata_dir) / img_file.name
         tifffile.imwrite(
             cp_img_file,
-            data=io._to_dtype(img, np.uint16)[
-                np.newaxis, np.newaxis, :, :, :, np.newaxis
-            ],
-            imagej=True,
+            data=cp_img,
+            imagej=cp_img.dtype in (np.uint8, np.uint16, np.float32),
         )
         logger.info(cp_img_file)
         del img
         mask = io.read_mask(mask_file, native_dtype=True)
+        cp_mask = io._to_dtype(mask, np.uint16)[
+            np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+        ]
         cp_mask_file = Path(cpdata_dir) / f"{mask_file.stem}_mask{mask_file.suffix}"
         tifffile.imwrite(
             cp_mask_file,
-            data=io._to_dtype(mask, np.uint16)[
-                np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
-            ],
-            imagej=True,
+            data=cp_mask,
+            imagej=cp_mask.dtype in (np.uint8, np.uint16, np.float32),
         )
         logger.info(cp_mask_file)
         del mask

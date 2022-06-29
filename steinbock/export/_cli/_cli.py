@@ -125,27 +125,29 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
         histocat_img_dir = Path(histocat_dir) / img_file.stem
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_name, channel_img in zip(channel_names, img):
+            histocat_img = io._to_dtype(channel_img, np.float32)[
+                np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+            ]
             channel_name = re.sub(r"\s*/\s*", "_", channel_name)
             channel_name = re.sub(r"\s", "_", channel_name)
             histocat_img_file = histocat_img_dir / f"{channel_name}.tiff"
             tifffile.imwrite(
                 histocat_img_file,
-                data=io._to_dtype(channel_img, np.float32)[
-                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
-                ],
-                imagej=True,
+                data=histocat_img,
+                imagej=histocat_img.dtype in (np.uint8, np.uint16, np.float32),
             )
             logger.info(histocat_img_file)
         mask = None
         if mask_files is not None:
+            histocat_mask = io._to_dtype(mask, np.uint16)[
+                np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
+            ]
             mask = io.read_mask(mask_files[i], native_dtype=True)
             histocat_mask_file = histocat_img_dir / f"{img_file.stem}_mask.tiff"
             tifffile.imwrite(
                 histocat_mask_file,
-                data=io._to_dtype(mask, np.uint16)[
-                    np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
-                ],
-                imagej=True,
+                data=histocat_mask,
+                imagej=histocat_mask.dtype in (np.uint8, np.uint16, np.float32),
             )
             logger.info(histocat_mask_file)
         del img, mask
