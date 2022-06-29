@@ -5,13 +5,13 @@ click-log==0.4.0
 fcswrite==0.6.1
 h5py==3.2.1  # cellprofiler 4.2.1 requires 3.2.1 (note: deepcell 0.12.2 requires tensorflow ~=2.8.0, which technically requires ~=3.6.0)
 imageio==2.19.3
-networkx==2.8.2
-numpy==1.22.4
-opencv-python-headless==4.5.5.64
-pandas==1.4.2
+networkx==2.8.4
+numpy==1.23.0
+opencv-python-headless==4.6.0.66
+pandas==1.4.3
 pyyaml==6.0
 readimc==0.6.1
-scikit-image==0.19.2
+scikit-image==0.19.3
 scipy==1.8.1
 tifffile==2022.5.4
 xtiff==0.7.8
