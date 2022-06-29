@@ -39,7 +39,7 @@ def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
 
 
 def list_image_files(ext_img_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(ext_img_dir).rglob("*.*"))
+    return sorted(Path(ext_img_dir).rglob("[!.]*.*"))
 
 
 def create_panel_from_image_files(

@@ -265,7 +265,7 @@ def _extract_zips(
     path: Union[str, PathLike], suffix: str, dest: Union[str, PathLike]
 ) -> List[Path]:
     extracted_files = []
-    for zip_file_path in Path(path).rglob("*.zip"):
+    for zip_file_path in Path(path).rglob("[!.]*.zip"):
         with ZipFile(zip_file_path) as zip_file:
             zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
             for zip_info in zip_infos:

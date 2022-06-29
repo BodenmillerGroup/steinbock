@@ -118,7 +118,7 @@ def list_image_files(
 ) -> List[Path]:
     if base_files is not None:
         return _list_related_files(base_files, img_dir, ".tiff")
-    return sorted(Path(img_dir).rglob("*.tiff"))
+    return sorted(Path(img_dir).rglob("[!.]*.tiff"))
 
 
 def _fix_image_shape(img_file: Union[str, PathLike], img: np.ndarray) -> np.ndarray:
@@ -230,7 +230,7 @@ def list_mask_files(
 ) -> List[Path]:
     if base_files is not None:
         return _list_related_files(base_files, mask_dir, ".tiff")
-    return sorted(Path(mask_dir).rglob("*.tiff"))
+    return sorted(Path(mask_dir).rglob("[!.]*.tiff"))
 
 
 def _fix_mask_shape(mask_file: Union[str, PathLike], mask: np.ndarray) -> np.ndarray:
@@ -303,7 +303,7 @@ def list_data_files(
 ) -> List[Path]:
     if base_files is not None:
         return _list_related_files(base_files, data_dir, ".csv")
-    return sorted(Path(data_dir).rglob("*.csv"))
+    return sorted(Path(data_dir).rglob("[!.]*.csv"))
 
 
 def read_data(data_file: Union[str, PathLike]) -> pd.DataFrame:
@@ -321,7 +321,7 @@ def list_neighbors_files(
 ) -> List[Path]:
     if base_files is not None:
         return _list_related_files(base_files, neighbors_dir, ".csv")
-    return sorted(Path(neighbors_dir).rglob("*.csv"))
+    return sorted(Path(neighbors_dir).rglob("[!.]*.csv"))
 
 
 def read_neighbors(neighbors_file: Union[str, PathLike]) -> pd.DataFrame:

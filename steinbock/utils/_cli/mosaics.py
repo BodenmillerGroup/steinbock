@@ -20,7 +20,7 @@ def _collect_tiff_files(
         if Path(img_file_or_dir).is_file():
             img_files.append(Path(img_file_or_dir))
         else:
-            img_files += sorted(Path(img_file_or_dir).rglob("*.tiff"))
+            img_files += sorted(Path(img_file_or_dir).rglob("[!.]*.tiff"))
     return img_files
 
 

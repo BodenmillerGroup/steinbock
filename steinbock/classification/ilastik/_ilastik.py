@@ -61,11 +61,11 @@ _h5py_libver = "earliest"
 
 
 def list_ilastik_image_files(ilastik_img_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(ilastik_img_dir).rglob("*.h5"))
+    return sorted(Path(ilastik_img_dir).rglob("[!.]*.h5"))
 
 
 def list_ilastik_crop_files(ilastik_crop_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(ilastik_crop_dir).rglob("*.h5"))
+    return sorted(Path(ilastik_crop_dir).rglob("[!.]*.h5"))
 
 
 def read_ilastik_image(ilastik_img_file: Union[str, PathLike]) -> np.ndarray:
@@ -277,7 +277,9 @@ def run_pixel_classification(
         if memory_limit is not None:
             ilastik_env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
     result = run_captured(args, env=ilastik_env)
-    ilastik_probab_files = Path(ilastik_probab_dir).rglob(f"*-{_img_dataset_path}.tiff")
+    ilastik_probab_files = Path(ilastik_probab_dir).rglob(
+        f"[!.]*-{_img_dataset_path}.tiff"
+    )
     for ilastik_probab_file in sorted(ilastik_probab_files):
         ilastik_probab_file.rename(
             ilastik_probab_file.with_name(

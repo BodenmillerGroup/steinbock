@@ -28,11 +28,11 @@ class SteinbockIMCPreprocessingException(SteinbockPreprocessingException):
 
 
 def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(mcd_dir).rglob("*.mcd"))
+    return sorted(Path(mcd_dir).rglob("[!.]*.mcd"))
 
 
 def list_txt_files(txt_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(txt_dir).rglob("*.txt"))
+    return sorted(Path(txt_dir).rglob("[!.]*.txt"))
 
 
 def create_panel_from_imc_panel(
