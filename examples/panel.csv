@@ -1,7 +1,12 @@
 channel,name,short_name,clone,keep,deepcell
+ArAr80,ArAr80,NA,NA,0,
 Y89,Myeloperoxidase MPO,MPO,Polyclonal MPO,1,
 In113,Histone H3,HistoneH3,D1H2,1,1
 In115,SMA,SMA,1A4,1,
+Xe131,Xe131,NA,NA,0,
+Xe134,Xe134,NA,NA,0,
+Ba136,Ba136,NA,NA,0,
+La138,La138,NA,NA,0,
 Pr141,CD16,CD16,EPR16784,1,
 Nd142,CD38,CD38,EPR4106,1,
 Nd143,HLA-DR,HLADR,TAL 1B5,1,
@@ -39,3 +44,5 @@ Lu175,CD206 (MMR),CD206,685645,1,
 Yb176,cleaved PARP,cleavedPARP,F21-852,1,
 Ir191,Iridium,DNA1,Ir,1,1
 Ir193,Iridium,DNA2,Ir,1,1
+Pt196,Pt196,NA,NA,0,
+Pb206,Pb206,NA,NA,0,
