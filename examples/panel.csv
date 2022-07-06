@@ -42,7 +42,7 @@ Yb173,E-Cadherin / P-Cadherin,Ecad,36/E-Cadherin,1,2
 Yb174,CD303,CD303,Polyclonal_DLEC / CLEC4C / BDCA-2,1,
 Lu175,CD206 (MMR),CD206,685645,1,
 Yb176,cleaved PARP,cleavedPARP,F21-852,1,
-Ir191,Iridium,DNA1,Ir,1,1
-Ir193,Iridium,DNA2,Ir,1,1
+Ir191,DNA1,DNA1,Ir,1,1
+Ir193,DNA2,DNA2,Ir,1,1
 Pt196,Pt196,NA,NA,0,
 Pb206,Pb206,NA,NA,0,
