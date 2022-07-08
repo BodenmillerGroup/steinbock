@@ -5,6 +5,8 @@ import pandas as pd
 from os import PathLike
 from typing import List, Union
 from pathlib import Path
+from skimage.segmentation import expand_labels
+from steinbock import io
 from zipfile import ZipFile
 
 def extract_zips(
@@ -91,3 +93,27 @@ def segstack_channels(
             if not np.isnan(channel_group)
         ])
     return(img)
+
+# Mask processing for different segmentations
+def save_masks(
+    mask: np.ndarray,
+    mask_dir: Union[str, PathLike],
+    mask_name: str,
+    seg_type: str,
+    exp_dist: int
+):
+    for ix in range(0, mask.shape[3]):
+        cur_mask = mask[0,:,:,ix]
+        cur_mask = expand_labels(
+            cur_mask, distance=float(exp_dist))
+        
+        if seg_type == "both":
+            mask_type = np.where(ix==0, "whole-cell", "nuclear")
+        else:
+            mask_type = seg_type
+
+        masks_subdir = mask_dir / mask_type
+        masks_subdir.mkdir(exist_ok=True)
+
+        mask_file = masks_subdir / mask_name
+        io.write_mask(cur_mask, mask_file, ignore_dtype=True)
