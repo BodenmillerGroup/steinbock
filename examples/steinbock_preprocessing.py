@@ -137,7 +137,7 @@ helpers.extract_zips(path=raw_dir, suffix=".txt", dest=raw_dir)
 # + `keep`: *(optional)* 1 for channels to preprocess, 0 for channels to ignore
 
 # %%
-panel = pd.read_csv(base_dir / "panel.csv")
+panel = io.read_panel(base_dir / "panel.csv")
 panel.head()
 
 # %% [markdown]
@@ -150,7 +150,7 @@ panel.head()
 # - Additional modifications can be made (e.g., rename channel names) if needed.
 
 # %%
-create_panel_from_mcd = True
+create_panel_from_mcd = False
 
 # %%
 if create_panel_from_mcd:
@@ -166,13 +166,10 @@ if create_panel_from_mcd:
     membrane_channels = ["Sm147", "Sm149", "Sm152", "Ho165", "Yb173"]
     panel.loc[panel["channel"].isin(nuclear_channels), "deepcell"] = 1
     panel.loc[panel["channel"].isin(membrane_channels), "deepcell"] = 2
-
-# %% [markdown]
-# Subset the panel to retain only channels indicated in the `keep` column
-
-# %%
-panel = panel[panel["keep"] == 1]
-panel.head()
+    
+    # Subset channels
+    panel = panel[panel["keep"] == 1]
+    print(panel.head())
 
 # %% [markdown]
 # ### Convert to tiff
