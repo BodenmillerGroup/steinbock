@@ -22,6 +22,7 @@ import xtiff
 from deepcell.applications import Mesmer
 from matplotlib.colors import ListedColormap
 from pathlib import Path
+from skimage import color, exposure
 from skimage.segmentation import expand_labels
 from urllib import request
 import sklearn
@@ -333,26 +334,27 @@ for img_path, mask in deepcell.try_segment_objects(
 # %% [markdown]
 # #### Check segmentation
 #
-# Adjust the image intensity by modifiying the `max_intensity` variable.  
+# Adjust the image intensity by modifiying the `max_intensity` variable and the mask transparency by adusting the `alpha_overlay` variable.  
 # For higher magnification images, adjust the coordinates and dimension if needed.
 
 # %%
 # Choose either 'nuclear' or 'whole-cell' for downstream processing
-segmentation_type = "whole-cell"
+segmentation_type = "nuclear"
+
+# Image intensity and mask transarency
+max_intensity = 20 # vmax: lower values = higher intensity
+alpha_overlay = 0.3
 
 # %%
 # List masks
 masks_subdir = masks_dir / segmentation_type
 masks = sorted(Path(masks_subdir).glob("*.tiff"))
 
-# Define instensity value for images
-max_intensity = 20 # vmax: lower values = higher intensity
-
 # Select a random image
 ix = rng.choice(len(masks))
-fig, ax = plt.subplots(2, 2, figsize=(30, 30))
+fig, ax = plt.subplots(2, 3, figsize=(15, 10))
 
-# Display image and mask
+# Display image, mask, and overlay
 img = io.read_image(segstacks[ix])
 ax[0,0].imshow(img[0,:,:], vmax=max_intensity)
 ax[0,0].set_title(segstacks[ix].stem + ": nuclei")
@@ -363,20 +365,27 @@ cmap.colors[0]=[1,1,1]
 ax[0,1].imshow(mask[0,:,:], cmap=cmap)
 ax[0,1].set_title(masks[ix].stem +": mask")
 
+overlay = exposure.adjust_sigmoid(exposure.rescale_intensity(img, (0,1)), 0.1)
+overlay = color.label2rgb(mask[0,:,:], overlay[0,:,:], alpha=alpha_overlay, bg_label=0)
+ax[0,2].imshow(overlay)
+ax[0,2].set_title("overlay")
+
 ## Higher magnification (change coordinates and dimensions if needed)
 xstart = 100
 ystart = 100
 dim = 100
 
-ax[1,0].imshow(img[0,:,:], vmin=0, vmax=max_intensity) 
-ax[1,0].set_title(segstacks[ix].stem + ": nuclei")
+ax[1,0].imshow(img[0,:,:], vmin=0, vmax=max_intensity)
 ax[1,0].set_xlim([xstart, xstart+dim])
 ax[1,0].set_ylim([ystart, ystart+dim])
 
 ax[1,1].imshow(mask[0,:,:], cmap=cmap)
-ax[1,1].set_title(masks[ix].stem +": mask")
 ax[1,1].set_xlim([xstart, xstart+dim])
 ax[1,1].set_ylim([ystart, ystart+dim])
+
+ax[1,2].imshow(overlay)
+ax[1,2].set_xlim([xstart, xstart+dim])
+ax[1,2].set_ylim([ystart, ystart+dim])
 
 # %% [markdown]
 # ## Measure cells
