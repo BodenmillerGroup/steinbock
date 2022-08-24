@@ -231,7 +231,7 @@ channelwise_minmax = False
 aggr_func = np.sum
 
 # Define channels to use for segmentation (from the panel file)
-channel_groups = imc_panel["deepcell"].values
+channel_groups = panel["deepcell"].values
 channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # make sure unselected chanels are set to nan
 
 # %% [markdown]
@@ -277,28 +277,30 @@ ax[1].set_title(segstacks[ix].stem + ": membrane")
 # %% [markdown]
 # ### Segment cells
 #
-# `segmentation_type` should be one of [`whole-cell`, `nuclear`, `both`].  
-# If `both` is selected, nuclear and whole-cell masks will be generated in separate subfolders.  
+# `segmentation_type` should be either `whole-cell` or `nuclear`.
 #
-# Several post-processing arguments can be passed to the deepcell application, the defaults are selected below. Cell labels can also be expanded by defining an `expansion_distance` (mostly useful for nuclear segmentation).
+# The image resolution should also be specified (microns per pixel).
+#
+# Several post-processing arguments can be passed to the deepcell application. Defaults for nuclear and whole-cell segmentation are indicated in brackets.
+# - `maxima_threshold`: set lower if cells are missing (default for nuclear segmentation=0.1, default for nuclear segmentation=0.075).
+# - `maxima_smooth`: (default=0).
+# - `interior_threshold`: set higher if you your nuclei are too large (default=0.2).
+# - `interior_smooth`: larger values give rounder cells (default=2).
+# - `small_objects_threshold`: depends on the image resolution (default=50).
+# - `fill_holes_threshold`: (default=10).  
+# - `radius`: (default=2).
+#
+# Cell labels can also be expanded by defining an `expansion_distance` (mostly useful for nuclear segmentation).
 
 # %%
-# Segmentation type
-segmentation_type = "both"
+# Segmentation type ("nuclear" or "whole-cell")
+segmentation_type = "nuclear"
 
-# Post-processing arguments for whole-cell segmentation
-kwargs_whole_cell =  {
-    'maxima_threshold': 0.075,
-    'maxima_smooth': 0,
-    'interior_threshold': 0.2,
-    'interior_smooth': 2,
-    'small_objects_threshold': 15,
-    'fill_holes_threshold': 15,
-    'radius': 2
-}
+# Image resolution (microns per pixel)
+pixel_size_um = 1.0
 
-# Post-processing arguments for nuclear segmentation
-kwargs_nuclear =  {
+# Post-processing arguments
+postprocess_kwargs =  {
     'maxima_threshold': 0.1,
     'maxima_smooth': 0,
     'interior_threshold': 0.2,
@@ -312,36 +314,21 @@ kwargs_nuclear =  {
 expansion_distance = 0
 
 # %%
-app = Mesmer()
+# Define output directory for masks
+masks_subdir = masks_dir / segmentation_type
+masks_subdir.mkdir(exist_ok=True, parents=True)
 
-for stack in segstacks:
-    img = io.read_image(stack)
-    img = np.moveaxis(img, 0, 2)
-    img = np.expand_dims(img.data, 0)
-    
-    mask = app.predict(
-        img, image_mpp=1, compartment=segmentation_type,
-        postprocess_kwargs_whole_cell=kwargs_whole_cell,
-        postprocess_kwargs_nuclear=kwargs_nuclear
-    )
-    
-    helpers.save_masks(
-        mask, masks_dir, stack.name,
-        segmentation_type, expansion_distance
-    )
-
-# %%
-# # Generating masks using steinbock's function
-# for img_path, mask in deepcell.try_segment_objects(
-#     img_files = segstacks,
-#     application = deepcell.Application.MESMER,
-#     pixel_size_um = 1.0,
-#     segmentation_type = segmentation_type
-# ):
-#     mask = expand_labels(mask, distance=float(expansion_distance))
-    
-#     mask_file = Path(masks_subdir) / f"{img_path.stem}.tiff"
-#     io.write_mask(mask, mask_file)
+# Segment cells
+for img_path, mask in deepcell.try_segment_objects(
+    img_files = segstacks,
+    application = deepcell.Application.MESMER,
+    pixel_size_um = pixel_size_um,
+    segmentation_type = segmentation_type,
+    postprocess_kwargs=postprocess_kwargs
+):
+    mask = expand_labels(mask, distance=float(expansion_distance))
+    mask_file = masks_subdir / f"{img_path.stem}.tiff"
+    io.write_mask(mask, mask_file)
 
 # %% [markdown]
 # #### Check segmentation
@@ -351,7 +338,7 @@ for stack in segstacks:
 
 # %%
 # Choose either 'nuclear' or 'whole-cell' for downstream processing
-segmentation_type = "nuclear"
+segmentation_type = "whole-cell"
 
 # %%
 # List masks
@@ -402,7 +389,7 @@ ax[1,1].set_ylim([ystart, ystart+dim])
 for img_path, mask_path, intens in intensities.try_measure_intensities_from_disk(
     img_files = io.list_image_files(img_dir),
     mask_files = io.list_image_files(masks_subdir),
-    channel_names = imc_panel["name"],
+    channel_names = panel["name"],
     intensity_aggregation = intensities.IntensityAggregation.MEAN
 ):
     intensities_file = Path(intensities_dir) / f"{img_path.name.replace('.tiff', '.csv')}"
