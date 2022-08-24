@@ -94,22 +94,10 @@ neighbors_dir.mkdir(exist_ok=True)
 
 # %%
 for example_file_name, example_file_url in [
-    (
-        "Patient1.zip",
-        "https://zenodo.org/record/5949116/files/Patient1.zip",
-    ),
-    (
-        "Patient2.zip",
-        "https://zenodo.org/record/5949116/files/Patient2.zip",
-    ),
-    (
-        "Patient3.zip",
-        "https://zenodo.org/record/5949116/files/Patient3.zip",
-    ),
-    (
-        "Patient4.zip",
-        "https://zenodo.org/record/5949116/files/Patient4.zip",
-    ),
+    ("Patient1.zip", "https://zenodo.org/record/5949116/files/Patient1.zip", ),
+    ("Patient2.zip", "https://zenodo.org/record/5949116/files/Patient2.zip", ),
+    ("Patient3.zip", "https://zenodo.org/record/5949116/files/Patient3.zip", ),
+    ("Patient4.zip", "https://zenodo.org/record/5949116/files/Patient4.zip", ),
 ]:
     example_file = raw_dir / example_file_name
     if not example_file.exists():
@@ -124,25 +112,9 @@ if not panel_file.exists():
 # ## Extract images from `.mcd` files
 #
 # Documentation: https://bodenmillergroup.github.io/steinbock/latest/cli/preprocessing/#external-images
-#
-# ### Import the panel
-# The antibody panel file should be placed in the `examples` folder and meet the steinbock format: https://bodenmillergroup.github.io/steinbock/latest/file-types/#panel.  
-#
-# Customized panels should contain the following columns:
-# + `channel`: unique channel id, typically metal and isotope mass (e.g. `Ir191`)
-# + `name`: unique channel name.
-# + `deepcell`: channels to use for segmentation (1=nuclear, 2=membrane, empty/NaN=ignored).
-# + `keep`: *(optional)* 1 for channels to preprocess, 0 for channels to ignore
-
-# %%
-imc_panel = pd.read_csv(base_dir / "panel.csv")
-
-if "keep" in imc_panel.columns:
-    imc_panel = imc_panel[imc_panel["keep"]==1]
-imc_panel.head()
 
 # %% [markdown]
-# ### Unzip
+# ### Unzip raw data files
 #
 # zip folders should contain one `.mcd` file and all the associated `.txt` files.
 
@@ -153,6 +125,54 @@ helpers.extract_zips(path=raw_dir, suffix=".mcd", dest=raw_dir)
 # %%
 # Extract .txt files
 helpers.extract_zips(path=raw_dir, suffix=".txt", dest=raw_dir)
+
+# %% [markdown]
+# ### Import the panel
+# The antibody panel file should be placed in the `examples` folder and meet the steinbock format: https://bodenmillergroup.github.io/steinbock/latest/file-types/#panel.  
+#
+# Customized panels should contain the following columns:
+# + `channel`: unique channel id, typically metal and isotope mass (e.g. `Ir191`)
+# + `name`: unique channel name.
+# + `deepcell`: channels to use for segmentation (1=nuclear, 2=membrane, empty/NaN=ignored).
+# + `keep`: *(optional)* 1 for channels to preprocess, 0 for channels to ignore
+
+# %%
+panel = pd.read_csv(base_dir / "panel.csv")
+panel.head()
+
+# %% [markdown]
+# ### Create panel from mcd files
+# Alternatively, the panel can directly be created from `.mcd` files.
+#
+# In this case, the panel should be modified as following:
+# - Define which channels to retain for downstream processing (modify the `keep` column).
+# - Define channels to use for deep cell segmentation (see below).
+# - Additional modifications can be made (e.g., rename channel names) if needed.
+
+# %%
+create_panel_from_mcd = True
+
+# %%
+if create_panel_from_mcd:
+    # Create the panel
+    panel = imc.create_panel_from_mcd_files(imc.list_mcd_files(raw_dir))
+
+    # Channels that will not be keeped
+    channels_to_discard = ["ArAr80", "Xe131", "Xe134", "Ba136", "La138", "Pt196", "Pb206"]
+    panel.loc[panel["channel"].isin(channels_to_discard), "keep"] = False
+
+    # Channels for cell segmentation
+    nuclear_channels = ["In113", "Ir191", "Ir193"]
+    membrane_channels = ["Sm147", "Sm149", "Sm152", "Ho165", "Yb173"]
+    panel.loc[panel["channel"].isin(nuclear_channels), "deepcell"] = 1
+    panel.loc[panel["channel"].isin(membrane_channels), "deepcell"] = 2
+
+# %% [markdown]
+# Subset the panel to retain only channels indicated in the `keep` column
+
+# %%
+panel = panel[panel["keep"] == 1]
+panel.head()
 
 # %% [markdown]
 # ### Convert to tiff
@@ -179,7 +199,7 @@ for mcd_file, acquisition, img, matched_txt, recovered in imc.try_preprocess_ima
     mcd_files = imc.list_mcd_files(raw_dir),
     txt_files = imc.list_txt_files(raw_dir),
     hpf = hpf,
-    channel_names = imc_panel["channel"]
+    channel_names = panel["channel"]
 ):
     img_file = Path(img_dir) / f"{mcd_file.stem}_{acquisition.description}.tiff"
     io.write_image(img, img_file)
