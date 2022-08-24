@@ -17,11 +17,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import tifffile
 import xtiff
 
 from deepcell.applications import Mesmer
 from matplotlib.colors import ListedColormap
 from pathlib import Path
+from skimage import exposure
 from skimage.segmentation import expand_labels
 import sklearn
 
@@ -33,9 +35,9 @@ from steinbock.measurement import intensities, regionprops, neighbors
 import helpers
 
 # %% [markdown]
-# # IMC preprocessing pipeline
+# # Multiplex images preprocessing pipeline
 #
-# This pipeline will extract image data from IMC aquisitions located in the `raw` folder and generate single cell data. Intermediary steps include the extraction of image stacks selected from the panel file as well as segmentation masks. The single cell data is extracted from the chanels selected in the panel.
+# This pipeline will run image segmentation within the steinbock workframe. It can be applied to any multiplex image stacks. 
 #
 # Before running your own script please check the [steinbock documentation](https://bodenmillergroup.github.io/steinbock).
 #
@@ -53,11 +55,9 @@ import helpers
 
 # %% [raw]
 # steinbock data/working directory  
-# ├── raw   
-# |    └──── *.zip (raw data)
-# ├── panel.csv (user-provided, when starting from raw data) 
-# ├── img (created by this script)  
-# ├── segstacks (created by this script)  
+# ├── panel.csv (user-provided)  
+# ├── raw (*.tiff stacks, user-provided)
+# ├── img (*.tiff image stacks, user-provided or generated from stacks in "raw")
 # ├── masks (created by this script)  
 # ├── intensities (created by this script)  
 # ├── regionprops (created by this script)  
@@ -66,11 +66,13 @@ import helpers
 # %%
 base_dir = Path(".")
 
-# Paths to zipped acquisition files
+# Path to single tiff images
 raw_dir = base_dir / "raw"
 
-# Output directories
+# Paths to tiff stacks
 img_dir = base_dir / "img"
+
+# Output directories
 masks_dir = base_dir / "masks"
 segstack_dir = base_dir / "segstacks"
 intensities_dir = base_dir / "intensities"
@@ -78,6 +80,7 @@ regionprops_dir = base_dir / "regionprops"
 neighbors_dir = base_dir / "neighbors"
 
 # Create directories (if they do not already exist)
+raw_dir.mkdir(exist_ok=True)
 img_dir.mkdir(exist_ok=True)
 masks_dir.mkdir(exist_ok=True)
 segstack_dir.mkdir(exist_ok=True)
@@ -86,77 +89,74 @@ regionprops_dir.mkdir(exist_ok=True)
 neighbors_dir.mkdir(exist_ok=True)
 
 # %% [markdown]
-# ## Extract images from `.mcd` files
-#
-# Documentation: https://bodenmillergroup.github.io/steinbock/latest/cli/preprocessing/#external-images
-#
-# ### Import the panel
+# ### Antibody panel
 # The antibody panel should meet the steinbock format: https://bodenmillergroup.github.io/steinbock/latest/file-types/#panel  
 #
-# An example panel corresponding to the example data (downloadable via the `download_examples.ipynb` script is provided.
-#
 # Customized panels should contain the following columns:
-# + `channel`: unique channel id, typically metal and isotope mass (e.g. `Ir191`)
+# + `channel`: unique channel id, typically metal and isotope mass (e.g. `Ir191`) or fluorophore.
 # + `name`: unique channel name.
 # + `deepcell`: channels to use for segmentation (1=nuclear, 2=membrane, empty/NaN=ignored).
 # + `keep`: *(optional)* 1 for channels to preprocess, 0 for channels to ignore
 
 # %%
-imc_panel = pd.read_csv(base_dir / "panel.csv")
+panel = pd.read_csv(base_dir / "panel.csv")
 
-if "keep" in imc_panel.columns:
-    imc_panel = imc_panel[imc_panel["keep"]==1]
-imc_panel.head()
+if "keep" in panel.columns:
+    panel = panel[panel["keep"]==1]
 
-# %% [markdown]
-# ### Unzip
-#
-# zip folders should contain one `.mcd` file and all the associated `.txt` files.
-
-# %%
-# Extract .mcd files
-helpers.extract_zips(path=raw_dir, suffix=".mcd", dest=raw_dir)
-
-# %%
-# Extract .txt files
-helpers.extract_zips(path=raw_dir, suffix=".txt", dest=raw_dir)
+nb_of_channels = len(panel)
+panel.head()
 
 # %% [markdown]
-# ### Convert to tiff
+# ### Re-shape `.tiff` stacks
 #
-# Documentation: https://bodenmillergroup.github.io/steinbock/latest/cli/preprocessing/#image-conversion
+# The multichannel image stacks provided by the user in the `raw` folder is reshaped as "CYX" (channel, height, width). Other dimensions are ignored: for a time series for instance, please provide one stack per time point.
 #
-# #### Settings
-# Image stacks are extracted from the acquisitions in `.tiff` format.
+# Alternately, the user can provide single-channel `tiff` files that will be converted to multichannel stacks. For this, the `generate_from_single_tiffs` variable has to be set to `True` and all images belonging to the same stack should start with the same prefix.
+#
+# If the `raw` folder is empty, it is assumed that  properly shaped stacks are directly provided by the user in the `img` folder.
 
 # %%
-extract_metadata = True
+generate_from_single_tiffs = True
 
-# Value for hot pixel filtering (see the documentation)
-hpf = 50
-
-# %% [markdown]
-# #### Image conversion
-# Extract image stacks from IMC acquisitions (stored in the `img` subfolder) and export metadata as `images.csv`.
+raw_tiffs = sorted(Path(raw_dir).glob("*.tiff"))
 
 # %%
-image_info_data = pd.DataFrame()
-
-for mcd_file, acquisition, img, matched_txt, recovered in imc.try_preprocess_images_from_disk(
-    mcd_files = imc.list_mcd_files(raw_dir),
-    txt_files = imc.list_txt_files(raw_dir),
-    hpf = hpf,
-    channel_names = imc_panel["channel"]
-):
-    img_file = Path(img_dir) / f"{mcd_file.stem}_{acquisition.description}.tiff"
-    io.write_image(img, img_file)
-
-    if extract_metadata :
-        image_info = helpers.extract_metadata(img_file, mcd_file, img, acquisition, matched_txt, recovered)
-        image_info_data = pd.concat([image_info_data, image_info])
+if raw_tiffs and generate_from_single_tiffs:
+    from itertools import cycle
+    from os.path import commonprefix
+    
+    for i, j in zip(range(len(raw_tiffs)),
+                    cycle(range(nb_of_channels))):
+        cur_img = tifffile.imread(raw_tiffs[i])
+        cur_img = np.expand_dims(cur_img, axis=0)
         
-if extract_metadata:
-    image_info_data.to_csv(base_dir / "images.csv", index=False)
+        if (j == 0):
+            img = cur_img
+            img_names = []
+        else:
+            img = np.concatenate((img, cur_img), axis = 0)
+            
+        img_names.append(raw_tiffs[i].name)
+        
+        if (j == (nb_of_channels-1)):
+            img_file = img_dir / (commonprefix(img_names) + ".tiff")
+            tifffile.imwrite(img_file, img,
+                             photometric='minisblack',
+                             metadata={'axes': 'CYX'}) 
+
+# %%
+if raw_tiffs and not generate_from_single_tiffs:
+    for raw_tiff in raw_tiffs:
+        with tifffile.TiffFile(raw_tiff) as tif:
+            volume = tif.asarray()
+            axes = tif.series[0].axes
+            imagej_metadata = tif.imagej_metadata
+            
+            img_file = img_dir / raw_tiff.name
+            tifffile.imwrite(img_file, volume,
+                             photometric='minisblack',
+                             metadata={'axes': 'CYX'}) 
 
 # %% [markdown]
 # ## Cell segmentation
@@ -176,77 +176,73 @@ if extract_metadata:
 
 # %%
 # Define image preprocessing options
-channelwise_zscore = True
-channelwise_minmax = False
 aggr_func = np.sum
 
 # Define channels to use for segmentation (from the panel file)
-channel_groups = imc_panel["deepcell"].values
-channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # make sure unselected chanels are set to nan
+channel_groups = panel["deepcell"].values
+channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # make sure unselected chanels are set to "nan"
 
 # %% [markdown]
 # #### Generate segmentation stacks
 
 # %%
 for img_path in sorted(Path(img_dir).glob("*.tiff")):
-    img = io.read_image(img_path)
-    if channelwise_minmax:
-        img = helpers.norm_minmax(img)
+    img = tifffile.imread(img_path).astype("uint8")
     
-    if channelwise_zscore:
-        img = helpers.norm_zscore(img)
+    img = np.moveaxis(img, -1, 0)
+    img = exposure.equalize_adapthist(img, clip_limit=0.03)
+    img = np.moveaxis(img, 0, -1)
     
     if channel_groups is not None:
         img = helpers.segstack_channels(img, channel_groups, aggr_func)
     
-    img_file = Path(segstack_dir) / f"{img_path.name}"
-    io.write_image(img, img_file)
+    img_file = Path(segstack_dir) / img_path.name
+    tifffile.imwrite(img_file, (img*255).astype("uint8"))
 
 # %% [markdown]
 # #### Check segmentation stacks
 
 # %%
-# List segmentation stacks
 segstacks = sorted(Path(segstack_dir).glob("*.tiff"))
-
-# Select a random image
 rng = np.random.default_rng()
 ix = rng.choice(len(segstacks))
 
-# Display nuclear and membrane/cytoplasm images
 fig, ax = plt.subplots(1, 2, figsize=(30, 30))
 
-img = io.read_image(segstacks[ix])
-ax[0].imshow(img[0,:,:], vmin=0, vmax=10) # adjust vmax if needed (lower value = higher intensity)
+im = io.read_image(segstacks[ix])
+ax[0].imshow(im[0,:,:], vmin=0, vmax=250) # adjust vmax if needed (lower value = higher intensity)
 ax[0].set_title(segstacks[ix].stem + ": nuclei")
 
-img = io.read_image(segstacks[ix])
-ax[1].imshow(img[1,:,:], vmin=0, vmax=10) # adjust vmax if needed (lower value = higher intensity)
+im = io.read_image(segstacks[ix])
+ax[1].imshow(im[1,:,:], vmin=0, vmax=200) # adjust vmax if needed (lower value = higher intensity)
 ax[1].set_title(segstacks[ix].stem + ": membrane")
 
 # %% [markdown]
 # ### Segment cells
 #
-# `segmentation_type` should be one of [`whole-cell`, `nuclear`, `both`].  
-# If `both` is selected, nuclear and whole-cell masks will be generated in separate subfolders.  
+# `segmentation_type` should be `whole-cell` or `nuclear`.
 #
 # Several post-processing arguments can be passed to the deepcell application, the defaults are selected below. Cell labels can also be expanded by defining an `expansion_distance` (mostly useful for nuclear segmentation).
+#
+# - `maxima_threshold`: set lower if cells are missing (default=0.6).
+# - `maxima_smooth`: (default=0).
+# - `interior_threshold`: set higher if you your nuclei are too large (default=0.6).
+# - `interior_smooth`: larger values give rounder cells (default=2).
+# - `small_objects_threshold`: depends on the image resolution (default=50).
+# - `fill_holes_threshold`: (default=10).  
+# - `radius`: (default=2).
 
 # %%
 # Segmentation type
-segmentation_type = "both"
+segmentation_type = "nuclear"
 
-# Post-processing arguments for whole-cell segmentation
-kwargs_whole_cell =  {
-    'maxima_threshold': 0.075,
-    'maxima_smooth': 0,
-    'interior_threshold': 0.2,
-    'interior_smooth': 2,
-    'small_objects_threshold': 15,
-    'fill_holes_threshold': 15,
-    'radius': 2
-}
+# Label expansion (in pixels, 0 = no expansion)
+expansion_distance = 1
 
+# Resolution (microns per pixel)
+mpp_resolution = 1.3
+
+# %%
 # Post-processing arguments for nuclear segmentation
 kwargs_nuclear =  {
     'maxima_threshold': 0.1,
@@ -258,8 +254,17 @@ kwargs_nuclear =  {
     'radius': 2
 }
 
-# Mask pixel expansion (0 = no expansion)
-expansion_distance = 0
+# %%
+# Post-processing arguments for whole-cell segmentation
+kwargs_whole_cell =  { #these are valid if you select segmentation type = "whole-cell", I don't recommend
+    'maxima_threshold': 0.075,
+    'maxima_smooth': 0,
+    'interior_threshold': 0.2,
+    'interior_smooth': 2,
+    'small_objects_threshold': 15,
+    'fill_holes_threshold': 15,
+    'radius': 2
+}
 
 # %%
 app = Mesmer()
@@ -270,7 +275,8 @@ for stack in segstacks:
     img = np.expand_dims(img.data, 0)
     
     mask = app.predict(
-        img, image_mpp=1, compartment=segmentation_type,
+        img, image_mpp=mpp_resolution,
+        compartment=segmentation_type,
         postprocess_kwargs_whole_cell=kwargs_whole_cell,
         postprocess_kwargs_nuclear=kwargs_nuclear
     )
@@ -280,19 +286,6 @@ for stack in segstacks:
         segmentation_type, expansion_distance
     )
 
-# %%
-# # Generating masks using steinbock's function
-# for img_path, mask in deepcell.try_segment_objects(
-#     img_files = segstacks,
-#     application = deepcell.Application.MESMER,
-#     pixel_size_um = 1.0,
-#     segmentation_type = segmentation_type
-# ):
-#     mask = expand_labels(mask, distance=float(expansion_distance))
-    
-#     mask_file = Path(masks_subdir) / f"{img_path.stem}.tiff"
-#     io.write_mask(mask, mask_file)
-
 # %% [markdown]
 # #### Check segmentation
 #
@@ -300,19 +293,16 @@ for stack in segstacks:
 # For higher magnification images, adjust the coordinates and dimension if needed.
 
 # %%
-# Choose either 'nuclear' or 'whole-cell' for downstream processing
-segmentation_type = "nuclear"
-
-# %%
 # List masks
 masks_subdir = masks_dir / segmentation_type
 masks = sorted(Path(masks_subdir).glob("*.tiff"))
 
 # Define instensity value for images
-max_intensity = 20 # vmax: lower values = higher intensity
+max_intensity = 250 # vmax: lower values = higher intensity
 
 # Select a random image
 ix = rng.choice(len(masks))
+#ix = 1
 fig, ax = plt.subplots(2, 2, figsize=(30, 30))
 
 # Display image and mask
@@ -321,7 +311,7 @@ ax[0,0].imshow(img[0,:,:], vmax=max_intensity)
 ax[0,0].set_title(segstacks[ix].stem + ": nuclei")
 
 mask = io.read_image(masks[ix])
-cmap = ListedColormap(np.random.rand(10**3,3))
+cmap = ListedColormap(np.random.rand(10**6,3))
 cmap.colors[0]=[1,1,1]
 ax[0,1].imshow(mask[0,:,:], cmap=cmap)
 ax[0,1].set_title(masks[ix].stem +": mask")
@@ -329,7 +319,7 @@ ax[0,1].set_title(masks[ix].stem +": mask")
 ## Higher magnification (change coordinates and dimensions if needed)
 xstart = 100
 ystart = 100
-dim = 100
+dim = 200
 
 ax[1,0].imshow(img[0,:,:], vmin=0, vmax=max_intensity) 
 ax[1,0].set_title(segstacks[ix].stem + ": nuclei")
@@ -349,13 +339,16 @@ ax[1,1].set_ylim([ystart, ystart+dim])
 # Documentation: https://bodenmillergroup.github.io/steinbock/latest/cli/measurement/#object-intensities
 
 # %%
-for img_path, mask_path, intens in intensities.try_measure_intensities_from_disk(
-    img_files = io.list_image_files(img_dir),
-    mask_files = io.list_image_files(masks_subdir),
-    channel_names = imc_panel["name"],
-    intensity_aggregation = intensities.IntensityAggregation.MEAN
-):
-    intensities_file = Path(intensities_dir) / f"{img_path.name.replace('.tiff', '.csv')}"
+channel_names = panel["name"]
+intensity_aggregation = intensities.IntensityAggregation.MEAN
+    
+for img_path in io.list_image_files(img_dir):
+    img = tifffile.imread(img_path).astype("uint8")
+    mask = tifffile.imread(masks_subdir / img_path.name, squeeze=True)
+    
+    intens = intensities.measure_intensites(img, mask, channel_names, intensity_aggregation)
+    
+    intensities_file = Path(intensities_dir) / f"{mask_path.name.replace('.tiff', '.csv')}"
     pd.DataFrame.to_csv(intens, intensities_file)
 
 # %% [markdown]
@@ -371,23 +364,26 @@ for img_path, mask_path, intens in intensities.try_measure_intensities_from_disk
 skimage_regionprops = [
         "area",
         "centroid",
-        "major_axis_length",
-        "minor_axis_length",
-        "eccentricity",
+        #"major_axis_length",
+        #"minor_axis_length",
+        #"eccentricity",
     ]
 
 # %% [markdown]
 # #### Measure region props
 
 # %%
-for img_path, mask_path, region_props in regionprops.try_measure_regionprops_from_disk(
-    img_files = io.list_image_files(img_dir),
-    mask_files = io.list_image_files(masks_subdir),
-    skimage_regionprops = skimage_regionprops
-):
+for img_path in io.list_image_files(img_dir):
+    img = tifffile.imread(img_path).astype("uint8")
+    mask_path = masks_subdir / img_path.name
+    mask = tifffile.imread(mask_path, squeeze=True)
+    channel_names = panel["name"]
+    intensity_aggregation = intensities.IntensityAggregation.MEAN
     
-    regionprops_file = Path(regionprops_dir) / f"{img_path.name.replace('.tiff', '.csv')}"
-    pd.DataFrame.to_csv(region_props, regionprops_file)
+    intens = intensities.measure_intensites(img, mask, channel_names, intensity_aggregation)
+    
+    intensities_file = Path(intensities_dir) / f"{mask_path.name.replace('.tiff', '.csv')}"
+    pd.DataFrame.to_csv(intens, intensities_file)
 
 # %% [markdown]
 # ### Measure cell neighbors
@@ -407,20 +403,26 @@ for img_path, mask_path, region_props in regionprops.try_measure_regionprops_fro
 
 # %%
 neighborhood_type = neighbors.NeighborhoodType.CENTROID_DISTANCE
-dmax = 15
-kmax = 5
+dmax = 20
+kmax = 50
 
 # %% [markdown]
 # #### Measure cell neighbors
+#
+# Warning: time-consuming step for large images.
 
 # %%
-for mask_path, neighb in neighbors.try_measure_neighbors_from_disk(
-    mask_files = io.list_image_files(masks_subdir),
-    neighborhood_type = neighborhood_type,
-    metric = "euclidean",
-    dmax = dmax,
-    kmax = kmax
-):
+for img_path in io.list_image_files(img_dir):
+    mask = tifffile.imread(masks_subdir / img_path.name, squeeze=True)
+    
+    neighb = neighbors.measure_neighbors(
+        mask,
+        neighborhood_type = neighborhood_type,
+        metric = "euclidean",
+        dmax = dmax,
+        kmax = kmax
+    )
+    
     neighb_file = Path(neighbors_dir) / f"{mask_path.name.replace('.tiff', '.csv')}"
     pd.DataFrame.to_csv(neighb, neighb_file, index=False)
 
