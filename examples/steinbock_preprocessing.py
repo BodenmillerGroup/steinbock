@@ -23,6 +23,7 @@ from deepcell.applications import Mesmer
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 from skimage.segmentation import expand_labels
+from urllib import request
 import sklearn
 
 from steinbock import io
@@ -78,6 +79,7 @@ regionprops_dir = base_dir / "regionprops"
 neighbors_dir = base_dir / "neighbors"
 
 # Create directories (if they do not already exist)
+raw_dir.mkdir(exist_ok=True)
 img_dir.mkdir(exist_ok=True)
 masks_dir.mkdir(exist_ok=True)
 segstack_dir.mkdir(exist_ok=True)
@@ -86,14 +88,45 @@ regionprops_dir.mkdir(exist_ok=True)
 neighbors_dir.mkdir(exist_ok=True)
 
 # %% [markdown]
+# ## Download IMC example data
+# This section downloads IMC example raw data and the associated antibody panel file used for the experiment. The IMC raw data will be stored in the `raw` folder and the panel will be stored in the `examples` folder.  
+# You can skip the following cell if you are processing your own data.
+
+# %%
+for example_file_name, example_file_url in [
+    (
+        "Patient1.zip",
+        "https://zenodo.org/record/5949116/files/Patient1.zip",
+    ),
+    (
+        "Patient2.zip",
+        "https://zenodo.org/record/5949116/files/Patient2.zip",
+    ),
+    (
+        "Patient3.zip",
+        "https://zenodo.org/record/5949116/files/Patient3.zip",
+    ),
+    (
+        "Patient4.zip",
+        "https://zenodo.org/record/5949116/files/Patient4.zip",
+    ),
+]:
+    example_file = raw_dir / example_file_name
+    if not example_file.exists():
+        request.urlretrieve(example_file_url, example_file)
+        
+panel_file = base_dir / "panel.csv"
+if not panel_file.exists():
+    request.urlretrieve("https://zenodo.org/record/6642699/files/panel.csv",
+                        panel_file)
+
+# %% [markdown]
 # ## Extract images from `.mcd` files
 #
 # Documentation: https://bodenmillergroup.github.io/steinbock/latest/cli/preprocessing/#external-images
 #
 # ### Import the panel
-# The antibody panel should meet the steinbock format: https://bodenmillergroup.github.io/steinbock/latest/file-types/#panel  
-#
-# An example panel corresponding to the example data (downloadable via the `download_examples.ipynb` script is provided.
+# The antibody panel file should be placed in the `examples` folder and meet the steinbock format: https://bodenmillergroup.github.io/steinbock/latest/file-types/#panel.  
 #
 # Customized panels should contain the following columns:
 # + `channel`: unique channel id, typically metal and isotope mass (e.g. `Ir191`)
