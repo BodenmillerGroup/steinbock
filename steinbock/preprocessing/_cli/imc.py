@@ -228,31 +228,9 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
                 mcd_txt_files[img_file_stem] = [mcd_txt_file]
             img_file = Path(img_dir) / f"{img_file_stem}.tiff"
             io.write_image(img, img_file)
-            recovery_file_name = None
-            if recovery_file is not None:
-                recovery_file_name = recovery_file.name
-            image_info_row = {
-                "image": img_file.name,
-                "width_px": img.shape[2],
-                "height_px": img.shape[1],
-                "num_channels": img.shape[0],
-                "source_file": mcd_txt_file.name,
-                "recovery_file": recovery_file_name,
-                "recovered": recovered,
-            }
-            if acquisition is not None:
-                image_info_row.update(
-                    {
-                        "acquisition_id": acquisition.id,
-                        "acquisition_description": acquisition.description,
-                        "acquisition_start_x_um": (acquisition.roi_points_um[0][0]),
-                        "acquisition_start_y_um": (acquisition.roi_points_um[0][1]),
-                        "acquisition_end_x_um": (acquisition.roi_points_um[2][0]),
-                        "acquisition_end_y_um": (acquisition.roi_points_um[2][1]),
-                        "acquisition_width_um": acquisition.width_um,
-                        "acquisition_height_um": acquisition.height_um,
-                    }
-                )
+            image_info_row = imc.get_image_info(
+                mcd_txt_file, acquisition, img, recovery_file, recovered, img_file
+            )
             image_info_data.append(image_info_row)
             logger.info(img_file)
             del img
