@@ -3,6 +3,7 @@ import re
 from os import PathLike
 from pathlib import Path
 from typing import Generator, List, Optional, Sequence, Tuple, Union
+from zipfile import ZipFile
 
 import numpy as np
 import pandas as pd
@@ -27,12 +28,32 @@ class SteinbockIMCPreprocessingException(SteinbockPreprocessingException):
     pass
 
 
-def list_mcd_files(mcd_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(mcd_dir).rglob("[!.]*.mcd"))
+def _extract_zips(
+    path: Union[str, PathLike], suffix: str, dest: Union[str, PathLike]
+) -> List[Path]:
+    extracted_files = []
+    for zip_file_path in Path(path).rglob("[!.]*.zip"):
+        with ZipFile(zip_file_path) as zip_file:
+            zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
+            for zip_info in zip_infos:
+                if not zip_info.is_dir() and zip_info.filename.endswith(suffix):
+                    extracted_file = zip_file.extract(zip_info, path=dest)
+                    extracted_files.append(Path(extracted_file))
+    return extracted_files
 
 
-def list_txt_files(txt_dir: Union[str, PathLike]) -> List[Path]:
-    return sorted(Path(txt_dir).rglob("[!.]*.txt"))
+def list_mcd_files(mcd_dir: Union[str, PathLike], unzip_dir: bool = None) -> List[Path]:
+    mcd_files = sorted(Path(mcd_dir).rglob("[!.]*.mcd"))
+    if unzip_dir is not None:
+        mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
+    return mcd_files
+
+
+def list_txt_files(txt_dir: Union[str, PathLike], unzip_dir: bool = None) -> List[Path]:
+    txt_files = sorted(Path(txt_dir).rglob("[!.]*.txt"))
+    if unzip_dir is not None:
+        txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
+    return txt_files
 
 
 def create_panel_from_imc_panel(

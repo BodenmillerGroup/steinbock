@@ -1,9 +1,6 @@
 from contextlib import nullcontext
-from os import PathLike
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Union
-from zipfile import ZipFile
 
 import click
 import click_log
@@ -90,6 +87,13 @@ def imc_cmd_group():
     help="Path to the IMC .txt file directory",
 )
 @click.option(
+    "--unzip/--no-unzip",
+    "unzip",
+    default=False,
+    show_default=True,
+    help="Unzip .mcd/.txt files from .zip archives",
+)
+@click.option(
     "-o",
     "panel_file",
     type=click.Path(dir_okay=False),
@@ -107,6 +111,7 @@ def panel_cmd(
     imc_panel_ilastik_col,
     mcd_dir,
     txt_dir,
+    unzip,
     panel_file,
 ):
     panel = None
@@ -119,13 +124,15 @@ def panel_cmd(
             imc_panel_ilastik_col=imc_panel_ilastik_col,
         )
     if panel is None and Path(mcd_dir).exists():
-        mcd_files = _collect_mcd_files(mcd_dir)
-        if len(mcd_files) > 0:
-            panel = imc.create_panel_from_mcd_files(mcd_files)
+        with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
+            mcd_files = imc.list_mcd_files(mcd_dir, unzip_dir=temp_dir)
+            if len(mcd_files) > 0:
+                panel = imc.create_panel_from_mcd_files(mcd_files)
     if panel is None and Path(txt_dir).exists():
-        txt_files = _collect_txt_files(txt_dir)
-        if len(txt_files) > 0:
-            panel = imc.create_panel_from_txt_files(txt_files)
+        with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
+            txt_files = imc.list_txt_files(txt_dir, unzip_dir=temp_dir)
+            if len(txt_files) > 0:
+                panel = imc.create_panel_from_txt_files(txt_files)
     if panel is None:
         raise SteinbockCLIException("No panel/.mcd/.txt file found")
     io.write_panel(panel, panel_file)
@@ -198,8 +205,8 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
             channel_names = panel["channel"].tolist()
     image_info_data = []
     with (TemporaryDirectory() if unzip else nullcontext()) as temp_dir:
-        mcd_files = _collect_mcd_files(mcd_dir, unzip_dir=temp_dir)
-        txt_files = _collect_txt_files(txt_dir, unzip_dir=temp_dir)
+        mcd_files = imc.list_mcd_files(mcd_dir, unzip_dir=temp_dir)
+        txt_files = imc.list_txt_files(txt_dir, unzip_dir=temp_dir)
         Path(img_dir).mkdir(exist_ok=True)
         mcd_txt_files = {}
         num_dupl = 0
@@ -237,35 +244,3 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
     logger.info(image_info_file)
-
-
-def _extract_zips(
-    path: Union[str, PathLike], suffix: str, dest: Union[str, PathLike]
-) -> List[Path]:
-    extracted_files = []
-    for zip_file_path in Path(path).rglob("[!.]*.zip"):
-        with ZipFile(zip_file_path) as zip_file:
-            zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
-            for zip_info in zip_infos:
-                if not zip_info.is_dir() and zip_info.filename.endswith(suffix):
-                    extracted_file = zip_file.extract(zip_info, path=dest)
-                    extracted_files.append(Path(extracted_file))
-    return extracted_files
-
-
-def _collect_mcd_files(
-    mcd_dir: Union[str, PathLike], unzip_dir: bool = None
-) -> List[Path]:
-    mcd_files = imc.list_mcd_files(mcd_dir)
-    if unzip_dir is not None:
-        mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
-    return mcd_files
-
-
-def _collect_txt_files(
-    txt_dir: Union[str, PathLike], unzip_dir: bool = None
-) -> List[Path]:
-    txt_files = imc.list_txt_files(txt_dir)
-    if unzip_dir is not None:
-        txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
-    return txt_files
