@@ -2,7 +2,7 @@ import logging
 import re
 from os import PathLike
 from pathlib import Path
-from typing import Generator, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Generator, List, Optional, Sequence, Tuple, Union
 from zipfile import ZipFile
 
 import numpy as np
@@ -167,7 +167,7 @@ def get_image_info(
     recovery_file: Union[str, PathLike, None],
     recovered: bool,
     img_file: Union[str, PathLike],
-):
+) -> Dict[str, Any]:
     recovery_file_name = None
     if recovery_file is not None:
         recovery_file_name = Path(recovery_file).name
