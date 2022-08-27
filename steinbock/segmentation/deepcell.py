@@ -72,6 +72,37 @@ class Application(Enum):
     MESMER = partial(_mesmer_application)
 
 
+def create_segmentation_stack(
+    img: np.ndarray,
+    channelwise_minmax: bool = False,
+    channelwise_zscore: bool = False,
+    channel_groups: Optional[np.ndarray] = None,
+    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
+) -> np.ndarray:
+    if channelwise_minmax:
+        channel_mins = np.nanmin(img, axis=(1, 2))
+        channel_maxs = np.nanmax(img, axis=(1, 2))
+        channel_ranges = channel_maxs - channel_mins
+        img -= channel_mins[:, np.newaxis, np.newaxis]
+        img[channel_ranges > 0] /= channel_ranges[
+            channel_ranges > 0, np.newaxis, np.newaxis
+        ]
+    if channelwise_zscore:
+        channel_means = np.nanmean(img, axis=(1, 2))
+        channel_stds = np.nanstd(img, axis=(1, 2))
+        img -= channel_means[:, np.newaxis, np.newaxis]
+        img[channel_stds > 0] /= channel_stds[channel_stds > 0, np.newaxis, np.newaxis]
+    if channel_groups is not None:
+        img = np.stack(
+            [
+                aggr_func(img[channel_groups == channel_group], axis=0)
+                for channel_group in np.unique(channel_groups)
+                if not np.isnan(channel_group)
+            ]
+        )
+    return img
+
+
 def try_segment_objects(
     img_files: Sequence[Union[str, PathLike]],
     application: Application,
@@ -85,30 +116,13 @@ def try_segment_objects(
     app, predict = application.value(model=model)
     for img_file in img_files:
         try:
-            img = io.read_image(img_file)
-            if channelwise_minmax:
-                channel_mins = np.nanmin(img, axis=(1, 2))
-                channel_maxs = np.nanmax(img, axis=(1, 2))
-                channel_ranges = channel_maxs - channel_mins
-                img -= channel_mins[:, np.newaxis, np.newaxis]
-                img[channel_ranges > 0] /= channel_ranges[
-                    channel_ranges > 0, np.newaxis, np.newaxis
-                ]
-            if channelwise_zscore:
-                channel_means = np.nanmean(img, axis=(1, 2))
-                channel_stds = np.nanstd(img, axis=(1, 2))
-                img -= channel_means[:, np.newaxis, np.newaxis]
-                img[channel_stds > 0] /= channel_stds[
-                    channel_stds > 0, np.newaxis, np.newaxis
-                ]
-            if channel_groups is not None:
-                img = np.stack(
-                    [
-                        aggr_func(img[channel_groups == channel_group], axis=0)
-                        for channel_group in np.unique(channel_groups)
-                        if not np.isnan(channel_group)
-                    ]
-                )
+            img = create_segmentation_stack(
+                io.read_image(img_file),
+                channelwise_minmax=channelwise_minmax,
+                channelwise_zscore=channelwise_zscore,
+                channel_groups=channel_groups,
+                aggr_func=aggr_func,
+            )
             mask = predict(img, **predict_kwargs)
             yield Path(img_file), mask
             del img, mask
