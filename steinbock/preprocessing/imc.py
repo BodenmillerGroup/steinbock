@@ -139,6 +139,42 @@ def create_panel_from_txt_files(
     return _clean_panel(panel)
 
 
+def get_image_info(
+    mcd_txt_file: Union[str, PathLike],
+    acquisition: Optional[Acquisition],
+    img: np.ndarray,
+    recovery_file: Union[str, PathLike, None],
+    recovered: bool,
+    img_file: Union[str, PathLike],
+):
+    recovery_file_name = None
+    if recovery_file is not None:
+        recovery_file_name = Path(recovery_file).name
+    image_info_row = {
+        "image": Path(img_file).name,
+        "width_px": img.shape[2],
+        "height_px": img.shape[1],
+        "num_channels": img.shape[0],
+        "source_file": Path(mcd_txt_file).name,
+        "recovery_file": recovery_file_name,
+        "recovered": recovered,
+    }
+    if acquisition is not None:
+        image_info_row.update(
+            {
+                "acquisition_id": acquisition.id,
+                "acquisition_description": acquisition.description,
+                "acquisition_start_x_um": (acquisition.roi_points_um[0][0]),
+                "acquisition_start_y_um": (acquisition.roi_points_um[0][1]),
+                "acquisition_end_x_um": (acquisition.roi_points_um[2][0]),
+                "acquisition_end_y_um": (acquisition.roi_points_um[2][1]),
+                "acquisition_width_um": acquisition.width_um,
+                "acquisition_height_um": acquisition.height_um,
+            }
+        )
+    return image_info_row
+
+
 def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
     kernel = np.ones((1, 3, 3), dtype=bool)
     kernel[0, 1, 1] = False
