@@ -235,7 +235,7 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
                 mcd_txt_files[img_file_stem] = [mcd_txt_file]
             img_file = Path(img_dir) / f"{img_file_stem}.tiff"
             io.write_image(img, img_file)
-            image_info_row = imc.get_image_info(
+            image_info_row = imc.create_image_info(
                 mcd_txt_file, acquisition, img, recovery_file, recovered, img_file
             )
             image_info_data.append(image_info_row)

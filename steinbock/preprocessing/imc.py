@@ -160,7 +160,7 @@ def create_panel_from_txt_files(
     return _clean_panel(panel)
 
 
-def get_image_info(
+def create_image_info(
     mcd_txt_file: Union[str, PathLike],
     acquisition: Optional[Acquisition],
     img: np.ndarray,
