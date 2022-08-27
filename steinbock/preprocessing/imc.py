@@ -42,14 +42,18 @@ def _extract_zips(
     return extracted_files
 
 
-def list_mcd_files(mcd_dir: Union[str, PathLike], unzip_dir: bool = None) -> List[Path]:
+def list_mcd_files(
+    mcd_dir: Union[str, PathLike], unzip_dir: Union[str, PathLike, None] = None
+) -> List[Path]:
     mcd_files = sorted(Path(mcd_dir).rglob("[!.]*.mcd"))
     if unzip_dir is not None:
         mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
     return mcd_files
 
 
-def list_txt_files(txt_dir: Union[str, PathLike], unzip_dir: bool = None) -> List[Path]:
+def list_txt_files(
+    txt_dir: Union[str, PathLike], unzip_dir: Union[str, PathLike, None] = None
+) -> List[Path]:
     txt_files = sorted(Path(txt_dir).rglob("[!.]*.txt"))
     if unzip_dir is not None:
         txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
