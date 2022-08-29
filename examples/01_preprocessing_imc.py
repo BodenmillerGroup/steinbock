@@ -23,8 +23,6 @@ from urllib import request
 from steinbock import io
 from steinbock.preprocessing import imc
 
-import helpers
-
 # %% [markdown]
 # # IMC preprocessing pipeline
 #
@@ -33,9 +31,22 @@ import helpers
 # Here, we will extract image data from IMC aquisitions located in the `raw` folder and generate `.tiff` image stacks.
 #
 # Before running your own script please check the [steinbock documentation](https://bodenmillergroup.github.io/steinbock).
-#
-# *Installation*  
-# To install the required python environment, follow the instructions here: https://bodenmillergroup.github.io/steinbock/latest/install-python/
+
+# %% [markdown]
+# ## Installation
+# To run the current pipeline, a conda environment can be installed as follows:
+# ```
+# conda create -n steinbock python=3.8
+# conda activate steinbock
+# pip install --upgrade tensorflow==2.8.0
+# pip install --upgrade -r requirements_deepcell.txt
+# pip install --no-deps deepcell==0.12.0
+# pip install --upgrade -r requirements.txt
+# pip install --no-deps steinbock[all]
+# conda install -c conda-forge jupyterlab
+# ```
+# The [requirements.txt](https://github.com/BodenmillerGroup/steinbock/blob/main/requirements.txt) and [requirements_deepcell.txt](https://github.com/BodenmillerGroup/steinbock/blob/main/requirements_deepcell.txt) files are located in the root folder of the `steinbock` repository.  
+# Up-to-date compatible package versions can be found here ("Package version conflicts"): https://bodenmillergroup.github.io/steinbock/latest/install-python/.
 
 # %% [markdown]
 # ## Settings
@@ -100,11 +111,11 @@ if not panel_file.exists():
 
 # %%
 # Extract .mcd files
-helpers.extract_zips(path=raw_dir, suffix=".mcd", dest=raw_dir)
+imc._extract_zips(path=raw_dir, suffix=".mcd", dest=raw_dir)
 
 # %%
 # Extract .txt files
-helpers.extract_zips(path=raw_dir, suffix=".txt", dest=raw_dir)
+imc._extract_zips(path=raw_dir, suffix=".txt", dest=raw_dir)
 
 # %% [markdown]
 # ## Antibody panel
@@ -193,8 +204,8 @@ for mcd_file, acquisition, img, matched_txt, recovered in imc.try_preprocess_ima
     io.write_image(img, img_file)
 
     if extract_metadata :
-        image_info = helpers.extract_metadata(img_file, mcd_file, img, acquisition, matched_txt, recovered)
-        image_info_data = pd.concat([image_info_data, image_info])
+        image_info = imc.create_image_info(mcd_file, acquisition, img, matched_txt, recovered, img_file)
+        image_info_data = pd.concat([image_info_data, pd.DataFrame([image_info])])
         
 if extract_metadata:
     image_info_data.to_csv(working_dir / "images.csv", index=False)
