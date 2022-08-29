@@ -26,8 +26,6 @@ from skimage.segmentation import expand_labels
 from steinbock import io
 from steinbock.segmentation import deepcell
 
-import helpers
-
 # %% [markdown]
 # # Cell segmentation
 #
@@ -164,7 +162,7 @@ ax[1].set_title(segstacks[ix].stem + ": membrane")
 
 # %%
 # Segmentation type ("nuclear" or "whole-cell")
-segmentation_type = "whole-cell"
+segmentation_type = "nuclear"
 
 # Image resolution (microns per pixel)
 pixel_size_um = 1.0
@@ -217,7 +215,7 @@ alpha_overlay = 0.3
 # %%
 # List masks
 masks_subdir = masks_dir / segmentation_type
-masks = sorted(Path(masks_subdir).glob("*.tiff"))
+masks = io.list_mask_files(masks_subdir)
 
 # Select a random image
 ix = rng.choice(len(masks))

@@ -22,8 +22,6 @@ from pathlib import Path
 from steinbock import io
 from steinbock.measurement import intensities, regionprops, neighbors
 
-import helpers
-
 # %% [markdown]
 # # Measurement
 #
