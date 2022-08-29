@@ -98,9 +98,9 @@ panel.head()
 
 # %%
 # Define image preprocessing options
-channelwise_zscore = True
 channelwise_minmax = False
-aggr_func = np.sum
+channelwise_zscore = True
+aggr_func = np.mean
 
 # Define channels to use for segmentation (from the panel file)
 channel_groups = panel["deepcell"].values
@@ -110,26 +110,24 @@ channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # make su
 # #### Generate segmentation stacks
 
 # %%
-for img_path in sorted(Path(img_dir).glob("*.tiff")):
-    img = io.read_image(img_path)
-    if channelwise_minmax:
-        img = helpers.norm_minmax(img)
-    
-    if channelwise_zscore:
-        img = helpers.norm_zscore(img)
-    
-    if channel_groups is not None:
-        img = helpers.segstack_channels(img, channel_groups, aggr_func)
-    
-    img_file = Path(segstack_dir) / f"{img_path.name}"
-    io.write_image(img, img_file)
+for img_path in io.list_image_files(img_dir):
+    segstack = deepcell.create_segmentation_stack(
+        img = io.read_image(img_path),
+        channelwise_minmax = channelwise_minmax,
+        channelwise_zscore = channelwise_zscore,
+        channel_groups = channel_groups,
+        aggr_func = aggr_func
+    )
+    segstack_file = segstack_dir / f"{img_path.name}"
+    io.write_image(segstack, segstack_file)
 
 # %% [markdown]
 # #### Check segmentation stacks
+# If the images are over-/under-exposed, adjust the `vmax` variable.
 
 # %%
 # List segmentation stacks
-segstacks = sorted(Path(segstack_dir).glob("*.tiff"))
+segstacks = io.list_image_files(segstack_dir)
 
 # Select a random image
 rng = np.random.default_rng()
@@ -139,11 +137,11 @@ ix = rng.choice(len(segstacks))
 fig, ax = plt.subplots(1, 2, figsize=(30, 30))
 
 img = io.read_image(segstacks[ix])
-ax[0].imshow(img[0,:,:], vmin=0, vmax=10) # adjust vmax if needed (lower value = higher intensity)
+ax[0].imshow(img[0,:,:], vmin=0, vmax=5) # adjust vmax if needed (lower value = higher intensity)
 ax[0].set_title(segstacks[ix].stem + ": nuclei")
 
 img = io.read_image(segstacks[ix])
-ax[1].imshow(img[1,:,:], vmin=0, vmax=10) # adjust vmax if needed (lower value = higher intensity)
+ax[1].imshow(img[1,:,:], vmin=0, vmax=5) # adjust vmax if needed (lower value = higher intensity)
 ax[1].set_title(segstacks[ix].stem + ": membrane")
 
 # %% [markdown]
@@ -166,7 +164,7 @@ ax[1].set_title(segstacks[ix].stem + ": membrane")
 
 # %%
 # Segmentation type ("nuclear" or "whole-cell")
-segmentation_type = "nuclear"
+segmentation_type = "whole-cell"
 
 # Image resolution (microns per pixel)
 pixel_size_um = 1.0
@@ -192,7 +190,7 @@ masks_subdir.mkdir(exist_ok=True, parents=True)
 
 # Segment cells
 for img_path, mask in deepcell.try_segment_objects(
-    img_files = segstacks,
+    img_files = io.list_image_files(segstack_dir),
     application = deepcell.Application.MESMER,
     pixel_size_um = pixel_size_um,
     segmentation_type = segmentation_type,
