@@ -6,7 +6,7 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## Development
 
-*steinbock* is developed using [Visual Studio Code](https://code.visualstudio.com).
+*steinbock* is developed using [Visual Studio Code](https://code.visualstudio.com). For building the *steinbock* Docker image, BuildKit needs to be enabled for Docker.
 
 For convenience, the following [Docker Compose](https://docs.docker.com/compose) services are available:
   - `steinbock` for running *steinbock*
