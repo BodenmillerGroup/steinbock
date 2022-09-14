@@ -74,7 +74,9 @@ To run the *steinbock* Docker container with NVIDIA GPU support, use `steinbock-
 
     docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.14.2
 
-In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.14.2`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.14.2`) as needed. The environment variable `DISPLAY` as well as the bind mounts for `/tmp/.X11-unix` and `~/.Xauthority` are required only when running graphical user interfaces.
+
+To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
     alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.14.2"
 
@@ -97,7 +99,9 @@ On the terminal, use the following command to run the *steinbock* Docker contain
 
     docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.14.2
 
-In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.14.2`) as needed. To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
+In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.14.2`) as needed. The environment variable `DISPLAY` as well as the bind mounts for `/tmp/.X11-unix` and `~/.Xauthority` are required only when running graphical user interfaces.
+
+To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
     alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.14.2"
 
