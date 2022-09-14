@@ -2,6 +2,7 @@ import logging
 import re
 from os import PathLike
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, Dict, Generator, List, Optional, Sequence, Tuple, Union
 from zipfile import ZipFile
 
@@ -17,7 +18,7 @@ try:
     from readimc.data import Acquisition, AcquisitionBase
 
     imc_available = True
-except:
+except Exception:
     imc_available = False
 
 
@@ -28,36 +29,61 @@ class SteinbockIMCPreprocessingException(SteinbockPreprocessingException):
     pass
 
 
-def _extract_zips(
-    path: Union[str, PathLike], suffix: str, dest: Union[str, PathLike]
-) -> List[Path]:
-    extracted_files = []
-    for zip_file_path in Path(path).rglob("[!.]*.zip"):
-        with ZipFile(zip_file_path) as zip_file:
-            zip_infos = sorted(zip_file.infolist(), key=lambda x: x.filename)
-            for zip_info in zip_infos:
-                if not zip_info.is_dir() and zip_info.filename.endswith(suffix):
-                    extracted_file = zip_file.extract(zip_info, path=dest)
-                    extracted_files.append(Path(extracted_file))
-    return extracted_files
+def _get_zip_file_member(path: Union[str, PathLike]) -> Optional[Tuple[Path, str]]:
+    for parent_path in Path(path).parents:
+        if parent_path.suffix == ".zip" and parent_path.is_file():
+            member_path = Path(path).relative_to(parent_path)
+            return parent_path, str(member_path)
+    return None
 
 
-def list_mcd_files(
-    mcd_dir: Union[str, PathLike], unzip_dir: Union[str, PathLike, None] = None
-) -> List[Path]:
+def list_mcd_files(mcd_dir: Union[str, PathLike], unzip: bool = False) -> List[Path]:
     mcd_files = sorted(Path(mcd_dir).rglob("[!.]*.mcd"))
-    if unzip_dir is not None:
-        mcd_files += _extract_zips(mcd_dir, ".mcd", unzip_dir)
+    if unzip:
+        for zip_file in sorted(Path(mcd_dir).rglob("[!.]*.zip")):
+            with ZipFile(zip_file) as fzip:
+                for zip_info in sorted(fzip.infolist(), key=lambda x: x.filename):
+                    if not zip_info.is_dir() and zip_info.filename.endswith(".mcd"):
+                        mcd_files.append(zip_file / zip_info.filename)
     return mcd_files
 
 
-def list_txt_files(
-    txt_dir: Union[str, PathLike], unzip_dir: Union[str, PathLike, None] = None
-) -> List[Path]:
+def list_txt_files(txt_dir: Union[str, PathLike], unzip: bool = False) -> List[Path]:
     txt_files = sorted(Path(txt_dir).rglob("[!.]*.txt"))
-    if unzip_dir is not None:
-        txt_files += _extract_zips(txt_dir, ".txt", unzip_dir)
+    if unzip:
+        for zip_file in sorted(Path(txt_dir).rglob("[!.]*.zip")):
+            with ZipFile(zip_file) as fzip:
+                for zip_info in sorted(fzip.infolist(), key=lambda x: x.filename):
+                    if not zip_info.is_dir() and zip_info.filename.endswith(".txt"):
+                        txt_files.append(zip_file / zip_info.filename)
     return txt_files
+
+
+def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
+    panel.sort_values(
+        "channel",
+        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
+        inplace=True,
+    )
+    name_dupl_mask = panel["name"].duplicated(keep=False)
+    name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
+    panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
+    if "keep" not in panel:
+        panel["keep"] = pd.Series(dtype=pd.BooleanDtype())
+        panel.loc[:, "keep"] = True
+    if "ilastik" not in panel:
+        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
+    if "deepcell" not in panel:
+        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
+    next_column_index = 0
+    for column in ("channel", "name", "keep", "ilastik", "deepcell"):
+        if column in panel:
+            column_data = panel[column]
+            panel.drop(columns=[column], inplace=True)
+            panel.insert(next_column_index, column, column_data)
+            next_column_index += 1
+    return panel
 
 
 def create_panel_from_imc_panel(
@@ -120,45 +146,72 @@ def create_panel_from_imc_panel(
     return panel
 
 
+def create_panels_from_mcd_file(mcd_file: Union[str, PathLike]) -> List[pd.DataFrame]:
+    panels = []
+    with MCDFile(mcd_file) as f:
+        for slide in f.slides:
+            for acquisition in slide.acquisitions:
+                panel = pd.DataFrame(
+                    data={
+                        "channel": pd.Series(
+                            data=acquisition.channel_names,
+                            dtype=pd.StringDtype(),
+                        ),
+                        "name": pd.Series(
+                            data=acquisition.channel_labels,
+                            dtype=pd.StringDtype(),
+                        ),
+                    },
+                )
+                panels.append(panel)
+    return panels
+
+
 def create_panel_from_mcd_files(
-    mcd_files: Sequence[Union[str, PathLike]]
+    mcd_files: Sequence[Union[str, PathLike]], unzip: bool = False
 ) -> pd.DataFrame:
     panels = []
     for mcd_file in mcd_files:
-        with MCDFile(mcd_file) as f:
-            for slide in f.slides:
-                for acquisition in slide.acquisitions:
-                    panel = pd.DataFrame(
-                        data={
-                            "channel": pd.Series(
-                                data=acquisition.channel_names,
-                                dtype=pd.StringDtype(),
-                            ),
-                            "name": pd.Series(
-                                data=acquisition.channel_labels,
-                                dtype=pd.StringDtype(),
-                            ),
-                        },
-                    )
-                    panels.append(panel)
+        zip_file_mcd_member = _get_zip_file_member(mcd_file)
+        if zip_file_mcd_member is None:
+            panels += create_panels_from_mcd_file(mcd_file)
+        elif unzip:
+            zip_file, mcd_member = zip_file_mcd_member
+            with ZipFile(zip_file) as fzip:
+                with TemporaryDirectory() as temp_dir:
+                    extracted_mcd_file = fzip.extract(mcd_member, path=temp_dir)
+                    panels += create_panels_from_mcd_file(extracted_mcd_file)
     panel = pd.concat(panels, ignore_index=True, copy=False)
     panel.drop_duplicates(inplace=True, ignore_index=True)
     return _clean_panel(panel)
 
 
+def create_panel_from_txt_file(txt_file: Union[str, PathLike]) -> pd.DataFrame:
+    with TXTFile(txt_file) as f:
+        return pd.DataFrame(
+            data={
+                "channel": pd.Series(data=f.channel_names, dtype=pd.StringDtype()),
+                "name": pd.Series(data=f.channel_labels, dtype=pd.StringDtype()),
+            },
+        )
+
+
 def create_panel_from_txt_files(
-    txt_files: Sequence[Union[str, PathLike]]
+    txt_files: Sequence[Union[str, PathLike]], unzip: bool = False
 ) -> pd.DataFrame:
     panels = []
     for txt_file in txt_files:
-        with TXTFile(txt_file) as f:
-            panel = pd.DataFrame(
-                data={
-                    "channel": pd.Series(data=f.channel_names, dtype=pd.StringDtype()),
-                    "name": pd.Series(data=f.channel_labels, dtype=pd.StringDtype()),
-                },
-            )
+        zip_file_txt_member = _get_zip_file_member(txt_file)
+        if zip_file_txt_member is None:
+            panel = create_panel_from_txt_file(txt_file)
             panels.append(panel)
+        elif unzip:
+            zip_file, txt_member = zip_file_txt_member
+            with ZipFile(zip_file) as fzip:
+                with TemporaryDirectory() as temp_dir:
+                    extracted_txt_file = fzip.extract(txt_member, path=temp_dir)
+                    panel = create_panel_from_txt_file(extracted_txt_file)
+                    panels.append(panel)
     panel = pd.concat(panels, ignore_index=True, copy=False)
     panel.drop_duplicates(inplace=True, ignore_index=True)
     return _clean_panel(panel)
@@ -214,140 +267,15 @@ def preprocess_image(img: np.ndarray, hpf: Optional[float] = None) -> np.ndarray
     return io._to_dtype(img, io.img_dtype)
 
 
-def try_preprocess_images_from_disk(
-    mcd_files: Sequence[Union[str, PathLike]],
-    txt_files: Sequence[Union[str, PathLike]],
-    channel_names: Optional[Sequence[str]] = None,
-    hpf: Optional[float] = None,
-) -> Generator[
-    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool],
-    None,
-    None,
-]:
-    unmatched_txt_files = list(txt_files)
-    # process mcd files in descending order to avoid ambiguous txt file matching
-    # see https://github.com/BodenmillerGroup/steinbock/issues/100
-    for mcd_file in sorted(
-        mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
-    ):
-        try:
-            with MCDFile(mcd_file) as f_mcd:
-                for slide in f_mcd.slides:
-                    for acquisition in slide.acquisitions:
-                        matched_txt_file = _match_txt_file(
-                            mcd_file, acquisition, unmatched_txt_files
-                        )
-                        if matched_txt_file is not None:
-                            unmatched_txt_files.remove(matched_txt_file)
-                        channel_ind = None
-                        if channel_names is not None:
-                            channel_ind = _get_channel_indices(
-                                acquisition, channel_names
-                            )
-                            if isinstance(channel_ind, str):
-                                logger.warning(
-                                    f"Channel {channel_ind} not found for "
-                                    f"acquisition {acquisition.id} in file "
-                                    "{mcd_file}; skipping acquisition"
-                                )
-                                continue
-                        img = None
-                        recovered = False
-                        try:
-                            img = f_mcd.read_acquisition(acquisition)
-                        except IOError as e:
-                            logger.warning(
-                                f"Error reading acquisition {acquisition.id} "
-                                f"from file {mcd_file}: {e}"
-                            )
-                            if matched_txt_file is not None:
-                                logger.warning(
-                                    f"Restoring from file {matched_txt_file}"
-                                )
-                                try:
-                                    with TXTFile(matched_txt_file) as f_txt:
-                                        img = f_txt.read_acquisition()
-                                        if channel_names is not None:
-                                            channel_ind = _get_channel_indices(
-                                                f_txt, channel_names
-                                            )
-                                            if isinstance(channel_ind, str):
-                                                logger.warning(
-                                                    f"Channel {channel_ind} "
-                                                    "not found in file "
-                                                    f"{matched_txt_file}; "
-                                                    "skipping acquisition"
-                                                )
-                                                continue
-                                    recovered = True
-                                except IOError as e2:
-                                    logger.error(
-                                        f"Error reading file {matched_txt_file}: {e2}"
-                                    )
-                        if img is not None:  # exceptions ...
-                            if channel_ind is not None:
-                                img = img[channel_ind, :, :]
-                            img = preprocess_image(img, hpf=hpf)
-                            yield (
-                                Path(mcd_file),
-                                acquisition,
-                                img,
-                                Path(matched_txt_file)
-                                if matched_txt_file is not None
-                                else None,
-                                recovered,
-                            )
-                            del img
-        except:
-            logger.exception(f"Error reading file {mcd_file}")
-    while len(unmatched_txt_files) > 0:
-        txt_file = unmatched_txt_files.pop(0)
-        try:
-            channel_ind = None
-            with TXTFile(txt_file) as f:
-                if channel_names is not None:
-                    channel_ind = _get_channel_indices(f, channel_names)
-                    if isinstance(channel_ind, str):
-                        logger.warning(
-                            f"Channel {channel_ind} not found in file "
-                            f"{txt_file}; skipping acquisition"
-                        )
-                        continue
-                img = f.read_acquisition()
-            if channel_ind is not None:
-                img = img[channel_ind, :, :]
-            img = preprocess_image(img, hpf=hpf)
-            yield Path(txt_file), None, img, None, False
-            del img
-        except:
-            logger.exception(f"Error reading file {txt_file}")
-
-
-def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
-    panel.sort_values(
-        "channel",
-        key=lambda s: pd.to_numeric(s.str.replace("[^0-9]", "", regex=True)),
-        inplace=True,
-    )
-    name_dupl_mask = panel["name"].duplicated(keep=False)
-    name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
-    panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
-    if "keep" not in panel:
-        panel["keep"] = pd.Series(dtype=pd.BooleanDtype())
-        panel.loc[:, "keep"] = True
-    if "ilastik" not in panel:
-        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
-        panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
-    if "deepcell" not in panel:
-        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
-    next_column_index = 0
-    for column in ("channel", "name", "keep", "ilastik", "deepcell"):
-        if column in panel:
-            column_data = panel[column]
-            panel.drop(columns=[column], inplace=True)
-            panel.insert(next_column_index, column, column_data)
-            next_column_index += 1
-    return panel
+def _get_channel_indices(
+    acquisition: AcquisitionBase, channel_names: Sequence[str]
+) -> Union[List[int], str]:
+    channel_indices = []
+    for channel_name in channel_names:
+        if channel_name not in acquisition.channel_names:
+            return channel_name
+        channel_indices.append(acquisition.channel_names.index(channel_name))
+    return channel_indices
 
 
 def _match_txt_file(
@@ -374,12 +302,182 @@ def _match_txt_file(
     return None
 
 
-def _get_channel_indices(
-    acquisition: AcquisitionBase, channel_names: Sequence[str]
-) -> Union[List[int], str]:
-    channel_indices = []
-    for channel_name in channel_names:
-        if channel_name not in acquisition.channel_names:
-            return channel_name
-        channel_indices.append(acquisition.channel_names.index(channel_name))
-    return channel_indices
+def _try_preprocess_txt_image_from_disk(
+    txt_file: Union[str, PathLike],
+    channel_names: Optional[Sequence[str]] = None,
+    hpf: Optional[float] = None,
+) -> Optional[np.ndarray]:
+    try:
+        channel_ind = None
+        with TXTFile(txt_file) as f:
+            if channel_names is not None:
+                channel_ind = _get_channel_indices(f, channel_names)
+                if isinstance(channel_ind, str):
+                    logger.warning(
+                        f"Channel {channel_ind} not found in file {txt_file}; skipping"
+                    )
+                    return None
+            img = f.read_acquisition()
+        if channel_ind is not None:
+            img = img[channel_ind, :, :]
+        img = preprocess_image(img, hpf=hpf)
+        return img
+    except Exception as e:
+        logger.exception(f"Error reading file {txt_file}: {e}")
+        return None
+
+
+def _try_preprocess_mcd_images_from_disk(
+    mcd_file: Union[str, PathLike],
+    candidate_txt_files: List[Union[str, PathLike]],
+    channel_names: Optional[Sequence[str]] = None,
+    hpf: Optional[float] = None,
+    unzip: bool = False,
+) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool], None, None]:
+    try:
+        with MCDFile(mcd_file) as f_mcd:
+            for slide in f_mcd.slides:
+                for acquisition in slide.acquisitions:
+                    recovery_txt_file = _match_txt_file(
+                        mcd_file, acquisition, candidate_txt_files
+                    )
+                    if recovery_txt_file is not None:
+                        candidate_txt_files.remove(recovery_txt_file)
+                        recovery_txt_file = Path(recovery_txt_file)
+                    channel_ind = None
+                    if channel_names is not None:
+                        channel_ind = _get_channel_indices(acquisition, channel_names)
+                        if isinstance(channel_ind, str):
+                            logger.warning(
+                                f"Channel {channel_ind} not found for acquisition "
+                                f"{acquisition.id} in file {mcd_file}; skipping"
+                            )
+                            continue
+                    try:
+                        img = f_mcd.read_acquisition(acquisition)
+                        if channel_ind is not None:
+                            img = img[channel_ind, :, :]
+                        img = preprocess_image(img, hpf=hpf)
+                        yield acquisition, img, recovery_txt_file, False
+                        del img
+                    except Exception as e:
+                        logger.warning(
+                            f"Error reading acquisition {acquisition.id} "
+                            f"from file {mcd_file}: {e}"
+                        )
+                        if recovery_txt_file is not None:
+                            logger.warning(f"Recovering from file {recovery_txt_file}")
+                            zip_file_txt_member = _get_zip_file_member(
+                                recovery_txt_file
+                            )
+                            if zip_file_txt_member is None:
+                                img = _try_preprocess_txt_image_from_disk(
+                                    recovery_txt_file,
+                                    channel_names=channel_names,
+                                    hpf=hpf,
+                                )
+                                if img is not None:
+                                    yield acquisition, img, recovery_txt_file, True
+                                    del img
+                            elif unzip:
+                                zip_file, txt_member = zip_file_txt_member
+                                with ZipFile(zip_file) as fzip:
+                                    with TemporaryDirectory() as temp_dir:
+                                        extracted_recovery_txt_file = fzip.extract(
+                                            txt_member, path=temp_dir
+                                        )
+                                        img = _try_preprocess_txt_image_from_disk(
+                                            extracted_recovery_txt_file,
+                                            channel_names=channel_names,
+                                            hpf=hpf,
+                                        )
+                                        if img is not None:
+                                            yield (
+                                                acquisition,
+                                                img,
+                                                recovery_txt_file,
+                                                True,
+                                            )
+                                            del img
+    except Exception as e:
+        logger.exception(f"Error reading file {mcd_file}: {e}")
+
+
+def try_preprocess_images_from_disk(
+    mcd_files: Sequence[Union[str, PathLike]],
+    txt_files: Sequence[Union[str, PathLike]],
+    channel_names: Optional[Sequence[str]] = None,
+    hpf: Optional[float] = None,
+    unzip: bool = False,
+) -> Generator[
+    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool],
+    None,
+    None,
+]:
+    candidate_txt_files = list(txt_files)
+    # process mcd files in reverse order to avoid ambiguous txt file matching
+    # see https://github.com/BodenmillerGroup/steinbock/issues/100
+    for mcd_file in sorted(
+        mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
+    ):
+        zip_file_mcd_member = _get_zip_file_member(mcd_file)
+        if zip_file_mcd_member is None:
+            for (
+                acquisition,
+                img,
+                recovery_txt_file,
+                recovered,
+            ) in _try_preprocess_mcd_images_from_disk(
+                mcd_file,
+                candidate_txt_files,
+                channel_names=channel_names,
+                hpf=hpf,
+                unzip=unzip,
+            ):
+                yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered
+                del img
+        elif unzip:
+            zip_file, mcd_member = zip_file_mcd_member
+            with ZipFile(zip_file) as fzip:
+                with TemporaryDirectory() as temp_dir:
+                    extracted_mcd_file = fzip.extract(mcd_member, path=temp_dir)
+                    for (
+                        acquisition,
+                        img,
+                        recovery_txt_file,
+                        recovered,
+                    ) in _try_preprocess_mcd_images_from_disk(
+                        extracted_mcd_file,
+                        candidate_txt_files,
+                        channel_names=channel_names,
+                        hpf=hpf,
+                        unzip=unzip,
+                    ):
+                        yield (
+                            Path(mcd_file),
+                            acquisition,
+                            img,
+                            recovery_txt_file,
+                            recovered,
+                        )
+                        del img
+    for txt_file in candidate_txt_files:
+        zip_file_txt_member = _get_zip_file_member(txt_file)
+        if zip_file_txt_member is None:
+            img = _try_preprocess_txt_image_from_disk(
+                txt_file, channel_names=channel_names, hpf=hpf
+            )
+            if img is not None:
+                yield Path(txt_file), None, img, None, False
+                del img
+        elif unzip:
+            zip_file, txt_member = zip_file_txt_member
+            with ZipFile(zip_file) as fzip:
+                with TemporaryDirectory() as temp_dir:
+                    extracted_txt_file = fzip.extract(txt_member, path=temp_dir)
+                    img = _try_preprocess_txt_image_from_disk(
+                        extracted_txt_file, channel_names=channel_names, hpf=hpf
+                    )
+                    if img is not None:
+                        yield Path(txt_file), None, img, None, False
+                        del img
