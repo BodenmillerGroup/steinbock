@@ -4,7 +4,6 @@ from typing import List, Sequence, Union
 
 import click
 import click_log
-from skimage import measure
 
 from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
@@ -93,13 +92,7 @@ def stitch_cmd(tiles, relabel, mmap, img_dir):
     tile_files = _collect_tiff_files(tiles)
     Path(img_dir).mkdir(exist_ok=True)
     for img_file, img in mosaics.try_stitch_tiles_from_disk_to_disk(
-        tile_files, img_dir, mmap=mmap
+        tile_files, img_dir, relabel=relabel, mmap=mmap
     ):
-        if relabel:
-            if img.ndim != 2:
-                logger.warning(f"Failed to relabel image with shape {img.shape}")
-                continue
-            img[:] = measure.label(img)
-            img.flush()
         logger.info(img_file)
         del img

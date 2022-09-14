@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Generator, NamedTuple, Sequence, Tuple, Union
 
 import numpy as np
+from skimage import measure
 
 from .. import io
 from ._utils import SteinbockUtilsException
@@ -55,6 +56,7 @@ def try_extract_tiles_from_disk_to_disk(
 def try_stitch_tiles_from_disk_to_disk(
     tile_files: Sequence[Union[str, PathLike]],
     img_dir: Union[str, PathLike],
+    relabel: bool = False,
     mmap: bool = False,
 ) -> Generator[Tuple[str, np.ndarray], None, None]:
     class TileInfo(NamedTuple):
@@ -111,7 +113,11 @@ def try_stitch_tiles_from_disk_to_disk(
                 ] = tile
                 if mmap:
                     img.flush()
-            if not mmap:
+            if relabel:
+                img[0, :, :] = measure.label(img[0, :, :])
+            if mmap:
+                img.flush()
+            else:
                 io.write_image(img, img_file, ignore_dtype=True)
             yield img_file, img
             del img
