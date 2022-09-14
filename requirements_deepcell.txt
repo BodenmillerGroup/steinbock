@@ -1,4 +1,4 @@
-# based on requirements.txt from deepcell==0.12.2
+# based on requirements.txt from deepcell==0.12.3
 numpy>=1.16.6
 pydot>=1.4.2,<2
 scipy>=1.2.3,<2
