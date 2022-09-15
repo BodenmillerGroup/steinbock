@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.0">
     
     
       
@@ -17,13 +17,14 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2e8b5541.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
         
       
       
+
     
     
     
@@ -40,10 +41,11 @@
     
       <link rel="stylesheet" href="../mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -74,9 +76,7 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
       </div>
     
     
@@ -973,10 +973,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="docker">Docker</h1>
@@ -1011,18 +1012,18 @@
 <pre><code>docker run ghcr.io/bodenmillergroup/steinbock
 </code></pre>
 <p>For reproducibility, it is recommended to always pull a specific release, e.g.:</p>
-<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.14.2
+<pre><code>docker run ghcr.io/bodenmillergroup/steinbock:0.15.0
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support (Linux only):</p>
-<pre><code>docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.14.2
+<pre><code>docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.15.0
 </code></pre>
 <p><a href="https://docs.docker.com/storage/bind-mounts/">Bind mounts</a> can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to <code>docker run</code> as outlined in the following.</p>
 <h3 id="windows">Windows</h3>
 <p>On the command line, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.14.2
+<pre><code>docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.15.0
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.14.2</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.14.2 $*
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>C:\Data</code>) and the <em>steinbock</em> Docker container version (<code>0.15.0</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>doskey steinbock=docker run -v "C:\Data":/data ghcr.io/bodenmillergroup/steinbock:0.15.0 $*
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current command line without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -1033,16 +1034,17 @@
 </div>
 <h3 id="linux">Linux</h3>
 <p>On the terminal, use the following command to run the <em>steinbock</em> Docker container:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.14.2
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support, use <code>steinbock-gpu</code> Docker image instead:</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.14.2
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.15.0
 </code></pre>
-<p>In the commands above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.14.2</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.14.2"
+<p>In the commands above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.15.0</code>) as needed. The environment variable <code>DISPLAY</code> as well as the bind mounts for <code>/tmp/.X11-unix</code> and <code>~/.Xauthority</code> are required only when running graphical user interfaces.</p>
+<p>To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0"
 </code></pre>
 <p>To run the <em>steinbock</em> Docker container with NVIDIA GPU support, use <code>steinbock-gpu</code> Docker image instead:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.14.2"
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.15.0"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -1055,10 +1057,11 @@
 </div>
 <h3 id="macos">MacOS</h3>
 <p>On the terminal, use the following command to run the <em>steinbock</em> Docker container (Docker must be running):</p>
-<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.14.2
+<pre><code>docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.15.0
 </code></pre>
-<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.14.2</code>) as needed. To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
-<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.14.2"
+<p>In the command above, adapt the bind mount path to your data/working directory (<code>/path/to/data</code>) and the <em>steinbock</em> Docker container version (<code>0.15.0</code>) as needed. The environment variable <code>DISPLAY</code> as well as the bind mounts for <code>/tmp/.X11-unix</code> and <code>~/.Xauthority</code> are required only when running graphical user interfaces.</p>
+<p>To simplify the use of the <em>steinbock</em> command-line interface, it is recommended to set up a <code>steinbock</code> command alias:</p>
+<pre><code>alias steinbock="docker run -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY=$(hostname):0 ghcr.io/bodenmillergroup/steinbock:0.15.0"
 </code></pre>
 <p>The created command alias is retained for the current session and enables running <code>steinbock</code> from the current terminal without typing the full Docker command, for example:</p>
 <pre><code>steinbock --version
@@ -1076,10 +1079,15 @@
 <p>The <em>steinbock</em> Docker container is under active development. If you are experiencing issues, you are more than welcome to <a href="https://github.com/BodenmillerGroup/steinbock/issues">file an issue on GitHub</a>. However, please understand that only issues directly concerning <em>steinbock</em> can be addressed. For user support with Docker, command line usage, etc., please refer to your local IT administrator.</p>
 </div>
 
-              
-            </article>
-            
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
           <a href="#" class="md-top md-icon" data-md-component="top" hidden>
@@ -1147,10 +1155,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top"], "search": "../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.0238f547.min.js"></script>
+      <script src="../assets/javascripts/bundle.48f2be22.min.js"></script>
       
     
   </body>

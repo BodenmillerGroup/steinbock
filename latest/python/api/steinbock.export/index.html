@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.0">
     
     
       
@@ -17,13 +17,14 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.1d29e8d0.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2e8b5541.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
         
       
       
+
     
     
     
@@ -40,10 +41,11 @@
     
       <link rel="stylesheet" href="../../../mkdocstrings.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
+    
     
     
   </head>
@@ -74,9 +76,7 @@
     </div>
     
       <div data-md-component="outdated" hidden>
-        <aside class="md-banner md-banner--warning">
-          
-        </aside>
+        
       </div>
     
     
@@ -1013,10 +1013,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
 <h1 id="steinbockexport">steinbock.export</h1>
@@ -1089,7 +1090,7 @@
 
 
 <h3 id="steinbock.export.data.try_convert_to_anndata_from_disk" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_convert_to_anndata_from_disk</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">neighbors_files</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_convert_to_anndata_from_disk</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">,</span> <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">neighbors_files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1103,15 +1104,13 @@
     <span class="n">intensity_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
     <span class="o">*</span><span class="n">data_file_lists</span><span class="p">,</span>
     <span class="n">neighbors_files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="c1"># panel: Optional[pd.DataFrame] = None,</span>
-    <span class="c1"># image_info: Optional[pd.DataFrame] = None,</span>
+    <span class="n">panel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">AnnData</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="c1"># if panel is not None:</span>
-    <span class="c1">#     panel = panel.set_index(&quot;name&quot;, drop=False, verify_integrity=True)</span>
-    <span class="c1"># if image_info is not None:</span>
-    <span class="c1">#     image_info = image_info.set_index(</span>
-    <span class="c1">#         &quot;image&quot;, drop=False, verify_integrity=True</span>
-    <span class="c1">#     )</span>
+    <span class="k">if</span> <span class="n">panel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">image_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_info</span> <span class="o">=</span> <span class="n">image_info</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">intensity_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">intensity_files</span><span class="p">):</span>
         <span class="n">intensity_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">intensity_file</span><span class="p">)</span>
         <span class="n">data_files</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dfl</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">dfl</span> <span class="ow">in</span> <span class="n">data_file_lists</span><span class="p">)</span>
@@ -1132,37 +1131,42 @@
                         <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="c1"># if image_info is not None:</span>
-            <span class="c1">#     image_obs = (</span>
-            <span class="c1">#         pd.concat(</span>
-            <span class="c1">#             [image_info.loc[img_file_name, :]] * len(x.index),</span>
-            <span class="c1">#             axis=1,</span>
-            <span class="c1">#         )</span>
-            <span class="c1">#         .transpose()</span>
-            <span class="c1">#         .astype(image_info.dtypes.to_dict())</span>
-            <span class="c1">#     )</span>
-            <span class="c1">#     image_obs.index = x.index</span>
-            <span class="c1">#     image_obs.columns = &quot;image_&quot; + image_obs.columns</span>
-            <span class="c1">#     image_obs.rename(</span>
-            <span class="c1">#         columns={&quot;image_image&quot;: &quot;image&quot;}, inplace=True</span>
-            <span class="c1">#     )</span>
-            <span class="c1">#     if obs is not None:</span>
-            <span class="c1">#         obs = pd.merge(</span>
-            <span class="c1">#             obs,</span>
-            <span class="c1">#             image_obs,</span>
-            <span class="c1">#             how=&quot;inner&quot;,  # preserves order of left keys</span>
-            <span class="c1">#             left_index=True,</span>
-            <span class="c1">#             right_index=True,</span>
-            <span class="c1">#         )</span>
-            <span class="c1">#     else:</span>
-            <span class="c1">#         obs = image_obs</span>
+            <span class="k">if</span> <span class="n">image_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">image_obs</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">image_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">img_file_name</span><span class="p">,</span> <span class="p">:]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">image_info</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+                <span class="p">)</span>
+                <span class="n">image_obs</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span>
+                <span class="n">image_obs</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;image_&quot;</span> <span class="o">+</span> <span class="n">image_obs</span><span class="o">.</span><span class="n">columns</span>
+                <span class="n">image_obs</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;image_image&quot;</span><span class="p">:</span> <span class="s2">&quot;image&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                        <span class="n">obs</span><span class="p">,</span>
+                        <span class="n">image_obs</span><span class="p">,</span>
+                        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>  <span class="c1"># preserves order of left keys</span>
+                        <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">obs</span> <span class="o">=</span> <span class="n">image_obs</span>
             <span class="n">var</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="c1"># if panel is not None:</span>
-            <span class="c1">#     var = panel.loc[x.columns, :].copy()</span>
+            <span class="k">if</span> <span class="n">panel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">obs</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">object_id</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">var</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="c1"># convert nullable string dtype to generic object dtype</span>
+            <span class="c1"># https://github.com/BodenmillerGroup/steinbock/issues/66</span>
+            <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">obs</span><span class="o">.</span><span class="n">dtypes</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
+                        <span class="n">obs</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">dtypes</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
+                        <span class="n">var</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
             <span class="n">adata</span> <span class="o">=</span> <span class="n">AnnData</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">neighbors_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">neighbors</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_neighbors</span><span class="p">(</span><span class="n">neighbors_file</span><span class="p">)</span>
@@ -1397,10 +1401,15 @@
 
   </div>
 
-              
-            </article>
-            
-          </div>
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
           <a href="#" class="md-top md-icon" data-md-component="top" hidden>
@@ -1468,10 +1477,11 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.0238f547.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.48f2be22.min.js"></script>
       
     
   </body>
