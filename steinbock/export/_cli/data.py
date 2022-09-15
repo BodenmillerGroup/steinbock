@@ -145,22 +145,22 @@ def fcs_cmd(data_dirs, concatenate, fcs_file_or_dir):
     type=click.Path(exists=True, file_okay=False),
     help="Path to the neighbors directory",
 )
-# @click.option(
-#     "--panel",
-#     "panel_file",
-#     type=click.Path(dir_okay=False),
-#     default="panel.csv",
-#     show_default=True,
-#     help="Path to the panel file",
-# )
-# @click.option(
-#     "--info",
-#     "image_info_file",
-#     type=click.Path(dir_okay=False),
-#     default="images.csv",
-#     show_default=True,
-#     help="Path to the image information file",
-# )
+@click.option(
+    "--panel",
+    "panel_file",
+    type=click.Path(dir_okay=False),
+    default="panel.csv",
+    show_default=True,
+    help="Path to the panel file",
+)
+@click.option(
+    "--info",
+    "image_info_file",
+    type=click.Path(dir_okay=False),
+    default="images.csv",
+    show_default=True,
+    help="Path to the image information file",
+)
 @click.option(
     "--concat/--no-concat",
     "concatenate",
@@ -189,8 +189,8 @@ def anndata_cmd(
     intensities_dir,
     data_dirs,
     neighbors_dir,
-    # panel_file,
-    # image_info_file,
+    panel_file,
+    image_info_file,
     concatenate,
     anndata_format,
     anndata_file_or_dir,
@@ -233,12 +233,12 @@ def anndata_cmd(
         neighbors_files = io.list_neighbors_files(
             neighbors_dir, base_files=intensities_files
         )
-    # panel = None
-    # if panel_file is not None and Path(panel_file).is_file():
-    #     panel = io.read_panel(panel_file)
-    # image_info = None
-    # if image_info_file is not None and Path(image_info_file).is_file():
-    #     image_info = io.read_image_info(image_info_file)
+    panel = None
+    if panel_file is not None and Path(panel_file).is_file():
+        panel = io.read_panel(panel_file)
+    image_info = None
+    if image_info_file is not None and Path(image_info_file).is_file():
+        image_info = io.read_image_info(image_info_file)
     if concatenate and Path(anndata_file_or_dir).is_dir():
         raise SteinbockCLIException("Specify a single output file when concatenating")
     elif not concatenate and Path(anndata_file_or_dir).is_file():
@@ -261,8 +261,8 @@ def anndata_cmd(
         intensities_files,
         *data_file_lists,
         neighbors_files=neighbors_files,
-        # panel=panel,
-        # image_info=image_info,
+        panel=panel,
+        image_info=image_info,
     ):
         if concatenate:
             adatas[img_file_name] = adata

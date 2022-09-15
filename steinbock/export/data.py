@@ -40,15 +40,13 @@ def try_convert_to_anndata_from_disk(
     intensity_files: Sequence[Union[str, PathLike]],
     *data_file_lists,
     neighbors_files: Optional[Sequence[Union[str, PathLike]]] = None,
-    # panel: Optional[pd.DataFrame] = None,
-    # image_info: Optional[pd.DataFrame] = None,
+    panel: Optional[pd.DataFrame] = None,
+    image_info: Optional[pd.DataFrame] = None,
 ) -> Generator[Tuple[str, Path, Tuple[Path, ...], Optional[Path], AnnData], None, None]:
-    # if panel is not None:
-    #     panel = panel.set_index("name", drop=False, verify_integrity=True)
-    # if image_info is not None:
-    #     image_info = image_info.set_index(
-    #         "image", drop=False, verify_integrity=True
-    #     )
+    if panel is not None:
+        panel = panel.set_index("name", drop=False, verify_integrity=True)
+    if image_info is not None:
+        image_info = image_info.set_index("image", drop=False, verify_integrity=True)
     for i, intensity_file in enumerate(intensity_files):
         intensity_file = Path(intensity_file)
         data_files = tuple(Path(dfl[i]) for dfl in data_file_lists)
@@ -69,37 +67,42 @@ def try_convert_to_anndata_from_disk(
                         right_index=True,
                     )
                 obs = obs.loc[x.index, :]
-            # if image_info is not None:
-            #     image_obs = (
-            #         pd.concat(
-            #             [image_info.loc[img_file_name, :]] * len(x.index),
-            #             axis=1,
-            #         )
-            #         .transpose()
-            #         .astype(image_info.dtypes.to_dict())
-            #     )
-            #     image_obs.index = x.index
-            #     image_obs.columns = "image_" + image_obs.columns
-            #     image_obs.rename(
-            #         columns={"image_image": "image"}, inplace=True
-            #     )
-            #     if obs is not None:
-            #         obs = pd.merge(
-            #             obs,
-            #             image_obs,
-            #             how="inner",  # preserves order of left keys
-            #             left_index=True,
-            #             right_index=True,
-            #         )
-            #     else:
-            #         obs = image_obs
+            if image_info is not None:
+                image_obs = (
+                    pd.concat([image_info.loc[img_file_name, :]] * len(x.index), axis=1)
+                    .transpose()
+                    .astype(image_info.dtypes.to_dict())
+                )
+                image_obs.index = x.index
+                image_obs.columns = "image_" + image_obs.columns
+                image_obs.rename(columns={"image_image": "image"}, inplace=True)
+                if obs is not None:
+                    obs = pd.merge(
+                        obs,
+                        image_obs,
+                        how="inner",  # preserves order of left keys
+                        left_index=True,
+                        right_index=True,
+                    )
+                else:
+                    obs = image_obs
             var = None
-            # if panel is not None:
-            #     var = panel.loc[x.columns, :].copy()
+            if panel is not None:
+                var = panel.loc[x.columns, :].copy()
             if obs is not None:
                 obs.index = [f"Object {object_id}" for object_id in x.index]
             if var is not None:
                 var.index = x.columns.astype(str).tolist()
+            # convert nullable string dtype to generic object dtype
+            # https://github.com/BodenmillerGroup/steinbock/issues/66
+            if obs is not None:
+                for col, dtype in zip(obs.columns, obs.dtypes):
+                    if dtype == "string":
+                        obs[col] = obs[col].astype(str)
+            if var is not None:
+                for col, dtype in zip(var.columns, var.dtypes):
+                    if dtype == "string":
+                        var[col] = var[col].astype(str)
             adata = AnnData(X=x.values, obs=obs, var=var, dtype=np.float32)
             if neighbors_file is not None:
                 neighbors = io.read_neighbors(neighbors_file)
