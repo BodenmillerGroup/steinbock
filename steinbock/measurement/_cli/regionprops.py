@@ -53,8 +53,8 @@ def regionprops_cmd(img_dir, mask_dir, mmap, skimage_regionprops, regionprops_di
         skimage_regionprops = [
             "area",
             "centroid",
-            "major_axis_length",
-            "minor_axis_length",
+            "axis_major_length",
+            "axis_minor_length",
             "eccentricity",
         ]
     for img_file, mask_file, regionprops in try_measure_regionprops_from_disk(
