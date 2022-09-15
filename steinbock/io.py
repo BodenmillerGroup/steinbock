@@ -124,6 +124,15 @@ def list_image_files(
 def _fix_image_shape(img_file: Union[str, PathLike], img: np.ndarray) -> np.ndarray:
     if img.ndim == 2:
         img = img[np.newaxis, :, :]
+    elif img.ndim == 4:
+        if img.shape[-1] == 1:
+            img = img[:, :, :, 0]
+        elif img.shape[0] == 1:
+            img = img[0, :, :, :]
+        else:
+            raise SteinbockIOException(
+                f"{img_file}: unsupported four-dimensional shape {img.shape}"
+            )
     elif img.ndim == 5:
         size_t, size_z, size_c, size_y, size_x = img.shape
         if size_t != 1 or size_z != 1:
@@ -234,7 +243,27 @@ def list_mask_files(
 
 
 def _fix_mask_shape(mask_file: Union[str, PathLike], mask: np.ndarray) -> np.ndarray:
-    if mask.ndim == 5:
+    if mask.ndim == 3:
+        if mask.shape[0] == 1:
+            mask = mask[0, :, :]
+        elif mask.shape[-1] == 1:
+            mask = mask[:, :, 0]
+        else:
+            raise SteinbockIOException(
+                f"{mask_file}: unsupported three-dimensional shape {mask.shape}"
+            )
+    elif mask.ndim == 4:
+        if mask.shape[0] == 1 and mask.shape[1] == 1:
+            mask = mask[0, 0, :, :]
+        elif mask.shape[0] == 1 and mask.shape[-1] == 1:
+            mask = mask[0, :, :, 0]
+        elif mask.shape[-1] == 1 and mask.shape[-2] == 1:
+            mask = mask[:, :, 0, 0]
+        else:
+            raise SteinbockIOException(
+                f"{mask_file}: unsupported four-dimensional shape {mask.shape}"
+            )
+    elif mask.ndim == 5:
         size_t, size_z, size_c, size_y, size_x = mask.shape
         if size_t != 1 or size_z != 1 or size_c != 1:
             raise SteinbockIOException(

@@ -8,7 +8,7 @@ ARG TENSORFLOW_VERSION
 ARG TENSORFLOW_SUFFIX
 ARG FIXUID_VERSION=0.5.1
 ARG ILASTIK_BINARY=ilastik-1.3.3post3-Linux.tar.bz2
-ARG CELLPROFILER_VERSION=4.2.1
+ARG CELLPROFILER_VERSION=4.2.4
 ARG CELLPROFILER_PLUGINS_VERSION=4.2.1
 ARG TZ=Europe/Zurich
 
@@ -69,7 +69,7 @@ RUN mkdir /opt/cellprofiler_plugins && \
 COPY requirements.txt /app/steinbock/requirements.txt
 COPY requirements_deepcell${TENSORFLOW_SUFFIX}.txt /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt
 RUN python -m pip install --upgrade -r /app/steinbock/requirements_deepcell${TENSORFLOW_SUFFIX}.txt && \
-    python -m pip install --no-deps deepcell==0.12.2 && \
+    python -m pip install --no-deps deepcell==0.12.3 && \
     python -m pip install --upgrade -r /app/steinbock/requirements.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 

@@ -34,7 +34,7 @@ To install all extras, use the `all` extra:
         # choose between one of the following:
         # pip install --upgrade -r requirements_deepcell.txt
         # pip install --upgrade -r requirements_deepcell-gpu.txt
-        pip install --no-deps deepcell==0.12.2
+        pip install --no-deps deepcell==0.12.3
         pip install --upgrade -r requirements.txt
         pip install --no-deps "steinbock[all]"
 

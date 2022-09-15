@@ -139,10 +139,10 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
             logger.info(histocat_img_file)
         mask = None
         if mask_files is not None:
+            mask = io.read_mask(mask_files[i], native_dtype=True)
             histocat_mask = io._to_dtype(mask, np.uint16)[
                 np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis
             ]
-            mask = io.read_mask(mask_files[i], native_dtype=True)
             histocat_mask_file = histocat_img_dir / f"{img_file.stem}_mask.tiff"
             tifffile.imwrite(
                 histocat_mask_file,

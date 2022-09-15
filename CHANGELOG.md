@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2022-09-15
+
+  - [#136](https://github.com/BodenmillerGroup/steinbock/issues/136) Fix histoCAT mask export
+  - [#146](https://github.com/BodenmillerGroup/steinbock/issues/146) Fix relabeling during stitching
+  - Upgrade deepcell 0.12.2 to 0.12.3
+  - Upgrade CellProfiler 4.2.1 to 4.2.4
+  - Upgrade other dependencies
+  - [#109](https://github.com/BodenmillerGroup/steinbock/issues/109) Support 2-6 channel TIFF files
+  - [#66](https://github.com/BodenmillerGroup/steinbock/issues/66) Include panel/image metadata in anndata exports
+  - [#117](https://github.com/BodenmillerGroup/steinbock/issues/117) Extract and process images from .zip archives file by file
+  - [#104](https://github.com/BodenmillerGroup/steinbock/issues/104) [#121](https://github.com/BodenmillerGroup/steinbock/issues/121) Documentation improvements
+  - [#139](https://github.com/BodenmillerGroup/steinbock/issues/139) [#140](https://github.com/BodenmillerGroup/steinbock/issues/140) [#141](https://github.com/BodenmillerGroup/steinbock/issues/141) API improvements
+
 ## [0.14.2] - 2022-06-29
 
   - Upgrade DeepCell (to 0.12.2) and other dependencies
@@ -327,6 +340,7 @@ Added:
 Initial release for beta testing
 
 
+[0.15.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.2...v0.15.0
 [0.14.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.13.5...v0.14.0
