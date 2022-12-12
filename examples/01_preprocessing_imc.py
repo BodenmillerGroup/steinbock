@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.13.8
+#       jupytext_version: 1.14.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -36,22 +36,25 @@ from steinbock.preprocessing import imc
 
 # %% [markdown]
 # ## Installation
+#
+# **Note:** Installation is currently only supported on `ubuntu`.  
+#
 # To run the current pipeline, a conda environment can be installed as follows:
 # ```
 # conda create -n steinbock python=3.8
 # conda activate steinbock
-# conda install -c conda-forge jupyterlab
 # pip install --upgrade -r requirements_deepcell.txt
 # pip install --no-deps deepcell==0.12.3
 # pip install --upgrade -r requirements.txt
 # pip install --no-deps "steinbock[all]"
+# conda install -c conda-forge jupyter jupyterlab
 # ```
 # The
 # [requirements.txt](https://github.com/BodenmillerGroup/steinbock/blob/main/requirements.txt)
 # and
 # [requirements_deepcell.txt](https://github.com/BodenmillerGroup/steinbock/blob/main/requirements_deepcell.txt)
-# files are located in the root folder of the `steinbock` repository. Up-to-date
-# compatible package versions can be found here ("Package version conflicts"):
+# files are located in the root folder of the `steinbock` repository.  
+# Up-to-date compatible package versions can be found here ("Package version conflicts"):
 # https://bodenmillergroup.github.io/steinbock/latest/install-python/.
 
 # %% [markdown]

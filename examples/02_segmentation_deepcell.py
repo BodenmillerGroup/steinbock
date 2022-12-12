@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.14.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -102,7 +102,7 @@ aggr_func = np.mean
 
 # Define channels to use for segmentation (from the panel file)
 channel_groups = panel["deepcell"].values
-channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # make sure unselected chanels are set to nan
+channel_groups = np.where(channel_groups == 0, np.nan, channel_groups) # makes sure unselected chanels are set to nan
 
 # %% [markdown]
 # #### Generate segmentation stacks
