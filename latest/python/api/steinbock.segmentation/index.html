@@ -8,8 +8,14 @@
       
       
       
+      
+        <link rel="prev" href="../steinbock.classification/">
+      
+      
+        <link rel="next" href="../steinbock.measurement/">
+      
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.0">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
       
@@ -17,11 +23,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.2e8b5541.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.f56500e0.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
-        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.2505c338.min.css">
       
       
 
@@ -56,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
   
     
     
@@ -1060,6 +1065,7 @@
                   
 
 
+
 <h1 id="steinbocksegmentation">steinbock.segmentation</h1>
 
 
@@ -1224,7 +1230,7 @@ Application            (<span title="enum.Enum">Enum</span>)
         <details class="quote">
           <summary>Source code in <code>steinbock/segmentation/deepcell.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Application</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="n">MESMER</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_mesmer_application</span><span class="p">)</span>
 </code></pre></div>
@@ -1306,7 +1312,7 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.deepcell.create_segmentation_stack" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f4ac62503a0</span><span class="o">&gt;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd3e41bf3a0</span><span class="o">&gt;</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1358,7 +1364,7 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.deepcell.try_segment_objects" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f4ac62503a0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd3e41bf3a0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_kwargs</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1439,42 +1445,6 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../steinbock.classification/" class="md-footer__link md-footer__link--prev" aria-label="Previous: steinbock.classification" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              steinbock.classification
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../steinbock.measurement/" class="md-footer__link md-footer__link--next" aria-label="Next: steinbock.measurement" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              steinbock.measurement
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -1496,10 +1466,10 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.48f2be22.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
     
   </body>
