@@ -24,20 +24,6 @@ The following extras are available:
   - `imc` to enable IMC preprocessing functionality
   - `deepcell` to enable DeepCell segmentation functionality
 
-To install all extras, use the `all` extra:
-
-    pip install "steinbock[all]"
-
-!!! note "Package version conflics"
-    Some of the dependencies of steinbock are incompatible due to different version requirements. As a workaround, use the following strategy for installing tested combinations of package versions:
-
-        # choose between one of the following:
-        # pip install --upgrade -r requirements_deepcell.txt
-        # pip install --upgrade -r requirements_deepcell-gpu.txt
-        pip install --no-deps deepcell==0.12.3
-        pip install --upgrade -r requirements.txt
-        pip install --no-deps "steinbock[all]"
-
 ## Usage
 
 Please refer to [Python usage](python/intro.md) for usage instructions.
