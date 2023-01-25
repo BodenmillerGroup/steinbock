@@ -28,7 +28,7 @@ RUN addgroup --gid 1000 steinbock && \
 RUN python3.8 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel && \
-    python -m pip install tensorflow${TENSORFLOW_SUFFIX}==${TENSORFLOW_VERSION}
+    python -m pip install tensorflow==${TENSORFLOW_VERSION}
 
 RUN mkdir /data && \
     chown steinbock:steinbock /data
