@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Full memory mapping support
   - Fixed zero division error in deepcell normalization
   - Added GPU support (switched to Ubuntu 18.04-based tensorflow base image)
-  - Fixed IMC panel preprocessing 
+  - Fixed IMC panel preprocessing
   - Upgraded dependencies
 
 ## [0.12.0] - 2022-01-08
@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Removed steinbock version check
   - Fix IMC panel preprocessing (channel order)
   - Make CLI usable when using PyPI package install
-  - Renamed `--mask` and `--probab` parameters to `--masks` and `--probabs`, respectively 
+  - Renamed `--mask` and `--probab` parameters to `--masks` and `--probabs`, respectively
   - Clean histoCAT export file names
   - Required `-o` parameter for data export
 

@@ -1,3 +1,4 @@
+exclude: ^\.vscode/.*
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -6,15 +7,15 @@ repos:
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-executables-have-shebangs
-      - id: check-json
+      # - id: check-json
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
       - id: check-toml
-      - id: check-xml
+      # - id: check-xml
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
-      - id: pretty-format-json
+      # - id: pretty-format-json
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/PyCQA/isort
@@ -39,3 +40,4 @@ repos:
     rev: v0.991
     hooks:
       - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML]

@@ -13,7 +13,7 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 !!! note "Docker on Windows"
     Docker on Windows 10 (Version 2004 or higher) can use either the legacy WSL backend or the newer WSL2 backend. In general, it is recommended to use the WSL2 backend for performance reasons, see [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions). Pay particular attention to the instructions for [installing Docker on Windows](https://docs.docker.com/desktop/windows/install/), including WSL2 and the Linux kernel update package. By default, WSL2 uses up to "50% of total memory on Windows or 8GB, whichever is less"; to adapt this default, follow the instructions for [changing global configuration options](https://docs.microsoft.com/en-us/windows/wsl/wsl-config#global-configuration-options-with-wslconfig) of WSL2.
-    
+
     On systems with limited memory resources, due to a [problem with WSL2](https://github.com/microsoft/WSL/issues/4166), it may still be advisable to use the legacy WSL backend. This may also be the case if you experience performance losses due to slow disk access (see [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions)). You can change the backend of Docker in the Docker settings. When using the legacy WSL backend, make sure to allocate enough system resources to Docker, as the default memory limit of 2GB will likely not be sufficient to run *steinbock* on real-world datasets. To increase the memory limit, please refer to the [Docker manual for Windows](https://docs.docker.com/desktop/windows/#resources).
 
 !!! note "Docker on MacOS"
@@ -25,7 +25,7 @@ Make Docker available to non-root users: Linux users can follow the [post-instal
     On Windows hosts, to add a user to the `docker-users` group using the command line (as administrator):
 
         net localgroup /add docker-users <username>
-		
+
 	Replace `<username>` with the name of the user (for domain accounts, use the `<domain>\<username>` format).
 
 To run the *steinbock* Docker container with NVIDIA GPU support (Linux only), install the proper drivers and verify that your GPU is running and accessible. Install the `nvidia-container-runtime` as described [here](https://docs.docker.com/config/containers/resource_constraints/#access-an-nvidia-gpu) and restart your system.

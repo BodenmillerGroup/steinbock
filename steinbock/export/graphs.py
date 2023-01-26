@@ -46,5 +46,5 @@ def try_convert_to_networkx_from_disk(
             graph = convert_to_networkx(neighbors, *data_list)
             yield Path(neighbors_file), data_files, graph
             del neighbors, data_list, graph
-        except:
-            logger.exception(f"Error converting {neighbors_file} to networkx")
+        except Exception as e:
+            logger.exception(f"Error converting {neighbors_file} to networkx: {e}")

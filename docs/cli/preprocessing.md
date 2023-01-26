@@ -38,7 +38,7 @@ When manually creating the *steinbock* panel file, no further actions are requir
 This will create a *steinbock* panel at the specified location (defaults to `panel.csv`) as follows:
 
   - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../file-types.md#panel).
-  - If no IMC panel file was found, the *steinbock* panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to `raw`). 
+  - If no IMC panel file was found, the *steinbock* panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to `raw`).
   - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on all .txt files found at the specified location (defaults to `raw`).
 
 !!! note "Different panels"
@@ -57,7 +57,7 @@ Furthermore, this commands also creates an image information table as described 
   - `source_file`: the raw .mcd/.txt file name
   - `recovery_file`: the corresponding .txt file name, if available
   - `recovered`: *True* if the .mcd acquisition was recovered from the corresponding .txt file
-  - Acquisition-specific information (only for images extracted from .mcd files): 
+  - Acquisition-specific information (only for images extracted from .mcd files):
     - `acquisition_id`: numeric acquisition ID
     - `acquisition_description`: user-specified acquisition description
     - `acquisition_posx_um`, `acquisition_posy_um`: start position, in micrometers

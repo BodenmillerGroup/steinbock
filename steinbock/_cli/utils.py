@@ -8,7 +8,6 @@ from click.core import Command
 
 from .._steinbock import SteinbockException
 
-
 logger = logging.getLogger(__name__.rpartition(".")[0].rpartition(".")[0])
 
 

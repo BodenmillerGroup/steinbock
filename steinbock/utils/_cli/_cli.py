@@ -1,8 +1,8 @@
 import click
 
+from ..._cli.utils import OrderedClickGroup
 from .matching import match_cmd
 from .mosaics import mosaics_cmd_group
-from ..._cli.utils import OrderedClickGroup
 
 
 @click.group(name="utils", cls=OrderedClickGroup, help="Various utilities and tools")

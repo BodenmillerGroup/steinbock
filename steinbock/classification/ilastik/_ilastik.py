@@ -8,11 +8,11 @@ from os import PathLike
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
     Generator,
     List,
     Mapping,
     Optional,
+    Protocol,
     Sequence,
     Tuple,
     Union,
@@ -33,6 +33,11 @@ logger = logging.getLogger(__name__.rpartition(".")[0])
 
 class SteinbockIlastikClassificationException(SteinbockClassificationException):
     pass
+
+
+class AggregationFunction(Protocol):
+    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
+        ...
 
 
 class _VigraAxisInfo(IntEnum):
@@ -103,7 +108,7 @@ def write_ilastik_crop(
 def create_ilastik_image(
     img: np.ndarray,
     channel_groups: Optional[np.ndarray] = None,
-    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
+    aggr_func: AggregationFunction = np.mean,
     prepend_mean: bool = True,
     mean_factor: float = 100.0,
     scale_factor: int = 1,
@@ -150,7 +155,7 @@ def create_ilastik_image(
 def try_create_ilastik_images_from_disk(
     img_files: Sequence[Union[str, PathLike]],
     channel_groups: Optional[np.ndarray] = None,
-    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
+    aggr_func: AggregationFunction = np.mean,
     prepend_mean: bool = True,
     mean_factor: float = 100.0,
     scale_factor: int = 1,
@@ -167,8 +172,8 @@ def try_create_ilastik_images_from_disk(
             )
             yield Path(img_file), ilastik_img
             del ilastik_img
-        except:
-            logger.exception(f"Error creating Ilastik image from file {img_file}")
+        except Exception as e:
+            logger.exception(f"Error creating Ilastik image from file {img_file}: {e}")
 
 
 def create_ilastik_crop(
@@ -210,9 +215,9 @@ def try_create_ilastik_crops_from_disk(
             )
             yield Path(ilastik_img_file), ilastik_crop_x, ilastik_crop_y, ilastik_crop
             del ilastik_crop
-        except:
+        except Exception as e:
             logger.exception(
-                f"Error creating Ilastik crop from file {ilastik_img_file}"
+                f"Error creating Ilastik crop from file {ilastik_img_file}: {e}"
             )
 
 
@@ -271,11 +276,11 @@ def run_pixel_classification(
     for ilastik_img_file in ilastik_img_files:
         args.append(str(Path(ilastik_img_file) / _img_dataset_path))
     if ilastik_env is not None:
-        ilastik_env = ilastik_env.copy()
+        ilastik_env = dict(ilastik_env)
         if num_threads is not None:
-            ilastik_env["LAZYFLOW_THREADS"] = num_threads
+            ilastik_env["LAZYFLOW_THREADS"] = f"{num_threads}"
         if memory_limit is not None:
-            ilastik_env["LAZYFLOW_TOTAL_RAM_MB"] = memory_limit
+            ilastik_env["LAZYFLOW_TOTAL_RAM_MB"] = f"{memory_limit}"
     result = run_captured(args, env=ilastik_env)
     ilastik_probab_files = Path(ilastik_probab_dir).rglob(
         f"[!.]*-{_img_dataset_path}.tiff"
@@ -332,28 +337,33 @@ def try_fix_ilastik_crops_from_disk(
                 * ilastik_crop.shape[orig_axis_order.index("y")]
             )
             if ilastik_crop.shape[channel_axis_index] != num_channels:
-                channel_axis_indices = (
-                    i
-                    for i, a in enumerate(orig_axis_order)
-                    if ilastik_crop.shape[i] == num_channels and a not in ("x", "y")
+                next_channel_axis_index = next(
+                    (
+                        i
+                        for i, a in enumerate(orig_axis_order)
+                        if ilastik_crop.shape[i] == num_channels and a not in ("x", "y")
+                    ),
+                    None,
                 )
-                channel_axis_index = next(channel_axis_indices, None)
-            if channel_axis_index is None:
-                raise SteinbockIlastikClassificationException(
-                    f"Unknown channel axis: {ilastik_crop_file}"
-                )
+                if next_channel_axis_index is None:
+                    raise SteinbockIlastikClassificationException(
+                        f"Unknown channel axis: {ilastik_crop_file}"
+                    )
+                channel_axis_index = next_channel_axis_index
             axis_order = orig_axis_order.copy()
             axis_order.insert(0, axis_order.pop(channel_axis_index))
             axis_order.insert(1, axis_order.pop(axis_order.index("y")))
             axis_order.insert(2, axis_order.pop(axis_order.index("x")))
-            transpose_axes = [orig_axis_order.index(a) for a in axis_order]
+            transpose_axes = tuple(orig_axis_order.index(a) for a in axis_order)
             ilastik_crop = np.transpose(ilastik_crop, axes=transpose_axes)
             ilastik_crop = np.reshape(ilastik_crop, ilastik_crop.shape[:3])
             ilastik_crop = io._to_dtype(ilastik_crop, io.img_dtype)
             yield Path(ilastik_crop_file), transpose_axes, ilastik_crop
             del ilastik_crop
-        except:
-            logger.exception(f"Error fixing Ilastik crop from file {ilastik_crop_file}")
+        except Exception as e:
+            logger.exception(
+                f"Error fixing Ilastik crop from file {ilastik_crop_file}: {e}"
+            )
 
 
 def fix_ilastik_project_file_inplace(
@@ -399,6 +409,7 @@ def _fix_input_data_group_inplace(
             if raw_data_group is not None:
                 file_path, _ = _str_decode(raw_data_group["filePath"][()])
                 ilastik_crop_file = _get_hdf5_file(file_path)
+                assert ilastik_crop_file is not None
                 _fix_raw_data_group_inplace(
                     raw_data_group,
                     file_path=str(
@@ -415,7 +426,7 @@ def _fix_input_data_group_inplace(
 
 
 def _fix_pixel_classification_group_inplace(
-    pixel_classification_group: h5py.Group, transpose_axes: List[int]
+    pixel_classification_group: h5py.Group, transpose_axes: Sequence[int]
 ) -> None:
     label_sets_group = pixel_classification_group.get("LabelSets")
     if label_sets_group is not None:
@@ -429,9 +440,9 @@ def _fix_pixel_classification_group_inplace(
                 block_slice, block_slice_ascii = _str_decode(
                     block_dataset.attrs["blockSlice"]
                 )
-                block_slice = block_slice[1:-1].split(",")
-                block_slice = [block_slice[i] for i in transpose_axes[:3]]
-                block_slice = f"[{','.join(block_slice)}]"
+                block_slice_parts = block_slice[1:-1].split(",")
+                block_slice_parts = [block_slice_parts[i] for i in transpose_axes[:3]]
+                block_slice = f"[{','.join(block_slice_parts)}]"
                 del labels_group[block_dataset_name]
                 block_dataset = _create_or_replace_dataset(
                     labels_group, block_dataset_name, block

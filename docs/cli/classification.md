@@ -26,10 +26,10 @@ With default desination file/directory paths shown in brackets, this will:
 By specifying the `--seed` parameter, this command reproducibly extracts crops from the same pseudo-random locations when executed repeatedly.
 
 !!! note "Ilastik image data"
-    All generated image data are saved in *steinbock* Ilastik HDF5 format (undocumented). 
-    
+    All generated image data are saved in *steinbock* Ilastik HDF5 format (undocumented).
+
     If an `ilastik` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The generated Ilastik images consist of one channel per group; channels without a group label are ignored. In addition, the mean of all included channels is prepended to the generated Ilastik images as an additional channel, unless `--no-mean` is specified.
-    
+
     Furthermore, all generated Ilastik images are scaled two-fold in x and y, unless specified otherwise using the `--scale` command-line option. This helps with more accurately identifying object borders in segmentation workflows for images of relatively low resolution (e.g. Imaging Mass Cytometry). In applications with higher resolution (e.g. sequential immunofluorescence), it is recommended to not scale the image data, i.e., to specify `--scale 1`.
 
 ### Training the classifier

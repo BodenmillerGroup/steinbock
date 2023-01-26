@@ -12,8 +12,6 @@ from .. import deepcell
 
 if deepcell.deepcell_available:
     import yaml
-else:
-    yaml = None
 
 deepcell_cli_available = deepcell.deepcell_available
 

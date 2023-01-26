@@ -1,17 +1,17 @@
 name: build
 
 on:
-  
+
   push:
     branches:
       - main
     tags:
       - "v*"
-  
+
   pull_request:
     branches:
       - main
-  
+
   workflow_dispatch:
 
 jobs:
@@ -85,7 +85,7 @@ jobs:
       - name: Extract steinbock metadata
         id: steinbock_meta
         run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
-      
+
       - name: Extract Docker metadata
         uses: docker/metadata-action@v3
         id: docker_meta

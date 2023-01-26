@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
 from steinbock import io
 from steinbock.preprocessing import imc
 

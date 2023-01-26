@@ -23,7 +23,7 @@ In a first step, a CellProfiler pipeline is prepared for processing the images:
 By default, this will create a CellProfiler pipeline `cell_segmentation.cppipe` for segmenting cells in probability images generated during the [Ilastik pixel classification step](classification.md#ilastik).
 
 !!! note "CellProfiler plugins"
-    The generated CellProfiler pipeline makes use of [custom plugins for multi-channel images](https://github.com/BodenmillerGroup/ImcPluginsCP), which are pre-installed in the *steinbock* Docker container. The pipeline can be inspected using CellProfiler as described below.    
+    The generated CellProfiler pipeline makes use of [custom plugins for multi-channel images](https://github.com/BodenmillerGroup/ImcPluginsCP), which are pre-installed in the *steinbock* Docker container. The pipeline can be inspected using CellProfiler as described below.
 
 ### Modifying the pipeline
 
@@ -73,7 +73,7 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
     Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin).
 
     If a `deepcell` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
-    
+
     If no `deepcell` column is present, images are expected to be in the correct format already.
 
 !!! note "Pre-trained models"
@@ -81,10 +81,10 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 
 !!! note "Channel-wise image normalization"
     If enabled, features (i.e., channels) are [scaled](https://en.wikipedia.org/wiki/Feature_scaling) for each image and each channel independently.
-    
+
     Specify `--minmax` to enable min-max normalization and `--zscore` to enable z-score normalization.
 
 !!! note "GPU support"
     For compatibility reasons, DeepCell segmentation using GPUs is not supported by the *steinbock* Docker container.
-    
+
     If GPU support is required, consider using GPU-enabled Docker containers provided by DeepCell.

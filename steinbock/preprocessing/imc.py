@@ -297,7 +297,7 @@ def _match_txt_file(
         logger.warning(
             "Ambiguous txt file matching for %s: %s; continuing without a match",
             mcd_file,
-            ", ".join(filtered_txt_files),
+            ", ".join(str(x) for x in filtered_txt_files),
         )
     return None
 

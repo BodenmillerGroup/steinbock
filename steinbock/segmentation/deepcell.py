@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Generator,
     Mapping,
     Optional,
+    Protocol,
     Sequence,
     Tuple,
     Union,
@@ -67,9 +67,12 @@ def _mesmer_application(model=None):
 
 
 class Application(Enum):
-    """"""
-
     MESMER = partial(_mesmer_application)
+
+
+class AggregationFunction(Protocol):
+    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
+        ...
 
 
 def create_segmentation_stack(
@@ -77,7 +80,7 @@ def create_segmentation_stack(
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
-    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
+    aggr_func: AggregationFunction = np.mean,
 ) -> np.ndarray:
     if channelwise_minmax:
         channel_mins = np.nanmin(img, axis=(1, 2))
@@ -110,7 +113,7 @@ def try_segment_objects(
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
-    aggr_func: Callable[[np.ndarray], np.ndarray] = np.mean,
+    aggr_func: AggregationFunction = np.mean,
     **predict_kwargs,
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     app, predict = application.value(model=model)
@@ -126,5 +129,5 @@ def try_segment_objects(
             mask = predict(img, **predict_kwargs)
             yield Path(img_file), mask
             del img, mask
-        except:
-            logger.exception(f"Error segmenting objects in {img_file}")
+        except Exception as e:
+            logger.exception(f"Error segmenting objects in {img_file}: {e}")

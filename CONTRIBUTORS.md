@@ -1,6 +1,6 @@
 # Contributors
 
-## Nils Eling 
+## Nils Eling
 
 [nils.eling@uzh.ch](mailto:nils.eling@uzh.ch)
 

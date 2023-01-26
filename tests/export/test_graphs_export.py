@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+
 from steinbock import io
 from steinbock.export import graphs
 

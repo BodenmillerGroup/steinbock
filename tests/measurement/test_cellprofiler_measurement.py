@@ -2,6 +2,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+
 from steinbock.measurement import cellprofiler
 
 cellprofiler_binary = "cellprofiler"

@@ -15,8 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 class IntensityAggregation(Enum):
-    """"""
-
     SUM = partial(scipy.ndimage.sum_labels)
     MIN = partial(scipy.ndimage.minimum)
     MAX = partial(scipy.ndimage.maximum)
@@ -64,5 +62,5 @@ def try_measure_intensities_from_disk(
             del img, mask
             yield Path(img_file), Path(mask_file), intensities
             del intensities
-        except:
-            logger.exception(f"Error measuring intensities in {img_file}")
+        except Exception as e:
+            logger.exception(f"Error measuring intensities in {img_file}: {e}")

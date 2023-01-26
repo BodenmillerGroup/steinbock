@@ -1,26 +1,22 @@
-import os
 import logging
+import os
 import subprocess
 import sys
 from functools import wraps
 from pathlib import Path
 
-
 logger = logging.getLogger(__name__.rpartition(".")[0])
 
 
-def run_captured(
-    args, *popen_args, file=sys.stdout, **popen_kwargs
-) -> subprocess.CompletedProcess:
+def run_captured(args, file=sys.stdout, **popen_kwargs) -> subprocess.CompletedProcess:
     with subprocess.Popen(
         args,
-        *popen_args,
         bufsize=0,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         **popen_kwargs,
     ) as process:
-        for c in iter(lambda: process.stdout.read(1), b""):
+        for c in iter(lambda: process.stdout.read(1), b""):  # type: ignore
             file.buffer.write(c)
         process.wait()
     return subprocess.CompletedProcess(
