@@ -121,6 +121,7 @@ jobs:
           context: .
           push: true
           build-args: |
+            TARGET=steinbock
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
@@ -131,7 +132,7 @@ jobs:
           context: .
           push: true
           build-args: |
+            TARGET=steinbock-gpu
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-            TENSORFLOW_SUFFIX=-gpu
           tags: ${{ steps.docker_meta_gpu.outputs.tags }}
           labels: ${{ steps.docker_meta_gpu.outputs.labels }}

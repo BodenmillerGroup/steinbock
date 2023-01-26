@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      arg:
+        - TARGET=steinbock
     volumes:
       - ./data:/data:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
@@ -17,7 +19,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - TENSORFLOW_SUFFIX=-gpu
+        - TARGET=steinbock-gpu
     volumes:
       - ./data:/data:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

@@ -9,7 +9,10 @@
 				"tag": "ghcr.io/bodenmillergroup/steinbock:latest",
 				"dockerfile": "${workspaceFolder}/Dockerfile",
 				"context": "${workspaceFolder}",
-				"pull": true
+				"pull": true,
+				"buildArgs": {
+					"TARGET": "steinbock"
+				}
 			}
 		},
 		{
@@ -22,7 +25,7 @@
 				"context": "${workspaceFolder}",
 				"pull": true,
 				"buildArgs": {
-					"TENSORFLOW_SUFFIX": "-gpu"
+					"TARGET": "steinbock-gpu"
 				}
 			}
 		},
