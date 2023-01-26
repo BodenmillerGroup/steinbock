@@ -20,7 +20,7 @@ _applications = {
 }
 
 
-@click.command(name="deepcell", help="Run a object segmentation batch using DeepCell")
+@click.command(name="deepcell", help="Run an object segmentation batch using DeepCell")
 @click.option(
     "--app",
     "application_name",

@@ -74,7 +74,7 @@ RUN mkdir -p /opt/keras/models && \
 
 COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 COPY steinbock /app/steinbock/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install -e "/app/steinbock[imc,deepcell,testing]"
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" pip install -e "/app/steinbock[imc,cellpose,deepcell,testing]"
 
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
