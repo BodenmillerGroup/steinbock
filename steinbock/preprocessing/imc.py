@@ -69,8 +69,7 @@ def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     name_suffixes = panel.groupby("name").cumcount().map(lambda i: f" {i + 1}")
     panel.loc[name_dupl_mask, "name"] += name_suffixes[name_dupl_mask]
     if "keep" not in panel:
-        panel["keep"] = pd.Series(dtype=pd.BooleanDtype())
-        panel.loc[:, "keep"] = True
+        panel["keep"] = pd.Series([True] * len(panel.index), dtype=pd.BooleanDtype())
     if "ilastik" not in panel:
         panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
