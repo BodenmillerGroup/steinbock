@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: steinbock
-      arg:
+      args:
         - TENSORFLOW_TARGET=tensorflow
     volumes:
       - ./data:/data:rw
