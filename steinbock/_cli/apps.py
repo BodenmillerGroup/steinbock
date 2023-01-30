@@ -18,7 +18,7 @@ def apps_cmd_group():
 @apps_cmd_group.command(
     name="ilastik",
     context_settings={"ignore_unknown_options": True},
-    help="Run Ilastik (GUI requires X11)",
+    help="Run Ilastik GUI",
     add_help_option=False,
 )
 @click.option(
@@ -43,16 +43,24 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
 @apps_cmd_group.command(
     name="cellprofiler",
     context_settings={"ignore_unknown_options": True},
-    help="Run CellProfiler (GUI requires X11)",
+    help="Run CellProfiler GUI",
     add_help_option=False,
 )
 @click.option(
+    "--python",
+    "python_path",
+    type=click.Path(dir_okay=False),
+    default="/opt/cellprofiler-venv/bin/python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
     "--cellprofiler",
-    "cellprofiler_binary",
+    "cellprofiler_module",
     type=click.STRING,
     default="cellprofiler",
     show_default=True,
-    help="CellProfiler binary",
+    help="CellProfiler module",
 )
 @click.option(
     "--plugins-directory",
@@ -66,9 +74,75 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 @check_x11
-def cellprofiler_cmd(cellprofiler_binary, cellprofiler_plugin_dir, cellprofiler_args):
-    args = [cellprofiler_binary] + list(cellprofiler_args)
-    if Path(cellprofiler_plugin_dir).exists():
+def cellprofiler_cmd(
+    python_path, cellprofiler_module, cellprofiler_plugin_dir, cellprofiler_args
+):
+    args = [python_path, "-m", cellprofiler_module] + list(cellprofiler_args)
+    if Path(cellprofiler_plugin_dir).is_dir():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
+    result = run_captured(args)
+    sys.exit(result.returncode)
+
+
+@apps_cmd_group.command(
+    name="jupyter",
+    context_settings={"ignore_unknown_options": True},
+    help="Run Jupyter Notebook",
+    add_help_option=False,
+)
+@click.option(
+    "--python",
+    "python_path",
+    type=click.Path(dir_okay=False),
+    default="python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
+    "--jupyter",
+    "jupyter_module",
+    type=click.STRING,
+    default="jupyter",
+    show_default=True,
+    help="Jupyter module",
+)
+@click.argument("jupyter_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
+@check_x11
+def jupyter_cmd(python_path, jupyter_module, jupyter_args):
+    args = [python_path, "-m", jupyter_module, "notebook"] + list(jupyter_args)
+    result = run_captured(args)
+    sys.exit(result.returncode)
+
+
+@apps_cmd_group.command(
+    name="jupyterlab",
+    context_settings={"ignore_unknown_options": True},
+    help="Run Jupyter Lab",
+    add_help_option=False,
+)
+@click.option(
+    "--python",
+    "python_path",
+    type=click.Path(dir_okay=False),
+    default="python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
+    "--jupyter",
+    "jupyter_module",
+    type=click.STRING,
+    default="jupyter",
+    show_default=True,
+    help="Jupyter module",
+)
+@click.argument("jupyterlab_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
+@check_x11
+def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
+    args = [python_path, "-m", jupyter_module, "lab"] + list(jupyterlab_args)
     result = run_captured(args)
     sys.exit(result.returncode)

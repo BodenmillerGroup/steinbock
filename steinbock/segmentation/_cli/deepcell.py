@@ -139,7 +139,7 @@ def deepcell_cmd(
     mask_dir,
 ):
     channel_groups = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "deepcell" in panel and panel["deepcell"].notna().any():
             channel_groups = panel["deepcell"].values

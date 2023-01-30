@@ -1,33 +1,8 @@
 site_name: steinbock
-plugins:
-  - mkdocstrings:
-      handlers:
-        python:
-          rendering:
-            show_root_toc_entry: no
-            show_if_no_docstring: yes
-          selection:
-            filters:
-              - '!^_'
-      watch:
-        - steinbock
-  - mike:
-      version_selector: true
-markdown_extensions:
-  - admonition
-  - footnotes
-theme:
-  name: material
-  logo: img/steinbock-logo-white.png
-  favicon: img/steinbock-favicon.png
-  features:
-    - navigation.tabs
-    - navigation.top
-extra:
-  version:
-    provider: mike
-extra_css:
-  - mkdocstrings.css
+repo_url: https://github.com/BodenmillerGroup/steinbock
+site_description: The steinbock toolkit documentation
+site_author: Jonas Windhager
+copyright: University of Zurich
 nav:
   - Home:
     - Welcome: index.md
@@ -49,6 +24,7 @@ nav:
     - cli/classification.md
     - cli/segmentation.md
     - cli/measurement.md
+    - cli/visualization.md
     - cli/export.md
     - cli/utils.md
     - cli/apps.md
@@ -59,6 +35,47 @@ nav:
       - python/api/steinbock.classification.md
       - python/api/steinbock.segmentation.md
       - python/api/steinbock.measurement.md
+      - python/api/steinbock.visualization.md
       - python/api/steinbock.export.md
       - python/api/steinbock.utils.md
       - python/api/steinbock.io.md
+  - Issues: https://github.com/BodenmillerGroup/steinbock/issues
+  - Discussions: https://github.com/BodenmillerGroup/steinbock/discussions
+theme:
+  name: material
+  locale: en
+  # theme-specific keywords
+  logo: img/steinbock-logo-white.png
+  favicon: img/steinbock-favicon.png
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+extra_css:
+  - mkdocstrings.css
+extra:
+  version:
+    provider: mike
+watch:
+  - steinbock
+markdown_extensions:
+  - admonition
+  - footnotes
+plugins:
+  - search: {}
+  - mike:
+      version_selector: true
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - steinbock
+          options:
+            show_root_toc_entry: no
+            filters:
+              - '!^_'
+            show_if_no_docstring: yes

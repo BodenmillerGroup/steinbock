@@ -15,6 +15,7 @@ Comma-separated values (CSV) file with column headers and no index
 | `keep` | Whether the channel is present in preprocessed images<br>(if column is absent, all channels are assumed present) | Boolean (`0` or `1`) | no |
 | `ilastik` | Group label for creating [*steinbock* Ilastik images](cli/classification.md#ilastik)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 | `deepcell` | Group label for [DeepCell segmentation](cli/segmentation.md#deepcell)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
+| `cellpose` | Group label for [Cellpose segmentation](cli/segmentation.md#cellpose)<br>(if column is absent, all channels are used separately) | Numeric or empty | no |
 
 The *steinbock* panel allows for further arbitrary columns.
 

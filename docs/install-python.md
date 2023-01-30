@@ -1,6 +1,6 @@
-# Python
+# Python package
 
-The *steinbock* framework can be used programmatically using the *steinbock* Python package.
+The *steinbock* toolkit can be used programmatically using the *steinbock* Python package.
 
 In this section, the installation of the *steinbock* Python package is described.
 
@@ -23,6 +23,8 @@ The following extras are available:
 
   - `imc` to enable IMC preprocessing functionality
   - `deepcell` to enable DeepCell segmentation functionality
+  - `cellpose` to enable Cellpose segmentation functionality
+  - `napari` to enable image visualization functionality
 
 ## Usage
 

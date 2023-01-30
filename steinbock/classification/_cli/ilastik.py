@@ -127,7 +127,7 @@ def prepare_cmd(
     seed,
 ):
     channel_groups = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "ilastik" in panel and panel["ilastik"].notna().any():
             channel_groups = panel["ilastik"].values

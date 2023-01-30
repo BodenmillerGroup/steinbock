@@ -17,12 +17,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
 
@@ -30,15 +30,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -r requirements.txt
-          python -m pip install -e ".[imc,deepcell,docs]"
-
-      - name: Build documentation (latest)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git fetch origin gh-pages --verbose
-          mike deploy -p -u --rebase latest
+          python -m pip install -e ".[imc,cellpose,deepcell,napari,docs]"
 
       - name: Build documentation (versioned)
         if: startsWith(github.ref, 'refs/tags')
@@ -47,3 +39,11 @@ jobs:
           git config user.email github-actions@github.com
           git fetch origin gh-pages --verbose
           mike deploy -p -u --rebase ${GITHUB_REF#refs/tags/}
+
+      - name: Build documentation (latest)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git fetch origin gh-pages --verbose
+          mike deploy -p -u --rebase latest

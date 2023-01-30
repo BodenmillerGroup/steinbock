@@ -6,5 +6,4 @@
 
   - Logo
   - Documentation
-  - [imcRtools](https://github.com/BodenmillerGroup/imcRtools)::`read_steinbock`
   - Testing, feedback & discussion

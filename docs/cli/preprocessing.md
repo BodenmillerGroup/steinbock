@@ -5,12 +5,12 @@ In this step, image data will be prepared for processing with *steinbock*.
 Various sources for raw data are supported by *steinbock*, each of which is described in the following. If you miss support for an imaging modality, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
 !!! note "Optional preprocessing"
-    The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by [imageio](https://imageio.readthedocs.io), you need to convert them to *steinbock*-compatible TIFF files first, see [External images](#external-images).
+    The *steinbock* toolkit natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by [imageio](https://imageio.readthedocs.io), you need to convert them to *steinbock*-compatible TIFF files first, see [External images](#external-images).
 
 !!! note "Computational resources"
-    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](utils.md#mosaics).
+    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles instead, see [mosaics](utils.md#mosaics).
 
-## Imaging Mass Cytometry (IMC)
+## Imaging mass cytometry (IMC)
 
 Preprocessing of IMC data consists of two steps:
 

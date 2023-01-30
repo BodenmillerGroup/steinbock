@@ -18,7 +18,7 @@ cellpose_cli_available = cellpose.cellpose_available
     "--model",
     "model_name",
     type=click.Choice(["nuclei", "cyto", "cyto2"]),
-    default="nuclei",
+    default="cyto2",
     show_default=True,
     help="Name of the Cellpose model",
 )
@@ -174,7 +174,7 @@ def cellpose_cmd(
     mask_dir,
 ):
     channel_groups = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "cellpose" in panel and panel["cellpose"].notna().any():
             channel_groups = panel["cellpose"].values

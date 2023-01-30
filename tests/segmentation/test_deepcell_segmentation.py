@@ -12,6 +12,9 @@ keras_models_dir = "/opt/keras/models"
 
 @pytest.mark.skipif(not deepcell.deepcell_available, reason="DeepCell is not available")
 class TestDeepcellSegmentation:
+    def test_create_segmentation_stack(self, imc_test_data_steinbock_path: Path):
+        pass  # TODO
+
     @pytest.mark.skip(reason="Test would take too long")
     @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_try_segment_objects_mesmer(self, imc_test_data_steinbock_path: Path):

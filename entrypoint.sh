@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-eval $( fixuid -q )
+test ${RUN_FIXUID} && eval $( fixuid -q )
 python -m steinbock "$@"
