@@ -78,7 +78,7 @@ services:
       - '5678:5678'
     working_dir: /app/steinbock
     user: root
-  pytest-gpu-debug:
+  pytest-debug-gpu:
     image: ghcr.io/bodenmillergroup/steinbock-gpu:latest
     volumes:
       - .:/app/steinbock

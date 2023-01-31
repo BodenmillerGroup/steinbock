@@ -20,7 +20,7 @@
             "name": "Docker: Python - General (GPU)",
             "type": "docker",
             "request": "launch",
-            "preLaunchTask": "docker-gpu-run",
+            "preLaunchTask": "docker-run-gpu",
             "python": {
                 "pathMappings": [
                     {
@@ -49,10 +49,10 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Remote Attach (steinbock-gpu-debug)",
+            "name": "Python: Remote Attach (steinbock-debug-gpu)",
             "type": "python",
             "request": "attach",
-            "preLaunchTask": "compose-up: steinbock-gpu-debug",
+            "preLaunchTask": "compose-up: steinbock-debug-gpu",
             "connect": {
                 "host": "localhost",
                 "port": 5678
@@ -83,10 +83,10 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Remote Attach (pytest-gpu-debug)",
+            "name": "Python: Remote Attach (pytest-debug-gpu)",
             "type": "python",
             "request": "attach",
-            "preLaunchTask": "compose-up: pytest-gpu-debug",
+            "preLaunchTask": "compose-up: pytest-debug-gpu",
             "connect": {
                 "host": "localhost",
                 "port": 5678

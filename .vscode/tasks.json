@@ -42,7 +42,7 @@
 			}
 		},
 		{
-			"label": "docker-gpu-run",
+			"label": "docker-run-gpu",
 			"type": "docker-run",
 			"dependsOn": [
 				"docker-build-gpu"
@@ -60,12 +60,12 @@
 			"command": "docker-compose up -d steinbock-debug"
 		},
 		{
-			"label": "compose-up: steinbock-gpu-debug",
+			"label": "compose-up: steinbock-debug-gpu",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build-gpu"
 			],
-			"command": "docker-compose up -d steinbock-gpu-debug"
+			"command": "docker-compose up -d steinbock-debug-gpu"
 		},
 		{
 			"label": "compose-up: pytest-debug",
@@ -76,12 +76,12 @@
 			"command": "docker-compose up -d pytest-debug"
 		},
 		{
-			"label": "compose-up: pytest-gpu-debug",
+			"label": "compose-up: pytest-debug-gpu",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build-gpu"
 			],
-			"command": "docker-compose up -d pytest-gpu-debug"
+			"command": "docker-compose up -d pytest-debug-gpu"
 		}
 	]
 }
