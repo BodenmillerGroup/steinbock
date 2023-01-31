@@ -31,21 +31,6 @@
 				"target": "steinbock"
 			}
 		},
-		// {
-		// 	"label": "docker-build-macos",
-		// 	"type": "docker-build",
-		// 	"platform": "python",
-		// 	"dockerBuild": {
-		// 		"tag": "ghcr.io/bodenmillergroup/steinbock-macos:latest",
-		// 		"dockerfile": "${workspaceFolder}/Dockerfile",
-		// 		"context": "${workspaceFolder}",
-		// 		"pull": true,
-		// 		"buildArgs": {
-		// 			"TENSORFLOW_TARGET": "tensorflow-macos"
-		// 		},
-		// 		"target": "steinbock"
-		// 	}
-		// },
 		{
 			"label": "docker-run",
 			"type": "docker-run",
@@ -66,16 +51,6 @@
 				"module": "steinbock"
 			}
 		},
-		// {
-		// 	"label": "docker-macos-run",
-		// 	"type": "docker-run",
-		// 	"dependsOn": [
-		// 		"docker-build-macos"
-		// 	],
-		// 	"python": {
-		// 		"module": "steinbock"
-		// 	}
-		// },
 		{
 			"label": "compose-up: steinbock-debug",
 			"type": "shell",
@@ -92,14 +67,6 @@
 			],
 			"command": "docker-compose up -d steinbock-gpu-debug"
 		},
-		// {
-		// 	"label": "compose-up: steinbock-macos-debug",
-		// 	"type": "shell",
-		// 	"dependsOn": [
-		// 		"docker-build-macos"
-		// 	],
-		// 	"command": "docker-compose up -d steinbock-macos-debug"
-		// },
 		{
 			"label": "compose-up: pytest-debug",
 			"type": "shell",
@@ -116,13 +83,5 @@
 			],
 			"command": "docker-compose up -d pytest-gpu-debug"
 		}
-		// {
-		// 	"label": "compose-up: pytest-macos-debug",
-		// 	"type": "shell",
-		// 	"dependsOn": [
-		// 		"docker-build-macos"
-		// 	],
-		// 	"command": "docker-compose up -d pytest-macos-debug"
-		// }
 	]
 }

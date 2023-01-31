@@ -118,18 +118,6 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
-      # - name: Extract steinbock-macos container metadata
-      #   uses: docker/metadata-action@v4
-      #   id: steinbock_macos_container_meta
-      #   with:
-      #     images: ghcr.io/${{ github.repository }}
-      #     flavor: |
-      #       suffix=-macos,onlatest=true
-      #     tags: |
-      #       type=semver,pattern={{major}}
-      #       type=semver,pattern={{major}}.{{minor}}
-      #       type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
       - name: Extract steinbock-xpra container metadata
         uses: docker/metadata-action@v4
         id: steinbock_xpra_container_meta
@@ -153,18 +141,6 @@ jobs:
             type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      # - name: Extract steinbock-macos-xpra container metadata
-      #   uses: docker/metadata-action@v4
-      #   id: steinbock_macos_xpra_container_meta
-      #   with:
-      #     images: ghcr.io/${{ github.repository }}
-      #     flavor: |
-      #       suffix=-macos-xpra,onlatest=true
-      #     tags: |
-      #       type=semver,pattern={{major}}
-      #       type=semver,pattern={{major}}.{{minor}}
-      #       type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
       - name: Build and publish steinbock container
         uses: docker/build-push-action@v3
@@ -190,18 +166,6 @@ jobs:
           tags: ${{ steps.steinbock_gpu_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_gpu_container_meta.outputs.labels }}
 
-      # - name: Build and publish steinbock-macos container
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     push: true
-      #     target: steinbock
-      #     build-args: |
-      #       TENSORFLOW_TARGET=tensorflow-macos
-      #       STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-      #     tags: ${{ steps.steinbock_macos_container_meta.outputs.tags }}
-      #     labels: ${{ steps.steinbock_macos_container_meta.outputs.labels }}
-
       - name: Build and publish steinbock-xpra container
         uses: docker/build-push-action@v3
         with:
@@ -225,15 +189,3 @@ jobs:
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.steinbock_gpu_xpra_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_gpu_xpra_container_meta.outputs.labels }}
-
-      # - name: Build and publish steinbock-macos-xpra container
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     push: true
-      #     target: steinbock-xpra
-      #     build-args: |
-      #       TENSORFLOW_TARGET=tensorflow-macos
-      #       STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-      #     tags: ${{ steps.steinbock_macos_xpra_container_meta.outputs.tags }}
-      #     labels: ${{ steps.steinbock_macos_xpra_container_meta.outputs.labels }}
