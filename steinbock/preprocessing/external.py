@@ -61,16 +61,16 @@ def create_panel_from_image_files(
             "name": np.nan,
             "keep": True,
             "ilastik": range(1, num_channels + 1),
-            "cellpose": np.nan,
             "deepcell": np.nan,
+            "cellpose": np.nan,
         },
     )
     panel["channel"] = panel["channel"].astype(pd.StringDtype())
     panel["name"] = panel["name"].astype(pd.StringDtype())
     panel["keep"] = panel["keep"].astype(pd.BooleanDtype())
     panel["ilastik"] = panel["ilastik"].astype(pd.UInt8Dtype())
-    panel["cellpose"] = panel["cellpose"].astype(pd.UInt8Dtype())
     panel["deepcell"] = panel["deepcell"].astype(pd.UInt8Dtype())
+    panel["cellpose"] = panel["cellpose"].astype(pd.UInt8Dtype())
     return panel
 
 

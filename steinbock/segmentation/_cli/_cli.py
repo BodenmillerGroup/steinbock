@@ -16,7 +16,7 @@ def segment_cmd_group():
 
 
 segment_cmd_group.add_command(cellprofiler_cmd_group)
-if cellpose_cli_available:
-    segment_cmd_group.add_command(cellpose_cmd)
 if deepcell_cli_available:
     segment_cmd_group.add_command(deepcell_cmd)
+if cellpose_cli_available:
+    segment_cmd_group.add_command(cellpose_cmd)
