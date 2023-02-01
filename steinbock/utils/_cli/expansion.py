@@ -10,8 +10,9 @@ from ..._steinbock import logger as steinbock_logger
 from .. import expansion
 
 
-@click.command(name="expand", help="Expand masks objects")
-@click.argument("masks", nargs=1, type=click.Path(exists=True, file_okay=False))
+@click.command(name="expand", help="Expand mask objects by an Euclidean distance")
+@click.argument("masks", type=click.Path(exists=True, file_okay=False))
+@click.argument("distance", type=click.INT)
 @click.option(
     "--mmap/--no-mmap",
     "mmap",
@@ -27,7 +28,7 @@ from .. import expansion
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def expand_cmd(masks, mmap, expanded_masks_dir):
+def expand_cmd(masks, distance, mmap, expanded_masks_dir):
     if Path(masks).is_file():
         mask_files = [Path(masks)]
     elif Path(masks).is_dir():
@@ -37,7 +38,7 @@ def expand_cmd(masks, mmap, expanded_masks_dir):
     else:
         expanded_masks_dir = Path(masks)
     for mask_file, expanded_mask in expansion.try_expand_masks_from_disk(
-        mask_files, mmap=mmap
+        mask_files, distance, mmap=mmap
     ):
         expanded_mask_file = Path(expanded_masks_dir) / mask_file.name
         io.write_mask(expanded_mask, expanded_mask_file, ignore_dtype=True)
