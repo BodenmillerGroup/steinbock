@@ -105,3 +105,8 @@ To segment nuclei using the `nuclei` model:
     If a `cellpose` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
 
     If no `cellpose` column is present, images are expected to be in the correct format already.
+
+!!! note "GPU support"
+    Currently. steinbock does not support cellpose segmentation with GPU support.
+
+    If GPU support is required, consider running cellpose on your host system independently.

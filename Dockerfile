@@ -143,7 +143,7 @@ RUN mkdir /opt/cellprofiler_plugins && \
 
 ENV PATH="${ROOT_VENV_PATH}"
 
-# install steinbock in steinbock-venv (including napari system dependencies and Jupyter Notebook/Jupyter Lab)
+# install steinbock in steinbock-venv (including napari system dependencies, Jupyter Notebook/Jupyter Lab, pre-trained models)
 
 RUN apt-get update && \
     apt-get install -yqq mesa-utils libgl1-mesa-glx libglib2.0-0 libfontconfig1 libxrender1 libdbus-1-3 libxkbcommon-x11-0 libxi6 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0
@@ -161,6 +161,24 @@ ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
+
+RUN mkdir -p /home/steinbock/.cellpose/models && \
+    cd /home/steinbock/.cellpose/models && \
+    curl -SsO https://www.cellpose.org/models/cytotorch_0 && \
+    curl -SsO https://www.cellpose.org/models/cytotorch_1 && \
+    curl -SsO https://www.cellpose.org/models/cytotorch_2 && \
+    curl -SsO https://www.cellpose.org/models/cytotorch_3 && \
+    curl -SsO https://www.cellpose.org/models/size_cytotorch_0.npy && \
+    curl -SsO https://www.cellpose.org/models/nucleitorch_0 && \
+    curl -SsO https://www.cellpose.org/models/nucleitorch_1 && \
+    curl -SsO https://www.cellpose.org/models/nucleitorch_2 && \
+    curl -SsO https://www.cellpose.org/models/nucleitorch_3 && \
+    curl -SsO https://www.cellpose.org/models/size_nucleitorch_0.npy && \
+    curl -SsO https://www.cellpose.org/models/cyto2torch_0 && \
+    curl -SsO https://www.cellpose.org/models/cyto2torch_1 && \
+    curl -SsO https://www.cellpose.org/models/cyto2torch_2 && \
+    curl -SsO https://www.cellpose.org/models/cyto2torch_3 && \
+    curl -SsO https://www.cellpose.org/models/size_cyto2torch_0.npy
 
 COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 COPY steinbock /app/steinbock/steinbock/

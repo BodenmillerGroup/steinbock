@@ -70,7 +70,7 @@ def try_segment_objects(
     net_avg: bool = True,
     batch_size: int = 8,
     normalize: bool = True,
-    diameter: Optional[int] = 10,
+    diameter: Optional[int] = None,
     tile: bool = False,
     tile_overlap: float = 0.1,
     resample: bool = True,
@@ -116,7 +116,8 @@ def try_segment_objects(
                 min_size=min_size,
                 progress=False,
             )
-            yield Path(img_file), masks[0], flows[0], styles[0], diams[0]
+            diam = diams if isinstance(diams, float) else diams[0]
+            yield Path(img_file), masks[0], flows[0], styles[0], diam
             del img, masks, flows, styles, diams
         except Exception as e:
             logger.exception(f"Error segmenting objects in {img_file}: {e}")

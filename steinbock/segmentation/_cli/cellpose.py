@@ -86,8 +86,6 @@ cellpose_cli_available = cellpose.cellpose_available
     "--diameter",
     "diameter",
     type=click.FLOAT,
-    default=10.0,
-    show_default=True,
     help="See Cellpose documentation",
 )
 @click.option(
