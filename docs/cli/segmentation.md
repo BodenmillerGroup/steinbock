@@ -86,6 +86,9 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 
 ## Cellpose
 
+!!! danger "Experimental feature"
+    This is an experimental feature and likely requires fine-tuning of parameters (using steinbock command-line options).
+
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
 !!! note "End-to-end cell segmentation"
