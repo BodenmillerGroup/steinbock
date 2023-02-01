@@ -111,7 +111,10 @@ def cellprofiler_cmd(
 @catch_exception(handle=SteinbockException)
 @check_x11
 def jupyter_cmd(python_path, jupyter_module, jupyter_args):
-    args = [python_path, "-m", jupyter_module, "notebook"] + list(jupyter_args)
+    jupyter_args = list(jupyter_args)
+    if not any(arg.startswith("--ip=") for arg in jupyter_args):
+        jupyter_args.append("--ip='0.0.0.0'")
+    args = [python_path, "-m", jupyter_module, "notebook"] + jupyter_args
     result = run_captured(args)
     sys.exit(result.returncode)
 
@@ -143,6 +146,9 @@ def jupyter_cmd(python_path, jupyter_module, jupyter_args):
 @catch_exception(handle=SteinbockException)
 @check_x11
 def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
-    args = [python_path, "-m", jupyter_module, "lab"] + list(jupyterlab_args)
+    jupyterlab_args = list(jupyterlab_args)
+    if not any(arg.startswith("--ip=") for arg in jupyterlab_args):
+        jupyterlab_args.append("--ip='0.0.0.0'")
+    args = [python_path, "-m", jupyter_module, "lab"] + jupyterlab_args
     result = run_captured(args)
     sys.exit(result.returncode)
