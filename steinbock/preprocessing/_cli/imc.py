@@ -87,7 +87,7 @@ def imc_cmd_group():
 @click.option(
     "--unzip/--no-unzip",
     "unzip",
-    default=False,
+    default=True,
     show_default=True,
     help="Unzip .mcd/.txt files from .zip archives",
 )

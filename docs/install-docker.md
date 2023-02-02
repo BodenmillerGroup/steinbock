@@ -58,7 +58,7 @@ For reproducibility, it is recommended to always pull a specific release, e.g.:
 
 To run the *steinbock* Docker container with NVIDIA GPU support (Linux only):
 
-    docker run --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.16.0
+    docker run --gpus all ghcr.io/bodenmillergroup/steinbock:0.16.0-gpu
 
 [Bind mounts](https://docs.docker.com/storage/bind-mounts/) can be used to make data from the host system available to the Docker container (see below). Commands that launch a graphical user interface may require further system configuration and additional arguments to `docker run` as outlined in the following.
 
@@ -106,9 +106,9 @@ On the terminal, use the following command to run the *steinbock* Docker contain
 
     docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.16.0
 
-To run the *steinbock* Docker container with NVIDIA GPU support, use `steinbock-gpu` Docker image instead:
+To run the *steinbock* Docker container with NVIDIA GPU support, use `-gpu` Docker image instead:
 
-    docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.16.0
+    docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock:0.16.0-gpu
 
 In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. The environment variable `DISPLAY` as well as the bind mounts for `/tmp/.X11-unix` and `~/.Xauthority` are required only when running graphical user interfaces.
 
@@ -116,9 +116,9 @@ To simplify the use of the *steinbock* command-line interface, it is recommended
 
     alias steinbock="docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.16.0"
 
-To run the *steinbock* Docker container with NVIDIA GPU support, use `steinbock-gpu` Docker image instead:
+To run the *steinbock* Docker container with NVIDIA GPU support, use `-gpu` Docker image instead:
 
-    alias steinbock="docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock-gpu:0.16.0"
+    alias steinbock="docker run -p 8888:8888 -v /path/to/data:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -u $(id -u):$(id -g) -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock:0.16.0-gpu"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
