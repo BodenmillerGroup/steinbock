@@ -83,7 +83,7 @@ ARG CELLPROFILER_VERSION
 ARG CELLPROFILER_PLUGINS_VERSION
 ARG TZ="Europe/Zurich"
 
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
+ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1" XDG_RUNTIME_DIR="/tmp"
 
 USER root:root
 
@@ -161,7 +161,7 @@ RUN python -m pip install jupyter jupyterlab
 COPY requirements.txt requirements_test.txt /app/steinbock/
 RUN python -m pip install -r /app/steinbock/requirements.txt && \
     python -m pip install -r /app/steinbock/requirements_test.txt
-ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
+ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1" NAPARI_RUN="no"
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
@@ -216,8 +216,7 @@ FROM ${STEINBOCK_TARGET} AS xpra
 
 ARG XPRA_PORT="9876"
 
-ENV PATH="${ROOT_VENV_PATH}" DISPLAY=":100" XDG_RUNTIME_DIR="/tmp"
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
+ENV PATH="${ROOT_VENV_PATH}" DISPLAY=":100" NAPARI_RUN="yes"
 ENV XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
 
 USER root:root
@@ -234,11 +233,13 @@ RUN curl -SsL https://xpra.org/gpg.asc | apt-key add - && \
     chown root:steinbock /run/user /run/xpra && \
     chown steinbock:steinbock /tmp
 
+ENV PATH="${STEINBOCK_VENV_PATH}"
+
 WORKDIR /data
 USER steinbock:steinbock
 CMD test ${RUN_FIXUID} && eval $( fixuid -q ); \
     mkdir -p -m 0700 /run/user/$(id -u); \
     echo "Launching steinbock on Xpra; connect via http://localhost:${XPRA_PORT}"; \
-    xpra start --daemon=no --uid=$(id -u) --gid=$(id -g) --bind-tcp="0.0.0.0:${XPRA_PORT}" --start-child="${XPRA_START}" --exit-with-children=yes --exit-with-client=yes --env=PATH="${STEINBOCK_VENV_PATH}" --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 ${XPRA_XVFB_SCREEN} -nolisten tcp -noreset" --html=on --notifications=no --bell=no --webcam=no --pulseaudio=no ${DISPLAY}
+    xpra start --daemon=no --uid=$(id -u) --gid=$(id -g) --bind-tcp="0.0.0.0:${XPRA_PORT}" --start-child="${XPRA_START}" --exit-with-children=yes --exit-with-client=yes --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 ${XPRA_XVFB_SCREEN} -nolisten tcp -noreset" --html=on --notifications=no --bell=no --webcam=no --pulseaudio=no ${DISPLAY}
 ENTRYPOINT []
 EXPOSE 8888 ${XPRA_PORT}
