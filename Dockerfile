@@ -4,11 +4,18 @@ ARG TENSORFLOW_TARGET="tensorflow"
 # tensorflow version (deepcell 0.12.4 requires ~=2.8.0)
 ARG TENSORFLOW_VERSION="2.8.4"
 
+# "steinbock" or "steinbock-cellpose"
+ARG STEINBOCK_TARGET="steinbock"
+
+# steinbock version (for overriding setuptools-scm)
+ARG STEINBOCK_VERSION
+
 # third-party software versions
 ARG FIXUID_VERSION="0.5.1"
 ARG ILASTIK_BINARY="ilastik-1.3.3post3-Linux.tar.bz2"
 ARG CELLPROFILER_VERSION="4.2.5"
 ARG CELLPROFILER_PLUGINS_VERSION="4.2.1"
+ARG CELLPOSE_VERSION="2.2"
 
 
 
@@ -22,12 +29,10 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 
 USER root:root
 
-# install tensorflow Python package
-
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
     python3 -m pip install --upgrade pip && \
-    python3 -m pip install tensorflow==${TENSORFLOW_VERSION}
+    python3 -m pip install "tensorflow==${TENSORFLOW_VERSION}"
 
 
 
@@ -41,12 +46,10 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 
 USER root:root
 
-# install tensorflow Python package
-
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
     python3 -m pip install --upgrade pip && \
-    python3 -m pip install tensorflow==${TENSORFLOW_VERSION}
+    python3 -m pip install "tensorflow==${TENSORFLOW_VERSION}"
 
 
 
@@ -163,6 +166,30 @@ ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
 
+COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
+COPY steinbock /app/steinbock/steinbock/
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,deepcell,napari]"
+
+# configure container
+
+WORKDIR /data
+USER steinbock:steinbock
+COPY entrypoint.sh /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+EXPOSE 8888
+
+
+
+########## STEINBOCK-CELLPOSE ##########
+
+FROM steinbock AS steinbock-cellpose
+
+ARG CELLPOSE_VERSION
+
+USER root:root
+RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
+USER steinbock:steinbock
+
 RUN mkdir -p /home/steinbock/.cellpose/models && \
     cd /home/steinbock/.cellpose/models && \
     curl -SsO https://www.cellpose.org/models/cytotorch_0 && \
@@ -181,23 +208,11 @@ RUN mkdir -p /home/steinbock/.cellpose/models && \
     curl -SsO https://www.cellpose.org/models/cyto2torch_3 && \
     curl -SsO https://www.cellpose.org/models/size_cyto2torch_0.npy
 
-COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
-COPY steinbock /app/steinbock/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,cellpose,deepcell,napari]"
-
-# configure container
-
-WORKDIR /data
-USER steinbock:steinbock
-COPY entrypoint.sh /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
-EXPOSE 8888
 
 
+########## XPRA ##########
 
-########## STEINBOCK-XPRA ##########
-
-FROM steinbock AS steinbock-xpra
+FROM ${STEINBOCK_TARGET} AS xpra
 
 ARG XPRA_PORT="9876"
 
@@ -206,8 +221,6 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 ENV XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
 
 USER root:root
-
-# install Xpra
 
 RUN apt-get update && \
     apt-get install -yqq gnupg2 apt-transport-https xvfb xterm sshfs
@@ -221,13 +234,11 @@ RUN curl -SsL https://xpra.org/gpg.asc | apt-key add - && \
     chown root:steinbock /run/user /run/xpra && \
     chown steinbock:steinbock /tmp
 
-# configure container
-
 WORKDIR /data
 USER steinbock:steinbock
 CMD test ${RUN_FIXUID} && eval $( fixuid -q ); \
     mkdir -p -m 0700 /run/user/$(id -u); \
     echo "Launching steinbock on Xpra; connect via http://localhost:${XPRA_PORT}"; \
-    xpra start --daemon=no --uid=$(id -u) --gid=$(id -g) --bind-tcp=0.0.0.0:${XPRA_PORT} --start-child="${XPRA_START}" --exit-with-children=yes --exit-with-client=yes --env=PATH="${STEINBOCK_VENV_PATH}" --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 ${XPRA_XVFB_SCREEN} -nolisten tcp -noreset" --html=on --notifications=no --bell=no --webcam=no --pulseaudio=no ${DISPLAY}
+    xpra start --daemon=no --uid=$(id -u) --gid=$(id -g) --bind-tcp="0.0.0.0:${XPRA_PORT}" --start-child="${XPRA_START}" --exit-with-children=yes --exit-with-client=yes --env=PATH="${STEINBOCK_VENV_PATH}" --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 ${XPRA_XVFB_SCREEN} -nolisten tcp -noreset" --html=on --notifications=no --bell=no --webcam=no --pulseaudio=no ${DISPLAY}
 ENTRYPOINT []
 EXPOSE 8888 ${XPRA_PORT}

@@ -17,21 +17,6 @@
             }
         },
         {
-            "name": "Docker: Python - General (GPU)",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run-gpu",
-            "python": {
-                "pathMappings": [
-                    {
-                        "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app/steinbock"
-                    }
-                ],
-                "projectType": "general"
-            }
-        },
-        {
             "name": "Python: Remote Attach (steinbock-debug)",
             "type": "python",
             "request": "attach",
@@ -49,44 +34,10 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Remote Attach (steinbock-debug-gpu)",
-            "type": "python",
-            "request": "attach",
-            "preLaunchTask": "compose-up: steinbock-debug-gpu",
-            "connect": {
-                "host": "localhost",
-                "port": 5678
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/app/steinbock"
-                }
-            ],
-            "justMyCode": false
-        },
-        {
             "name": "Python: Remote Attach (pytest-debug)",
             "type": "python",
             "request": "attach",
             "preLaunchTask": "compose-up: pytest-debug",
-            "connect": {
-                "host": "localhost",
-                "port": 5678
-            },
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/app/steinbock"
-                }
-            ],
-            "justMyCode": false
-        },
-        {
-            "name": "Python: Remote Attach (pytest-debug-gpu)",
-            "type": "python",
-            "request": "attach",
-            "preLaunchTask": "compose-up: pytest-debug-gpu",
             "connect": {
                 "host": "localhost",
                 "port": 5678

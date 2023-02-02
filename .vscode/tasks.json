@@ -11,22 +11,8 @@
 				"context": "${workspaceFolder}",
 				"pull": true,
 				"buildArgs": {
-					"TENSORFLOW_TARGET": "tensorflow"
-				},
-				"target": "steinbock"
-			}
-		},
-		{
-			"label": "docker-build-gpu",
-			"type": "docker-build",
-			"platform": "python",
-			"dockerBuild": {
-				"tag": "ghcr.io/bodenmillergroup/steinbock-gpu:latest",
-				"dockerfile": "${workspaceFolder}/Dockerfile",
-				"context": "${workspaceFolder}",
-				"pull": true,
-				"buildArgs": {
-					"TENSORFLOW_TARGET": "tensorflow-gpu"
+					"TENSORFLOW_TARGET": "tensorflow",
+					"STEINBOCK_TARGET": "steinbock"
 				},
 				"target": "steinbock"
 			}
@@ -42,16 +28,6 @@
 			}
 		},
 		{
-			"label": "docker-run-gpu",
-			"type": "docker-run",
-			"dependsOn": [
-				"docker-build-gpu"
-			],
-			"python": {
-				"module": "steinbock"
-			}
-		},
-		{
 			"label": "compose-up: steinbock-debug",
 			"type": "shell",
 			"dependsOn": [
@@ -60,28 +36,12 @@
 			"command": "docker-compose up -d steinbock-debug"
 		},
 		{
-			"label": "compose-up: steinbock-debug-gpu",
-			"type": "shell",
-			"dependsOn": [
-				"docker-build-gpu"
-			],
-			"command": "docker-compose up -d steinbock-debug-gpu"
-		},
-		{
 			"label": "compose-up: pytest-debug",
 			"type": "shell",
 			"dependsOn": [
 				"docker-build"
 			],
 			"command": "docker-compose up -d pytest-debug"
-		},
-		{
-			"label": "compose-up: pytest-debug-gpu",
-			"type": "shell",
-			"dependsOn": [
-				"docker-build-gpu"
-			],
-			"command": "docker-compose up -d pytest-debug-gpu"
 		}
 	]
 }

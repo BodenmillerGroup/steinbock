@@ -23,8 +23,6 @@ Matching Visual Studio Code launch configurations are provided for debugging:
   - `Python: Remote Attach (steinbock-debug)` for debugging *steinbock* using [Docker Compose](https://docs.docker.com/compose)
   - `Python: Remote Attach (pytest-debug)` for debugging unit tests with [pytest](https://pytest.org) using [Docker Compose](https://docs.docker.com/compose)
 
-In addition, GPU-enabled services and launch configurations are available (`-gpu` suffix).
-
 To debug specific *steinbock* commands using e.g. the `Python: Remote Attach (steinbock-debug)` launch configuration, adapt the respective `command` in the [docker-compose.yml](https://github.com/BodenmillerGroup/steinbock/blob/main/docker-compose.yml) file (e.g. add `--version` after `-m steinbock`). Launch configurations may have to be invoked multiple times in order for them to work.
 
 To debug unit tests on the host system (i.e., not within the Docker container), run `pytest tests` in the project root folder or use the "Testing" tab in Visual Studio Code.
