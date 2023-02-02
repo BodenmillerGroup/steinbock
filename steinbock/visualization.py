@@ -1,4 +1,3 @@
-import os
 from typing import Dict, Optional, Sequence
 
 import napari
@@ -10,7 +9,6 @@ def view(
     masks: Optional[Dict[str, np.ndarray]] = None,
     channel_names: Optional[Sequence[str]] = None,
     pixel_size_um: float = 1.0,
-    run: bool = (os.environ.get("NAPARI_RUN", "yes") == "yes"),
 ) -> None:
     viewer = napari.Viewer()
     viewer.axes.visible = True
@@ -35,5 +33,4 @@ def view(
                 blending="translucent",
                 visible=False,
             )
-    if run:
-        napari.run()
+    napari.run()

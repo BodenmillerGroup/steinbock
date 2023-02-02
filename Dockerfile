@@ -83,7 +83,7 @@ ARG CELLPROFILER_VERSION
 ARG CELLPROFILER_PLUGINS_VERSION
 ARG TZ="Europe/Zurich"
 
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1" XDG_RUNTIME_DIR="/tmp"
+ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
 
 USER root:root
 
@@ -161,7 +161,7 @@ RUN python -m pip install jupyter jupyterlab
 COPY requirements.txt requirements_test.txt /app/steinbock/
 RUN python -m pip install -r /app/steinbock/requirements.txt && \
     python -m pip install -r /app/steinbock/requirements_test.txt
-ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1" NAPARI_RUN="no"
+ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
@@ -216,7 +216,7 @@ FROM ${STEINBOCK_TARGET} AS xpra
 
 ARG XPRA_PORT="9876"
 
-ENV PATH="${ROOT_VENV_PATH}" DISPLAY=":100" NAPARI_RUN="yes"
+ENV PATH="${ROOT_VENV_PATH}" DISPLAY=":100" XDG_RUNTIME_DIR="/tmp"
 ENV XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
 
 USER root:root
