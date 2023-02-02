@@ -63,5 +63,5 @@ def view_cmd(img_dir, mask_dirs, panel_file, pixel_size_um, img_file_name):
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
-            channel_names = panel["channel"].tolist()
+            channel_names = panel["name"].tolist()
     view(img, masks=masks, channel_names=channel_names, pixel_size_um=pixel_size_um)
