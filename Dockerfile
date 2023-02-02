@@ -155,8 +155,9 @@ RUN python -m pip install --upgrade pip setuptools wheel
 
 RUN python -m pip install jupyter jupyterlab
 
-COPY requirements.txt /app/steinbock/requirements.txt
-RUN python -m pip install -r /app/steinbock/requirements.txt
+COPY requirements.txt requirements_test.txt /app/steinbock/
+RUN python -m pip install -r /app/steinbock/requirements.txt && \
+    python -m pip install -r /app/steinbock/requirements_test.txt
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
 RUN mkdir -p /opt/keras/models && \
@@ -182,7 +183,7 @@ RUN mkdir -p /home/steinbock/.cellpose/models && \
 
 COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 COPY steinbock /app/steinbock/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,cellpose,deepcell,napari,testing]"
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,cellpose,deepcell,napari]"
 
 # configure container
 
@@ -196,7 +197,7 @@ EXPOSE 8888
 
 ########## STEINBOCK-XPRA ##########
 
-FROM steinbock as steinbock-xpra
+FROM steinbock AS steinbock-xpra
 
 ARG XPRA_PORT="9876"
 

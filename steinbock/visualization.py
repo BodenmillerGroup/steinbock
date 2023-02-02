@@ -33,3 +33,4 @@ def view(
                 blending="translucent",
                 visible=False,
             )
+    napari.run()
