@@ -7,15 +7,12 @@ repos:
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-executables-have-shebangs
-      # - id: check-json
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
       - id: check-toml
-      # - id: check-xml
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
-      # - id: pretty-format-json
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/PyCQA/isort
@@ -41,3 +38,6 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [types-requests, types-PyYAML]
+ci:
+  autoupdate_branch: develop
+  skip: [flake8, mypy]
