@@ -28,7 +28,7 @@ For any subsequent instruction, use the Windows Command Prompt (not the Windows 
 ### Mac OS
 
 !!! note "steinbock on ARM-based Macs"
-    The steinbock Docker container currently does not work on ARM-based Macs (e.g. M1, M2).
+    The steinbock Docker container currently does not fully work on ARM-based Macs (e.g. M1, M2).
 
 [Install Docker Desktop](https://docs.docker.com/desktop/install/mac-install/)
 
@@ -85,13 +85,13 @@ The created macro is retained for the current session and enables running `stein
 
 On the terminal, use the following command to run the *steinbock* Docker container (Docker must be running):
 
-    docker run -v /path/to/data:/data -u $(id -u):$(id -g) -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0
+    docker run -v /path/to/data:/data --platform linux/amd64 -u $(id -u):$(id -g) -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0
 
 In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. The `/tmp/.X11-unix` bind mount, the `~/.Xauthority` bind mount and the `DISPLAY` environment variable are required only when running graphical user interfaces.
 
 To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
-    alias steinbock="docker run -v /path/to/data:/data -u $(id -u):$(id -g) -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0"
+    alias steinbock="docker run -v /path/to/data:/data --platform linux/amd64 -u $(id -u):$(id -g) -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0"
 
 The created command alias is retained for the current session and enables running `steinbock` from the current terminal without typing the full Docker command, for example:
 
