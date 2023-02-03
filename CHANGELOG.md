@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2023-02-03
+
+### Added
+
+  - New `steinbock view` command (napari) [#27](https://github.com/BodenmillerGroup/steinbock/issues/27)
+  - New `steinbock utils expand` command (mask expansion) [#106](https://github.com/BodenmillerGroup/steinbock/issues/106)
+  - New `steinbock apps jupyter` and `steinbock apps jupyterlab` commands
+  - New steinbock `-cellpose` container flavor (cellpose segmentation) [#118](https://github.com/BodenmillerGroup/steinbock/issues/118)
+  - New steinbock `-xpra` container flavor (web-based graphical user interfaces)
+  - Preparations for tensorflow-enabled arm64-based linux base images [#98](https://github.com/BodenmillerGroup/steinbock/issues/98)
+  - Added $RUN_FIXUID environment variable (prepare for Singularity) [#156](https://github.com/BodenmillerGroup/steinbock/issues/156)
+
+### Changed
+
+  - Dependency upgrades
+  - CellProfiler upgrade to 4.2.5
+  - Harmonization of `--unzip` defaults (IMC preprocessing)
+  - Separate virtual environments for steinbock and CellProfiler
+  - Improved development environment (toolchain configuration, test skeletons)
+  - Revised steinbock Docker container installation instructions [#160](https://github.com/BodenmillerGroup/steinbock/issues/160)
+
+### Fixed
+
+  - Missing error message in measurement commands [#151](https://github.com/BodenmillerGroup/steinbock/issues/151)
+
 ## [0.15.0] - 2022-09-15
 
   - [#136](https://github.com/BodenmillerGroup/steinbock/issues/136) Fix histoCAT mask export
@@ -340,6 +365,7 @@ Added:
 Initial release for beta testing
 
 
+[0.16.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.2...v0.15.0
 [0.14.2]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/BodenmillerGroup/steinbock/compare/v0.14.0...v0.14.1
