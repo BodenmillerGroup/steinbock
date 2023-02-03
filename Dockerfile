@@ -27,8 +27,6 @@ ARG TENSORFLOW_VERSION
 
 ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
 
-USER root:root
-
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
     python3 -m pip install --upgrade pip && \
@@ -43,8 +41,6 @@ FROM --platform=linux/amd64 tensorflow/tensorflow:${TENSORFLOW_VERSION}-gpu as t
 ARG TENSORFLOW_VERSION
 
 ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
-
-USER root:root
 
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
@@ -85,8 +81,6 @@ ARG TZ="Europe/Zurich"
 
 ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
 
-USER root:root
-
 # install system packages
 
 RUN apt-get update && \
@@ -117,7 +111,7 @@ RUN USER=steinbock && \
     curl -SsL "https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid
-COPY fixuid.yml /etc/fixuid/config.yml
+COPY --chown=root:root fixuid.yml /etc/fixuid/config.yml
 
 # install ilastik
 
@@ -126,14 +120,14 @@ RUN mkdir /opt/ilastik && \
 
 # install cellprofiler in cellprofiler-venv
 
-RUN apt-get update && \
-    apt-get install -yqq libgtk-3-dev openjdk-11-jdk-headless libmysqlclient-dev libnotify-dev libsdl2-dev libwebkit2gtk-4.0-dev
-ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-
 RUN python3 -m venv --system-site-packages /opt/cellprofiler-venv
 ENV ROOT_VENV_PATH="${PATH}" CELLPROFILER_VENV_PATH="/opt/cellprofiler-venv/bin:${PATH}"
 ENV PATH="${CELLPROFILER_VENV_PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel
+
+RUN apt-get update && \
+    apt-get install -yqq libgtk-3-dev openjdk-11-jdk-headless libmysqlclient-dev libnotify-dev libsdl2-dev libwebkit2gtk-4.0-dev
+ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 
 RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     python -m pip install wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
@@ -148,33 +142,31 @@ ENV PATH="${ROOT_VENV_PATH}"
 
 # install steinbock in steinbock-venv (including napari system dependencies, Jupyter Notebook/Jupyter Lab, pre-trained models)
 
-RUN apt-get update && \
-    apt-get install -yqq mesa-utils libgl1-mesa-glx libglib2.0-0 libfontconfig1 libxrender1 libdbus-1-3 libxkbcommon-x11-0 libxi6 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0
-
 RUN python3 -m venv --system-site-packages /opt/steinbock-venv
 ENV ROOT_VENV_PATH="${PATH}" STEINBOCK_VENV_PATH="/opt/steinbock-venv/bin:${PATH}"
 ENV PATH="${STEINBOCK_VENV_PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel
 
-RUN python -m pip install jupyter jupyterlab
+RUN apt-get update && \
+    apt-get install -yqq mesa-utils libgl1-mesa-glx libglib2.0-0 libfontconfig1 libxrender1 libdbus-1-3 libxkbcommon-x11-0 libxi6 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0
 
-COPY requirements.txt requirements_test.txt /app/steinbock/
+COPY --chown=root:root steinbock /app/steinbock/steinbock/
+COPY --chown=root:root requirements.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 RUN python -m pip install -r /app/steinbock/requirements.txt && \
-    python -m pip install -r /app/steinbock/requirements_test.txt
+    python -m pip install -r /app/steinbock/requirements_test.txt && \
+    python -m pip install jupyter jupyterlab
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
+
+RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,deepcell,napari]"
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
-
-COPY conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
-COPY steinbock /app/steinbock/steinbock/
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,deepcell,napari]"
 
 # configure container
 
 WORKDIR /data
 USER steinbock:steinbock
-COPY entrypoint.sh /app/entrypoint.sh
+COPY --chown=root:root entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 EXPOSE 8888
 
@@ -216,8 +208,7 @@ FROM ${STEINBOCK_TARGET} AS xpra
 
 ARG XPRA_PORT="9876"
 
-ENV PATH="${ROOT_VENV_PATH}" DISPLAY=":100" XDG_RUNTIME_DIR="/tmp"
-ENV XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
+ENV DISPLAY=":100" XDG_RUNTIME_DIR="/tmp" XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
 
 USER root:root
 
@@ -232,8 +223,6 @@ RUN curl -SsL https://xpra.org/gpg.asc | apt-key add - && \
     chmod 0775 /run/user /run/xpra && \
     chown root:steinbock /run/user /run/xpra && \
     chown steinbock:steinbock /tmp
-
-ENV PATH="${STEINBOCK_VENV_PATH}"
 
 WORKDIR /data
 USER steinbock:steinbock
