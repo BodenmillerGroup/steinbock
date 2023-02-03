@@ -1,0 +1,2271 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The steinbock toolkit documentation">
+      
+      
+        <meta name="author" content="Jonas Windhager">
+      
+      
+      
+        <link rel="prev" href="../../intro/">
+      
+      
+        <link rel="next" href="../steinbock.classification/">
+      
+      <link rel="icon" href="../../../img/steinbock-favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.10">
+    
+    
+      
+        <title>steinbock.preprocessing - steinbock</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.0d440cfe.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#steinbockpreprocessing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="steinbock" class="md-header__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            steinbock
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              steinbock.preprocessing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/BodenmillerGroup/steinbock" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../cli/intro/" class="md-tabs__link">
+        Command-line usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../intro/" class="md-tabs__link md-tabs__link--active">
+        Python usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://github.com/BodenmillerGroup/steinbock/issues" class="md-tabs__link">
+      Issues
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://github.com/BodenmillerGroup/steinbock/discussions" class="md-tabs__link">
+      Discussions
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="steinbock" class="md-nav__button md-logo" aria-label="steinbock" data-md-component="logo">
+      
+  <img src="../../../img/steinbock-logo-white.png" alt="logo">
+
+    </a>
+    steinbock
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/BodenmillerGroup/steinbock" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Welcome
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install-docker/" class="md-nav__link">
+        Docker container
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../install-python/" class="md-nav__link">
+        Python package
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+          Specifications
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Specifications
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../file-types/" class="md-nav__link">
+        File types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../directories/" class="md-nav__link">
+        Directories
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../authors/" class="md-nav__link">
+        Authors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributors/" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          Command-line usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/preprocessing/" class="md-nav__link">
+        Preprocessing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/classification/" class="md-nav__link">
+        Pixel classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/segmentation/" class="md-nav__link">
+        Object segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/measurement/" class="md-nav__link">
+        Object measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/visualization/" class="md-nav__link">
+        Visualization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/export/" class="md-nav__link">
+        Data export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/utils/" class="md-nav__link">
+        Utilities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/apps/" class="md-nav__link">
+        Apps
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Python usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Python usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+          API documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          API documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          steinbock.preprocessing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        steinbock.preprocessing
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external" class="md-nav__link">
+    external
+  </a>
+  
+    <nav class="md-nav" aria-label="external">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.SteinbockExternalPreprocessingException" class="md-nav__link">
+    SteinbockExternalPreprocessingException
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.create_panel_from_image_files" class="md-nav__link">
+    create_panel_from_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.list_image_files" class="md-nav__link">
+    list_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.try_preprocess_images_from_disk" class="md-nav__link">
+    try_preprocess_images_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc" class="md-nav__link">
+    imc
+  </a>
+  
+    <nav class="md-nav" aria-label="imc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.imc_available" class="md-nav__link">
+    imc_available
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.SteinbockIMCPreprocessingException" class="md-nav__link">
+    SteinbockIMCPreprocessingException
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_image_info" class="md-nav__link">
+    create_image_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_imc_panel" class="md-nav__link">
+    create_panel_from_imc_panel()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_mcd_files" class="md-nav__link">
+    create_panel_from_mcd_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_txt_file" class="md-nav__link">
+    create_panel_from_txt_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_txt_files" class="md-nav__link">
+    create_panel_from_txt_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panels_from_mcd_file" class="md-nav__link">
+    create_panels_from_mcd_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.filter_hot_pixels" class="md-nav__link">
+    filter_hot_pixels()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.list_mcd_files" class="md-nav__link">
+    list_mcd_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.list_txt_files" class="md-nav__link">
+    list_txt_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.preprocess_image" class="md-nav__link">
+    preprocess_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.try_preprocess_images_from_disk" class="md-nav__link">
+    try_preprocess_images_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.classification/" class="md-nav__link">
+        steinbock.classification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.segmentation/" class="md-nav__link">
+        steinbock.segmentation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.measurement/" class="md-nav__link">
+        steinbock.measurement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.visualization/" class="md-nav__link">
+        steinbock.visualization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.export/" class="md-nav__link">
+        steinbock.export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.utils/" class="md-nav__link">
+        steinbock.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steinbock.io/" class="md-nav__link">
+        steinbock.io
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/BodenmillerGroup/steinbock/issues" class="md-nav__link">
+        Issues
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/BodenmillerGroup/steinbock/discussions" class="md-nav__link">
+        Discussions
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external" class="md-nav__link">
+    external
+  </a>
+  
+    <nav class="md-nav" aria-label="external">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.SteinbockExternalPreprocessingException" class="md-nav__link">
+    SteinbockExternalPreprocessingException
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.create_panel_from_image_files" class="md-nav__link">
+    create_panel_from_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.list_image_files" class="md-nav__link">
+    list_image_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.external.try_preprocess_images_from_disk" class="md-nav__link">
+    try_preprocess_images_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc" class="md-nav__link">
+    imc
+  </a>
+  
+    <nav class="md-nav" aria-label="imc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.imc_available" class="md-nav__link">
+    imc_available
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.SteinbockIMCPreprocessingException" class="md-nav__link">
+    SteinbockIMCPreprocessingException
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_image_info" class="md-nav__link">
+    create_image_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_imc_panel" class="md-nav__link">
+    create_panel_from_imc_panel()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_mcd_files" class="md-nav__link">
+    create_panel_from_mcd_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_txt_file" class="md-nav__link">
+    create_panel_from_txt_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panel_from_txt_files" class="md-nav__link">
+    create_panel_from_txt_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.create_panels_from_mcd_file" class="md-nav__link">
+    create_panels_from_mcd_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.filter_hot_pixels" class="md-nav__link">
+    filter_hot_pixels()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.list_mcd_files" class="md-nav__link">
+    list_mcd_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.list_txt_files" class="md-nav__link">
+    list_txt_files()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.preprocess_image" class="md-nav__link">
+    preprocess_image()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steinbock.preprocessing.imc.try_preprocess_images_from_disk" class="md-nav__link">
+    try_preprocess_images_from_disk()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="steinbockpreprocessing">steinbock.preprocessing</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.preprocessing.external" class="doc doc-heading">
+        <code>external</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="steinbock.preprocessing.external.logger" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">logger</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="steinbock.preprocessing.external.SteinbockExternalPreprocessingException" class="doc doc-heading">
+        <code>
+SteinbockExternalPreprocessingException            (<span title="steinbock.preprocessing._preprocessing.SteinbockPreprocessingException">SteinbockPreprocessingException</span>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/external.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SteinbockExternalPreprocessingException</span><span class="p">(</span><span class="n">SteinbockPreprocessingException</span><span class="p">):</span>
+    <span class="k">pass</span>
+</code></pre></div>
+        </details>
+
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.external.create_panel_from_image_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panel_from_image_files</span><span class="p">(</span><span class="n">ext_img_files</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/external.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panel_from_image_files</span><span class="p">(</span>
+    <span class="n">ext_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">num_channels</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">ext_img_file</span> <span class="ow">in</span> <span class="n">ext_img_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ext_img</span> <span class="o">=</span> <span class="n">_read_external_image</span><span class="p">(</span><span class="n">ext_img_file</span><span class="p">)</span>
+            <span class="n">num_channels</span> <span class="o">=</span> <span class="n">ext_img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># skipped intentionally</span>
+    <span class="k">if</span> <span class="n">num_channels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SteinbockExternalPreprocessingException</span><span class="p">(</span><span class="s2">&quot;No valid images found&quot;</span><span class="p">)</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s2">&quot;keep&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;ilastik&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;deepcell&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="s2">&quot;cellpose&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;keep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;keep&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">BooleanDtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;ilastik&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;ilastik&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">UInt8Dtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;deepcell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;deepcell&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">UInt8Dtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;cellpose&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;cellpose&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">UInt8Dtype</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">panel</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.external.list_image_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_image_files</span><span class="p">(</span><span class="n">ext_img_dir</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/external.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_image_files</span><span class="p">(</span><span class="n">ext_img_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">ext_img_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;[!.]*.*&quot;</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.external.try_preprocess_images_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_preprocess_images_from_disk</span><span class="p">(</span><span class="n">ext_img_files</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/external.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_preprocess_images_from_disk</span><span class="p">(</span>
+    <span class="n">ext_img_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">ext_img_file</span> <span class="ow">in</span> <span class="n">ext_img_files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">_read_external_image</span><span class="p">(</span><span class="n">ext_img_file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file format: </span><span class="si">{</span><span class="n">ext_img_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">ext_img_file</span><span class="p">),</span> <span class="n">img</span>
+        <span class="k">del</span> <span class="n">img</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="steinbock.preprocessing.imc" class="doc doc-heading">
+        <code>imc</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="steinbock.preprocessing.imc.imc_available" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">imc_available</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="steinbock.preprocessing.imc.logger" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">logger</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="steinbock.preprocessing.imc.SteinbockIMCPreprocessingException" class="doc doc-heading">
+        <code>
+SteinbockIMCPreprocessingException            (<span title="steinbock.preprocessing._preprocessing.SteinbockPreprocessingException">SteinbockPreprocessingException</span>)
+        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SteinbockIMCPreprocessingException</span><span class="p">(</span><span class="n">SteinbockPreprocessingException</span><span class="p">):</span>
+    <span class="k">pass</span>
+</code></pre></div>
+        </details>
+
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_image_info" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_image_info</span><span class="p">(</span><span class="n">mcd_txt_file</span><span class="p">,</span> <span class="n">acquisition</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">recovery_file</span><span class="p">,</span> <span class="n">recovered</span><span class="p">,</span> <span class="n">img_file</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_image_info</span><span class="p">(</span>
+    <span class="n">mcd_txt_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">acquisition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Acquisition</span><span class="p">],</span>
+    <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">recovery_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">recovered</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">img_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="n">recovery_file_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">recovery_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">recovery_file_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">recovery_file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">image_info_row</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">img_file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;width_px&quot;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;height_px&quot;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&quot;num_channels&quot;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;source_file&quot;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">mcd_txt_file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;recovery_file&quot;</span><span class="p">:</span> <span class="n">recovery_file_name</span><span class="p">,</span>
+        <span class="s2">&quot;recovered&quot;</span><span class="p">:</span> <span class="n">recovered</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">acquisition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_info_row</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;acquisition_id&quot;</span><span class="p">:</span> <span class="n">acquisition</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s2">&quot;acquisition_description&quot;</span><span class="p">:</span> <span class="n">acquisition</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                <span class="s2">&quot;acquisition_start_x_um&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">acquisition</span><span class="o">.</span><span class="n">roi_points_um</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="s2">&quot;acquisition_start_y_um&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">acquisition</span><span class="o">.</span><span class="n">roi_points_um</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="s2">&quot;acquisition_end_x_um&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">acquisition</span><span class="o">.</span><span class="n">roi_points_um</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="s2">&quot;acquisition_end_y_um&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">acquisition</span><span class="o">.</span><span class="n">roi_points_um</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="s2">&quot;acquisition_width_um&quot;</span><span class="p">:</span> <span class="n">acquisition</span><span class="o">.</span><span class="n">width_um</span><span class="p">,</span>
+                <span class="s2">&quot;acquisition_height_um&quot;</span><span class="p">:</span> <span class="n">acquisition</span><span class="o">.</span><span class="n">height_um</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">image_info_row</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_panel_from_imc_panel" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panel_from_imc_panel</span><span class="p">(</span><span class="n">imc_panel_file</span><span class="p">,</span> <span class="n">imc_panel_channel_col</span><span class="o">=</span><span class="s1">&#39;Metal Tag&#39;</span><span class="p">,</span> <span class="n">imc_panel_name_col</span><span class="o">=</span><span class="s1">&#39;Target&#39;</span><span class="p">,</span> <span class="n">imc_panel_keep_col</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">imc_panel_ilastik_col</span><span class="o">=</span><span class="s1">&#39;ilastik&#39;</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panel_from_imc_panel</span><span class="p">(</span>
+    <span class="n">imc_panel_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span>
+    <span class="n">imc_panel_channel_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Metal Tag&quot;</span><span class="p">,</span>
+    <span class="n">imc_panel_name_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Target&quot;</span><span class="p">,</span>
+    <span class="n">imc_panel_keep_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
+    <span class="n">imc_panel_ilastik_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ilastik&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">imc_panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">imc_panel_file</span><span class="p">,</span>
+        <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,|;&quot;</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="p">{</span>
+            <span class="n">imc_panel_channel_col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+            <span class="n">imc_panel_name_col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+            <span class="n">imc_panel_keep_col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">BooleanDtype</span><span class="p">(),</span>
+            <span class="n">imc_panel_ilastik_col</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">BooleanDtype</span><span class="p">(),</span>
+        <span class="p">},</span>
+        <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+        <span class="n">true_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">],</span>
+        <span class="n">false_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">required_col</span> <span class="ow">in</span> <span class="p">(</span><span class="n">imc_panel_channel_col</span><span class="p">,</span> <span class="n">imc_panel_name_col</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">required_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imc_panel</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SteinbockIMCPreprocessingException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Missing &#39;</span><span class="si">{</span><span class="n">required_col</span><span class="si">}</span><span class="s2">&#39; column in IMC panel&quot;</span>
+            <span class="p">)</span>
+    <span class="k">for</span> <span class="n">notnan_col</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">imc_panel_channel_col</span><span class="p">,</span>
+        <span class="n">imc_panel_keep_col</span><span class="p">,</span>
+        <span class="n">imc_panel_ilastik_col</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">notnan_col</span> <span class="ow">in</span> <span class="n">imc_panel</span> <span class="ow">and</span> <span class="n">imc_panel</span><span class="p">[</span><span class="n">notnan_col</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">SteinbockIMCPreprocessingException</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Missing values for &#39;</span><span class="si">{</span><span class="n">notnan_col</span><span class="si">}</span><span class="s2">&#39; in IMC panel&quot;</span>
+            <span class="p">)</span>
+    <span class="n">rename_columns</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">imc_panel_channel_col</span><span class="p">:</span> <span class="s2">&quot;channel&quot;</span><span class="p">,</span>
+        <span class="n">imc_panel_name_col</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+        <span class="n">imc_panel_keep_col</span><span class="p">:</span> <span class="s2">&quot;keep&quot;</span><span class="p">,</span>
+        <span class="n">imc_panel_ilastik_col</span><span class="p">:</span> <span class="s2">&quot;ilastik&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">drop_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">panel_col</span>
+        <span class="k">for</span> <span class="n">imc_panel_col</span><span class="p">,</span> <span class="n">panel_col</span> <span class="ow">in</span> <span class="n">rename_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">panel_col</span> <span class="ow">in</span> <span class="n">imc_panel</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">panel_col</span> <span class="o">!=</span> <span class="n">imc_panel_col</span>
+    <span class="p">]</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">imc_panel</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">drop_columns</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_columns</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">panel</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">):</span>
+        <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="k">if</span> <span class="s2">&quot;keep&quot;</span> <span class="ow">in</span> <span class="n">panel</span><span class="p">:</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;keep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;keep&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;ilastik&quot;</span> <span class="ow">in</span> <span class="n">panel</span><span class="p">:</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;ilastik&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;ilastik&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">panel</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">)</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">_clean_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>  <span class="c1"># ilastik column may be nullable uint8 now</span>
+    <span class="n">ilastik_mask</span> <span class="o">=</span> <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;ilastik&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">panel</span><span class="p">[</span><span class="s2">&quot;ilastik&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">UInt8Dtype</span><span class="p">())</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ilastik_mask</span><span class="p">,</span> <span class="s2">&quot;ilastik&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ilastik_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">panel</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_panel_from_mcd_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panel_from_mcd_files</span><span class="p">(</span><span class="n">mcd_files</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panel_from_mcd_files</span><span class="p">(</span>
+    <span class="n">mcd_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="n">unzip</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">mcd_file</span> <span class="ow">in</span> <span class="n">mcd_files</span><span class="p">:</span>
+        <span class="n">zip_file_mcd_member</span> <span class="o">=</span> <span class="n">_get_zip_file_member</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">zip_file_mcd_member</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">panels</span> <span class="o">+=</span> <span class="n">create_panels_from_mcd_file</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unzip</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="p">,</span> <span class="n">mcd_member</span> <span class="o">=</span> <span class="n">zip_file_mcd_member</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+                    <span class="n">extracted_mcd_file</span> <span class="o">=</span> <span class="n">fzip</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">mcd_member</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+                    <span class="n">panels</span> <span class="o">+=</span> <span class="n">create_panels_from_mcd_file</span><span class="p">(</span><span class="n">extracted_mcd_file</span><span class="p">)</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">panels</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_clean_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_panel_from_txt_file" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panel_from_txt_file</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panel_from_txt_file</span><span class="p">(</span><span class="n">txt_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">TXTFile</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">()),</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">channel_labels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">()),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_panel_from_txt_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panel_from_txt_files</span><span class="p">(</span><span class="n">txt_files</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panel_from_txt_files</span><span class="p">(</span>
+    <span class="n">txt_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="n">unzip</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">txt_file</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
+        <span class="n">zip_file_txt_member</span> <span class="o">=</span> <span class="n">_get_zip_file_member</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">zip_file_txt_member</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">panel</span> <span class="o">=</span> <span class="n">create_panel_from_txt_file</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span>
+            <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unzip</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="p">,</span> <span class="n">txt_member</span> <span class="o">=</span> <span class="n">zip_file_txt_member</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+                    <span class="n">extracted_txt_file</span> <span class="o">=</span> <span class="n">fzip</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">txt_member</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+                    <span class="n">panel</span> <span class="o">=</span> <span class="n">create_panel_from_txt_file</span><span class="p">(</span><span class="n">extracted_txt_file</span><span class="p">)</span>
+                    <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+    <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">panels</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">panel</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_clean_panel</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.create_panels_from_mcd_file" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_panels_from_mcd_file</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_panels_from_mcd_file</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+    <span class="n">panels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">MCDFile</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">slide</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">slides</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">acquisition</span> <span class="ow">in</span> <span class="n">slide</span><span class="o">.</span><span class="n">acquisitions</span><span class="p">:</span>
+                <span class="n">panel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                            <span class="n">data</span><span class="o">=</span><span class="n">acquisition</span><span class="o">.</span><span class="n">channel_names</span><span class="p">,</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+                        <span class="p">),</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                            <span class="n">data</span><span class="o">=</span><span class="n">acquisition</span><span class="o">.</span><span class="n">channel_labels</span><span class="p">,</span>
+                            <span class="n">dtype</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">StringDtype</span><span class="p">(),</span>
+                        <span class="p">),</span>
+                    <span class="p">},</span>
+                <span class="p">)</span>
+                <span class="n">panels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">panels</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.filter_hot_pixels" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">filter_hot_pixels</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">thres</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">filter_hot_pixels</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">thres</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">kernel</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">max_neighbor_img</span> <span class="o">=</span> <span class="n">maximum_filter</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">footprint</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;mirror&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">img</span> <span class="o">-</span> <span class="n">max_neighbor_img</span> <span class="o">&gt;</span> <span class="n">thres</span><span class="p">,</span> <span class="n">max_neighbor_img</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.list_mcd_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_mcd_files</span><span class="p">(</span><span class="n">mcd_dir</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_mcd_files</span><span class="p">(</span><span class="n">mcd_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">unzip</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="n">mcd_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">mcd_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;[!.]*.mcd&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">unzip</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">zip_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">mcd_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;[!.]*.zip&quot;</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">zip_info</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fzip</span><span class="o">.</span><span class="n">infolist</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.mcd&quot;</span><span class="p">):</span>
+                        <span class="n">mcd_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zip_file</span> <span class="o">/</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mcd_files</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.list_txt_files" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">list_txt_files</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">list_txt_files</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">],</span> <span class="n">unzip</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="n">txt_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;[!.]*.txt&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">unzip</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">zip_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">txt_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;[!.]*.zip&quot;</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">zip_info</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fzip</span><span class="o">.</span><span class="n">infolist</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">):</span>
+                        <span class="n">txt_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zip_file</span> <span class="o">/</span> <span class="n">zip_info</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">txt_files</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.preprocess_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">preprocess_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">preprocess_image</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">hpf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hpf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">filter_hot_pixels</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hpf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">_to_dtype</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">img_dtype</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="steinbock.preprocessing.imc.try_preprocess_images_from_disk" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">try_preprocess_images_from_disk</span><span class="p">(</span><span class="n">mcd_files</span><span class="p">,</span> <span class="n">txt_files</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>steinbock/preprocessing/imc.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">try_preprocess_images_from_disk</span><span class="p">(</span>
+    <span class="n">mcd_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">txt_files</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">]],</span>
+    <span class="n">channel_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">hpf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">unzip</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span>
+    <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+    <span class="kc">None</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">,</span>
+<span class="p">]:</span>
+    <span class="n">candidate_txt_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">txt_files</span><span class="p">)</span>
+    <span class="c1"># process mcd files in reverse order to avoid ambiguous txt file matching</span>
+    <span class="c1"># see https://github.com/BodenmillerGroup/steinbock/issues/100</span>
+    <span class="k">for</span> <span class="n">mcd_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">mcd_files</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">mcd_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
+        <span class="n">zip_file_mcd_member</span> <span class="o">=</span> <span class="n">_get_zip_file_member</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">zip_file_mcd_member</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">acquisition</span><span class="p">,</span>
+                <span class="n">img</span><span class="p">,</span>
+                <span class="n">recovery_txt_file</span><span class="p">,</span>
+                <span class="n">recovered</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="n">_try_preprocess_mcd_images_from_disk</span><span class="p">(</span>
+                <span class="n">mcd_file</span><span class="p">,</span>
+                <span class="n">candidate_txt_files</span><span class="p">,</span>
+                <span class="n">channel_names</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span>
+                <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span><span class="p">,</span>
+                <span class="n">unzip</span><span class="o">=</span><span class="n">unzip</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">),</span> <span class="n">acquisition</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">recovery_txt_file</span><span class="p">,</span> <span class="n">recovered</span>
+                <span class="k">del</span> <span class="n">img</span>
+        <span class="k">elif</span> <span class="n">unzip</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="p">,</span> <span class="n">mcd_member</span> <span class="o">=</span> <span class="n">zip_file_mcd_member</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+                    <span class="n">extracted_mcd_file</span> <span class="o">=</span> <span class="n">fzip</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">mcd_member</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span>
+                        <span class="n">acquisition</span><span class="p">,</span>
+                        <span class="n">img</span><span class="p">,</span>
+                        <span class="n">recovery_txt_file</span><span class="p">,</span>
+                        <span class="n">recovered</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="ow">in</span> <span class="n">_try_preprocess_mcd_images_from_disk</span><span class="p">(</span>
+                        <span class="n">extracted_mcd_file</span><span class="p">,</span>
+                        <span class="n">candidate_txt_files</span><span class="p">,</span>
+                        <span class="n">channel_names</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span>
+                        <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span><span class="p">,</span>
+                        <span class="n">unzip</span><span class="o">=</span><span class="n">unzip</span><span class="p">,</span>
+                    <span class="p">):</span>
+                        <span class="k">yield</span> <span class="p">(</span>
+                            <span class="n">Path</span><span class="p">(</span><span class="n">mcd_file</span><span class="p">),</span>
+                            <span class="n">acquisition</span><span class="p">,</span>
+                            <span class="n">img</span><span class="p">,</span>
+                            <span class="n">recovery_txt_file</span><span class="p">,</span>
+                            <span class="n">recovered</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">del</span> <span class="n">img</span>
+    <span class="k">for</span> <span class="n">txt_file</span> <span class="ow">in</span> <span class="n">candidate_txt_files</span><span class="p">:</span>
+        <span class="n">zip_file_txt_member</span> <span class="o">=</span> <span class="n">_get_zip_file_member</span><span class="p">(</span><span class="n">txt_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">zip_file_txt_member</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">_try_preprocess_txt_image_from_disk</span><span class="p">(</span>
+                <span class="n">txt_file</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">txt_file</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+                <span class="k">del</span> <span class="n">img</span>
+        <span class="k">elif</span> <span class="n">unzip</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="p">,</span> <span class="n">txt_member</span> <span class="o">=</span> <span class="n">zip_file_txt_member</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+                    <span class="n">extracted_txt_file</span> <span class="o">=</span> <span class="n">fzip</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">txt_member</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">_try_preprocess_txt_image_from_disk</span><span class="p">(</span>
+                        <span class="n">extracted_txt_file</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">hpf</span><span class="o">=</span><span class="n">hpf</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">Path</span><span class="p">(</span><span class="n">txt_file</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+                        <span class="k">del</span> <span class="n">img</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      University of Zurich
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.top", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.6df46069.min.js"></script>
+      
+    
+  </body>
+</html>
