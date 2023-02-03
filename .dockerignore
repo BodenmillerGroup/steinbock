@@ -3,9 +3,11 @@
 /data/
 /docs/
 /steinbock/_version.py
-/tests/
 /.dockerignore
+/.flake8
 /.gitignore
+/.isort.cfg
+/.pre-commit-config.yaml
 /AUTHORS.md
 /CHANGELOG.md
 /CONTRIBUTING.md

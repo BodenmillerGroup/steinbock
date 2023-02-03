@@ -161,8 +161,6 @@ def _measure_euclidean_pixel_expansion_neighbors(
 
 
 class NeighborhoodType(Enum):
-    """"""
-
     CENTROID_DISTANCE = partial(_measure_centroid_distance_neighbors)
     EUCLIDEAN_BORDER_DISTANCE = partial(_measure_euclidean_border_distance_neighbors)
     EUCLIDEAN_PIXEL_EXPANSION = partial(_measure_euclidean_pixel_expansion_neighbors)
@@ -198,5 +196,5 @@ def try_measure_neighbors_from_disk(
             del mask
             yield Path(mask_file), neighbors
             del neighbors
-        except:
-            logger.exception(f"Error measuring neighbors in {mask_file}")
+        except Exception as e:
+            logger.exception(f"Error measuring neighbors in {mask_file}: {e}")

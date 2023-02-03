@@ -9,6 +9,7 @@ from ..segmentation._cli import segment_cmd_group
 from ..utils._cli import utils_cmd_group
 from .apps import apps_cmd_group
 from .utils import OrderedClickGroup
+from .visualization import view_cmd
 
 
 @click.group(name="steinbock", cls=OrderedClickGroup)
@@ -23,4 +24,5 @@ steinbock_cmd_group.add_command(segment_cmd_group)
 steinbock_cmd_group.add_command(measure_cmd_group)
 steinbock_cmd_group.add_command(export_cmd_group)
 steinbock_cmd_group.add_command(utils_cmd_group)
+steinbock_cmd_group.add_command(view_cmd)
 steinbock_cmd_group.add_command(apps_cmd_group)

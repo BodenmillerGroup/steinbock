@@ -67,7 +67,7 @@ To construct k-nearest neighbor (kNN) graphs based on object centroid distances:
 
 !!! note "Distance-thresholded kNN graphs"
     The options `--dmax` and `--kmax` options can be combined to construct distance-thresholded kNN graphs, e.g.:
-    
+
         steinbock measure neighbors --type centroids --dmax 15 --kmax 5
 
 ### Border distances

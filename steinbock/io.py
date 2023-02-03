@@ -62,8 +62,8 @@ def _list_related_files(
         related_file = _as_path_with_suffix(
             Path(related_dir) / Path(base_file).name, related_suffix
         )
-        if not related_file.exists():
-            raise SteinbockIOException() from FileNotFoundError(related_file)
+        if not related_file.is_file():
+            raise SteinbockIOException(f"File not found: {related_file}")
         related_files.append(related_file)
     return related_files
 
@@ -168,7 +168,7 @@ def read_image(
 def mmap_image(img_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray:
     if "imagej" not in kwargs and mode == "r+":
         kwargs["imagej"] = True
-    img_exists = Path(img_file).exists()
+    img_exists = Path(img_file).is_file()
     img = tifffile.memmap(img_file, mode=mode, **kwargs)
     if img_exists:
         if img.dtype != img_dtype:
@@ -298,7 +298,7 @@ def read_mask(
 def mmap_mask(mask_file: Union[str, PathLike], mode="r", **kwargs) -> np.ndarray:
     if "imagej" not in kwargs and mode == "r+":
         kwargs["imagej"] = True
-    mask_exists = Path(mask_file).exists()
+    mask_exists = Path(mask_file).is_file()
     mask = tifffile.memmap(mask_file, mode=mode, **kwargs)
     if mask_exists:
         if mask.dtype != mask_dtype:

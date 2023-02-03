@@ -117,7 +117,7 @@ def histocat_cmd(img_dir, mask_dir, panel_file, histocat_dir):
     ]
     img_files = io.list_image_files(img_dir)
     mask_files = None
-    if Path(mask_dir).exists():
+    if Path(mask_dir).is_dir():
         mask_files = io.list_mask_files(mask_dir, base_files=img_files)
     Path(histocat_dir).mkdir(exist_ok=True)
     for i, img_file in enumerate(img_files):

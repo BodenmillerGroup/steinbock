@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+
 from steinbock import io
 from steinbock.utils import matching
 

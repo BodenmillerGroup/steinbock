@@ -113,12 +113,20 @@ def prepare_cmd(
     name="run", help="Run an object measurement batch using CellProfiler"
 )
 @click.option(
+    "--python",
+    "python_path",
+    type=click.Path(exists=True, dir_okay=False),
+    default="/opt/cellprofiler-venv/bin/python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
     "--cellprofiler",
-    "cellprofiler_binary",
+    "cellprofiler_module",
     type=click.STRING,
     default="cellprofiler",
     show_default=True,
-    help="CellProfiler binary",
+    help="CellProfiler module",
 )
 @click.option(
     "--plugins-directory",
@@ -155,7 +163,8 @@ def prepare_cmd(
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def run_cmd(
-    cellprofiler_binary,
+    python_path,
+    cellprofiler_module,
     cellprofiler_plugin_dir,
     measurement_pipeline_file,
     cpdata_dir,
@@ -163,7 +172,8 @@ def run_cmd(
 ):
     Path(cpout_dir).mkdir(exist_ok=True)
     result = cellprofiler.try_measure_objects(
-        cellprofiler_binary,
+        python_path,
+        cellprofiler_module,
         measurement_pipeline_file,
         cpdata_dir,
         cpout_dir,

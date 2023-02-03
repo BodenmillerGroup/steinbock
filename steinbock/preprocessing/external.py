@@ -21,7 +21,7 @@ def _read_external_image(ext_img_file: Union[str, PathLike]) -> np.ndarray:
     # try tifffile-based reading first, for memory reasons
     try:
         return io.read_image(ext_img_file, native_dtype=True)
-    except:
+    except Exception:
         pass  # skipped intentionally
     ext_img = imageio.volread(ext_img_file)
     orig_img_shape = ext_img.shape
@@ -51,7 +51,7 @@ def create_panel_from_image_files(
             ext_img = _read_external_image(ext_img_file)
             num_channels = ext_img.shape[0]
             break
-        except:
+        except Exception:
             pass  # skipped intentionally
     if num_channels is None:
         raise SteinbockExternalPreprocessingException("No valid images found")
@@ -62,6 +62,7 @@ def create_panel_from_image_files(
             "keep": True,
             "ilastik": range(1, num_channels + 1),
             "deepcell": np.nan,
+            "cellpose": np.nan,
         },
     )
     panel["channel"] = panel["channel"].astype(pd.StringDtype())
@@ -69,6 +70,7 @@ def create_panel_from_image_files(
     panel["keep"] = panel["keep"].astype(pd.BooleanDtype())
     panel["ilastik"] = panel["ilastik"].astype(pd.UInt8Dtype())
     panel["deepcell"] = panel["deepcell"].astype(pd.UInt8Dtype())
+    panel["cellpose"] = panel["cellpose"].astype(pd.UInt8Dtype())
     return panel
 
 
@@ -78,8 +80,8 @@ def try_preprocess_images_from_disk(
     for ext_img_file in ext_img_files:
         try:
             img = _read_external_image(ext_img_file)
-        except:
+        except Exception:
             logger.warning(f"Unsupported file format: {ext_img_file}")
             continue
-        yield ext_img_file, img
+        yield Path(ext_img_file), img
         del img

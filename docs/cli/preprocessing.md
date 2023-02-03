@@ -5,12 +5,12 @@ In this step, image data will be prepared for processing with *steinbock*.
 Various sources for raw data are supported by *steinbock*, each of which is described in the following. If you miss support for an imaging modality, please consider [filing an issue on GitHub](https://github.com/BodenmillerGroup/steinbock/issues).
 
 !!! note "Optional preprocessing"
-    The *steinbock* framework natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by [imageio](https://imageio.readthedocs.io), you need to convert them to *steinbock*-compatible TIFF files first, see [External images](#external-images).
+    The *steinbock* toolkit natively supports input images saved in Tag Image File Format (TIFF), see [File types](../file-types.md#images). If you already have preprocessed TIFF files, you can directly use those for further processing. If you have preprocessed images in another file format supported by [imageio](https://imageio.readthedocs.io), you need to convert them to *steinbock*-compatible TIFF files first, see [External images](#external-images).
 
 !!! note "Computational resources"
-    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles, see [mosaics](utils.md#mosaics).
+    Unless specified otherwise, *steinbock* converts all input images to 32-bit floating point images upon loading, see [File types](../file-types.md#images). For large images, this may exhaust a system's available random access memory (RAM). In these situations, it is recommended to run all operations on image tiles instead, see [mosaics](utils.md#mosaics).
 
-## Imaging Mass Cytometry (IMC)
+## Imaging mass cytometry (IMC)
 
 Preprocessing of IMC data consists of two steps:
 
@@ -38,7 +38,7 @@ When manually creating the *steinbock* panel file, no further actions are requir
 This will create a *steinbock* panel at the specified location (defaults to `panel.csv`) as follows:
 
   - If an IMC panel file (in *IMC Segmentation Pipeline*[^1] format, undocumented) exists at the specified location (defaults to `raw/panel.csv`), it is converted to the [*steinbock* panel format](../file-types.md#panel).
-  - If no IMC panel file was found, the *steinbock* panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to `raw`). 
+  - If no IMC panel file was found, the *steinbock* panel is created based on all acquisitions in all .mcd files found at the specified location (defaults to `raw`).
   - If no IMC panel file and no .mcd file were found, the *steinbock* panel is created based on all .txt files found at the specified location (defaults to `raw`).
 
 !!! note "Different panels"
@@ -57,7 +57,7 @@ Furthermore, this commands also creates an image information table as described 
   - `source_file`: the raw .mcd/.txt file name
   - `recovery_file`: the corresponding .txt file name, if available
   - `recovered`: *True* if the .mcd acquisition was recovered from the corresponding .txt file
-  - Acquisition-specific information (only for images extracted from .mcd files): 
+  - Acquisition-specific information (only for images extracted from .mcd files):
     - `acquisition_id`: numeric acquisition ID
     - `acquisition_description`: user-specified acquisition description
     - `acquisition_posx_um`, `acquisition_posy_um`: start position, in micrometers

@@ -12,7 +12,7 @@ Here, `cell_masks` and `tumor_masks` are path to directories containing masks. M
 
 !!! note "Usage example"
     Identifying overlapping objects can be useful in multi-segmentation contexts. For example, one may be interested in cells from tumor regions only, in which case two segmentation workflows would be followed sequentially:
-    
+
       - "Global" tumor/stroma segmentation
       - "Local" cell segmentation
 

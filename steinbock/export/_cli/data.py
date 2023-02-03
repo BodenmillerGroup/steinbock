@@ -234,7 +234,7 @@ def anndata_cmd(
             neighbors_dir, base_files=intensities_files
         )
     panel = None
-    if panel_file is not None and Path(panel_file).is_file():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
     image_info = None
     if image_info_file is not None and Path(image_info_file).is_file():

@@ -30,9 +30,10 @@ def try_convert_to_dataframe_from_disk(
                 )
             yield img_file_name, data_files, df
             del df
-        except:
+        except Exception as e:
             logger.exception(
-                f"Error creating DataFrame for image {img_file_name}; " "skipping image"
+                f"Error creating DataFrame for image {img_file_name}: {e}; "
+                "skipping image"
             )
 
 
@@ -128,8 +129,8 @@ def try_convert_to_anndata_from_disk(
                 adata,
             )
             del x, obs, var, adata
-        except:
+        except Exception as e:
             logger.exception(
-                f"Error creating AnnData object for image {img_file_name}; "
+                f"Error creating AnnData object for image {img_file_name}: {e}; "
                 "skipping image"
             )

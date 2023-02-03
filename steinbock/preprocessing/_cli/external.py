@@ -93,7 +93,7 @@ def panel_cmd(ext_img_dir, panel_file):
 @catch_exception(handle=SteinbockException)
 def images_cmd(ext_img_dir, panel_file, mmap, img_dir, image_info_file):
     channel_indices = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
             channel_indices = panel["channel"].astype(int).sub(1).tolist()

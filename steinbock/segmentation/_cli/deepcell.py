@@ -12,8 +12,6 @@ from .. import deepcell
 
 if deepcell.deepcell_available:
     import yaml
-else:
-    yaml = None
 
 deepcell_cli_available = deepcell.deepcell_available
 
@@ -22,7 +20,7 @@ _applications = {
 }
 
 
-@click.command(name="deepcell", help="Run a object segmentation batch using DeepCell")
+@click.command(name="deepcell", help="Run an object segmentation batch using DeepCell")
 @click.option(
     "--app",
     "application_name",
@@ -141,7 +139,7 @@ def deepcell_cmd(
     mask_dir,
 ):
     channel_groups = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "deepcell" in panel and panel["deepcell"].notna().any():
             channel_groups = panel["deepcell"].values

@@ -48,5 +48,5 @@ def try_measure_regionprops_from_disk(
             del img, mask
             yield Path(img_file), Path(mask_file), regionprops
             del regionprops
-        except:
-            logger.exception(f"Error measuring regionprops in {img_file}")
+        except Exception as e:
+            logger.exception(f"Error measuring regionprops in {img_file}: {e}")

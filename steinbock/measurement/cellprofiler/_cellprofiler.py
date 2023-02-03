@@ -18,14 +18,17 @@ def create_and_save_measurement_pipeline(
 
 
 def try_measure_objects(
-    cellprofiler_binary: str,
+    python_path: str,
+    cellprofiler_module: str,
     measurement_pipeline_file: Union[str, PathLike],
     cpdata_dir: Union[str, PathLike],
     cpout_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ) -> subprocess.CompletedProcess:
     args = [
-        cellprofiler_binary,
+        python_path,
+        "-m",
+        cellprofiler_module,
         "-c",
         "-r",
         "-p",
@@ -35,6 +38,6 @@ def try_measure_objects(
         "-o",
         str(cpout_dir),
     ]
-    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).exists():
+    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).is_dir():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     return run_captured(args)

@@ -2,7 +2,7 @@ import logging
 import re
 from os import PathLike
 from pathlib import Path
-from typing import Generator, NamedTuple, Sequence, Tuple, Union
+from typing import Dict, Generator, List, NamedTuple, Sequence, Tuple, Union
 
 import numpy as np
 from skimage import measure
@@ -49,8 +49,8 @@ def try_extract_tiles_from_disk_to_disk(
                     yield tile_file, tile
                     del tile
             del img
-        except:
-            logger.exception(f"Error extracting tiles: {img_file}")
+        except Exception as e:
+            logger.exception(f"Error extracting tiles: {img_file}: {e}")
 
 
 def try_stitch_tiles_from_disk_to_disk(
@@ -58,7 +58,7 @@ def try_stitch_tiles_from_disk_to_disk(
     img_dir: Union[str, PathLike],
     relabel: bool = False,
     mmap: bool = False,
-) -> Generator[Tuple[str, np.ndarray], None, None]:
+) -> Generator[Tuple[Path, np.ndarray], None, None]:
     class TileInfo(NamedTuple):
         tile_file: Path
         x: int
@@ -70,9 +70,9 @@ def try_stitch_tiles_from_disk_to_disk(
         r"(?P<img_file_stem>.+)_tx(?P<x>\d+)_ty(?P<y>\d+)"
         r"_tw(?P<width>\d+)_th(?P<height>\d+)"
     )
-    img_tile_infos = {}
+    img_tile_infos: Dict[str, List[TileInfo]] = {}
     for tile_file in tile_files:
-        m = tile_file_stem_pattern.fullmatch(tile_file.stem)
+        m = tile_file_stem_pattern.fullmatch(Path(tile_file).stem)
         if m is None:
             raise SteinbockMosaicsUtilsException(
                 f"Malformed tile file name: {tile_file}"
@@ -121,5 +121,5 @@ def try_stitch_tiles_from_disk_to_disk(
                 io.write_image(img, img_file, ignore_dtype=True)
             yield img_file, img
             del img
-        except:
-            logger.exception(f"Error stitching tiles: {img_file}")
+        except Exception as e:
+            logger.exception(f"Error stitching tiles: {img_file}: {e}")

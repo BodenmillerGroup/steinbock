@@ -44,7 +44,7 @@ def try_match_masks_from_disk(
                 mask2 = io.read_mask(mask_file2)
             df = match_masks(mask1, mask2)
             del mask1, mask2
-            yield mask_file1, mask_file2, df
+            yield Path(mask_file1), Path(mask_file2), df
             del df
-        except:
-            logger.exception(f"Error matching masks {mask_file1, mask_file2}")
+        except Exception as e:
+            logger.exception(f"Error matching masks {mask_file1, mask_file2}: {e}")

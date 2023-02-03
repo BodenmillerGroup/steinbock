@@ -18,14 +18,17 @@ def create_and_save_segmentation_pipeline(
 
 
 def try_segment_objects(
-    cellprofiler_binary: Union[str, PathLike],
+    python_path: str,
+    cellprofiler_module: str,
     segmentation_pipeline_file: Union[str, PathLike],
     probabilities_dir: Union[str, PathLike],
     mask_dir: Union[str, PathLike],
     cellprofiler_plugin_dir: Union[str, PathLike, None] = None,
 ) -> subprocess.CompletedProcess:
     args = [
-        str(cellprofiler_binary),
+        python_path,
+        "-m",
+        cellprofiler_module,
         "-c",
         "-r",
         "-p",
@@ -35,6 +38,6 @@ def try_segment_objects(
         "-o",
         str(mask_dir),
     ]
-    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).exists():
+    if cellprofiler_plugin_dir is not None and Path(cellprofiler_plugin_dir).is_dir():
         args.append(f"--plugins-directory={cellprofiler_plugin_dir}")
     return run_captured(args)

@@ -11,6 +11,6 @@
 <a href="https://github.com/BodenmillerGroup/steinbock/pulls" alt="Pull requests"><img alt="Pull requests" src="https://img.shields.io/github/issues-pr/BodenmillerGroup/steinbock"></a>
 <a href="https://github.com/BodenmillerGroup/steinbock/blob/main/LICENSE" alt="License"><img alt="License" src="https://img.shields.io/github/license/BodenmillerGroup/steinbock"></a>
 
-Dockerized multi-channel image processing framework
+A toolkit for processing multiplexed tissue images
 
 Documentation is available at https://bodenmillergroup.github.io/steinbock

@@ -87,7 +87,7 @@ def imc_cmd_group():
 @click.option(
     "--unzip/--no-unzip",
     "unzip",
-    default=False,
+    default=True,
     show_default=True,
     help="Unzip .mcd/.txt files from .zip archives",
 )
@@ -113,7 +113,7 @@ def panel_cmd(
     panel_file,
 ):
     panel = None
-    if panel is None and Path(imc_panel_file).exists():
+    if panel is None and Path(imc_panel_file).is_file():
         panel = imc.create_panel_from_imc_panel(
             imc_panel_file,
             imc_panel_channel_col=imc_panel_channel_col,
@@ -121,11 +121,11 @@ def panel_cmd(
             imc_panel_keep_col=imc_panel_keep_col,
             imc_panel_ilastik_col=imc_panel_ilastik_col,
         )
-    if panel is None and Path(mcd_dir).exists():
+    if panel is None and Path(mcd_dir).is_dir():
         mcd_files = imc.list_mcd_files(mcd_dir, unzip=unzip)
         if len(mcd_files) > 0:
             panel = imc.create_panel_from_mcd_files(mcd_files, unzip=unzip)
-    if panel is None and Path(txt_dir).exists():
+    if panel is None and Path(txt_dir).is_dir():
         txt_files = imc.list_txt_files(txt_dir, unzip=unzip)
         if len(txt_files) > 0:
             panel = imc.create_panel_from_txt_files(txt_files, unzip=unzip)
@@ -195,7 +195,7 @@ def panel_cmd(
 @catch_exception(handle=SteinbockException)
 def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file):
     channel_names = None
-    if Path(panel_file).exists():
+    if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "channel" in panel:
             channel_names = panel["channel"].tolist()

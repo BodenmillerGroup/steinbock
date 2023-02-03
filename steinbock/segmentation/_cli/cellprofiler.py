@@ -41,12 +41,20 @@ def prepare_cmd(segmentation_pipeline_file):
     name="run", help="Run a object segmentation batch using CellProfiler"
 )
 @click.option(
+    "--python",
+    "python_path",
+    type=click.Path(exists=True, dir_okay=False),
+    default="/opt/cellprofiler-venv/bin/python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
     "--cellprofiler",
-    "cellprofiler_binary",
+    "cellprofiler_module",
     type=click.STRING,
     default="cellprofiler",
     show_default=True,
-    help="CellProfiler binary",
+    help="CellProfiler module",
 )
 @click.option(
     "--plugins-directory",
@@ -83,7 +91,8 @@ def prepare_cmd(segmentation_pipeline_file):
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def run_cmd(
-    cellprofiler_binary,
+    python_path,
+    cellprofiler_module,
     cellprofiler_plugin_dir,
     segmentation_pipeline_file,
     probabilities_dir,
@@ -96,7 +105,8 @@ def run_cmd(
         )
     Path(mask_dir).mkdir(exist_ok=True)
     result = cellprofiler.try_segment_objects(
-        cellprofiler_binary,
+        python_path,
+        cellprofiler_module,
         segmentation_pipeline_file,
         probabilities_dir,
         mask_dir,

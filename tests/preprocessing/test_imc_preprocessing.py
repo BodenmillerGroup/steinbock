@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
 from steinbock import io
 from steinbock.preprocessing import imc
 
@@ -13,6 +14,32 @@ class TestIMCPreprocessing:
 
     def test_list_txt_files(self, imc_test_data_steinbock_path: Path):
         imc.list_txt_files(imc_test_data_steinbock_path / "raw")  # TODO
+
+    def test_create_panel_from_imc_panel(self, imc_test_data_steinbock_path: Path):
+        imc.create_panel_from_imc_panel(
+            imc_test_data_steinbock_path / "raw" / "panel.csv"
+        )  # TODO
+
+    def test_create_panel_from_mcd_file(self, imc_test_data_steinbock_path: Path):
+        pass  # TODO
+
+    def test_create_panel_from_mcd_files(self, imc_test_data_steinbock_path: Path):
+        mcd_files = imc.list_mcd_files(
+            imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
+        )
+        imc.create_panel_from_mcd_files(mcd_files)  # TODO
+
+    def test_create_panel_from_txt_file(self, imc_test_data_steinbock_path: Path):
+        pass  # TODO
+
+    def test_create_panel_from_txt_files(self, imc_test_data_steinbock_path: Path):
+        txt_files = imc.list_txt_files(
+            imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
+        )
+        imc.create_panel_from_txt_files(txt_files)  # TODO
+
+    def test_create_image_info(self, imc_test_data_steinbock_path: Path):
+        pass  # TODO
 
     def test_filter_hot_pixels(self):
         img = np.array(
@@ -68,20 +95,3 @@ class TestIMCPreprocessing:
         gen = imc.try_preprocess_images_from_disk(mcd_files, txt_files)
         for mcd_txt_file, acquisition, img, recovery_file, recovered in gen:
             pass  # TODO
-
-    def test_create_panel_from_imc_panel(self, imc_test_data_steinbock_path: Path):
-        imc.create_panel_from_imc_panel(
-            imc_test_data_steinbock_path / "raw" / "panel.csv"
-        )  # TODO
-
-    def test_create_panel_from_mcd_file(self, imc_test_data_steinbock_path: Path):
-        mcd_files = imc.list_mcd_files(
-            imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
-        )
-        imc.create_panel_from_mcd_files(mcd_files)  # TODO
-
-    def test_create_panel_from_txt_file(self, imc_test_data_steinbock_path: Path):
-        txt_files = imc.list_txt_files(
-            imc_test_data_steinbock_path / "raw" / "20210305_NE_mockData1"
-        )
-        imc.create_panel_from_txt_files(txt_files)  # TODO

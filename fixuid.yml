@@ -1,5 +1,7 @@
 user: steinbock
 group: steinbock
 paths:
+  - /run  # required for Xpra
+  - /tmp  # required for Xpra
   - /home/steinbock
   - /data
