@@ -9,8 +9,10 @@ def view(
     masks: Optional[Dict[str, np.ndarray]] = None,
     channel_names: Optional[Sequence[str]] = None,
     pixel_size_um: float = 1.0,
-) -> None:
-    viewer = napari.Viewer()
+    run: bool = True,
+    **viewer_kwargs,
+) -> Optional[napari.Viewer]:
+    viewer = napari.Viewer(**viewer_kwargs)
     viewer.axes.visible = True
     viewer.dims.axis_labels = ("y", "x")
     viewer.scale_bar.visible = True
@@ -33,4 +35,7 @@ def view(
                 blending="translucent",
                 visible=False,
             )
-    napari.run()
+    if run:
+        napari.run()
+        return None
+    return viewer
