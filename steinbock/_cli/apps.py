@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 import click_log
 
-from .._env import check_x11, run_captured, use_ilastik_env
+from .._env import run_captured, use_ilastik_env
 from .._steinbock import SteinbockException
 from .._steinbock import logger as steinbock_logger
 from .utils import OrderedClickGroup, catch_exception
@@ -32,7 +32,6 @@ def apps_cmd_group():
 @click.argument("ilastik_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-@check_x11
 @use_ilastik_env
 def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     args = [ilastik_binary] + list(ilastik_args)
@@ -73,7 +72,6 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
 @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-@check_x11
 def cellprofiler_cmd(
     python_path, cellprofiler_module, cellprofiler_plugin_dir, cellprofiler_args
 ):
@@ -109,7 +107,6 @@ def cellprofiler_cmd(
 @click.argument("jupyter_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-@check_x11
 def jupyter_cmd(python_path, jupyter_module, jupyter_args):
     jupyter_args = list(jupyter_args)
     if not any(arg.startswith("--ip=") for arg in jupyter_args):
@@ -144,7 +141,6 @@ def jupyter_cmd(python_path, jupyter_module, jupyter_args):
 @click.argument("jupyterlab_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-@check_x11
 def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     jupyterlab_args = list(jupyterlab_args)
     if not any(arg.startswith("--ip=") for arg in jupyterlab_args):

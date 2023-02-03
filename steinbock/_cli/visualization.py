@@ -4,7 +4,6 @@ import click
 import click_log
 
 from .. import io
-from .._env import check_x11
 from .._steinbock import SteinbockException
 from .._steinbock import logger as steinbock_logger
 from ..visualization import view
@@ -48,7 +47,6 @@ from .utils import catch_exception
 @click.argument("img_file_name", type=click.STRING)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-@check_x11
 def view_cmd(img_dir, mask_dirs, panel_file, pixel_size_um, img_file_name):
     img = io.read_image(Path(img_dir) / img_file_name, native_dtype=True)
     masks = None
