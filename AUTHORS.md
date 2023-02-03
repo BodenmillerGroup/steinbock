@@ -1,5 +1,5 @@
 # Authors
 
-## Jonas Windhager
+The `steinbock` toolkit was developed by [Jonas Windhager](mailto:jonas@windhager.io).
 
-[jonas.windhager@uzh.ch](mailto:jonas.windhager@uzh.ch)
+The `steinbock` toolkit is currently maintained by [Milad Adibi](mailto:milad.adibi@uzh.ch).
