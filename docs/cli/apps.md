@@ -4,8 +4,8 @@ The *steinbock* Docker container exposes various third-party apps via the `apps`
 
 ## Ilastik
 
-!!! note "Graphical user interfaces"
-    Ilastik requires a graphical user interface (GUI).
+!!! note "Docker and graphical user interfaces"
+    Running Ilastik using steinbock Docker containers requires support for graphical user interfaces (e.g. X forwarding).
 
 To run [Ilastik](https://www.ilastik.org):
 
@@ -15,8 +15,8 @@ Without additional arguments, this will start the graphical user interface of Il
 
 ## CellProfiler
 
-!!! note "Graphical user interfaces"
-    CellProfiler requires a graphical user interface (GUI).
+!!! note "Docker and graphical user interfaces"
+    Running CellProfiler using steinbock Docker containers requires support for a graphical user interfaces (e.g. X forwarding).
 
 To run [CellProfiler](https://cellprofiler.org):
 

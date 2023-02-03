@@ -68,7 +68,7 @@ On the command line, use the following command to run the *steinbock* Docker con
 
     docker run -v "C:\Data":/data -p 8888:8888 -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0
 
-In the command above, adapt the bind mount path to your data/working directory (`C:\Data`; no trailing backslash) and the *steinbock* Docker container version (`0.16.0`) as needed. The `DISPLAY` environment variable is required only when running graphical user interfaces.
+In the command above, adapt the bind mount path to your data/working directory (`C:\Data`; no trailing backslash) and the *steinbock* Docker container version (`0.16.0`) as needed. Specifying the `DISPLAY` environment variable is required only when running graphical user interfaces using X forwarding.
 
 To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` macro:
 
@@ -79,7 +79,7 @@ The created macro is retained for the current session and enables running `stein
     steinbock --version
 
 !!! note "Graphical user interfaces on Windows"
-    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari), [VcXsrv](https://sourceforge.net/projects/vcxsrv/) is required. Running *steinbock* with VcXsrv is untested and therefore undocumented; please do not hesitate to [file a GitHub issue](https://github.com/BodenmillerGroup/steinbock/issues) if you would like to contribute to this documentation.
+    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari) using X forwarding, [VcXsrv](https://sourceforge.net/projects/vcxsrv/) is required. Running *steinbock* with VcXsrv is untested and therefore undocumented; please do not hesitate to [file a GitHub issue](https://github.com/BodenmillerGroup/steinbock/issues) if you would like to contribute to this documentation.
 
 ### Mac OS
 
@@ -87,7 +87,7 @@ On the terminal, use the following command to run the *steinbock* Docker contain
 
     docker run -v /path/to/data:/data --platform linux/amd64 -u $(id -u):$(id -g) -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/steinbock/.Xauthority:ro -e DISPLAY=host.docker.internal:0 ghcr.io/bodenmillergroup/steinbock:0.16.0
 
-In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. The `/tmp/.X11-unix` bind mount, the `~/.Xauthority` bind mount and the `DISPLAY` environment variable are required only when running graphical user interfaces.
+In the command above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. Specifying the `/tmp/.X11-unix` bind mount, the `~/.Xauthority` bind mount and the `DISPLAY` environment variable are required only when running graphical user interfaces using X forwarding.
 
 To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
@@ -98,7 +98,7 @@ The created command alias is retained for the current session and enables runnin
     steinbock --version
 
 !!! note "Graphical user interfaces on Mac OS"
-    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari), first install and launch [XQuartz](https://www.xquartz.org/). Then, open *XQuartz* > *Security* > *Preferences* and tick *Allow connections from network clients*. Log out of your user account and login again; restart Docker and XQuartz. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:
+    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari) using X forwarding, first install and launch [XQuartz](https://www.xquartz.org/). Then, open *XQuartz* > *Security* > *Preferences* and tick *Allow connections from network clients*. Log out of your user account and login again; restart Docker and XQuartz. Finally, to allow the local root user (i.e., the user running the Docker daemon) to access the running XQuartz X server:
 
         xhost +localhost
 
@@ -112,7 +112,7 @@ To run the *steinbock* Docker container with NVIDIA GPU support, use `-gpu` Dock
 
     docker run -v /path/to/data:/data -u $(id -u):$(id -g) --network host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY --gpus all ghcr.io/bodenmillergroup/steinbock:0.16.0-gpu
 
-In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. The `host` network mode, the `/tmp/.X11-unix` bind mount and the `DISPLAY` environment variable are required only when running graphical user interfaces.
+In the commands above, adapt the bind mount path to your data/working directory (`/path/to/data`) and the *steinbock* Docker container version (`0.16.0`) as needed. Specifying the `host` network mode, the `/tmp/.X11-unix` bind mount and the `DISPLAY` environment variable are required only when running graphical user interfaces using X forwarding.
 
 To simplify the use of the *steinbock* command-line interface, it is recommended to set up a `steinbock` command alias:
 
@@ -127,7 +127,7 @@ The created command alias is retained for the current session and enables runnin
     steinbock --version
 
 !!! note "Graphical user interfaces on Linux"
-    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari), if necessary, allow the local root user to access the running X server:
+    To allow the *steinbock* Docker container to run graphical user interfaces (e.g. Ilastik, CellProfiler, napari) using X forwarding, if necessary, allow the local root user to access the running X server:
 
         xhost +local:root
 
