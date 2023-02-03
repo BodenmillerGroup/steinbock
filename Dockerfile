@@ -29,6 +29,7 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
+    apt-get clean && \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install "tensorflow==${TENSORFLOW_VERSION}"
 
@@ -44,6 +45,7 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
+    apt-get clean && \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install "tensorflow==${TENSORFLOW_VERSION}"
 
@@ -85,6 +87,7 @@ ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERE
 
 RUN apt-get update && \
     apt-get install -yqq build-essential curl git locales python3 python3-pip python3-dev python3-venv && \
+    apt-get clean && \
     python3 -m pip install --upgrade pip setuptools wheel
 
 # set locale and timezone
@@ -126,7 +129,8 @@ ENV PATH="${CELLPROFILER_VENV_PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel
 
 RUN apt-get update && \
-    apt-get install -yqq libgtk-3-dev openjdk-11-jdk-headless libmysqlclient-dev libnotify-dev libsdl2-dev libwebkit2gtk-4.0-dev
+    apt-get install -yqq libgtk-3-dev openjdk-11-jdk-headless libmysqlclient-dev libnotify-dev libsdl2-dev libwebkit2gtk-4.0-dev && \
+    apt-get clean
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 
 RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
@@ -148,7 +152,8 @@ ENV PATH="${STEINBOCK_VENV_PATH}"
 RUN python -m pip install --upgrade pip setuptools wheel
 
 RUN apt-get update && \
-    apt-get install -yqq mesa-utils libgl1-mesa-glx libglib2.0-0 libfontconfig1 libxrender1 libdbus-1-3 libxkbcommon-x11-0 libxi6 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0
+    apt-get install -yqq mesa-utils libgl1-mesa-glx libglib2.0-0 libfontconfig1 libxrender1 libdbus-1-3 libxkbcommon-x11-0 libxi6 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0 && \
+    apt-get clean
 
 COPY --chown=root:root steinbock /app/steinbock/steinbock/
 COPY --chown=root:root requirements.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
@@ -213,12 +218,14 @@ ENV DISPLAY=":100" XDG_RUNTIME_DIR="/tmp" XPRA_PORT="${XPRA_PORT}" XPRA_START="x
 USER root:root
 
 RUN apt-get update && \
-    apt-get install -yqq gnupg2 apt-transport-https xvfb xterm sshfs
+    apt-get install -yqq gnupg2 apt-transport-https xvfb xterm sshfs && \
+    apt-get clean
 
 RUN curl -SsL https://xpra.org/gpg.asc | apt-key add - && \
     echo "deb https://xpra.org/ focal main" > /etc/apt/sources.list.d/xpra.list && \
     apt-get update && \
     apt-get install -yqq xpra && \
+    apt-get clean && \
     mkdir -p /run/user /run/xpra && \
     chmod 0775 /run/user /run/xpra && \
     chown root:steinbock /run/user /run/xpra && \
