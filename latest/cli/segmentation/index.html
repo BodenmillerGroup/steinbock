@@ -1220,11 +1220,21 @@
 <p>Depending on the application, DeepCell requires images of specific dimensions. For example, in the case of cell segmentation using Mesmer, DeepCell expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a membrane or cytoplasmic channel (e.g. E-Cadherin). This also applies to <code>nuclear</code>-only segmentation tasks.</p>
 <p>If a <code>deepcell</code> column is present in the <em>steinbock</em> panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the <code>--aggr</code> option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.</p>
 <p>If no <code>deepcell</code> column is present, images are expected to be in the correct format already.</p>
+<p>Unless specified otherwise using the <code>--pixelsize</code> parameter, a value of 1 micrometer per pixel is assumed. This resolution parameter can also be used to fine-tune the generated cell/nuclear masks with regards to over/under-segmentation.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Channel-wise image normalization</p>
 <p>If enabled, features (i.e., channels) are <a href="https://en.wikipedia.org/wiki/Feature_scaling">scaled</a> for each image and each channel independently.</p>
 <p>Specify <code>--minmax</code> to enable min-max normalization and <code>--zscore</code> to enable z-score normalization.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Preprocessing/postprocessing parameters</p>
+<p>Application-dependent preprocessing/postprocessing parameters can be specified in YAML files using the <code>--preprocess</code>/<code>--postprocess</code> options. For the Mesmer application, this can e.g. be used to control thresholding, histogram normalization and watershed segmentation. Please refer to the DeepCell online documentation for available parameters. For example, one could specify <code>--preprocess preprocessing.yml</code>, where <code>preprocessing.yml</code> is a file in the steinbock data/working directory containing:</p>
+<pre><code>threshold: true
+percentile: 99.9
+normalize: true
+kernel_size: 128
+</code></pre>
 </div>
 <h2 id="cellpose">Cellpose</h2>
 <div class="admonition danger">
