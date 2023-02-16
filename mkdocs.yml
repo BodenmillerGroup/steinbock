@@ -1,7 +1,6 @@
 site_name: steinbock
 repo_url: https://github.com/BodenmillerGroup/steinbock
 site_description: The steinbock toolkit documentation
-site_author: Jonas Windhager
 copyright: University of Zurich
 nav:
   - Home:
