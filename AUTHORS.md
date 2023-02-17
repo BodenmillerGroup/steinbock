@@ -1,5 +1,5 @@
 # Authors
 
-## Jonas Windhager
+Created and maintained by [Jonas Windhager](mailto:jonas@windhager.io) until February 2023.
 
-[jonas.windhager@uzh.ch](mailto:jonas.windhager@uzh.ch)
+Maintained by [Milad Adibi](mailto:milad.adibi@uzh.ch) from February 2023.
