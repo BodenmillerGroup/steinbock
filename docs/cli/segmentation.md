@@ -79,10 +79,20 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 
     If no `deepcell` column is present, images are expected to be in the correct format already.
 
+    Unless specified otherwise using the `--pixelsize` parameter, a value of 1 micrometer per pixel is assumed. This resolution parameter can also be used to fine-tune the generated cell/nuclear masks with regards to over/under-segmentation.
+
 !!! note "Channel-wise image normalization"
     If enabled, features (i.e., channels) are [scaled](https://en.wikipedia.org/wiki/Feature_scaling) for each image and each channel independently.
 
     Specify `--minmax` to enable min-max normalization and `--zscore` to enable z-score normalization.
+
+!!! note "Preprocessing/postprocessing parameters"
+    Application-dependent preprocessing/postprocessing parameters can be specified in YAML files using the `--preprocess`/`--postprocess` options. For the Mesmer application, this can e.g. be used to control thresholding, histogram normalization and watershed segmentation. Please refer to the DeepCell online documentation for available parameters. For example, one could specify `--preprocess preprocessing.yml`, where `preprocessing.yml` is a file in the steinbock data/working directory containing:
+
+        threshold: true
+        percentile: 99.9
+        normalize: true
+        kernel_size: 128
 
 ## Cellpose
 
