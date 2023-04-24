@@ -17,7 +17,24 @@ cellpose_cli_available = cellpose.cellpose_available
 @click.option(
     "--model",
     "model_name",
-    type=click.Choice(["nuclei", "cyto", "cyto2", "tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]),
+    type=click.Choice(
+        [
+            "nuclei",
+            "cyto",
+            "cyto2",
+            "tissuenet",
+            "livecell",
+            "CP",
+            "CPx",
+            "TN1",
+            "TN2",
+            "TN3",
+            "LC1",
+            "LC2",
+            "LC3",
+            "LC4",
+        ]
+    ),
     default="cyto2",
     show_default=True,
     help="Name of the Cellpose model",
@@ -203,7 +220,19 @@ def cellpose_cmd(
             io.write_mask(mask, mask_file)
             logger.info(mask_file)
 
-    if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
+    if model_name in [
+        "tissuenet",
+        "livecell",
+        "CP",
+        "CPx",
+        "TN1",
+        "TN2",
+        "TN3",
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4",
+    ]:
         for img_file, mask, flow, style in cellpose.try_segment_objects(
             model_name,
             img_files,

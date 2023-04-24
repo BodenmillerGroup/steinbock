@@ -81,8 +81,20 @@ def try_segment_objects(
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
     if model_name in ["nuclei", "cyto", "cyto2"]:
         model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
-    if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
-        model = cellpose.models.CellposeModel(model_type=model_name,net_avg=net_avg)
+    if model_name in [
+        "tissuenet",
+        "livecell",
+        "CP",
+        "CPx",
+        "TN1",
+        "TN2",
+        "TN3",
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4",
+    ]:
+        model = cellpose.models.CellposeModel(model_type=model_name, net_avg=net_avg)
     for img_file in img_files:
         try:
             img = create_segmentation_stack(
@@ -103,7 +115,7 @@ def try_segment_objects(
                     f"expected 1 or 2, got {img.shape[0]}"
                 )
 
-# The two conditional calls are necessary here, cellpose2 models do not output 'diam'.
+            # The two conditional calls are necessary here, cellpose2 models do not output 'diam'.
             if model_name in ["nuclei", "cyto", "cyto2"]:
                 masks, flows, styles, diams = model.eval(
                     [img],
@@ -126,7 +138,19 @@ def try_segment_objects(
                 yield Path(img_file), masks[0], flows[0], styles[0], diam
                 del img, masks, flows, styles, diams
 
-            if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
+            if model_name in [
+                "tissuenet",
+                "livecell",
+                "CP",
+                "CPx",
+                "TN1",
+                "TN2",
+                "TN3",
+                "LC1",
+                "LC2",
+                "LC3",
+                "LC4",
+            ]:
                 masks, flows, styles = model.eval(
                     [img],
                     batch_size=batch_size,
@@ -147,6 +171,5 @@ def try_segment_objects(
                 yield Path(img_file), masks[0], flows[0], styles[0]
                 del img, masks, flows, styles
 
-
         except Exception as e:
-                logger.exception(f"Error segmenting objects in {img_file}: {e}")
+            logger.exception(f"Error segmenting objects in {img_file}: {e}")
