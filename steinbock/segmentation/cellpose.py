@@ -79,7 +79,10 @@ def try_segment_objects(
     cellprob_threshold: float = 0.0,
     min_size: int = 15,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-    model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
+    if model_name in ["nuclei", "cyto", "cyto2"]:
+        model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
+    if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
+        model = cellpose.models.CellposeModel(model_type=model_name,net_avg=net_avg)
     for img_file in img_files:
         try:
             img = create_segmentation_stack(
@@ -99,25 +102,51 @@ def try_segment_objects(
                     f"Invalid number of aggregated channels: "
                     f"expected 1 or 2, got {img.shape[0]}"
                 )
-            masks, flows, styles, diams = model.eval(
-                [img],
-                batch_size=batch_size,
-                channels=channels,
-                channel_axis=0,
-                normalize=normalize,
-                diameter=diameter,
-                net_avg=net_avg,
-                tile=tile,
-                tile_overlap=tile_overlap,
-                resample=resample,
-                interp=interp,
-                flow_threshold=flow_threshold,
-                cellprob_threshold=cellprob_threshold,
-                min_size=min_size,
-                progress=False,
-            )
-            diam = diams if isinstance(diams, float) else diams[0]
-            yield Path(img_file), masks[0], flows[0], styles[0], diam
-            del img, masks, flows, styles, diams
+
+# The two conditional calls are necessary here, cellpose2 models do not output 'diam'.
+            if model_name in ["nuclei", "cyto", "cyto2"]:
+                masks, flows, styles, diams = model.eval(
+                    [img],
+                    batch_size=batch_size,
+                    channels=channels,
+                    channel_axis=0,
+                    normalize=normalize,
+                    diameter=diameter,
+                    net_avg=net_avg,
+                    tile=tile,
+                    tile_overlap=tile_overlap,
+                    resample=resample,
+                    interp=interp,
+                    flow_threshold=flow_threshold,
+                    cellprob_threshold=cellprob_threshold,
+                    min_size=min_size,
+                    progress=False,
+                )
+                diam = diams if isinstance(diams, float) else diams[0]
+                yield Path(img_file), masks[0], flows[0], styles[0], diam
+                del img, masks, flows, styles, diams
+
+            if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
+                masks, flows, styles = model.eval(
+                    [img],
+                    batch_size=batch_size,
+                    channels=channels,
+                    channel_axis=0,
+                    normalize=normalize,
+                    diameter=diameter,
+                    net_avg=net_avg,
+                    tile=tile,
+                    tile_overlap=tile_overlap,
+                    resample=resample,
+                    interp=interp,
+                    flow_threshold=flow_threshold,
+                    cellprob_threshold=cellprob_threshold,
+                    min_size=min_size,
+                    progress=False,
+                )
+                yield Path(img_file), masks[0], flows[0], styles[0]
+                del img, masks, flows, styles
+
+
         except Exception as e:
-            logger.exception(f"Error segmenting objects in {img_file}: {e}")
+                logger.exception(f"Error segmenting objects in {img_file}: {e}")
