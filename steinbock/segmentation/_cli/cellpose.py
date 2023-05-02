@@ -179,50 +179,25 @@ def cellpose_cmd(
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
-    if model_name in ["nuclei", "cyto", "cyto2"]:
-        for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
-            model_name,
-            img_files,
-            channelwise_minmax=channelwise_minmax,
-            channelwise_zscore=channelwise_zscore,
-            channel_groups=channel_groups,
-            aggr_func=aggr_func,
-            net_avg=net_avg,
-            batch_size=batch_size,
-            normalize=normalize,
-            diameter=diameter,
-            tile=tile,
-            tile_overlap=tile_overlap,
-            resample=resample,
-            interp=interp,
-            flow_threshold=flow_threshold,
-            cellprob_threshold=cellprobab_threshold,
-            min_size=min_size,
-        ):
-            mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
-            io.write_mask(mask, mask_file)
-            logger.info(mask_file)
-
-    if model_name in ["tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]:
-        for img_file, mask, flow, style in cellpose.try_segment_objects(
-            model_name,
-            img_files,
-            channelwise_minmax=channelwise_minmax,
-            channelwise_zscore=channelwise_zscore,
-            channel_groups=channel_groups,
-            aggr_func=aggr_func,
-            net_avg=net_avg,
-            batch_size=batch_size,
-            normalize=normalize,
-            diameter=diameter,
-            tile=tile,
-            tile_overlap=tile_overlap,
-            resample=resample,
-            interp=interp,
-            flow_threshold=flow_threshold,
-            cellprob_threshold=cellprobab_threshold,
-            min_size=min_size,
-        ):
-            mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
-            io.write_mask(mask, mask_file)
-            logger.info(mask_file)
+    for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
+        model_name,
+        img_files,
+        channelwise_minmax=channelwise_minmax,
+        channelwise_zscore=channelwise_zscore,
+        channel_groups=channel_groups,
+        aggr_func=aggr_func,
+        net_avg=net_avg,
+        batch_size=batch_size,
+        normalize=normalize,
+        diameter=diameter,
+        tile=tile,
+        tile_overlap=tile_overlap,
+        resample=resample,
+        interp=interp,
+        flow_threshold=flow_threshold,
+        cellprob_threshold=cellprobab_threshold,
+        min_size=min_size,
+    ):
+        mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
+        io.write_mask(mask, mask_file)
+        logger.info(mask_file)
