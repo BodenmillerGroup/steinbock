@@ -17,7 +17,24 @@ cellpose_cli_available = cellpose.cellpose_available
 @click.option(
     "--model",
     "model_name",
-    type=click.Choice(["nuclei", "cyto", "cyto2", "tissuenet", "livecell", "CP", "CPx", "TN1", "TN2", "TN3", "LC1", "LC2", "LC3", "LC4"]),
+    type=click.Choice(
+        [
+            "nuclei",
+            "cyto",
+            "cyto2",
+            "tissuenet",
+            "livecell",
+            "CP",
+            "CPx",
+            "TN1",
+            "TN2",
+            "TN3",
+            "LC1",
+            "LC2",
+            "LC3",
+            "LC4",
+        ]
+    ),
     default="cyto2",
     show_default=True,
     help="Name of the Cellpose model",
