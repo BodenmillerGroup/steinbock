@@ -79,11 +79,11 @@ def try_segment_objects(
     cellprob_threshold: float = 0.0,
     min_size: int = 15,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-# Here we need seperate calls for sized (nuclei, cyto and cyto2) models and the non-sized ones (tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4 as of cellpose2.0)
+    # Here we need seperate calls for sized (nuclei, cyto and cyto2) models and the non-sized ones (tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4 as of cellpose2.0)
     if model_name in ["nuclei", "cyto", "cyto2"]:
         model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
     else:
-        model = cellpose.models.CellposeModel(model_type=model_name,net_avg=net_avg)
+        model = cellpose.models.CellposeModel(model_type=model_name, net_avg=net_avg)
 
     for img_file in img_files:
         try:
@@ -106,12 +106,12 @@ def try_segment_objects(
                 )
 
             masks, flows, styles = ([] for i in range(3))
-#Size models return 4 variables and the non-sized ones 3, excluding 'diams'
+            # Size models return 4 variables and the non-sized ones 3, excluding 'diams'
             if model_name in ["nuclei", "cyto", "cyto2"]:
                 diams = []
-                output= [masks, flows, styles, diams]
+                output = [masks, flows, styles, diams]
             else:
-                output= [masks, flows, styles]
+                output = [masks, flows, styles]
 
             output = model.eval(
                 [img],
@@ -130,7 +130,7 @@ def try_segment_objects(
                 min_size=min_size,
                 progress=False,
             )
-#for unsized models, we return 'diam = None'
+            # for unsized models, we return 'diam = None'
             if len(output) == 4:
                 diam = output[3] if isinstance(output[3], float) else output[3][0]
                 yield Path(img_file), output[0][0], output[1][0], output[2][0], diam
