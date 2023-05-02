@@ -105,15 +105,7 @@ def try_segment_objects(
                     f"expected 1 or 2, got {img.shape[0]}"
                 )
 
-            masks, flows, styles = ([] for i in range(3))
-#Size models return 4 variables and the non-sized ones 3, excluding 'diams'
-            if model_name in ["nuclei", "cyto", "cyto2"]:
-                diams = []
-                output= [masks, flows, styles, diams]
-            else:
-                output= [masks, flows, styles]
-
-            output = model.eval(
+            eval_results = model.eval(
                 [img],
                 batch_size=batch_size,
                 channels=channels,
@@ -131,12 +123,15 @@ def try_segment_objects(
                 progress=False,
             )
 #for unsized models, we return 'diam = None'
-            if len(output) == 4:
-                diam = output[3] if isinstance(output[3], float) else output[3][0]
-                yield Path(img_file), output[0][0], output[1][0], output[2][0], diam
+
+            masks, flows, styles = eval_results[:3]
+            if len(eval_results) > 3:
+                diams = eval_results[3]
+                diam = diams if isinstance(diams, float) else diams[0]
             else:
-                yield Path(img_file), output[0][0], output[1][0], output[2][0], None
-            del img, masks, flows, styles, diams
+                diam = None
+            yield Path(img_file), masks[0], flows[0], styles[0], diam
+            del img, masks, flows, styles
 
         except Exception as e:
             logger.exception(f"Error segmenting objects in {img_file}: {e}")
