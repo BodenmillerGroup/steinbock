@@ -39,8 +39,6 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     sys.exit(result.returncode)
 
 
-
-
 @apps_cmd_group.command(
     name="cellpose",
     context_settings={"ignore_unknown_options": True},
@@ -55,9 +53,6 @@ def ilastik_cmd(cellpose_args, ilastik_env):
     args = ["cellpose"] + list(cellpose_args)
     result = run_captured(args, env=ilastik_env)
     sys.exit(result.returncode)
-
-
-
 
 
 @apps_cmd_group.command(
