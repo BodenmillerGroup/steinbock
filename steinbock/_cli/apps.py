@@ -39,6 +39,27 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     sys.exit(result.returncode)
 
 
+
+
+@apps_cmd_group.command(
+    name="cellpose",
+    context_settings={"ignore_unknown_options": True},
+    help="Run cellpose GUI",
+    add_help_option=False,
+)
+@click.argument("cellpose_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
+@use_ilastik_env
+def ilastik_cmd(cellpose_args, ilastik_env):
+    args = ["cellpose"] + list(cellpose_args)
+    result = run_captured(args, env=ilastik_env)
+    sys.exit(result.returncode)
+
+
+
+
+
 @apps_cmd_group.command(
     name="cellprofiler",
     context_settings={"ignore_unknown_options": True},
