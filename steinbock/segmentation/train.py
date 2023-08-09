@@ -1,9 +1,9 @@
 import logging
-import os
+from os import PathLike
 from importlib.util import find_spec
 from pathlib import Path
 from typing import Optional, Protocol
-
+from typing import Union
 import numpy as np
 import pandas as pd
 from skimage.io import imread, imsave
@@ -57,27 +57,6 @@ def try_train_model(
   net_avg: bool = True
   ):
 
-def try_train_model(
-    pretrained_model: str,
-    train_data: str,
-    train_mask: str,
-    diam_mean: int = 50,
-    cellpose_crop_size: int = 250,
-    train_files=None,
-    test_data=None,
-    test_labels=None,
-    test_files=None,
-    channels: list = [1, 2],
-    normalize: bool = True,
-    # save_path: str,
-    save_every: int = 50,
-    learning_rate: float = 0.1,
-    n_epochs: int = 1,
-    momentum: float = 0.9,
-    weight_decay: float = 0.0001,
-    batch_size: int = 8,
-    rescale: bool = True,
-):
     rng = np.random.default_rng(123)
     #panel = pd.read_csv(panel_file, sep=',') #sorting the panel might be wise before or after loading
     model = cellpose.models.CellposeModel(gpu=gpu, model_type= pretrained_model, net_avg=net_avg)

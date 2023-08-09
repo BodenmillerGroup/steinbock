@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.17.0] - 2023-08-03
+## [0.17.0] - 2023-08-09
 
 ### Added
 
@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   - The choice of pre-trained models in cellpose segmentation is expanded to include the pre-trained models introduced in cellpose 2
   - Updated cellpose default parameters for better default segmentation results
-  - Updated documentation
+  - Updated documentation regarding the maximum umber of masks when saving as imageJ TUFF (automatically detect uint type in io.py) [#131](https://github.com/BodenmillerGroup/steinbock/issues/131).
+  - Updated documentation on new cellpose functionalities and expansion utility [#208](https://github.com/BodenmillerGroup/steinbock/issues/208)
 
 ## [0.16.0] - 2023-02-03
 
