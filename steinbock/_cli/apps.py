@@ -150,8 +150,6 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     sys.exit(result.returncode)
 
 
-
-
 @apps_cmd_group.command(
     name="cellpose",
     context_settings={"ignore_unknown_options": True},
@@ -182,12 +180,10 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     show_default=True,
     help="Path to the CellProfiler plugin directory",
 )
-#@click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
+# @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def cellpose_view_cmd(
-    python_path, cellprofiler_module, cellprofiler_plugin_dir
-):
+def cellpose_view_cmd(python_path, cellprofiler_module, cellprofiler_plugin_dir):
     args = ["python", "-m", "cellpose"]
 
     result = run_captured(args)

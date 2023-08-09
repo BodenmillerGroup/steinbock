@@ -3,15 +3,10 @@ from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
 from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
-from steinbock.classification.ilastik._ilastik import create_ilastik_crop, read_ilastik_image
-from skimage.io import imread, imsave
-from steinbock import io
-from steinbock.io import write_image
-import os
-import numpy as np
-from tifffile import imsave
-import pandas as pd
 
+import numpy as np
+
+from steinbock import io
 
 from .. import io
 from ._segmentation import SteinbockSegmentationException
@@ -68,7 +63,6 @@ def create_segmentation_stack(
 
 
 def try_segment_objects(
-
     img_files: Sequence[Union[str, PathLike]],
     model_name: str,
     channelwise_minmax: bool = False,
@@ -86,11 +80,13 @@ def try_segment_objects(
     flow_threshold: float = 1,
     cellprob_threshold: float = -6,
     min_size: int = 15,
-    use_GPU: bool = False
+    use_GPU: bool = False,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
     # Here we need to seperate calls for sized ([nuclei, cyto and cyto2]) models and the non-sized ones ([tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4] as of cellpose2.0)
     if model_name in ["nuclei", "cyto", "cyto2"]:
-        model = cellpose.models.Cellpose(gpu=use_GPU, model_type=model_name, net_avg=net_avg)
+        model = cellpose.models.Cellpose(
+            gpu=use_GPU, model_type=model_name, net_avg=net_avg
+        )
     else:
         model = cellpose.models.CellposeModel(model_type=model_name, net_avg=net_avg)
 
