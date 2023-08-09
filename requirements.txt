@@ -10,8 +10,8 @@ imageio==2.25.0
 napari[all]==0.4.17
 networkx==3.0
 numpy==1.23.5  # deepcell 0.12.4 requires <1.24
+opencv-python==4.8.0.74
 opencv-python-headless==4.7.0.68
-opencv-python==4.8.0.74 
 pandas==1.5.3
 pyyaml==6.0
 readimc==0.6.2

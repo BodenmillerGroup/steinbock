@@ -5,7 +5,7 @@ import click_log
 import numpy as np
 
 from ... import io
-from ..._cli.utils import OrderedClickGroup, catch_exception, logger
+from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import cellpose
@@ -14,7 +14,6 @@ cellpose_cli_available = cellpose.cellpose_available
 
 
 @click.command(name="cellpose", help="Run an object segmentation batch using Cellpose")
-
 @click.option(
     "--model",
     "model_name",
@@ -48,7 +47,6 @@ cellpose_cli_available = cellpose.cellpose_available
     show_default=True,
     help="Path to the image directory",
 )
-
 @click.option(
     "--minmax/--no-minmax",
     "channelwise_minmax",
@@ -222,8 +220,5 @@ def cellpose_cmd(
         logger.info(mask_file)
 
 
-
-
-
-#@click_log.simple_verbosity_option(logger=steinbock_logger)
-#@catch_exception(handle=SteinbockException)
+# @click_log.simple_verbosity_option(logger=steinbock_logger)
+# @catch_exception(handle=SteinbockException)

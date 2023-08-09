@@ -9,9 +9,7 @@ import pandas as pd
 from skimage.io import imread, imsave
 from tifffile import imsave
 
-from steinbock.classification.ilastik._ilastik import (
-    create_ilastik_crop,
-)
+from steinbock.classification.ilastik._ilastik import create_ilastik_crop
 
 from ._segmentation import SteinbockSegmentationException
 

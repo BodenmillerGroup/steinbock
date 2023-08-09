@@ -15,6 +15,7 @@ from .train import train_cmd_group
 def segment_cmd_group():
     pass
 
+
 segment_cmd_group.add_command(train_cmd_group)
 segment_cmd_group.add_command(cellprofiler_cmd_group)
 if deepcell_cli_available:
