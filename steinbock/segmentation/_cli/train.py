@@ -30,16 +30,6 @@ def train_cmd_group():
     name="run", help="Train a cellpose model using labeled data"
 )
 
-
-@click.option(
-    "--cropsize",
-    "cellpose_crop_size",
-    type=click.INT,
-    default=512,
-    show_default=True,
-    help="Cellpose crop size (in pixels)",
-)
-
 @click.option(
     "--pretrained_model",
     "pretrained_model",
@@ -60,7 +50,7 @@ def train_cmd_group():
 @click.option(
     '--train_data',
     'train_data',
-    default=[],
+    default='cellpose_crops',
     type=str,
     required=True,
     help='folder containing training data '
@@ -69,7 +59,7 @@ def train_cmd_group():
 @click.option(
     '--train_mask',
     'train_mask',
-    default='train_masks',
+    default='cellpose_masks',
     type=str,
     help='folder containing masks corresponding to images in training_data'
 )
@@ -81,10 +71,8 @@ def train_run_cmd(
     diam_mean,
     train_data,
     train_mask,
-    cellpose_crop_size,
 
 ):
-    #os.mkdir("cellpose_crops")
     Path("cellpose_crops").mkdir(exist_ok=True)
     Path("masks").mkdir(exist_ok=True)
     Path("training_out").mkdir(exist_ok=True)
@@ -92,7 +80,8 @@ def train_run_cmd(
     model_file = train.try_train_model(
     pretrained_model,
     train_data,
-    train_mask
+    train_mask,
+    diam_mean,
     )
     print(f"The trained model file can be found here: {model_file}")
     logger.info(model_file)
@@ -107,8 +96,9 @@ def train_run_cmd(
 @click.option(
     "--pretrained_model",
     "pretrained_model",
-    default="TN2",
-    show_default=True,
+    default="tissuenet",
+    type=str,
+    #show_default=True,
     help="cellpose pretrained model to use as start for training",
 )
 
@@ -116,7 +106,7 @@ def train_run_cmd(
     "--cropsize",
     "cellpose_crop_size",
     type=click.INT,
-    default=512,
+    default=50,
     show_default=True,
     help="Cellpose crop size (in pixels)",
 )
@@ -133,12 +123,29 @@ def train_run_cmd(
 @click.option(
     '--input_data',
     'input_data',
-    default=[],
+    default='img',
     type=str,
     required=True,
     help='folder containing training data '
 )
 
+@click.option(
+    '--cellpose_crops',
+    'cellpose_crops',
+    default="cellpose_crops",
+    type=str,
+    required=True,
+    help='Destination for ellpose training crops'
+)
+
+@click.option(
+    '--cellpose_masks',
+    'cellpose_masks',
+    default="cellpose_masks",
+    type=str,
+    required=True,
+    help='Destination for ellpose training crops'
+)
 
 @click.option(
     "--panel",
@@ -160,12 +167,14 @@ def train_run_cmd(
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_prepare_cmd(
+    input_data,
+    train_mask,
+    cellpose_crops,
+    cellpose_masks,
     panel_file,
     pretrained_model,
     diam_mean,
-    input_data,
-    train_mask,
-    cellpose_crop_size,
+    cellpose_crop_size
 
 ):
     #os.mkdir("cellpose_crops")
@@ -174,10 +183,14 @@ def train_prepare_cmd(
     Path("training_out").mkdir(exist_ok=True)
 
     crop_loc, mask_loc = train.prepare_training(
-    pretrained_model,
     input_data,
     train_mask,
-    panel_file = panel_file
+    cellpose_crops,
+    cellpose_masks,
+    panel_file,
+    pretrained_model,
+    diam_mean,
+    cellpose_crop_size
     )
     print(f"Cellpose traing crops in: {crop_loc}")
     print(f"Cellpose traing masks in {mask_loc}")

@@ -3,8 +3,15 @@ from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
 from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
-
+from steinbock.classification.ilastik._ilastik import create_ilastik_crop, read_ilastik_image
+from skimage.io import imread, imsave
+from steinbock import io
+from steinbock.io import write_image
+import os
 import numpy as np
+from tifffile import imsave
+import pandas as pd
+
 
 from .. import io
 from ._segmentation import SteinbockSegmentationException
@@ -61,8 +68,9 @@ def create_segmentation_stack(
 
 
 def try_segment_objects(
-    model_name: str,
+
     img_files: Sequence[Union[str, PathLike]],
+    model_name: str,
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
@@ -70,18 +78,19 @@ def try_segment_objects(
     net_avg: bool = True,
     batch_size: int = 8,
     normalize: bool = True,
-    diameter: Optional[int] = None,
+    diameter: Optional[int] = 10,
     tile: bool = False,
     tile_overlap: float = 0.1,
     resample: bool = True,
     interp: bool = True,
-    flow_threshold: float = 0.4,
-    cellprob_threshold: float = 0.0,
+    flow_threshold: float = 1,
+    cellprob_threshold: float = -6,
     min_size: int = 15,
+    use_GPU: bool = False
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
     # Here we need to seperate calls for sized ([nuclei, cyto and cyto2]) models and the non-sized ones ([tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4] as of cellpose2.0)
     if model_name in ["nuclei", "cyto", "cyto2"]:
-        model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
+        model = cellpose.models.Cellpose(gpu=use_GPU, model_type=model_name, net_avg=net_avg)
     else:
         model = cellpose.models.CellposeModel(model_type=model_name, net_avg=net_avg)
 
@@ -126,7 +135,8 @@ def try_segment_objects(
             if len(eval_results) > 3:
                 diams = eval_results[3]
                 diam = diams if isinstance(diams, float) else diams[0]
-
+            else:
+                diam = None
             yield Path(img_file), masks[0], flows[0], styles[0], diam
             del img, masks, flows, styles
 
