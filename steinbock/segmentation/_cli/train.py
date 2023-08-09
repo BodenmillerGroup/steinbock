@@ -2,18 +2,13 @@ from pathlib import Path
 
 import click
 import click_log
-import numpy as np
 
-from ... import io
 from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
-from .. import cellpose
-from .. import train
+from .. import cellpose, train
 
 cellpose_cli_available = cellpose.cellpose_available
-
-
 
 
 @click.group(
@@ -37,33 +32,28 @@ def train_cmd_group():
     show_default=True,
     help="cellpose pretrained model to use as start for training",
 )
-
 @click.option(
     "--diam_mean",
     "diam_mean",
-    default=30.,
+    default=30.0,
     type=float,
-    help='mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0'
-
+    help="mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0",
 )
-
 @click.option(
     '--train_data',
     'train_data',
     default='cellpose_crops',
     type=str,
     required=True,
-    help='folder containing training data '
+    help="folder containing training data ",
 )
-
 @click.option(
     '--train_mask',
     'train_mask',
     default='cellpose_masks',
     type=str,
-    help='folder containing masks corresponding to images in training_data'
+    help="folder containing masks corresponding to images in training_data",
 )
-
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_run_cmd(
@@ -87,9 +77,6 @@ def train_run_cmd(
     logger.info(model_file)
 
 
-
-
-
 @train_cmd_group.command(
     name="prepare", help="Generate images and masks for training a cellpose model"
 )
@@ -101,7 +88,6 @@ def train_run_cmd(
     #show_default=True,
     help="cellpose pretrained model to use as start for training",
 )
-
 @click.option(
     "--cropsize",
     "cellpose_crop_size",
@@ -110,23 +96,20 @@ def train_run_cmd(
     show_default=True,
     help="Cellpose crop size (in pixels)",
 )
-
 @click.option(
     "--diam_mean",
     "diam_mean",
-    default=30.,
+    default=30.0,
     type=float,
-    help='mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0'
-
+    help="mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0",
 )
-
 @click.option(
     '--input_data',
     'input_data',
     default='img',
     type=str,
     required=True,
-    help='folder containing training data '
+    help="folder containing training data ",
 )
 
 @click.option(
@@ -155,15 +138,13 @@ def train_run_cmd(
     show_default=True,
     help="Path to the panel file",
 )
-
 @click.option(
-    '--train_mask',
-    'train_mask',
-    default='train_masks',
+    "--train_mask",
+    "train_mask",
+    default="train_masks",
     type=str,
-    help='folder containing masks corresponding to images in training_data'
+    help="folder containing masks corresponding to images in training_data",
 )
-
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_prepare_cmd(
@@ -177,7 +158,7 @@ def train_prepare_cmd(
     cellpose_crop_size
 
 ):
-    #os.mkdir("cellpose_crops")
+    # os.mkdir("cellpose_crops")
     Path("cellpose_crops").mkdir(exist_ok=True)
     Path("masks").mkdir(exist_ok=True)
     Path("training_out").mkdir(exist_ok=True)
@@ -194,4 +175,4 @@ def train_prepare_cmd(
     )
     print(f"Cellpose traing crops in: {crop_loc}")
     print(f"Cellpose traing masks in {mask_loc}")
-    #logger.info(model_file)
+    # logger.info(model_file)

@@ -1,19 +1,18 @@
 import logging
-from importlib.util import find_spec
-from os import PathLike
-from pathlib import Path
-from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
-from steinbock.classification.ilastik._ilastik import create_ilastik_crop, read_ilastik_image
-from skimage.io import imread, imsave
-from steinbock import io
-from steinbock.io import write_image
 import os
+from importlib.util import find_spec
+from pathlib import Path
+from typing import Optional, Protocol
+
 import numpy as np
-from tifffile import imsave
 import pandas as pd
+from skimage.io import imread, imsave
+from tifffile import imsave
 
+from steinbock.classification.ilastik._ilastik import (
+    create_ilastik_crop,
+)
 
-from .. import io
 from ._segmentation import SteinbockSegmentationException
 
 try:
@@ -58,6 +57,27 @@ def try_train_model(
   net_avg: bool = True
   ):
 
+def try_train_model(
+    pretrained_model: str,
+    train_data: str,
+    train_mask: str,
+    diam_mean: int = 50,
+    cellpose_crop_size: int = 250,
+    train_files=None,
+    test_data=None,
+    test_labels=None,
+    test_files=None,
+    channels: list = [1, 2],
+    normalize: bool = True,
+    # save_path: str,
+    save_every: int = 50,
+    learning_rate: float = 0.1,
+    n_epochs: int = 1,
+    momentum: float = 0.9,
+    weight_decay: float = 0.0001,
+    batch_size: int = 8,
+    rescale: bool = True,
+):
     rng = np.random.default_rng(123)
     #panel = pd.read_csv(panel_file, sep=',') #sorting the panel might be wise before or after loading
     model = cellpose.models.CellposeModel(gpu=gpu, model_type= pretrained_model, net_avg=net_avg)
@@ -79,8 +99,8 @@ def try_train_model(
     cp_dir = Path.home().joinpath('.cellpose')
     model_dir = cp_dir.joinpath('models')
 
-    torch=True
-    torch_str = ['','torch'][torch]
+    torch = True
+    torch_str = ["", "torch"][torch]
 
     train_masks=[]
     count=0
@@ -153,7 +173,7 @@ def prepare_training(
 
     for file in dir:
         f = os.path.join(input_data, file)
-        if  str(Path(f).stem).startswith('.') == False:
+        if str(Path(f).stem).startswith(".") == False:
             test_img = imread(f)
 
             cellpose_crop_x, cellposek_crop_y, cellpose_crop = create_ilastik_crop (test_img, cellpose_crop_size, rng)
