@@ -400,6 +400,11 @@ def _try_preprocess_mcd_images_from_disk(
                                                 True,
                                             )
                                             del img
+                        else:
+                            logger.warning(
+                                f"No corresponding recovery text file was found for acquisition {acquisition.id} in file {mcd_file}"
+                            )
+
     except Exception as e:
         logger.exception(f"Error reading file {mcd_file}: {e}")
 
