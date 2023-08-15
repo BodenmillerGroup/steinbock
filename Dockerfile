@@ -136,7 +136,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     python -m pip install wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
-    
+
 RUN python -m pip install "centrosome==${CENTROSOME_VERSION}"
 RUN python -m pip install "cellprofiler==${CELLPROFILER_VERSION}"
 
