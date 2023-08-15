@@ -16,8 +16,6 @@ ARG ILASTIK_BINARY="ilastik-1.3.3post3-Linux.tar.bz2"
 ARG CELLPROFILER_VERSION="4.2.5"
 ARG CELLPROFILER_PLUGINS_VERSION="4.2.1"
 ARG CELLPOSE_VERSION="2.2"
-ARG CENTROSOME_VERSION="1.2.2"
-
 
 ########## TENSORFLOW ##########
 
@@ -78,7 +76,6 @@ ARG STEINBOCK_VERSION
 ARG FIXUID_VERSION
 ARG ILASTIK_BINARY
 ARG CELLPROFILER_VERSION
-ARG CENTROSOME_VERSION
 ARG CELLPROFILER_PLUGINS_VERSION
 ARG TZ="Europe/Zurich"
 
@@ -138,8 +135,7 @@ RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.
     python -m pip install wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 
-RUN python -m pip install "centrosome==${CENTROSOME_VERSION}"
-RUN python -m pip install "cellprofiler==${CELLPROFILER_VERSION}"
+RUN python -m pip install git+https://github.com/CellProfiler/CellProfiler
 
 RUN mkdir /opt/cellprofiler_plugins && \
     curl -SsL "https://github.com/BodenmillerGroup/ImcPluginsCP/archive/refs/tags/v${CELLPROFILER_PLUGINS_VERSION}.tar.gz" | tar -C /opt/cellprofiler_plugins -xzf - "ImcPluginsCP-${CELLPROFILER_PLUGINS_VERSION}/plugins/" --strip-components=2
