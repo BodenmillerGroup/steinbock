@@ -135,7 +135,7 @@ RUN curl -SsO https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.
     python -m pip install wxPython-4.1.0-cp38-cp38-linux_x86_64.whl && \
     rm wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 
-RUN python -m pip install git+https://github.com/CellProfiler/CellProfiler
+RUN python -m pip install git+https://github.com/CellProfiler/CellProfiler/tree/4.2.x
 
 RUN mkdir /opt/cellprofiler_plugins && \
     curl -SsL "https://github.com/BodenmillerGroup/ImcPluginsCP/archive/refs/tags/v${CELLPROFILER_PLUGINS_VERSION}.tar.gz" | tar -C /opt/cellprofiler_plugins -xzf - "ImcPluginsCP-${CELLPROFILER_PLUGINS_VERSION}/plugins/" --strip-components=2
