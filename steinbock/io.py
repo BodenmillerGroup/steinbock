@@ -23,12 +23,11 @@ class SteinbockIOException(SteinbockException):
 def _as_path_with_suffix(path: Union[str, PathLike], suffix: str) -> Path:
     path = Path(path)
     if re.fullmatch(r".+\.ome\.[^.]+", path.name, flags=re.IGNORECASE):
-        stem, ome_suffix, suffix = path.name.rpartition(".ome.")
-        if ome_suffix:
-            path = path.with_name(f"{stem}.{suffix}")
-        stem, ome_suffix, suffix = path.name.rpartition(".OME.")
-        if ome_suffix:
-            path = path.with_name(f"{stem}.{suffix}")
+        stem, ome_sep, orig_suffix_without_dot = path.name.rpartition(".ome.")
+        if not ome_sep:  # lower case OME separator not found, try upper case
+            stem, ome_sep, orig_suffix_without_dot = path.name.rpartition(".OME.")
+        if ome_sep and orig_suffix_without_dot:  # found OME separator, remove it
+            path = path.with_name(f"{stem}.{orig_suffix_without_dot}")
     return path.with_suffix(suffix)
 
 
