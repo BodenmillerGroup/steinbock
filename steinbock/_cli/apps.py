@@ -157,11 +157,21 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     add_help_option=False,
 
 )
+
+@click.option(
+    "--python",
+    "python_path",
+    type=click.Path(dir_okay=False),
+    default="python",
+    show_default=True,
+    help="Python path",
+)
+
 # @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def cellpose_view_cmd():
-    args = ["python", "-m", "cellpose"]
+def cellpose_view_cmd(python_path):
+    args = [python_path, "-m", "cellpose"]
 
     result = run_captured(args)
     sys.exit(result.returncode)
