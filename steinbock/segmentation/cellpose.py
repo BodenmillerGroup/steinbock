@@ -6,6 +6,8 @@ from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
 
 import numpy as np
 
+from steinbock import io
+
 from .. import io
 from ._segmentation import SteinbockSegmentationException
 
@@ -61,8 +63,8 @@ def create_segmentation_stack(
 
 
 def try_segment_objects(
-    model_name: str,
     img_files: Sequence[Union[str, PathLike]],
+    model_name: str,
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
@@ -70,16 +72,24 @@ def try_segment_objects(
     net_avg: bool = True,
     batch_size: int = 8,
     normalize: bool = True,
-    diameter: Optional[int] = None,
+    diameter: Optional[int] = 10,
     tile: bool = False,
     tile_overlap: float = 0.1,
     resample: bool = True,
     interp: bool = True,
-    flow_threshold: float = 0.4,
-    cellprob_threshold: float = 0.0,
+    flow_threshold: float = 1,
+    cellprob_threshold: float = -6,
     min_size: int = 15,
+    use_GPU: bool = False,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-    model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
+    # Here we need to seperate calls for sized ([nuclei, cyto and cyto2]) models and the non-sized ones ([tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4] as of cellpose2.0)
+    if model_name in ["nuclei", "cyto", "cyto2"]:
+        model = cellpose.models.Cellpose(
+            gpu=use_GPU, model_type=model_name, net_avg=net_avg
+        )
+    else:
+        model = cellpose.models.CellposeModel(model_type=model_name, net_avg=net_avg)
+
     for img_file in img_files:
         try:
             img = create_segmentation_stack(
@@ -99,7 +109,8 @@ def try_segment_objects(
                     f"Invalid number of aggregated channels: "
                     f"expected 1 or 2, got {img.shape[0]}"
                 )
-            masks, flows, styles, diams = model.eval(
+
+            eval_results = model.eval(
                 [img],
                 batch_size=batch_size,
                 channels=channels,
@@ -116,8 +127,14 @@ def try_segment_objects(
                 min_size=min_size,
                 progress=False,
             )
-            diam = diams if isinstance(diams, float) else diams[0]
+            masks, flows, styles = eval_results[:3]
+            if len(eval_results) > 3:
+                diams = eval_results[3]
+                diam = diams if isinstance(diams, float) else diams[0]
+            else:
+                diam = None
             yield Path(img_file), masks[0], flows[0], styles[0], diam
-            del img, masks, flows, styles, diams
+            del img, masks, flows, styles
+
         except Exception as e:
             logger.exception(f"Error segmenting objects in {img_file}: {e}")

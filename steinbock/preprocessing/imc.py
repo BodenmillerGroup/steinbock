@@ -71,12 +71,12 @@ def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     if "keep" not in panel:
         panel["keep"] = pd.Series([True] * len(panel.index), dtype=pd.BooleanDtype())
     if "ilastik" not in panel:
-        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel["ilastik"] = pd.Series(dtype=float)
         panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
     if "deepcell" not in panel:
-        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel["deepcell"] = pd.Series(dtype=float)
     if "cellpose" not in panel:
-        panel["cellpose"] = pd.Series(dtype=pd.UInt8Dtype())
+        panel["cellpose"] = pd.Series(dtype=float)
     next_column_index = 0
     for column in ("channel", "name", "keep", "ilastik", "deepcell", "cellpose"):
         if column in panel:
