@@ -155,7 +155,6 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     context_settings={"ignore_unknown_options": True},
     help="Run cellpose GUI",
     add_help_option=False,
-
 )
 # @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
