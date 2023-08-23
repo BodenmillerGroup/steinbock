@@ -156,7 +156,6 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     help="Run cellpose GUI",
     add_help_option=False,
 )
-
 @click.option(
     "--python",
     "python_path",
