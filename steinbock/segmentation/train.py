@@ -1,13 +1,14 @@
 import logging
-import numpy as np
-import pandas as pd
 import os
-from os import PathLike
-from skimage.io import imread, imsave
-from tifffile import imsave
 from importlib.util import find_spec
+from os import PathLike
 from pathlib import Path
 from typing import Optional, Protocol, Union
+
+import numpy as np
+import pandas as pd
+from skimage.io import imread, imsave
+from tifffile import imsave
 
 from steinbock.classification.ilastik._ilastik import create_ilastik_crop
 
