@@ -155,35 +155,12 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     context_settings={"ignore_unknown_options": True},
     help="Run cellpose GUI",
     add_help_option=False,
-)
-@click.option(
-    "--python",
-    "python_path",
-    type=click.Path(dir_okay=False),
-    default="/opt/cellprofiler-venv/bin/python",
-    show_default=True,
-    help="Python path",
-)
-@click.option(
-    "--cellprofiler",
-    "cellprofiler_module",
-    type=click.STRING,
-    default="cellprofiler",
-    show_default=True,
-    help="CellProfiler module",
-)
-@click.option(
-    "--plugins-directory",
-    "cellprofiler_plugin_dir",
-    type=click.Path(file_okay=False),
-    default="/opt/cellprofiler_plugins",
-    show_default=True,
-    help="Path to the CellProfiler plugin directory",
+
 )
 # @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def cellpose_view_cmd(python_path, cellprofiler_module, cellprofiler_plugin_dir):
+def cellpose_view_cmd():
     args = ["python", "-m", "cellpose"]
 
     result = run_captured(args)
