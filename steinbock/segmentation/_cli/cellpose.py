@@ -17,8 +17,25 @@ cellpose_cli_available = cellpose.cellpose_available
 @click.option(
     "--model",
     "model_name",
-    type=click.Choice(["nuclei", "cyto", "cyto2"]),
-    default="cyto2",
+    type=click.Choice(
+        [
+            "nuclei",
+            "cyto",
+            "cyto2",
+            "tissuenet",
+            "livecell",
+            "CP",
+            "CPx",
+            "TN1",
+            "TN2",
+            "TN3",
+            "LC1",
+            "LC2",
+            "LC3",
+            "LC4",
+        ]
+    ),
+    default="tissuenet",
     show_default=True,
     help="Name of the Cellpose model",
 )
@@ -180,8 +197,8 @@ def cellpose_cmd(
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
     for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
-        model_name,
         img_files,
+        model_name,
         channelwise_minmax=channelwise_minmax,
         channelwise_zscore=channelwise_zscore,
         channel_groups=channel_groups,
@@ -201,3 +218,7 @@ def cellpose_cmd(
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
         logger.info(mask_file)
+
+
+# @click_log.simple_verbosity_option(logger=steinbock_logger)
+# @catch_exception(handle=SteinbockException)

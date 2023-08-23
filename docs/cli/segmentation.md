@@ -7,6 +7,12 @@ Various segmentation approaches are supported, each of which is described in the
 !!! note "Pixel classification-based image segmentation vs end-to-end approaches"
     While [pixel classification](classification.md)-based image segmentation using CellProfiler uses probability images to segment objects, end-to-end workflows such as DeepCell/Mesmer and Cellpose directly operate on images without the need for a preceding pixel classification step.
 
+
+!!! note "Large masks containing more than 65535 objects"
+  As stated in [specifications](../file-types.md#object-masks), only 16-bit masks are supported at this moment. This may be problematic for large masks containing more than 2^16 - 1 = 65535 Objects. In such situations, there is the option to run the steinbock Docker container with `-e STEINBOCK_MASK_DTYPE=uint32`, for example as shown in #132. However, please note that this is considered a "hack" and not sufficiently tested at this point (although I do not expect major problems with this).
+
+
+
 ## CellProfiler
 
 [CellProfiler](https://cellprofiler.org) is an open-source software for measuring and analyzing cell images. Here, CellProfiler is used for object detection and region growth-based object segmentation.
@@ -100,6 +106,7 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
     This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
     Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options.
+    Pre-trained models introduced in [cellpose 2.0](https://www.nature.com/articles/s41592-022-01663-4). The ddefault is set to `tissuenet` model, both as the default segmentation model and the base model for training.
 
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
@@ -120,6 +127,18 @@ To segment nuclei using the `nuclei` model:
     If a `cellpose` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
 
     If no `cellpose` column is present, images are expected to be in the correct format already.
+
+### Training a cellpose model
+Training a cellpose model is performed using two commands
+
+      steinbock segment train prepared
+      steinbock segment train running
+
+By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. The crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_masks`. The user can optionally specify a list of files for cropping and training as well as a different pre-trained model. Most of the cellpose training parameters are not currently exposed and are hard-set. After running the first command the user should open and inspect the generated masks and correct them if necessary.
+
+The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_mask` option, the command looks in `cellpose_crops` and `cellpose_masks` for images and masks that are used as ground truth. The resulting model is saved in the `training_out` directory.
+
+
 
 !!! note "GPU support"
     Currently. steinbock does not support cellpose segmentation with GPU support.
