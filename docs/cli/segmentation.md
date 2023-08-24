@@ -137,7 +137,7 @@ Training a cellpose model is performed using two commands
 
 By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. The crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_masks`. The user can optionally specify a list of files for cropping and training as well as a different pre-trained model. Most of the cellpose training parameters are not currently exposed and are hard-set. After running the first command the user should open and inspect the generated masks and correct them if necessary. This can be done by starting the `cellpose` gui via steinbock: `steinbock apps cellpose` (See `Apps`in ths document. For details on how to use cellpose to correct gui segmentations, see its relevant [documentation](https://cellpose.readthedocs.io/en/latest/gui.html).
 
-The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_mask` options, the command looks in `cellpose_crops` and `cellpose_masks` for images and masks that are used as ground truth. The resulting model is saved in the `training_out` directory. 
+The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_mask` options, the command looks in `cellpose_crops` and `cellpose_masks` for images and masks that are used as ground truth. The resulting model is saved in the `training_out` directory.
 
 
 
