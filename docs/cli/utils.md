@@ -43,7 +43,7 @@ The following command will stitch all mask tiles in `masks` (following the file 
 
 ### Expansion
 
-This utility incorporates the `expand_labels` from `skiamge.segmentation`.It expands mask objects outwards by up to a distance specified in pixels without overflowing into neighboring regions.
+This utility incorporates the `expand_labels` from `skimage.segmentation`. It expands mask objects outwards by up to a distance specified in pixels without overflowing into neighboring regions.
 The following command expands the masks in each fils contained in `masks` directory by a maximum of 5 pixels and saves the resulting masks in `expanded_masks`:
 
 
