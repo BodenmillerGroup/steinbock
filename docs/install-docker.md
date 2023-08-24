@@ -4,6 +4,11 @@ The *steinbock* toolkit can be used interactively using the *steinbock* Docker c
 
 In this section, the installation and configuration of the *steinbock* Docker container is described.
 
+## Docker container flavors
+
+The *steinbock* docker container is offered in several [flavors] (https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock). This is for the most part to avoid overly large containers. The current flavors differ from each other in inclusion of cellpose segmentation and training, [Xpra] (https://xpra.org/)(to run a steinbock-enabled desktop environment within a web browser) and gpu functionality. To install a specific flavor of *steinbock* visit its [package page](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) and click on the image version of your choice, from the page that follows, copy the path to the container on Github container registry and replace it with the container path int he following instructions.
+
+
 ## Prerequisites
 
 ### Windows

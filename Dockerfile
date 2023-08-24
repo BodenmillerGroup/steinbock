@@ -12,7 +12,7 @@ ARG STEINBOCK_VERSION
 
 # third-party software versions
 ARG FIXUID_VERSION="0.5.1"
-ARG ILASTIK_BINARY="ilastik-1.3.3post3-Linux.tar.bz2"
+ARG ILASTIK_BINARY="ilastik-1.4.0-Linux.tar.bz2"
 ARG CELLPROFILER_VERSION="4.2.5"
 ARG CELLPROFILER_PLUGINS_VERSION="4.2.1"
 ARG CELLPOSE_VERSION="2.2"
@@ -164,76 +164,3 @@ RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSIO
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
-
-# configure container
-
-WORKDIR /data
-USER steinbock:steinbock
-COPY --chown=root:root entrypoint.sh /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
-EXPOSE 8888
-
-
-
-########## STEINBOCK-CELLPOSE ##########
-
-FROM steinbock AS steinbock-cellpose
-
-ARG CELLPOSE_VERSION
-
-USER root:root
-RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
-USER steinbock:steinbock
-
-RUN mkdir -p /home/steinbock/.cellpose/models && \
-    cd /home/steinbock/.cellpose/models && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_0 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_1 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_2 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_cytotorch_0.npy && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_0 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_1 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_2 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_nucleitorch_0.npy && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_0 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_1 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_2 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_cyto2torch_0.npy
-
-
-
-########## XPRA ##########
-
-FROM ${STEINBOCK_TARGET} AS xpra
-
-ARG XPRA_PORT="9876"
-
-ENV DISPLAY=":100" XPRA_PORT="${XPRA_PORT}" XPRA_START="xterm -title steinbock" XPRA_XVFB_SCREEN="1920x1080x24+32"
-
-USER root:root
-
-RUN apt-get update && \
-    apt-get install -yqq gnupg2 apt-transport-https xvfb xterm sshfs && \
-    apt-get clean
-
-RUN curl -SsL https://xpra.org/gpg.asc | apt-key add - && \
-    echo "deb https://xpra.org/ focal main" > /etc/apt/sources.list.d/xpra.list && \
-    apt-get update && \
-    apt-get install -yqq xpra && \
-    apt-get clean && \
-    mkdir -p /run/user /run/xpra && \
-    chmod 0775 /run/user /run/xpra && \
-    chown root:steinbock /run/user /run/xpra && \
-    chown steinbock:steinbock /tmp
-
-WORKDIR /data
-USER steinbock:steinbock
-CMD test ${RUN_FIXUID} && eval $( fixuid -q ); \
-    mkdir -p -m 0700 /run/user/$(id -u); \
-    echo "Launching steinbock on Xpra; connect via http://localhost:${XPRA_PORT}"; \
-    xpra start --daemon=no --uid=$(id -u) --gid=$(id -g) --bind-tcp="0.0.0.0:${XPRA_PORT}" --start-child="${XPRA_START}" --exit-with-children=yes --exit-with-client=yes --xvfb="/usr/bin/Xvfb +extension Composite -screen 0 ${XPRA_XVFB_SCREEN} -nolisten tcp -noreset" --html=on --notifications=no --bell=no --webcam=no --pulseaudio=no ${DISPLAY}
-ENTRYPOINT []
-EXPOSE 8888 ${XPRA_PORT}
