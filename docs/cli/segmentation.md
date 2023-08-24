@@ -9,7 +9,7 @@ Various segmentation approaches are supported, each of which is described in the
 
 
 !!! note "Large masks containing more than 65535 objects"
-  As stated in [specifications](../file-types.md#object-masks), only 16-bit masks are supported at this moment. This may be problematic for large masks containing more than 2^16 - 1 = 65535 Objects. In such situations, there is the option to run the steinbock Docker container with `-e STEINBOCK_MASK_DTYPE=uint32`, for example as shown in #132. However, please note that this is considered a "hack" and not sufficiently tested at this point (although I do not expect major problems with this).
+  As stated in [specifications](../file-types.md#object-masks), by default 16-bit masks are supported at this moment. This may be problematic for large masks containing more than 2^16 - 1 = 65535 Objects. In such situations, there is the option to run the steinbock Docker container with `-e STEINBOCK_MASK_DTYPE=uint32`, for example as shown in #132. However, please note that this is considered a "hack" and not sufficiently tested at this point.
 
 
 
@@ -106,20 +106,21 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
     This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
     Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options.
-    Pre-trained models introduced in [cellpose 2.0](https://www.nature.com/articles/s41592-022-01663-4). The ddefault is set to `tissuenet` model, both as the default segmentation model and the base model for training.
 
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
 !!! note "End-to-end cell segmentation"
     This approach operates directly on image intensities and does not require a preceding pixel classification step.
 
-To segment cells using the default `cyto2` model:
+To segment cells using the default `tissuenet` model:
 
     steinbock segment cellpose --minmax
 
 To segment nuclei using the `nuclei` model:
 
     steinbock segment cellpose --minmax --model nuclei
+
+Pre-trained models introduced in [cellpose 2.0](https://www.nature.com/articles/s41592-022-01663-4) can also be chosen, bringing the total number of pre-trained models to 14. The default is set to `tissuenet` model. Note that `tissuenet` is also the default model for training a cellpose model (See training a cellpose model below).
 
 !!! note "Cellpose image data"
     Cellpose expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a cytoplasmic channel (e.g. E-Cadherin). The nuclear channel is optional and only the cytoplasmic channel ("channel to segment") is required. Note that - compared to the original cellpose implementation - the channel order is reversed for compatibility with DeepCell/Mesmer.
@@ -136,7 +137,7 @@ Training a cellpose model is performed using two commands
 
 By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. The crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_masks`. The user can optionally specify a list of files for cropping and training as well as a different pre-trained model. Most of the cellpose training parameters are not currently exposed and are hard-set. After running the first command the user should open and inspect the generated masks and correct them if necessary. This can be done by starting the `cellpose` gui via steinbock: `steinbock apps cellpose` (See `Apps`in ths document. For details on how to use cellpose to correct gui segmentations, see its relevant [documentation](https://cellpose.readthedocs.io/en/latest/gui.html).
 
-The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_mask` options, the command looks in `cellpose_crops` and `cellpose_masks` for images and masks that are used as ground truth. The resulting model is saved in the `training_out` directory.
+The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_mask` options, the command looks in `cellpose_crops` and `cellpose_masks` for images and masks that are used as ground truth. The resulting model is saved in the `training_out` directory. 
 
 
 
