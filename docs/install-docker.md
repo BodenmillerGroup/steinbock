@@ -6,7 +6,7 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 ## Docker container flavors
 
-The *steinbock* docker container is offered in several [flavors] (https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock). This is for the most part to avoid overly large containers. The current flavors differ from each other in inclusion of cellpose segmentation and training, [Xpra] (https://xpra.org/)(to run a steinbock-enabled desktop environment within a web browser) and gpu functionality. To install a specific flavor of *steinbock* visit its [package page](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) and click on the image version of your choice, from the page that follows, copy the path to the container on Github container registry and replace it with the container path int he following instructions.
+The *steinbock* docker container is offered in several [flavors] (https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock). This is for the most part to avoid overly large containers. The current flavors differ from each other in inclusion of cellpose segmentation and training, [Xpra] (https://xpra.org/)(to run a steinbock-enabled desktop environment within a web browser) and gpu functionality. To install a specific flavor of *steinbock* visit its [package page](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) and click on the image version of your choice, from the page that follows, copy the path to the container on Github container registry and substitute it for the container path in the following instructions.
 
 
 ## Prerequisites
@@ -138,7 +138,7 @@ The created command alias is retained for the current session and enables runnin
 
 ### Using the docker container with large images containing more than 65535 objects
 
-by default 16-bit masks are supported at this moment. This may be problematic for large masks containing more than 2^16 - 1 = 65535 Objects. In such situations, there is the option to run the steinbock Docker container with `-e STEINBOCK_MASK_DTYPE=uint32`, for example,  the steinbock alias command for linux becomes: 
+by default 16-bit masks are supported at this moment. This may be problematic for large masks containing more than 2^16 - 1 = 65535 Objects. In such situations, there is the option to run the steinbock Docker container with `-e STEINBOCK_MASK_DTYPE=uint32`, for example,  the steinbock alias command for linux becomes:
 
     alias steinbock="docker run  -e STEINBOCK_MASK_DTYPE=uint32 -v /path/to/data:/data -u $(id -u):$(id -g) --network host -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.16.1"
 ## Usage

@@ -1,10 +1,9 @@
 import click
 
 from ..._cli.utils import OrderedClickGroup
-from .cellpose import cellpose_cli_available, cellpose_cmd
+from .cellpose import cellpose_cli_available, cellpose_cmd_group
 from .cellprofiler import cellprofiler_cmd_group
 from .deepcell import deepcell_cli_available, deepcell_cmd
-from .train import train_cmd_group
 
 
 @click.group(
@@ -16,9 +15,8 @@ def segment_cmd_group():
     pass
 
 
-segment_cmd_group.add_command(train_cmd_group)
 segment_cmd_group.add_command(cellprofiler_cmd_group)
 if deepcell_cli_available:
     segment_cmd_group.add_command(deepcell_cmd)
 if cellpose_cli_available:
-    segment_cmd_group.add_command(cellpose_cmd)
+    segment_cmd_group.add_command(cellpose_cmd_group)
