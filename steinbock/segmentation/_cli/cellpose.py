@@ -4,6 +4,7 @@ import click
 import click_log
 import numpy as np
 import torch
+
 from ... import io
 from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
@@ -21,7 +22,10 @@ cellpose_cli_available = cellpose.cellpose_available
 def cellpose_cmd_group():
     pass
 
-@cellpose_cmd_group.command(name="run", help="Run an object segmentation batch using Cellpose")
+
+@cellpose_cmd_group.command(
+    name="run", help="Run an object segmentation batch using Cellpose"
+)
 @click.option(
     "--model",
     "model_name",
@@ -238,9 +242,10 @@ def cellpose_cmd(
         logger.info(mask_file)
 
 
-
-@cellpose_cmd_group.command(name="train", help="Train a cellpose model using labeled data")
-#model specification parameters
+@cellpose_cmd_group.command(
+    name="train", help="Train a cellpose model using labeled data"
+)
+# model specification parameters
 @click.option(
     "--model_type",
     "model_type",
@@ -266,7 +271,6 @@ def cellpose_cmd(
     show_default=True,
     help="Any model that is available in the GUI, use name in GUI e.g. ‘livecell’ (can be user-trained or model zoo)",
 )
-
 @click.option(
     "--pretrained_model",
     "pretrained_model",
@@ -358,7 +362,7 @@ def cellpose_cmd(
     "--normalize",
     "normalize",
     default=True,
-    type= bool,
+    type=bool,
     help="Normalize data so 0.0=1st percentile and 1.0=99th percentile of image intensities in each channel",
 )
 @click.option(
@@ -447,7 +451,6 @@ def train_run_cmd(
     residual_on,
     style_on,
     concatenation,
-
     train_data,
     train_labels,
     train_files,
@@ -467,22 +470,21 @@ def train_run_cmd(
     nimg_per_epoch,
     rescale,
     min_train_masks,
-    model_name
+    model_name,
 ):
     model_file = cellpose.try_train_model(
-        gpu = torch.cuda.is_available(),
-        pretrained_model = pretrained_model,
-        model_type = model_type,
-        net_avg = net_avg,
-        diam_mean = diam_mean,
-        device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
+        gpu=torch.cuda.is_available(),
+        pretrained_model=pretrained_model,
+        model_type=model_type,
+        net_avg=net_avg,
+        diam_mean=diam_mean,
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         residual_on=residual_on,
-        style_on= style_on,
+        style_on=style_on,
         concatenation=concatenation,
-
-        #training parameters
-        train_data = train_data,
-        train_labels = train_labels,
+        # training parameters
+        train_data=train_data,
+        train_labels=train_labels,
         train_files=train_files,
         test_data=test_data,
         test_labels=test_labels,
@@ -500,7 +502,7 @@ def train_run_cmd(
         nimg_per_epoch=nimg_per_epoch,
         rescale=rescale,
         min_train_masks=min_train_masks,
-        model_name=model_name
+        model_name=model_name,
     )
     print(f"The trained model file can be found here: {model_file}")
     logger.info(model_file)
@@ -695,8 +697,6 @@ def train_run_cmd(
     show_default=True,
     help="See Cellpose documentation",
 )
-
-
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_prepare_cmd(
@@ -705,7 +705,7 @@ def train_prepare_cmd(
     cellpose_labels,
     panel_file,
     cellpose_crop_size,
-    #model initiation
+    # model initiation
     pretrained_model,
     model_type,
     net_avg,
@@ -713,8 +713,7 @@ def train_prepare_cmd(
     residual_on,
     style_on,
     concatenation,
-
-    #segmentation
+    # segmentation
     batch_size,
     normalize,
     diameter,
@@ -727,40 +726,36 @@ def train_prepare_cmd(
     min_size,
 ):
     crop_loc, mask_loc = cellpose.prepare_training(
-        input_data = input_data,
-        cellpose_crops = cellpose_crops,
-        cellpose_labels = cellpose_labels,
-        panel_file = panel_file,
-        cellpose_crop_size = cellpose_crop_size,
-
-        #model parameters
-        gpu = torch.cuda.is_available(),
-        pretrained_model = pretrained_model,
-        model_type = model_type,
-        net_avg = net_avg,
-        diam_mean = diam_mean,
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
-        residual_on = residual_on,
-        style_on = style_on,
-        concatenation = concatenation,
-
-        #segmentation parameters
-        batch_size = batch_size,
-        normalize = normalize,
-        diameter = diameter,
-        tile = tile,
-        tile_overlap = tile_overlap,
-        resample = resample,
-        interp = interp,
-        flow_threshold = flow_threshold,
-        cellprob_threshold = cellprob_threshold,
-        min_size = min_size,
-
+        input_data=input_data,
+        cellpose_crops=cellpose_crops,
+        cellpose_labels=cellpose_labels,
+        panel_file=panel_file,
+        cellpose_crop_size=cellpose_crop_size,
+        # model parameters
+        gpu=torch.cuda.is_available(),
+        pretrained_model=pretrained_model,
+        model_type=model_type,
+        net_avg=net_avg,
+        diam_mean=diam_mean,
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        residual_on=residual_on,
+        style_on=style_on,
+        concatenation=concatenation,
+        # segmentation parameters
+        batch_size=batch_size,
+        normalize=normalize,
+        diameter=diameter,
+        tile=tile,
+        tile_overlap=tile_overlap,
+        resample=resample,
+        interp=interp,
+        flow_threshold=flow_threshold,
+        cellprob_threshold=cellprob_threshold,
+        min_size=min_size,
     )
     print(f"Cellpose traing crops in: {crop_loc}")
     print(f"Cellpose traing masks in {mask_loc}")
     # logger.info(model_file)
-
 
 
 # @click_log.simple_verbosity_option(logger=steinbock_logger)

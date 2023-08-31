@@ -10,10 +10,10 @@ import pandas as pd
 from skimage.io import imread
 from tifffile import imsave
 
-from .. import io
-from ._segmentation import SteinbockSegmentationException
 from steinbock.classification.ilastik._ilastik import create_ilastik_crop
 
+from .. import io
+from ._segmentation import SteinbockSegmentationException
 
 try:
     import cellpose.models
@@ -36,25 +36,21 @@ class AggregationFunction(Protocol):
 
 
 def try_train_model(
-
     gpu: bool,
     pretrained_model: str,
     model_type: str,
     net_avg: bool,
     diam_mean,
     device,
-    residual_on:bool,
+    residual_on: bool,
     style_on: bool,
     concatenation: bool,
-
-
     train_data: Union[str, PathLike],
     train_labels: Union[str, PathLike],
     train_files,
     test_data,
     test_labels,
     test_files,
-
     normalize: bool,
     save_path: str,
     save_every,
@@ -68,8 +64,7 @@ def try_train_model(
     rescale: bool,
     min_train_masks: int,
     model_name,
-    channels: list = [1,2],
-
+    channels: list = [1, 2],
 ):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -80,12 +75,12 @@ def try_train_model(
         model_type=pretrained_model,
         pretrained_model=pretrained_model,
         net_avg=net_avg,
-        diam_mean = diam_mean,
+        diam_mean=diam_mean,
         device=device,
         residual_on=residual_on,
         style_on=style_on,
         concatenation=concatenation,
-        nchan=2
+        nchan=2,
     )
 
     train_images = []
@@ -150,7 +145,6 @@ def prepare_training(
     cellpose_labels: Union[str, PathLike],
     panel_file: str,
     cellpose_crop_size: int,
-
     gpu: bool,
     pretrained_model: Union[str, PathLike],
     model_type: str,
@@ -159,7 +153,6 @@ def prepare_training(
     residual_on: bool,
     style_on: bool,
     concatenation: bool,
-
     normalize: bool,
     diameter: float,
     batch_size: int = 8,
@@ -172,11 +165,8 @@ def prepare_training(
     interp: bool = True,
     flow_threshold: float = 1,
     cellprob_threshold: float = -6,
-    min_size: int =15,
+    min_size: int = 15,
     progress=False,
-
-
-
 ):
     if not os.path.exists(cellpose_crops):
         os.makedirs(cellpose_crops)
@@ -199,7 +189,7 @@ def prepare_training(
         residual_on,
         style_on,
         concatenation,
-        nchan =2
+        nchan=2,
     )
 
     for file in dir:
@@ -238,6 +228,7 @@ def prepare_training(
             )
 
     return cellpose_crops, cellpose_labels
+
 
 def create_segmentation_stack(
     img: np.ndarray,
@@ -292,11 +283,9 @@ def try_segment_objects(
     use_GPU: bool = False,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
     # Here we need to seperate calls for sized ([nuclei, cyto and cyto2]) models and the non-sized ones ([tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4] as of cellpose2.0)
-    if (model_name in ["nuclei", "cyto", "cyto2"] and pretrained_model is None):
+    if model_name in ["nuclei", "cyto", "cyto2"] and pretrained_model is None:
         model = cellpose.models.Cellpose(
-            gpu=use_GPU,
-            model_type=model_name,
-            net_avg=net_avg
+            gpu=use_GPU, model_type=model_name, net_avg=net_avg
         )
     else:
         if pretrained_model is not None:
@@ -305,7 +294,7 @@ def try_segment_objects(
             model_type=model_name,
             pretrained_model=pretrained_model,
             net_avg=net_avg,
-            diam_mean = diameter
+            diam_mean=diameter,
         )
     for img_file in img_files:
         try:
