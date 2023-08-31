@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 import click_log
 import numpy as np
-
+import torch
 from ... import io
 from ..._cli.utils import OrderedClickGroup, catch_exception, logger
 from ..._steinbock import SteinbockException
@@ -242,13 +242,6 @@ def cellpose_cmd(
 @cellpose_cmd_group.command(name="train", help="Train a cellpose model using labeled data")
 #model specification parameters
 @click.option(
-    "--gpu",
-    "gpu",
-    default=False,
-    show_default=True,
-    help="Whether or not to save model to GPU, will check if GPU available",
-)
-@click.option(
     "--model_type",
     "model_type",
     type=click.Choice(
@@ -294,12 +287,6 @@ def cellpose_cmd(
     default=30.0,
     type=float,
     help="Mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0",
-)
-@click.option(
-    "--device",
-    "device",
-    default=None,
-    help="Device used for model running / training (torch.device(‘cuda’) or torch.device(‘cpu’)), overrides gpu input, recommended if you want to use a specific GPU (e.g. torch.device(‘cuda:1’))",
 )
 @click.option(
     "--residual_on",
@@ -453,12 +440,10 @@ def cellpose_cmd(
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_run_cmd(
-    gpu,
     pretrained_model,
     model_type,
     net_avg,
     diam_mean,
-    device,
     residual_on,
     style_on,
     concatenation,
@@ -485,12 +470,12 @@ def train_run_cmd(
     model_name
 ):
     model_file = cellpose.try_train_model(
-        gpu = gpu,
+        gpu = torch.cuda.is_available(),
         pretrained_model = pretrained_model,
         model_type = model_type,
         net_avg = net_avg,
         diam_mean = diam_mean,
-        device=device,
+        device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
         residual_on=residual_on,
         style_on= style_on,
         concatenation=concatenation,
@@ -619,12 +604,6 @@ def train_run_cmd(
     help="mean diameter to resize cells to during training -- if starting from pretrained models it cannot be changed from 30.0",
 )
 @click.option(
-    "--device",
-    "device",
-    default=None,
-    help="device used for model running / training (torch.device(‘cuda’) or torch.device(‘cpu’)), overrides gpu input, recommended if you want to use a specific GPU (e.g. torch.device(‘cuda:1’))",
-)
-@click.option(
     "--residual_on",
     "residual_on",
     default=True,
@@ -642,15 +621,6 @@ def train_run_cmd(
     default=False,
     help="if True, concatentate downsampling block outputs with upsampling block inputs; default is to add",
 )
-
-@click.option(
-    "--gpu",
-    "gpu",
-    default=False,
-    show_default=True,
-    help="whether or not to save model to GPU, will check if GPU available",
-)
-
 @click.option(
     "--batch-size",
     "batch_size",
@@ -736,12 +706,10 @@ def train_prepare_cmd(
     panel_file,
     cellpose_crop_size,
     #model initiation
-    gpu,
     pretrained_model,
     model_type,
     net_avg,
     diam_mean,
-    device,
     residual_on,
     style_on,
     concatenation,
@@ -766,12 +734,12 @@ def train_prepare_cmd(
         cellpose_crop_size = cellpose_crop_size,
 
         #model parameters
-        gpu = gpu,
+        gpu = torch.cuda.is_available(),
         pretrained_model = pretrained_model,
         model_type = model_type,
         net_avg = net_avg,
         diam_mean = diam_mean,
-        device = device,
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
         residual_on = residual_on,
         style_on = style_on,
         concatenation = concatenation,
