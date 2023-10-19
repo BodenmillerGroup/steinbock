@@ -63,3 +63,5 @@ Please cite the following paper when using *steinbock* in your work:
   journal = {Nature Protocols}
 }
 ```
+
+If you have issues accessing the manuscript, please reach out to us and we can share the PDF version.
