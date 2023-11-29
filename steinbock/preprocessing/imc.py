@@ -487,3 +487,80 @@ def try_preprocess_images_from_disk(
                     if img is not None:
                         yield Path(txt_file), None, img, None, False
                         del img
+
+def _try_gen_text_file_from_mcd(mcd_file,channel_names=None, unzip =False)->pd.DataFrame:
+    try:
+        with MCDFile(mcd_file) as f:
+            for slide in f.slides:
+                for acquisition in slide.acquisitions:
+                    channel_ind = None
+                    if channel_names is not None:
+                        channel_ind = _get_channel_indices(acquisition, channel_names)
+                        if isinstance(channel_ind, str):
+                            logger.warning(
+                                f"Channel {channel_ind} not found for acquisition "
+                                f"{acquisition.id} in file {mcd_file}; skipping"
+                            )
+                            continue
+                    try:
+                        img = f.read_acquisition(acquisition)
+                        if channel_ind is not None:
+                            img = img[channel_ind, :, :]
+
+                    except Exception as e:
+                        logger.warning(
+                            f"Error reading acquisition {acquisition.id} "
+                            f"from file {mcd_file}: {e}"
+                        )
+                    columns = ['x','y','z']
+                    df = pd.DataFrame(columns=columns)
+                    indexes=[]
+                    paired_df=[]
+                    for ix in np.ndindex(*img[0].shape):
+                        indexes.append(ix)
+                    indexes=pd.DataFrame(indexes)
+                    pair_df = pd.DataFrame(np.vstack(indexes.values), columns=['y','x'])
+                    df['x'] = pair_df['x']
+                    df['y'] = pair_df['y']
+                    df['z'] = pair_df['x']
+                    for i in range(0, img.shape[0]):
+                        thecolumn = i + 3
+                        channel_name = acquisition.channel_labels[i] + '(' + acquisition.channel_names[i] + 'Di' + ')'
+                        df.loc[:,channel_name] = img[i,:,:].flatten()
+                    yield acquisition, df
+    except Exception as e:
+            logger.exception(f"Error reading file {mcd_file}: {e}")
+
+
+def try_gen_text_file_from_mcd(
+    mcd_files: Sequence[Union[str, PathLike]],
+    unzip: bool = False,
+) :
+    for mcd_file in sorted(
+        mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
+    ):
+        zip_file_mcd_member = _get_zip_file_member(mcd_file)
+        if zip_file_mcd_member is None:
+            for (
+                acquisition,
+                img,
+            ) in _try_gen_text_file_from_mcd(
+                mcd_file,
+                unzip=unzip,
+            ):
+                yield Path(mcd_file),acquisition, img
+                del img
+        elif unzip:
+            zip_file, mcd_member = zip_file_mcd_member
+            with ZipFile(zip_file) as fzip:
+                with TemporaryDirectory() as temp_dir:
+                    extracted_mcd_file = fzip.extract(mcd_member, path=temp_dir)
+                    for (
+                        acquisition,
+                        img,
+                    ) in _try_gen_text_file_from_mcd(
+                        extracted_mcd_file,
+                        unzip=unzip,
+                    ):
+                        yield Path(mcd_file),acquisition, img
+                        del img
