@@ -264,7 +264,7 @@ def create_segmentation_stack(
 def try_segment_objects(
     img_files: Sequence[Union[str, PathLike]],
     pretrained_model,
-    model_name: str = 'tissuenet',
+    model_name: str = "tissuenet",
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
