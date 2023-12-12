@@ -188,7 +188,7 @@ def cellpose_cmd_group():
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def cellpose_cmd(
+def run_cmd(
     model_name: str,
     pretrained_model,
     img_dir,
@@ -443,7 +443,7 @@ def cellpose_cmd(
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def train_run_cmd(
+def train_cmd(
     pretrained_model,
     model_type,
     net_avg,
