@@ -158,7 +158,7 @@ def cellpose_cmd_group():
     "--flow-threshold",
     "flow_threshold",
     type=click.FLOAT,
-    default=0.4,
+    default=1,
     show_default=True,
     help="See Cellpose documentation",
 )
@@ -189,8 +189,8 @@ def cellpose_cmd_group():
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def run_cmd(
-    model_name: str,
     pretrained_model,
+    model_name: str,
     img_dir,
     channelwise_minmax,
     channelwise_zscore,
@@ -219,8 +219,8 @@ def run_cmd(
     Path(mask_dir).mkdir(exist_ok=True)
     for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
         img_files,
-        model_name,
         pretrained_model,
+        model_name,
         channelwise_minmax=channelwise_minmax,
         channelwise_zscore=channelwise_zscore,
         channel_groups=channel_groups,
@@ -474,8 +474,8 @@ def train_cmd(
 ):
     model_file = cellpose.try_train_model(
         gpu=torch.cuda.is_available(),
-        pretrained_model=pretrained_model,
         model_type=model_type,
+        pretrained_model=pretrained_model,
         net_avg=net_avg,
         diam_mean=diam_mean,
         device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),

@@ -263,8 +263,8 @@ def create_segmentation_stack(
 
 def try_segment_objects(
     img_files: Sequence[Union[str, PathLike]],
-    model_name: str,
     pretrained_model,
+    model_name: str = 'tissuenet',
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
@@ -288,8 +288,6 @@ def try_segment_objects(
             gpu=use_GPU, model_type=model_name, net_avg=net_avg
         )
     else:
-        if pretrained_model is not None:
-            model_type = None
         model = cellpose.models.CellposeModel(
             model_type=model_name,
             pretrained_model=pretrained_model,
