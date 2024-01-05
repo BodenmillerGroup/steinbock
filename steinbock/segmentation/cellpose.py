@@ -304,12 +304,7 @@ def try_segment_objects(
     use_gpu: bool = False,
     channels: str = None,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-    # Here we need to seperate calls for sized ([nuclei, cyto and cyto2]) models and the non-sized ones ([tissuenet, livecell, CP, CPx, TN1, TN2, TN3, LC1, LC2, LC3, LC4] as of cellpose2.0)
-    #if model_name in ["nuclei", "cyto", "cyto2"] and pretrained_model is None:
-        #model = cellpose.models.Cellpose(
-            #gpu=use_gpu, model_type=model_name, net_avg=net_avg
-        #)
-    #else:
+
     if channels is not None:
         try:
             channel_list = list(map(int, channels.split(',')))
