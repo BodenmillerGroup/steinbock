@@ -105,7 +105,7 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 !!! danger "Experimental feature"
     This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
-    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options.
+    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options. The steinbock default parameters for the cellpose models (cell probability threshhold, flow threshhold etc) are not the same as the default values of *cellpose* itself. The steinbock default values are the result of manual optimization of cellpose parameters for segmentation of IMC images in the Bodenmiller lab.
 
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
@@ -121,7 +121,7 @@ To segment nuclei using the `nuclei` model:
     steinbock segment cellpose --minmax --model nuclei
 
 Models introduced in [cellpose 2.0](https://www.nature.com/articles/s41592-022-01663-4) can also be chosen, bringing the total number of available models to 14, these are 'nuclei',
-            'cyto', 'cyto2', 'tissuenet', 'livecell', 'CP', 'CPx', 'TN1', 'TN2', 'TN3', 'LC1', 'LC2', 'LC3' and 'LC4'. The user can utilize any of these mdoels by specifying them using the `--model` argument as demonstrated above. The default is set to `tissuenet` model. The user can choose from these by specifying them via the `--model` argument, note that `tissuenet` is also the default model for training a cellpose model (See training a cellpose model below). Furthermore user-trained models (see `Training a cellpose model` below) can be used via the `--pretrained_model` argument. When both the `--model` and `pretrained_mdodel` parameters are provided, the model specified by `--model`is used. Therefoore when the user provides the `--pretrained_model` argument, *steinbock* automatically sets `--model` argument to `None`.
+            'cyto', 'cyto2', 'tissuenet', 'livecell', 'CP', 'CPx', 'TN1', 'TN2', 'TN3', 'LC1', 'LC2', 'LC3' and 'LC4'. The user can utilize any of these mdoels by specifying them using the `--model` argument as demonstrated above. The default is set to `tissuenet` model. The user can choose from these by specifying them via the `--model` argument, note that `tissuenet` is also the default model for training a cellpose model (See training a cellpose model below). Furthermore user-trained models (see `Training a cellpose model` below) can be used via the `pretrained-model` argument. When both the `--model` and `pretrained_mdodel` parameters are provided, the model specified by `--model`is used. Therefoore when the user provides the `pretrained-model` argument, *steinbock* automatically sets `--model` argument to `None`.
 
 !!! note "Cellpose image data"
     Cellpose expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a cytoplasmic channel (e.g. E-Cadherin). The nuclear channel is optional and only the cytoplasmic channel ("channel to segment") is required. Note that - compared to the original cellpose implementation - the channel order is reversed for compatibility with DeepCell/Mesmer.
@@ -136,13 +136,13 @@ Training a cellpose model is performed using two commands
       steinbock segment train prepare
       steinbock segment train run
 
-By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. By default crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_labels`. Any model from the  model zoo can be specified using the`--model_type` argument. User trained models can be specified by providing the full path to the model using the `--pretrained_model` option (when `--pretrained_model` is provided, the `--model_type` argument is set to `None`, see above). The user can optionally specify a list of files for cropping and training.  After running the first command the user should open and inspect the generated masks and correct them if necessary. This can be done by starting the `cellpose` gui via *steinbock*: `steinbock apps cellpose` (See `Apps`in this document. For details on how to use cellpose to correct gui segmentations, see its relevant [documentation](https://cellpose.readthedocs.io/en/latest/gui.html).
+By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. By default crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_labels`. Any model from the  model zoo can be specified using the`--model_type` argument. User trained models can be specified by providing the full path to the model using the `pretrained-model` option (when `pretrained-model` is provided, the `--model_type` argument is set to `None`, see above). The user can optionally specify a list of files for cropping and training.  After running the first command the user should open and inspect the generated masks and correct them if necessary. This can be done by starting the `cellpose` gui via *steinbock*: `steinbock apps cellpose` (See `Apps`in this document. For details on how to use cellpose to correct gui segmentations, see its relevant [documentation](https://cellpose.readthedocs.io/en/latest/gui.html).
 
-The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_labels` options, the command looks in `cellpose_crops` and `cellpose_labels` for images and masks that are used as ground truth. The resulting model is by default saved in `training_out`. The trained model can subsequently be used for segmentation via the `--trained_model` argument, for example as following;
+The second command runs the cellpose training module. Unless specified via the `--train_data` and `--train_labels` options, the command looks in `cellpose_crops` and `cellpose_labels` for images and masks that are used as ground truth. The resulting model is by default saved in `training_out`. The trained model can subsequently be used for segmentation via the `--pretrained-model` argument, for example as following;
 
 
 
-	  steinbock segment cellpose run --pretrained_model ./training_out/models/myModel
+	  steinbock segment cellpose run pretrained-model ./training_out/models/myModel
 
 
 !!! note "GPU support"

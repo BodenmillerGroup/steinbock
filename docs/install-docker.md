@@ -6,7 +6,16 @@ In this section, the installation and configuration of the *steinbock* Docker co
 
 ## Docker container flavors
 
-The *steinbock* docker container is offered in several [flavors] (https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock). This is for the most part to avoid overly large containers. The current flavors differ from each other in inclusion of cellpose segmentation and training, [Xpra] (https://xpra.org/)(to run a steinbock-enabled desktop environment within a web browser) and gpu functionality. To install a specific flavor of *steinbock* visit its [package page](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) and click on the image version of your choice, from the page that follows, copy the path to the container on Github container registry and substitute it for the container path in the following instructions.
+The *steinbock* docker container is offered in several [flavors] (https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock). This is for the most part to avoid overly large containers. The current flavors differ from each other in inclusion of cellpose segmentation and training, [Xpra] (https://xpra.org/)(to run a steinbock-enabled desktop environment within a web browser) and gpu functionality. Apart from the default falvor of *steinbock*, the following flavors are currently available:
+
+  - cellpose
+  - gpu
+  - xpra
+  - cellpose-gpu
+  - gpu-xpra
+  - cellpose-xpra
+
+To install a specific flavor of *steinbock* visit its [package page](https://github.com/BodenmillerGroup/steinbock/pkgs/container/steinbock) and click on the image version of your choice, from the page that follows, copy the path to the container on Github container registry and substitute it for the container path in the following instructions.
 
 
 ## Prerequisites
