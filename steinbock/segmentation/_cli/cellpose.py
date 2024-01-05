@@ -246,7 +246,7 @@ def run_cmd(
         flow_threshold=flow_threshold,
         cellprob_threshold=cellprob_threshold,
         min_size=min_size,
-        channels=channels
+        channels=channels,
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
@@ -343,26 +343,26 @@ def run_cmd(
     type=click.Path(exists=True, file_okay=False),
     help="Folder containing masks corresponding to images in training_data",
 )
-#this needs to be a list TODO
+# this needs to be a list TODO
 @click.option(
     "--train-files",
     "train_files",
     type=str,
     help="File names for images in train_data (to save flows for future runs), a list of strings",
 )
-#this needs to be a list TODO
+# this needs to be a list TODO
 @click.option(
     "--test-data",
     "test_data",
     help="Images for testing, a list of arrays (2D or 3D)",
 )
-#this needs to be a list TODO
+# this needs to be a list TODO
 @click.option(
     "--test-labels",
     "test_labels",
     help="Labels for test_data, where 0=no masks; 1,2,…=mask labels; can include flows as additional images, a list of arrays (2D or 3D)",
 )
-#this needs to be a list TODO
+# this needs to be a list TODO
 @click.option(
     "--test-files",
     "test_files",
@@ -472,7 +472,6 @@ def run_cmd(
     type=str,
     help="Name of network, otherwise saved with name as params + training start time",
 )
-
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_cmd(
@@ -504,7 +503,7 @@ def train_cmd(
     min_train_masks,
     model_name,
 ):
-    #rng = np.random.default_rng(seed)
+    # rng = np.random.default_rng(seed)
 
     model_file = cellpose.try_train_model(
         gpu=torch.cuda.is_available(),
@@ -741,8 +740,8 @@ def train_cmd(
     "seed",
     type=click.INT,
     default=123,
-    help='Seed for random number generation')
-
+    help="Seed for random number generation",
+)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_prepare_cmd(
@@ -770,38 +769,38 @@ def train_prepare_cmd(
     flow_threshold,
     cellprob_threshold,
     min_size,
-    seed
+    seed,
 ):
     Path(cellpose_crops).mkdir(exist_ok=True)
     Path(cellpose_labels).mkdir(exist_ok=True)
     for crop_file, label_file in cellpose.prepare_training(
-            input_data=input_data,
-            cellpose_crops=cellpose_crops,
-            cellpose_labels=cellpose_labels,
-            panel_file=panel_file,
-            cellpose_crop_size=cellpose_crop_size,
-            # model parameters
-            gpu=torch.cuda.is_available(),
-            pretrained_model=pretrained_model,
-            model_type=model_type,
-            net_avg=net_avg,
-            diam_mean=diam_mean,
-            device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
-            residual_on=residual_on,
-            style_on=style_on,
-            concatenation=concatenation,
-            # segmentation parameters
-            batch_size=batch_size,
-            normalize=normalize,
-            diameter=diameter,
-            tile=tile,
-            tile_overlap=tile_overlap,
-            resample=resample,
-            interp=interp,
-            flow_threshold=flow_threshold,
-            cellprob_threshold=cellprob_threshold,
-            min_size=min_size,
-            seed=seed
-            ):
-                logger.info("Crop iamge: %s", crop_file)
-                logger.info("Crop label: %s", label_file)
+        input_data=input_data,
+        cellpose_crops=cellpose_crops,
+        cellpose_labels=cellpose_labels,
+        panel_file=panel_file,
+        cellpose_crop_size=cellpose_crop_size,
+        # model parameters
+        gpu=torch.cuda.is_available(),
+        pretrained_model=pretrained_model,
+        model_type=model_type,
+        net_avg=net_avg,
+        diam_mean=diam_mean,
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        residual_on=residual_on,
+        style_on=style_on,
+        concatenation=concatenation,
+        # segmentation parameters
+        batch_size=batch_size,
+        normalize=normalize,
+        diameter=diameter,
+        tile=tile,
+        tile_overlap=tile_overlap,
+        resample=resample,
+        interp=interp,
+        flow_threshold=flow_threshold,
+        cellprob_threshold=cellprob_threshold,
+        min_size=min_size,
+        seed=seed,
+    ):
+        logger.info("Crop iamge: %s", crop_file)
+        logger.info("Crop label: %s", label_file)

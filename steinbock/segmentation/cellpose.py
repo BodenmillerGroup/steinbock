@@ -2,7 +2,8 @@ import logging
 from importlib.util import find_spec
 from os import PathLike
 from pathlib import Path
-from typing import Generator, Optional, Protocol, Sequence, Tuple, Union, List
+from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
+
 import numpy as np
 
 from .. import io
@@ -56,8 +57,6 @@ def create_cellpose_crop(
     return None, None, None
 
 
-
-
 def try_train_model(
     gpu: bool,
     pretrained_model: str,
@@ -91,15 +90,17 @@ def try_train_model(
 ):
     if channels is not None:
         try:
-            channel_list = list(map(int, channels.split(',')))
+            channel_list = list(map(int, channels.split(",")))
             if len(channel_list) != 2:
-                raise ValueError('Invalid tuple format. Please provide two integers comma-separated as a string.')
+                raise ValueError(
+                    "Invalid tuple format. Please provide two integers comma-separated as a string."
+                )
             else:
                 channels = channel_list
         except ValueError as e:
-            raise click.BadParameter(str(e), param_hint='channels')
+            raise click.BadParameter(str(e), param_hint="channels")
     else:
-        channels = [1,2]
+        channels = [1, 2]
     model = cellpose.models.CellposeModel(
         gpu=gpu,
         model_type=pretrained_model,
@@ -112,18 +113,18 @@ def try_train_model(
         concatenation=concatenation,
         nchan=2,
     )
-    train_images=[]
-    list_train_images=io.list_image_files(train_data)
+    train_images = []
+    list_train_images = io.list_image_files(train_data)
     for file in list_train_images:
         dat = io.read_image(file)
-        dat=dat.astype(int)
+        dat = dat.astype(int)
         train_images.append(dat)
 
     train_masks = []
-    list_train_masks=io.list_mask_files(train_labels)
+    list_train_masks = io.list_mask_files(train_labels)
     for file in list_train_masks:
         dat = io.read_image(file)
-        dat=dat.astype(int)
+        dat = dat.astype(int)
         train_masks.append(dat)
 
     model = cellpose.models.CellposeModel(
@@ -149,8 +150,7 @@ def try_train_model(
         nimg_per_epoch=nimg_per_epoch,
         rescale=rescale,
         min_train_masks=min_train_masks,
-        model_name=model_name
-
+        model_name=model_name,
     )
     return model_file
 
@@ -184,10 +184,12 @@ def prepare_training(
     min_size: int = 15,
     seed: int = 123,
     progress=False,
-) -> Generator[Tuple[str, str],None,None]:
+) -> Generator[Tuple[str, str], None, None]:
     dir = io.list_image_files(input_data)
     rng = np.random.default_rng(seed)
-    panel = io.read_panel(panel_file)  # sorting the panel might be wise before or after loading
+    panel = io.read_panel(
+        panel_file
+    )  # sorting the panel might be wise before or after loading
     if pretrained_model is not None:
         model_type = None
     model = cellpose.models.CellposeModel(
@@ -208,22 +210,11 @@ def prepare_training(
         test_img = io.read_image(f)
 
         cellpose_crop_x, cellposek_crop_y, cellpose_crop = create_cellpose_crop(
-            test_img,
-            cellpose_crop_size,
-            rng
+            test_img, cellpose_crop_size, rng
         )
-        nuclear_img = np.sum(
-            cellpose_crop[panel["cellpose"].values == 1],
-            axis=0
-        )
-        cytoplasmic_img = np.sum(
-            cellpose_crop[panel["cellpose"].values == 2],
-            axis=0
-        )
-        segstack = np.stack(
-            (cytoplasmic_img, nuclear_img),
-            axis=0
-        )
+        nuclear_img = np.sum(cellpose_crop[panel["cellpose"].values == 1], axis=0)
+        cytoplasmic_img = np.sum(cellpose_crop[panel["cellpose"].values == 2], axis=0)
+        segstack = np.stack((cytoplasmic_img, nuclear_img), axis=0)
         crop_file = Path(cellpose_crops) / (f.stem + ".tiff")
         io.write_image(segstack, crop_file)
         masks, flows, styles = model.eval(
@@ -244,11 +235,8 @@ def prepare_training(
             progress=False,
         )
         label_file = Path(cellpose_labels) / (f.stem + "_mask.tiff")
-        io.write_mask(
-            masks,
-            label_file
-        )
-        yield tuple([str(crop_file),str(label_file)])
+        io.write_mask(masks, label_file)
+        yield tuple([str(crop_file), str(label_file)])
 
 
 def create_segmentation_stack(
@@ -304,18 +292,19 @@ def try_segment_objects(
     use_gpu: bool = False,
     channels: str = None,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-
     if channels is not None:
         try:
-            channel_list = list(map(int, channels.split(',')))
+            channel_list = list(map(int, channels.split(",")))
             if len(channel_list) != 2:
-                raise ValueError('Invalid tuple format. Please provide two integers comma-separated as a string.')
+                raise ValueError(
+                    "Invalid tuple format. Please provide two integers comma-separated as a string."
+                )
             else:
                 channels = channel_list
         except ValueError as e:
-            raise click.BadParameter(str(e), param_hint='channels')
+            raise click.BadParameter(str(e), param_hint="channels")
     else:
-        channels = [1,2]
+        channels = [1, 2]
 
     model = cellpose.models.CellposeModel(
         model_type=model_name,
