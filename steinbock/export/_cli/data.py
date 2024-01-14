@@ -275,7 +275,7 @@ def anndata_cmd(
             del adata
     if concatenate:
         adata = anndata_concat(
-            adatas, merge="first", label="Image", index_unique=" in "
+            adatas, merge="first", label="Image", index_unique=" in ", pairwise=True
         )
         obs_cols = list(adata.obs.columns)
         obs_cols.insert(0, obs_cols.pop(obs_cols.index("Image")))

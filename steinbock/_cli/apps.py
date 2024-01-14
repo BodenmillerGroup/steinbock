@@ -49,7 +49,7 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     "--python",
     "python_path",
     type=click.Path(dir_okay=False),
-    default="/opt/cellprofiler-venv/bin/python",
+    default="usr/bin/python",
     show_default=True,
     help="Python path",
 )
@@ -160,7 +160,7 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     "--python",
     "python_path",
     type=click.Path(dir_okay=False),
-    default="/opt/cellprofiler-venv/bin/python",
+    default="usr/bin/python",
     show_default=True,
     help="Python path",
 )
