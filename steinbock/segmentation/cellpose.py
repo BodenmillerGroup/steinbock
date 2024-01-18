@@ -10,14 +10,15 @@ from .. import io
 from ._segmentation import SteinbockSegmentationException
 
 logger = logging.getLogger(__name__)
+
 try:
-    pass
+    import torch
+    torch_available = True
 except Exception as e:
-    logger.exception(f"Could not import torch")
+    torch_available = False
 
 try:
     import cellpose.models
-
     cellpose_available = True
 except Exception:
     cellpose_available = False

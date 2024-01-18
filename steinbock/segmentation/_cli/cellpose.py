@@ -15,8 +15,10 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
+    torch_available = True
 except Exception as e:
-    logger.exception(f"Could not import torch")
+    torch_available = False
+
 cellpose_cli_available = cellpose.cellpose_available
 
 
@@ -776,6 +778,13 @@ def train_prepare_cmd(
 ):
     Path(cellpose_crops).mkdir(exist_ok=True)
     Path(cellpose_labels).mkdir(exist_ok=True)
+    if torch_available:
+        gpu = torch.cuda.is_available()
+        device = torch.device("cuda" if gpu else "cpu")
+    else:
+        device = None
+        gpu = False
+
     for crop_file, label_file in cellpose.prepare_training(
         input_data=input_data,
         cellpose_crops=cellpose_crops,
@@ -783,12 +792,12 @@ def train_prepare_cmd(
         panel_file=panel_file,
         cellpose_crop_size=cellpose_crop_size,
         # model parameters
-        gpu=torch.cuda.is_available(),
+        gpu=gpu,
         pretrained_model=pretrained_model,
         model_type=model_type,
         net_avg=net_avg,
         diam_mean=diam_mean,
-        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        device=device,
         residual_on=residual_on,
         style_on=style_on,
         concatenation=concatenation,
