@@ -8,9 +8,10 @@ import numpy as np
 
 from .. import io
 from ._segmentation import SteinbockSegmentationException
+
 logger = logging.getLogger(__name__)
 try:
-    import torch
+    pass
 except Exception as e:
     logger.exception(f"Could not import torch")
 
@@ -63,7 +64,7 @@ def try_train_model(
     model_type: str,
     net_avg: bool,
     diam_mean: float,
-    #device: torch.device,
+    # device: torch.device,
     device,
     residual_on: bool,
     style_on: bool,

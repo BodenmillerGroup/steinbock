@@ -1,13 +1,12 @@
+import logging
 from pathlib import Path
+
 import click
 import click_log
 import numpy as np
-import logging
 
 from ... import io
 from ..._cli.utils import OrderedClickGroup, catch_exception
-
-
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
 from .. import cellpose
@@ -19,6 +18,7 @@ try:
 except Exception as e:
     logger.exception(f"Could not import torch")
 cellpose_cli_available = cellpose.cellpose_available
+
 
 @click.group(
     name="cellpose",

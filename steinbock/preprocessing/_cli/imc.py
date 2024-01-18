@@ -220,7 +220,11 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
         recovery_txt_file,
         recovered,
     ) in imc.try_preprocess_images_from_disk(
-        mcd_files, txt_files, channel_names=channel_names, hpf=hpf, unzip=unzip,
+        mcd_files,
+        txt_files,
+        channel_names=channel_names,
+        hpf=hpf,
+        unzip=unzip,
     ):
         img_file_stem = Path(mcd_or_txt_file).stem
         if acquisition is not None:
@@ -254,9 +258,7 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
             mcd_file,
             acquisition,
             img,
-        ) in imc.try_gen_text_file_from_mcd(
-            mcd_files, unzip=unzip
-        ):
+        ) in imc.try_gen_text_file_from_mcd(mcd_files, unzip=unzip):
             img_file_stem = Path(mcd_file).stem
             if acquisition is not None:
                 img_file_stem += f"_{acquisition.id:03d}"
@@ -273,6 +275,6 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
                 mcd_txt_files[img_file_stem] = [mcd_file]
 
             gentxt_file = Path(txt_dir) / f"{img_file_stem}.txt"
-            img.to_csv(gentxt_file, header=True, index=None, sep='\t')
+            img.to_csv(gentxt_file, header=True, index=None, sep="\t")
             del img
             logger.info(gentxt_file)

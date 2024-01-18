@@ -488,7 +488,10 @@ def try_preprocess_images_from_disk(
                         yield Path(txt_file), None, img, None, False
                         del img
 
-def _try_gen_text_file_from_mcd(mcd_file,channel_names=None, unzip =False)->pd.DataFrame:
+
+def _try_gen_text_file_from_mcd(
+    mcd_file, channel_names=None, unzip=False
+) -> pd.DataFrame:
     try:
         with MCDFile(mcd_file) as f:
             for slide in f.slides:
@@ -512,30 +515,38 @@ def _try_gen_text_file_from_mcd(mcd_file,channel_names=None, unzip =False)->pd.D
                             f"Error reading acquisition {acquisition.id} "
                             f"from file {mcd_file}: {e}"
                         )
-                    columns = ['x','y','z']
+                    columns = ["x", "y", "z"]
                     df = pd.DataFrame(columns=columns)
-                    indexes=[]
-                    paired_df=[]
+                    indexes = []
+                    paired_df = []
                     for ix in np.ndindex(*img[0].shape):
                         indexes.append(ix)
-                    indexes=pd.DataFrame(indexes)
-                    pair_df = pd.DataFrame(np.vstack(indexes.values), columns=['y','x'])
-                    df['x'] = pair_df['x']
-                    df['y'] = pair_df['y']
-                    df['z'] = pair_df['x']
+                    indexes = pd.DataFrame(indexes)
+                    pair_df = pd.DataFrame(
+                        np.vstack(indexes.values), columns=["y", "x"]
+                    )
+                    df["x"] = pair_df["x"]
+                    df["y"] = pair_df["y"]
+                    df["z"] = pair_df["x"]
                     for i in range(0, img.shape[0]):
                         thecolumn = i + 3
-                        channel_name = acquisition.channel_labels[i] + '(' + acquisition.channel_names[i] + 'Di' + ')'
-                        df.loc[:,channel_name] = img[i,:,:].flatten()
+                        channel_name = (
+                            acquisition.channel_labels[i]
+                            + "("
+                            + acquisition.channel_names[i]
+                            + "Di"
+                            + ")"
+                        )
+                        df.loc[:, channel_name] = img[i, :, :].flatten()
                     yield acquisition, df
     except Exception as e:
-            logger.exception(f"Error reading file {mcd_file}: {e}")
+        logger.exception(f"Error reading file {mcd_file}: {e}")
 
 
 def try_gen_text_file_from_mcd(
     mcd_files: Sequence[Union[str, PathLike]],
     unzip: bool = False,
-) :
+):
     for mcd_file in sorted(
         mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
     ):
@@ -548,7 +559,7 @@ def try_gen_text_file_from_mcd(
                 mcd_file,
                 unzip=unzip,
             ):
-                yield Path(mcd_file),acquisition, img
+                yield Path(mcd_file), acquisition, img
                 del img
         elif unzip:
             zip_file, mcd_member = zip_file_mcd_member
@@ -562,5 +573,5 @@ def try_gen_text_file_from_mcd(
                         extracted_mcd_file,
                         unzip=unzip,
                     ):
-                        yield Path(mcd_file),acquisition, img
+                        yield Path(mcd_file), acquisition, img
                         del img
