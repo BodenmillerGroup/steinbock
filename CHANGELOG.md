@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
   - Cellpose2.0 segmentation and training
   - Cellpose2.0 as an app
-  - C
+  - Added the parameter `--xti` to ` steinbockpreprocess imc images` which provides the option to generate individual txt files for ROIs.
 
 ### Changed
   - Cellpose default parameters
@@ -20,10 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Fixed
-    - No neighborhood Data in h5ad-files [#210](https://github.com/BodenmillerGroup/steinbock/issues/210)
-    - Unifying how panel column datatypes are handled [#174](https://github.com/BodenmillerGroup/steinbock/discussions/174)
-    - Tissuenet model support and documentation [#208](https://github.com/BodenmillerGroup/steinbock/issues/208)
-    - Maximum amount of segmented cells bounded from segmentation output file format (16-bit unsigned integer TIFF images) [#207](https://github.com/BodenmillerGroup/steinbock/issues/207)
+- No neighborhood Data in h5ad-files [#210](https://github.com/BodenmillerGroup/steinbock/issues/210)
+- Unifying how panel column datatypes are handled [#174](https://github.com/BodenmillerGroup/steinbock/discussions/174)
+- Tissuenet model support and documentation [#208](https://github.com/BodenmillerGroup/steinbock/issues/208)
+- Maximum amount of segmented cells bounded from segmentation output file format (16-bit unsigned integer TIFF images) [#207](https://github.com/BodenmillerGroup/steinbock/issues/207)
 
 
 ## [0.16.2] - 2023-08-15
