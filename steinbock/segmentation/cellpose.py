@@ -12,13 +12,13 @@ from ._segmentation import SteinbockSegmentationException
 logger = logging.getLogger(__name__)
 
 try:
-    import torch
     torch_available = True
 except Exception as e:
     torch_available = False
 
 try:
     import cellpose.models
+
     cellpose_available = True
 except Exception:
     cellpose_available = False

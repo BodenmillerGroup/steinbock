@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
+
     torch_available = True
 except Exception as e:
     torch_available = False
