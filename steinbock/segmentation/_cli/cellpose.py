@@ -328,7 +328,7 @@ def run_cmd(
     "concatenation",
     default=False,
     show_default=True,
-    help="If True, concatentate downsampling block outputs with upsampling block inputs; default is to add",
+    help="Concatenate downsampling block outputs with upsampling block inputs; add otherwise",
 )
 
 
