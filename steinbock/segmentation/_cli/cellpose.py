@@ -109,7 +109,7 @@ def cellpose_cmd_group():
     "net_avg",
     default=True,
     show_default=True,
-    help="Loads the 4 built-in networks and averages them if True, loads one network if False",
+    help="Load the 4 built-in networks and averages them",
 )
 @click.option(
     "--batch-size",
