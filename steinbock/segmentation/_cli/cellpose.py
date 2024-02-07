@@ -64,7 +64,7 @@ def cellpose_cmd_group():
     "--pretrained-model",
     "pretrained_model",
     type=click.Path(exists=True, dir_okay=False),
-    help=" Full path to pretrained cellpose model(s), if None or False, no model loaded",
+    help="Full path to pretrained cellpose model(s); if not specified, no model is loaded",
 )
 @click.option(
     "--img",
