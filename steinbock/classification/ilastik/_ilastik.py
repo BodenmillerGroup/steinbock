@@ -36,8 +36,7 @@ class SteinbockIlastikClassificationException(SteinbockClassificationException):
 
 
 class AggregationFunction(Protocol):
-    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
-        ...
+    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray: ...
 
 
 class _VigraAxisInfo(IntEnum):
