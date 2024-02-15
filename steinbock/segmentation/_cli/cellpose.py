@@ -299,7 +299,7 @@ def run_cmd(
     "net_avg",
     default=True,
     show_default=True,
-    help=" Loads the 4 built-in networks and averages them if True, loads one network if False",
+    help="Load the 4 built-in networks and average them",
 )
 @click.option(
     "--diam-mean",
