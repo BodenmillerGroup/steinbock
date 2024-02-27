@@ -61,7 +61,7 @@ def cellpose_cmd_group():
     "--pretrained-model",
     "pretrained_model",
     type=click.Path(exists=True, dir_okay=False),
-    help=" Full path to pretrained cellpose model(s), if None or False, no model loaded",
+    help="Full path to pretrained cellpose model(s); if not specified, no model is loaded",
 )
 @click.option(
     "--img",
@@ -106,7 +106,7 @@ def cellpose_cmd_group():
     "net_avg",
     default=True,
     show_default=True,
-    help="Loads the 4 built-in networks and averages them if True, loads one network if False",
+    help="Load the 4 built-in networks and averages them",
 )
 @click.option(
     "--batch-size",
@@ -295,6 +295,7 @@ def run_cmd(
     default=True,
     show_default=True,
     help="load the 4 built-in networks and average them; load one network otherwise",
+
 )
 @click.option(
     "--diam-mean",
@@ -323,7 +324,7 @@ def run_cmd(
     "concatenation",
     default=False,
     show_default=True,
-    help="If True, concatentate downsampling block outputs with upsampling block inputs; default is to add",
+    help="Concatenate downsampling block outputs with upsampling block inputs; add otherwise",
 )
 @click.option(
     "--nchan",

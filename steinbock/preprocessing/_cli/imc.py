@@ -194,7 +194,6 @@ def panel_cmd(
 @click.option(
     "--xti/--no-xti",
     "xti",
-    default=False,
     show_default=True,
     help="generate txt files from xti imc file",
 )
