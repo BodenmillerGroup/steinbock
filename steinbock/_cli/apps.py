@@ -172,7 +172,6 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     show_default=True,
     help="cellpose module",
 )
-
 @click.argument("cellpose_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)

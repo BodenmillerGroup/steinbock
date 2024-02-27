@@ -21,13 +21,23 @@ except Exception as e:
     torch_available = False
 
 cellpose_cli_available = cellpose.cellpose_available
-model_names = ["nuclei","cyto",
-            "cyto2","tissuenet",
-            "livecell","CP",
-            "CPx","TN1",
-            "TN2","TN3",
-            "LC1","LC2",
-            "LC3","LC4"]
+model_names = [
+    "nuclei",
+    "cyto",
+    "cyto2",
+    "tissuenet",
+    "livecell",
+    "CP",
+    "CPx",
+    "TN1",
+    "TN2",
+    "TN3",
+    "LC1",
+    "LC2",
+    "LC3",
+    "LC4",
+]
+
 
 def float_or_none(ctx, param, value):
     if value is None:
@@ -35,7 +45,10 @@ def float_or_none(ctx, param, value):
     try:
         return float(value)
     except ValueError:
-        raise click.BadParameter('Please provide a valid floating point number or "None".')
+        raise click.BadParameter(
+            'Please provide a valid floating point number or "None".'
+        )
+
 
 @click.group(
     name="cellpose",
@@ -234,7 +247,7 @@ def run_cmd(
     if channels is not None:
         try:
             channel_list = list(map(int, channels.split(",")))
-            if (len(channel_list) != 2 or len(channel_list) != 1):
+            if len(channel_list) != 2 or len(channel_list) != 1:
                 raise ValueError(
                     "Invalid tuple format. Please provide two integers comma-separated as a string."
                 )
@@ -265,11 +278,12 @@ def run_cmd(
         cellprob_threshold=cellprob_threshold,
         min_size=min_size,
         channels=channels,
-        use_gpu=torch.cuda.is_available()
+        use_gpu=torch.cuda.is_available(),
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
         logger.info(mask_file)
+
 
 @cellpose_cmd_group.command(
     name="train", help="Train a cellpose model using labeled data"
@@ -295,7 +309,6 @@ def run_cmd(
     default=True,
     show_default=True,
     help="load the 4 built-in networks and average them; load one network otherwise",
-
 )
 @click.option(
     "--diam-mean",
@@ -514,7 +527,7 @@ def train_cmd(
     if channels is not None:
         try:
             channel_list = list(map(int, channels.split(",")))
-            if (len(channel_list) != 2 or len(channel_list) != 1):
+            if len(channel_list) != 2 or len(channel_list) != 1:
                 raise ValueError(
                     "Invalid tuple format. Please provide two integers comma-separated as a string."
                 )
@@ -794,7 +807,7 @@ def train_prepare_cmd(
     min_size,
     rand_seed,
     channels,
-    save_crops
+    save_crops,
 ):
     Path(cellpose_crops).mkdir(exist_ok=True)
     Path(cellpose_labels).mkdir(exist_ok=True)
@@ -849,7 +862,7 @@ def train_prepare_cmd(
         cellprob_threshold=cellprob_threshold,
         min_size=min_size,
         rand_seed=rand_seed,
-        save_crops=save_crops
+        save_crops=save_crops,
     ):
         io.write_mask(masks, label_file)
         logger.info("Crop image: %s", crop_file)

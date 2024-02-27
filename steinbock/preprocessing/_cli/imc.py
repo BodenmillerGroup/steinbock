@@ -244,7 +244,7 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
         io.write_image(img, img_file)
 
-        if (xti ==True):
+        if xti == True:
             gen_txt_file = Path(img_dir) / f"{img_file_stem}.txt"
             img_gen_txt.to_csv(gen_txt_file, header=True, index=None, sep="\t")
 

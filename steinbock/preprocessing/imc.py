@@ -334,9 +334,11 @@ def _try_preprocess_mcd_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
-    xti: bool =False,
-) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool, pd.DataFrame], None, None]:
-    img_gen_txt=None
+    xti: bool = False,
+) -> Generator[
+    Tuple[Acquisition, np.ndarray, Optional[Path], bool, pd.DataFrame], None, None
+]:
+    img_gen_txt = None
     try:
         with MCDFile(mcd_file) as f_mcd:
             for slide in f_mcd.slides:
@@ -415,6 +417,7 @@ def _try_preprocess_mcd_images_from_disk(
     except Exception as e:
         logger.exception(f"Error reading file {mcd_file}: {e}")
 
+
 def try_preprocess_images_from_disk(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
@@ -423,7 +426,9 @@ def try_preprocess_images_from_disk(
     unzip: bool = False,
     xti: bool = False,
 ) -> Generator[
-    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, pd.DataFrame],
+    Tuple[
+        Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, pd.DataFrame
+    ],
     None,
     None,
 ]:
@@ -449,7 +454,9 @@ def try_preprocess_images_from_disk(
                 unzip=unzip,
                 xti=xti,
             ):
-                yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered, img_gen_txt
+                yield Path(
+                    mcd_file
+                ), acquisition, img, recovery_txt_file, recovered, img_gen_txt
                 del img
         elif unzip:
             zip_file, mcd_member = zip_file_mcd_member
@@ -468,7 +475,7 @@ def try_preprocess_images_from_disk(
                         channel_names=channel_names,
                         hpf=hpf,
                         unzip=unzip,
-                        xti=xti
+                        xti=xti,
                     ):
                         yield (
                             Path(mcd_file),
@@ -500,30 +507,29 @@ def try_preprocess_images_from_disk(
                         yield Path(txt_file), None, img, None, False, None
                         del img
 
+
 def try_gen_text_file_from_mcd(
-    acquisition:Acquisition,
-    img:np.ndarray,
+    acquisition: Acquisition,
+    img: np.ndarray,
 ) -> pd.DataFrame:
-        columns = ["x", "y", "z"]
-        df = pd.DataFrame(columns=columns)
-        indexes = []
-        paired_df = []
-        for ix in np.ndindex(*img[0].shape):
-            indexes.append(ix)
-        indexes = pd.DataFrame(indexes)
-        pair_df = pd.DataFrame(
-            np.vstack(indexes.values), columns=["y", "x"]
+    columns = ["x", "y", "z"]
+    df = pd.DataFrame(columns=columns)
+    indexes = []
+    paired_df = []
+    for ix in np.ndindex(*img[0].shape):
+        indexes.append(ix)
+    indexes = pd.DataFrame(indexes)
+    pair_df = pd.DataFrame(np.vstack(indexes.values), columns=["y", "x"])
+    df["x"] = pair_df["x"]
+    df["y"] = pair_df["y"]
+    df["z"] = pair_df["x"]
+    for i in range(0, img.shape[0]):
+        channel_name = (
+            acquisition.channel_labels[i]
+            + "("
+            + acquisition.channel_names[i]
+            + "Di"
+            + ")"
         )
-        df["x"] = pair_df["x"]
-        df["y"] = pair_df["y"]
-        df["z"] = pair_df["x"]
-        for i in range(0, img.shape[0]):
-            channel_name = (
-                acquisition.channel_labels[i]
-                + "("
-                + acquisition.channel_names[i]
-                + "Di"
-                + ")"
-            )
-            df.loc[:, channel_name] = img[i, :, :].flatten()
-        return df
+        df.loc[:, channel_name] = img[i, :, :].flatten()
+    return df

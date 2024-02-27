@@ -13,12 +13,14 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
+
     torch_available = True
 except Exception as e:
     torch_available = False
 
 try:
     import cellpose.models
+
     cellpose_available = True
 except Exception:
     cellpose_available = False
@@ -62,7 +64,7 @@ def try_train_model(
     model_type: str,
     net_avg: bool,
     diam_mean: float,
-    device: 'Union[torch.device, None]',
+    device: "Union[torch.device, None]",
     residual_on: bool,
     style_on: bool,
     concatenation: bool,
@@ -104,14 +106,14 @@ def try_train_model(
     list_train_images = io.list_image_files(train_data)
     for file in list_train_images:
         dat = io.read_image(file)
-        #dat = io. _to_dtype(dat, np.dtype(int))
+        # dat = io. _to_dtype(dat, np.dtype(int))
         train_images.append(dat)
 
     train_masks = []
-    list_train_masks = io.list_mask_files(train_labels, base_files = list_train_images)
+    list_train_masks = io.list_mask_files(train_labels, base_files=list_train_images)
     for file in list_train_masks:
         dat = io.read_image(file)
-        dat = io. _to_dtype(dat, np.dtype(int))
+        dat = io._to_dtype(dat, np.dtype(int))
         train_masks.append(dat)
 
     model = cellpose.models.CellposeModel(
@@ -150,7 +152,7 @@ def prepare_training(
     panel_file: str,
     cellpose_crop_size: int,
     gpu: bool,
-    model_type: str ,
+    model_type: str,
     diam_mean: float,
     device: bool,
     residual_on: bool,
@@ -172,13 +174,11 @@ def prepare_training(
     min_size: int,
     rand_seed: int,
     save_crops: bool,
-    progress: bool =False,
+    progress: bool = False,
 ) -> Generator[Tuple[str, str], None, None]:
     inpt_dir = io.list_image_files(input_data)
     rng = np.random.default_rng(rand_seed)
-    panel = io.read_panel(
-        panel_file
-    )
+    panel = io.read_panel(panel_file)
     if pretrained_model is not None:
         model_type = None
     model = cellpose.models.CellposeModel(
@@ -191,7 +191,7 @@ def prepare_training(
         residual_on,
         style_on,
         concatenation,
-        nchan
+        nchan,
     )
 
     for file in inpt_dir:
