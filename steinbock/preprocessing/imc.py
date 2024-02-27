@@ -71,12 +71,12 @@ def _clean_panel(panel: pd.DataFrame) -> pd.DataFrame:
     if "keep" not in panel:
         panel["keep"] = pd.Series([True] * len(panel.index), dtype=pd.BooleanDtype())
     if "ilastik" not in panel:
-        panel["ilastik"] = pd.Series(dtype=float)
+        panel["ilastik"] = pd.Series(dtype=pd.UInt8Dtype())
         panel.loc[panel["keep"], "ilastik"] = range(1, panel["keep"].sum() + 1)
     if "deepcell" not in panel:
-        panel["deepcell"] = pd.Series(dtype=float)
+        panel["deepcell"] = pd.Series(dtype=pd.UInt8Dtype())
     if "cellpose" not in panel:
-        panel["cellpose"] = pd.Series(dtype=float)
+        panel["cellpose"] = pd.Series(dtype=pd.UInt8Dtype())
     next_column_index = 0
     for column in ("channel", "name", "keep", "ilastik", "deepcell", "cellpose"):
         if column in panel:
@@ -334,7 +334,9 @@ def _try_preprocess_mcd_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
-) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool], None, None]:
+    xti: bool =False,
+) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool, pd.DataFrame], None, None]:
+    img_gen_txt=None
     try:
         with MCDFile(mcd_file) as f_mcd:
             for slide in f_mcd.slides:
@@ -356,16 +358,20 @@ def _try_preprocess_mcd_images_from_disk(
                             continue
                     try:
                         img = f_mcd.read_acquisition(acquisition)
+                        if xti:
+                            img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
-                        yield acquisition, img, recovery_txt_file, False
+                        yield acquisition, img, recovery_txt_file, False, img_gen_txt
                         del img
                     except Exception as e:
                         logger.warning(
                             f"Error reading acquisition {acquisition.id} "
                             f"from file {mcd_file}: {e}"
                         )
+                        if xti:
+                            img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
                         if recovery_txt_file is not None:
                             logger.warning(f"Recovering from file {recovery_txt_file}")
                             zip_file_txt_member = _get_zip_file_member(
@@ -378,7 +384,7 @@ def _try_preprocess_mcd_images_from_disk(
                                     hpf=hpf,
                                 )
                                 if img is not None:
-                                    yield acquisition, img, recovery_txt_file, True
+                                    yield acquisition, img, recovery_txt_file, True, img_gen_txt
                                     del img
                             elif unzip:
                                 zip_file, txt_member = zip_file_txt_member
@@ -398,6 +404,7 @@ def _try_preprocess_mcd_images_from_disk(
                                                 img,
                                                 recovery_txt_file,
                                                 True,
+                                                img_gen_txt,
                                             )
                                             del img
                         else:
@@ -408,15 +415,15 @@ def _try_preprocess_mcd_images_from_disk(
     except Exception as e:
         logger.exception(f"Error reading file {mcd_file}: {e}")
 
-
 def try_preprocess_images_from_disk(
     mcd_files: Sequence[Union[str, PathLike]],
     txt_files: Sequence[Union[str, PathLike]],
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
+    xti: bool = False,
 ) -> Generator[
-    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool],
+    Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, pd.DataFrame],
     None,
     None,
 ]:
@@ -433,14 +440,16 @@ def try_preprocess_images_from_disk(
                 img,
                 recovery_txt_file,
                 recovered,
+                img_gen_txt,
             ) in _try_preprocess_mcd_images_from_disk(
                 mcd_file,
                 candidate_txt_files,
                 channel_names=channel_names,
                 hpf=hpf,
                 unzip=unzip,
+                xti=xti,
             ):
-                yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered
+                yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered, img_gen_txt
                 del img
         elif unzip:
             zip_file, mcd_member = zip_file_mcd_member
@@ -452,12 +461,14 @@ def try_preprocess_images_from_disk(
                         img,
                         recovery_txt_file,
                         recovered,
+                        img_gen_txt,
                     ) in _try_preprocess_mcd_images_from_disk(
                         extracted_mcd_file,
                         candidate_txt_files,
                         channel_names=channel_names,
                         hpf=hpf,
                         unzip=unzip,
+                        xti=xti
                     ):
                         yield (
                             Path(mcd_file),
@@ -465,6 +476,7 @@ def try_preprocess_images_from_disk(
                             img,
                             recovery_txt_file,
                             recovered,
+                            img_gen_txt,
                         )
                         del img
     for txt_file in candidate_txt_files:
@@ -474,7 +486,7 @@ def try_preprocess_images_from_disk(
                 txt_file, channel_names=channel_names, hpf=hpf
             )
             if img is not None:
-                yield Path(txt_file), None, img, None, False
+                yield Path(txt_file), None, img, None, False, None
                 del img
         elif unzip:
             zip_file, txt_member = zip_file_txt_member
@@ -485,93 +497,33 @@ def try_preprocess_images_from_disk(
                         extracted_txt_file, channel_names=channel_names, hpf=hpf
                     )
                     if img is not None:
-                        yield Path(txt_file), None, img, None, False
+                        yield Path(txt_file), None, img, None, False, None
                         del img
-
-
-def _try_gen_text_file_from_mcd(
-    mcd_file, channel_names=None, unzip=False
-) -> pd.DataFrame:
-    try:
-        with MCDFile(mcd_file) as f:
-            for slide in f.slides:
-                for acquisition in slide.acquisitions:
-                    channel_ind = None
-                    if channel_names is not None:
-                        channel_ind = _get_channel_indices(acquisition, channel_names)
-                        if isinstance(channel_ind, str):
-                            logger.warning(
-                                f"Channel {channel_ind} not found for acquisition "
-                                f"{acquisition.id} in file {mcd_file}; skipping"
-                            )
-                            continue
-                    try:
-                        img = f.read_acquisition(acquisition)
-                        if channel_ind is not None:
-                            img = img[channel_ind, :, :]
-
-                    except Exception as e:
-                        logger.warning(
-                            f"Error reading acquisition {acquisition.id} "
-                            f"from file {mcd_file}: {e}"
-                        )
-                    columns = ["x", "y", "z"]
-                    df = pd.DataFrame(columns=columns)
-                    indexes = []
-                    paired_df = []
-                    for ix in np.ndindex(*img[0].shape):
-                        indexes.append(ix)
-                    indexes = pd.DataFrame(indexes)
-                    pair_df = pd.DataFrame(
-                        np.vstack(indexes.values), columns=["y", "x"]
-                    )
-                    df["x"] = pair_df["x"]
-                    df["y"] = pair_df["y"]
-                    df["z"] = pair_df["x"]
-                    for i in range(0, img.shape[0]):
-                        thecolumn = i + 3
-                        channel_name = (
-                            acquisition.channel_labels[i]
-                            + "("
-                            + acquisition.channel_names[i]
-                            + "Di"
-                            + ")"
-                        )
-                        df.loc[:, channel_name] = img[i, :, :].flatten()
-                    yield acquisition, df
-    except Exception as e:
-        logger.exception(f"Error reading file {mcd_file}: {e}")
-
 
 def try_gen_text_file_from_mcd(
-    mcd_files: Sequence[Union[str, PathLike]],
-    unzip: bool = False,
-):
-    for mcd_file in sorted(
-        mcd_files, key=lambda mcd_file: Path(mcd_file).stem, reverse=True
-    ):
-        zip_file_mcd_member = _get_zip_file_member(mcd_file)
-        if zip_file_mcd_member is None:
-            for (
-                acquisition,
-                img,
-            ) in _try_gen_text_file_from_mcd(
-                mcd_file,
-                unzip=unzip,
-            ):
-                yield Path(mcd_file), acquisition, img
-                del img
-        elif unzip:
-            zip_file, mcd_member = zip_file_mcd_member
-            with ZipFile(zip_file) as fzip:
-                with TemporaryDirectory() as temp_dir:
-                    extracted_mcd_file = fzip.extract(mcd_member, path=temp_dir)
-                    for (
-                        acquisition,
-                        img,
-                    ) in _try_gen_text_file_from_mcd(
-                        extracted_mcd_file,
-                        unzip=unzip,
-                    ):
-                        yield Path(mcd_file), acquisition, img
-                        del img
+    acquisition:Acquisition,
+    img:np.ndarray,
+) -> pd.DataFrame:
+        columns = ["x", "y", "z"]
+        df = pd.DataFrame(columns=columns)
+        indexes = []
+        paired_df = []
+        for ix in np.ndindex(*img[0].shape):
+            indexes.append(ix)
+        indexes = pd.DataFrame(indexes)
+        pair_df = pd.DataFrame(
+            np.vstack(indexes.values), columns=["y", "x"]
+        )
+        df["x"] = pair_df["x"]
+        df["y"] = pair_df["y"]
+        df["z"] = pair_df["x"]
+        for i in range(0, img.shape[0]):
+            channel_name = (
+                acquisition.channel_labels[i]
+                + "("
+                + acquisition.channel_names[i]
+                + "Di"
+                + ")"
+            )
+            df.loc[:, channel_name] = img[i, :, :].flatten()
+        return df

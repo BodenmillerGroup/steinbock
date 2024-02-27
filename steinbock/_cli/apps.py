@@ -49,7 +49,7 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     "--python",
     "python_path",
     type=click.Path(dir_okay=False),
-    default="usr/bin/python",
+    default="python",
     show_default=True,
     help="Python path",
 )
@@ -160,16 +160,24 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     "--python",
     "python_path",
     type=click.Path(dir_okay=False),
-    default="usr/bin/python",
+    default="python",
     show_default=True,
     help="Python path",
 )
+@click.option(
+    "--cellpose",
+    "cellpose_module",
+    type=click.STRING,
+    default="cellpose",
+    show_default=True,
+    help="cellpose module",
+)
 
-# @click.argument("cellprofiler_args", nargs=-1, type=click.UNPROCESSED)
+@click.argument("cellpose_args", nargs=-1, type=click.UNPROCESSED)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def cellpose_view_cmd(python_path):
-    args = [python_path, "-m", "cellpose"]
-
+def cellpose_view_cmd(python_path, cellpose_module, cellpose_args):
+    cellpose_args = list(cellpose_args)
+    args = [python_path, "-m", cellpose_module] + cellpose_args
     result = run_captured(args)
     sys.exit(result.returncode)

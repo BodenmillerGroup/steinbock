@@ -12,13 +12,13 @@ from ._segmentation import SteinbockSegmentationException
 logger = logging.getLogger(__name__)
 
 try:
+    import torch
     torch_available = True
 except Exception as e:
     torch_available = False
 
 try:
     import cellpose.models
-
     cellpose_available = True
 except Exception:
     cellpose_available = False
@@ -41,11 +41,9 @@ def create_cellpose_crop(
 ) -> Tuple[Optional[int], Optional[int], Optional[np.ndarray]]:
     if all(shape >= cellpose_crop_size for shape in cellpose_img.shape[1:]):
         cellpose_crop_x = 0
-        if cellpose_img.shape[2] > cellpose_crop_size:
-            cellpose_crop_x = rng.integers(cellpose_img.shape[2] - cellpose_crop_size)
+        cellpose_crop_x = rng.integers(cellpose_img.shape[2] - cellpose_crop_size)
         cellpose_crop_y = 0
-        if cellpose_img.shape[1] > cellpose_crop_size:
-            cellpose_crop_y = rng.integers(cellpose_img.shape[1] - cellpose_crop_size)
+        cellpose_crop_y = rng.integers(cellpose_img.shape[1] - cellpose_crop_size)
         cellpose_crop = cellpose_img[
             :,
             cellpose_crop_y : (cellpose_crop_y + cellpose_crop_size),
@@ -65,11 +63,11 @@ def try_train_model(
     model_type: str,
     net_avg: bool,
     diam_mean: float,
-    # device: torch.device,
-    device,
+    device: 'Union[torch.device, None]',
     residual_on: bool,
     style_on: bool,
     concatenation: bool,
+    nchan: int,
     train_data: Union[str, PathLike],
     train_labels: Union[str, PathLike],
     train_files: Union[str, PathLike],
@@ -89,24 +87,11 @@ def try_train_model(
     rescale: bool,
     min_train_masks: int,
     model_name: str,
-    channels: str = None,
+    channels: list,
 ):
-    if channels is not None:
-        try:
-            channel_list = list(map(int, channels.split(",")))
-            if len(channel_list) != 2:
-                raise ValueError(
-                    "Invalid tuple format. Please provide two integers comma-separated as a string."
-                )
-            else:
-                channels = channel_list
-        except ValueError as e:
-            raise click.BadParameter(str(e), param_hint="channels")
-    else:
-        channels = [1, 2]
     model = cellpose.models.CellposeModel(
         gpu=gpu,
-        model_type=pretrained_model,
+        model_type=model_type,
         pretrained_model=pretrained_model,
         net_avg=net_avg,
         diam_mean=diam_mean,
@@ -114,20 +99,20 @@ def try_train_model(
         residual_on=residual_on,
         style_on=style_on,
         concatenation=concatenation,
-        nchan=2,
+        nchan=nchan,
     )
     train_images = []
     list_train_images = io.list_image_files(train_data)
     for file in list_train_images:
         dat = io.read_image(file)
-        dat = dat.astype(int)
+        #dat = io. _to_dtype(dat, np.dtype(int))
         train_images.append(dat)
 
     train_masks = []
-    list_train_masks = io.list_mask_files(train_labels)
+    list_train_masks = io.list_mask_files(train_labels, base_files = list_train_images)
     for file in list_train_masks:
         dat = io.read_image(file)
-        dat = dat.astype(int)
+        dat = io. _to_dtype(dat, np.dtype(int))
         train_masks.append(dat)
 
     model = cellpose.models.CellposeModel(
@@ -164,35 +149,37 @@ def prepare_training(
     cellpose_labels: Union[str, PathLike],
     pretrained_model: Union[str, PathLike],
     panel_file: str,
-    cellpose_crop_size: int = 500,
-    gpu: bool = False,
-    model_type: str = "tissuenet",
-    diam_mean: float = 30.0,
-    device: bool = None,
-    residual_on: bool = True,
-    style_on: bool = True,
-    concatenation: bool = False,
-    normalize: bool = True,
-    diameter: float = 10.0,
-    batch_size: int = 8,
-    channels: list = [1, 2],
-    channel_axis=0,
-    net_avg: bool = True,
-    tile: bool = False,
-    tile_overlap: float = 0.1,
-    resample: bool = True,
-    interp: bool = True,
-    flow_threshold: float = 1,
-    cellprob_threshold: float = -6,
-    min_size: int = 15,
-    seed: int = 123,
-    progress=False,
+    cellpose_crop_size: int,
+    gpu: bool,
+    model_type: str ,
+    diam_mean: float,
+    device: bool,
+    residual_on: bool,
+    style_on: bool,
+    concatenation: bool,
+    nchan: bool,
+    normalize: bool,
+    diameter: Union[None, float],
+    batch_size: int,
+    channels: str,
+    channel_axis: int,
+    net_avg: bool,
+    tile: bool,
+    tile_overlap: float,
+    resample: bool,
+    interp: bool,
+    flow_threshold: float,
+    cellprob_threshold: float,
+    min_size: int,
+    rand_seed: int,
+    save_crops: bool,
+    progress: bool =False,
 ) -> Generator[Tuple[str, str], None, None]:
-    dir = io.list_image_files(input_data)
-    rng = np.random.default_rng(seed)
+    inpt_dir = io.list_image_files(input_data)
+    rng = np.random.default_rng(rand_seed)
     panel = io.read_panel(
         panel_file
-    )  # sorting the panel might be wise before or after loading
+    )
     if pretrained_model is not None:
         model_type = None
     model = cellpose.models.CellposeModel(
@@ -205,10 +192,10 @@ def prepare_training(
         residual_on,
         style_on,
         concatenation,
-        nchan=2,
+        nchan
     )
 
-    for file in dir:
+    for file in inpt_dir:
         f = Path(file)
         test_img = io.read_image(f)
 
@@ -219,7 +206,8 @@ def prepare_training(
         cytoplasmic_img = np.sum(cellpose_crop[panel["cellpose"].values == 2], axis=0)
         segstack = np.stack((cytoplasmic_img, nuclear_img), axis=0)
         crop_file = Path(cellpose_crops) / (f.stem + ".tiff")
-        io.write_image(segstack, crop_file)
+        if save_crops:
+            io.write_image(segstack, crop_file)
         masks, flows, styles = model.eval(
             segstack,
             batch_size=batch_size,
@@ -237,9 +225,8 @@ def prepare_training(
             min_size=min_size,
             progress=False,
         )
-        label_file = Path(cellpose_labels) / (f.stem + "_mask.tiff")
-        io.write_mask(masks, label_file)
-        yield tuple([str(crop_file), str(label_file)])
+        label_file = Path(cellpose_labels) / (f.stem + ".tiff")
+        yield str(crop_file), str(label_file), masks
 
 
 def create_segmentation_stack(
@@ -276,41 +263,28 @@ def create_segmentation_stack(
 def try_segment_objects(
     img_files: Sequence[Union[str, PathLike]],
     pretrained_model: Union[str, PathLike],
-    model_name: str = "tissuenet",
-    channelwise_minmax: bool = False,
-    channelwise_zscore: bool = False,
-    channel_groups: Optional[np.ndarray] = None,
-    aggr_func: AggregationFunction = np.mean,
-    net_avg: bool = True,
-    batch_size: int = 8,
-    normalize: bool = True,
-    diameter: float = 10,
-    tile: bool = False,
-    tile_overlap: float = 0.1,
-    resample: bool = True,
-    interp: bool = True,
-    flow_threshold: float = 1,
-    cellprob_threshold: float = -6,
-    min_size: int = 15,
-    use_gpu: bool = False,
-    channels: str = None,
+    model_type: str,
+    channelwise_minmax: bool,
+    channelwise_zscore: bool,
+    channel_groups: Optional[np.ndarray],
+    aggr_func: AggregationFunction,
+    net_avg: bool,
+    batch_size: int,
+    normalize: bool,
+    diameter: Union[None, float],
+    tile: bool,
+    tile_overlap: float,
+    resample: bool,
+    interp: bool,
+    flow_threshold: float,
+    cellprob_threshold: float,
+    min_size: int,
+    use_gpu: bool,
+    channels: str,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-    if channels is not None:
-        try:
-            channel_list = list(map(int, channels.split(",")))
-            if len(channel_list) != 2:
-                raise ValueError(
-                    "Invalid tuple format. Please provide two integers comma-separated as a string."
-                )
-            else:
-                channels = channel_list
-        except ValueError as e:
-            raise click.BadParameter(str(e), param_hint="channels")
-    else:
-        channels = [1, 2]
 
     model = cellpose.models.CellposeModel(
-        model_type=model_name,
+        model_type=model_type,
         pretrained_model=pretrained_model,
         net_avg=net_avg,
         diam_mean=diameter,
@@ -325,7 +299,11 @@ def try_segment_objects(
                 aggr_func=aggr_func,
             )
             # channels: [cytoplasmic, nuclear]
-            if img.shape[0] != 2:
+            if img.shape[0] == 1:
+                channels = [0, 0]  # grayscale image (cytoplasmic channel only)
+            elif img.shape[0] == 2:
+                channels = [2, 1]  # R=1 G=2 B=3 image (nuclear & cytoplasmic channels)
+            else:
                 raise SteinbockCellposeSegmentationException(
                     f"Invalid number of aggregated channels: "
                     f"expected 1 or 2, got {img.shape[0]}"

@@ -21,7 +21,21 @@ except Exception as e:
     torch_available = False
 
 cellpose_cli_available = cellpose.cellpose_available
+model_names = ["nuclei","cyto",
+            "cyto2","tissuenet",
+            "livecell","CP",
+            "CPx","TN1",
+            "TN2","TN3",
+            "LC1","LC2",
+            "LC3","LC4"]
 
+def float_or_none(ctx, param, value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except ValueError:
+        raise click.BadParameter('Please provide a valid floating point number or "None".')
 
 @click.group(
     name="cellpose",
@@ -38,24 +52,7 @@ def cellpose_cmd_group():
 @click.option(
     "--model",
     "model_name",
-    type=click.Choice(
-        [
-            "nuclei",
-            "cyto",
-            "cyto2",
-            "tissuenet",
-            "livecell",
-            "CP",
-            "CPx",
-            "TN1",
-            "TN2",
-            "TN3",
-            "LC1",
-            "LC2",
-            "LC3",
-            "LC4",
-        ]
-    ),
+    type=click.Choice(model_names),
     default="tissuenet",
     show_default=True,
     help="Name of the Cellpose model, choose on of the 14 pretrained models available in cellpose2",
@@ -117,7 +114,7 @@ def cellpose_cmd_group():
     type=click.INT,
     default=8,
     show_default=True,
-    help="minimum number of images to train on per epoch, with a small training set (< 8 images) it may help to set to 8",
+    help="number of 224x224 patches to run simultaneously on the GPU (can make smaller or bigger depending on GPU memory usage).",
 )
 @click.option(
     "--normalize/--no-normalize",
@@ -129,7 +126,7 @@ def cellpose_cmd_group():
 @click.option(
     "--diameter",
     "diameter",
-    type=click.FLOAT,
+    callback=float_or_none,
     default=30,
     show_default=True,
     help="if set to None, then diameter is automatically estimated if size model is loaded",
@@ -233,6 +230,21 @@ def run_cmd(
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
+
+    if channels is not None:
+        try:
+            channel_list = list(map(int, channels.split(",")))
+            if (len(channel_list) != 2 or len(channel_list) != 1):
+                raise ValueError(
+                    "Invalid tuple format. Please provide two integers comma-separated as a string."
+                )
+            else:
+                channels = channel_list
+        except ValueError as e:
+            raise click.BadParameter(str(e), param_hint="channels")
+    else:
+        channels = [1, 2]
+
     for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
         img_files,
         pretrained_model,
@@ -253,40 +265,23 @@ def run_cmd(
         cellprob_threshold=cellprob_threshold,
         min_size=min_size,
         channels=channels,
+        use_gpu=torch.cuda.is_available()
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)
         logger.info(mask_file)
-
 
 @cellpose_cmd_group.command(
     name="train", help="Train a cellpose model using labeled data"
 )
 # model specification parameters
 @click.option(
-    "--model_type",
-    "model_type",
-    type=click.Choice(
-        [
-            "nuclei",
-            "cyto",
-            "cyto2",
-            "tissuenet",
-            "livecell",
-            "CP",
-            "CPx",
-            "TN1",
-            "TN2",
-            "TN3",
-            "LC1",
-            "LC2",
-            "LC3",
-            "LC4",
-        ]
-    ),
+    "--model",
+    "model_name",
+    type=click.Choice(model_names),
     default="tissuenet",
     show_default=True,
-    help="Any model that is available in the GUI, use name in GUI e.g. ‘livecell’ (can be user-trained or model zoo)",
+    help="Name of the Cellpose model, choose on of the 14 pretrained models available in cellpose2",
 )
 @click.option(
     "--pretrained-model",
@@ -299,7 +294,7 @@ def run_cmd(
     "net_avg",
     default=True,
     show_default=True,
-    help=" Loads the 4 built-in networks and averages them if True, loads one network if False",
+    help="load the 4 built-in networks and average them; load one network otherwise",
 )
 @click.option(
     "--diam-mean",
@@ -330,8 +325,14 @@ def run_cmd(
     show_default=True,
     help="If True, concatentate downsampling block outputs with upsampling block inputs; default is to add",
 )
-
-
+@click.option(
+    "--nchan",
+    "nchan",
+    default=2,
+    type=click.INT,
+    show_default=True,
+    help="Number of channels to use as input to network, default is 2 (cyto + nuclei) or (nuclei + zeros)",
+)
 # #training parameters
 @click.option(
     "--train-data",
@@ -339,7 +340,7 @@ def run_cmd(
     default="cellpose_crops",
     show_default=True,
     type=click.Path(exists=True, file_okay=False),
-    help="Folder containing training data ",
+    help="folder containing training data ",
 )
 @click.option(
     "--train-labels",
@@ -347,7 +348,7 @@ def run_cmd(
     default="cellpose_labels",
     show_default=True,
     type=click.Path(exists=True, file_okay=False),
-    help="Folder containing masks corresponding to images in training_data",
+    help="folder containing masks corresponding to images in training_data",
 )
 # this needs to be a list TODO
 @click.option(
@@ -360,41 +361,40 @@ def run_cmd(
 @click.option(
     "--test-data",
     "test_data",
-    help="Images for testing, a list of arrays (2D or 3D)",
+    help="images for testing, a list of arrays (2D or 3D)",
 )
 # this needs to be a list TODO
 @click.option(
     "--test-labels",
     "test_labels",
-    help="Labels for test_data, where 0=no masks; 1,2,…=mask labels; can include flows as additional images, a list of arrays (2D or 3D)",
+    help="labels for test_data, where 0=no masks; 1,2,…=mask labels; can include flows as additional images, a list of arrays (2D or 3D)",
 )
 # this needs to be a list TODO
 @click.option(
     "--test-files",
     "test_files",
     type=str,
-    help="File names for images in test_data (to save flows for future runs), a list of strings",
+    help="file names for images in test_data (to save flows for future runs), a list of strings",
 )
 @click.option(
     "--channels",
     "channels",
     type=str,
-    help="Channels to use for training. Please provide two comma-separated integers as a string",
+    help="channels to use for training. Please provide two comma-separated integers as a string",
 )
 @click.option(
     "--normalize/--no-normalize",
     "normalize",
     default=True,
     show_default=True,
-    help="Normalize data so 0.0=1st percentile and 1.0=99th percentile of image intensities in each channel",
+    help="normalize data so 0.0=1st percentile and 1.0=99th percentile of image intensities in each channel",
 )
 @click.option(
     "--save-path",
     "save_path",
-    default="training_out",
     show_default=True,
     type=click.Path(file_okay=False),
-    help="Where to save trained model",
+    help="where to save trained model, if None it is not saved",
 )
 @click.option(
     "--save-every",
@@ -402,7 +402,7 @@ def run_cmd(
     default=50,
     show_default=True,
     type=click.INT,
-    help="Save network every [save_every] epochs",
+    help="save network every [save_every] epochs",
 )
 @click.option(
     "--learning-rate",
@@ -418,7 +418,7 @@ def run_cmd(
     default=50,
     show_default=True,
     type=click.INT,
-    help="How many times to go through whole training set during training",
+    help="how many times to go through whole training set during training",
 )
 @click.option(
     "--weight-decay",
@@ -434,14 +434,14 @@ def run_cmd(
     default=0.9,
     type=click.FLOAT,
     show_default=True,
-    help="Not explaied in cellpose API documentation as of cellpose2.0",
+    help="not explaied in cellpose API documentation as of cellpose2.0",
 )
 @click.option(
     "--sgd/--no-sgd",
     "sgd",
     default=True,
     show_default=True,
-    help="Use SGD as optimization instead of RAdam",
+    help="use SGD as optimization instead of RAdam",
 )
 @click.option(
     "--batch-size",
@@ -449,20 +449,20 @@ def run_cmd(
     default=8,
     type=click.INT,
     show_default=True,
-    help="Minimum number of images to train on per epoch, with a small training set (< 8 images) it may help to set to 8. If None, all images in train-data are used.",
+    help="number of 224x224 patches to run simultaneously on the GPU (can make smaller or bigger depending on GPU memory usage).",
 )
 @click.option(
     "--nimg-per-epoch",
     "nimg_per_epoch",
     type=click.INT,
-    help="Minimum number of images to train on per epoch, with a small training set (< 8 images) it may help to set to 8. In set to None all images in train-data re used for training per epoch",
+    help="minimum number of images to train on per epoch, with a small training set (< 8 images) it may help to set to 8. In not specified, all images in train-data re used for training per epoch",
 )
 @click.option(
     "--rescale/--no-rescale",
     "rescale",
     default=True,
     show_default=True,
-    help="Whether or not to rescale images to diam_mean during training, if True it assumes you will fit a size model after training or resize your images accordingly, if False it will try to train the model to be scale-invariant (works worse)",
+    help="rescale images to diam_mean during training (assumes a size model will be fitted after training or the images will be resized accordingly); tries to train the model to be scale-invariant otherwise (works worse)",
 )
 @click.option(
     "--min-train-masks",
@@ -470,24 +470,25 @@ def run_cmd(
     default=5,
     type=click.INT,
     show_default=True,
-    help="Minimum number of masks an image must have to use in training set",
+    help="minimum number of masks an image must have to use in training set",
 )
 @click.option(
     "--model-name",
     "model_name",
     type=str,
-    help="Name of network, otherwise saved with name as params + training start time",
+    help="name of network, otherwise saved with name as params + training start time",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def train_cmd(
     pretrained_model,
-    model_type,
+    model_name,
     net_avg,
     diam_mean,
     residual_on,
     style_on,
     concatenation,
+    nchan,
     train_data,
     train_labels,
     train_files,
@@ -507,10 +508,21 @@ def train_cmd(
     nimg_per_epoch,
     rescale,
     min_train_masks,
-    model_name,
+    model_type,
 ):
-    # rng = np.random.default_rng(seed)
-
+    if channels is not None:
+        try:
+            channel_list = list(map(int, channels.split(",")))
+            if (len(channel_list) != 2 or len(channel_list) != 1):
+                raise ValueError(
+                    "Invalid tuple format. Please provide two integers comma-separated as a string."
+                )
+            else:
+                channels = channel_list
+        except ValueError as e:
+            raise click.BadParameter(str(e), param_hint="channels")
+    else:
+        channels = [1, 2]
     model_file = cellpose.try_train_model(
         gpu=torch.cuda.is_available(),
         model_type=model_type,
@@ -521,6 +533,7 @@ def train_cmd(
         residual_on=residual_on,
         style_on=style_on,
         concatenation=concatenation,
+        nchan=nchan,
         # training parameters
         train_data=train_data,
         train_labels=train_labels,
@@ -552,9 +565,7 @@ def train_cmd(
 @click.option(
     "--pretrained-model",
     "pretrained_model",
-    default=None,
     type=click.Path(exists=True, dir_okay=False),
-    # show_default=True,
     help="Path to cellpose pretrained model to use as start for training",
 )
 @click.option(
@@ -571,7 +582,7 @@ def train_cmd(
     default="img",
     show_default=True,
     type=click.Path(exists=True, file_okay=False),
-    help="folder containing training data ",
+    help="folder containing training data",
 )
 @click.option(
     "--cellpose-crops",
@@ -579,7 +590,7 @@ def train_cmd(
     default="cellpose_crops",
     show_default=True,
     type=click.Path(file_okay=False),
-    help="Destination for ellpose training crops",
+    help="Destination for cellpose training crops",
 )
 @click.option(
     "--cellpose-labels",
@@ -598,26 +609,9 @@ def train_cmd(
     help="Path to the panel file",
 )
 @click.option(
-    "--model-type",
+    "--model",
     "model_type",
-    type=click.Choice(
-        [
-            "nuclei",
-            "cyto",
-            "cyto2",
-            "tissuenet",
-            "livecell",
-            "CP",
-            "CPx",
-            "TN1",
-            "TN2",
-            "TN3",
-            "LC1",
-            "LC2",
-            "LC3",
-            "LC4",
-        ]
-    ),
+    type=click.Choice(model_names),
     default="tissuenet",
     show_default=True,
     help="any model that is available in the GUI, use name in GUI e.g. ‘livecell’ (can be user-trained or model zoo)",
@@ -634,7 +628,7 @@ def train_cmd(
     "net_avg",
     default=True,
     show_default=True,
-    help=" loads the 4 built-in networks and averages them if True, loads one network if False",
+    help="load the 4 built-in networks and average them; load one network otherwise",
 )
 @click.option(
     "--diam-mean",
@@ -649,7 +643,7 @@ def train_cmd(
     "residual_on",
     default=True,
     show_default=True,
-    help=" use 4 conv blocks with skip connections per layer instead of 2 conv blocks like conventional u-nets",
+    help="use 4 conv blocks with skip connections per layer instead of 2 conv blocks like conventional u-nets",
 )
 @click.option(
     "--style-on/--no-style-on",
@@ -663,7 +657,15 @@ def train_cmd(
     "concatenation",
     default=False,
     show_default=True,
-    help="if True, concatentate downsampling block outputs with upsampling block inputs; default is to add",
+    help="concatentate downsampling block outputs with upsampling block inputs; add otherwise",
+)
+@click.option(
+    "--nchan",
+    "nchan",
+    default=2,
+    type=click.INT,
+    show_default=True,
+    help="Number of channels to use as input to network, default is 2 (cyto + nuclei) or (nuclei + zeros)",
 )
 @click.option(
     "--batch-size",
@@ -671,7 +673,7 @@ def train_cmd(
     type=click.INT,
     default=8,
     show_default=True,
-    help="minimum number of images to train on per epoch, with a small training set (< 8 images) it may help to set to 8",
+    help="number of 224x224 patches to run simultaneously on the GPU (can make smaller or bigger depending on GPU memory usage)",
 )
 @click.option(
     "--normalize/--no-normalize",
@@ -683,7 +685,7 @@ def train_cmd(
 @click.option(
     "--diameter",
     "diameter",
-    type=click.FLOAT,
+    callback=float_or_none,
     default=30,
     show_default=True,
     help="if set to None, then diameter is automatically estimated if size model is loaded",
@@ -691,7 +693,7 @@ def train_cmd(
 @click.option(
     "--tile/--no-tile",
     "tile",
-    default=False,
+    default=True,
     show_default=True,
     help="tiles image to ensure GPU/CPU memory usage limited (recommended)",
 )
@@ -743,10 +745,23 @@ def train_cmd(
 )
 @click.option(
     "--seed",
-    "seed",
+    "rand_seed",
     type=click.INT,
     default=123,
     help="Seed for random number generation",
+)
+@click.option(
+    "--channels",
+    "channels",
+    type=str,
+    help="Channels to use for training. Please provide two comma-separated integers as a string",
+)
+@click.option(
+    "--save_crops/--no-save-crops",
+    "save_crops",
+    default=False,
+    show_default=True,
+    help="If True, the crops used for the initial segmentation are saved",
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
@@ -764,6 +779,7 @@ def train_prepare_cmd(
     residual_on,
     style_on,
     concatenation,
+    nchan,
     # segmentation
     batch_size,
     normalize,
@@ -775,18 +791,33 @@ def train_prepare_cmd(
     flow_threshold,
     cellprob_threshold,
     min_size,
-    seed,
+    rand_seed,
+    channels,
+    save_crops
 ):
     Path(cellpose_crops).mkdir(exist_ok=True)
     Path(cellpose_labels).mkdir(exist_ok=True)
+    if channels is not None:
+        try:
+            channel_list = list(map(int, channels.split(",")))
+            if len(channel_list) != 2:
+                raise ValueError(
+                    "Invalid tuple format. Please provide two integers comma-separated as a string."
+                )
+            else:
+                channels = channel_list
+        except ValueError as e:
+            raise click.BadParameter(str(e), param_hint="channels")
+    else:
+        channels = [1, 2]
     if torch_available:
         gpu = torch.cuda.is_available()
-        device = torch.device("cuda" if gpu else "cpu")
+        torch_device = torch.device("cuda" if gpu else "cpu")
     else:
-        device = None
+        torch_device = None
         gpu = False
 
-    for crop_file, label_file in cellpose.prepare_training(
+    for crop_file, label_file, masks in cellpose.prepare_training(
         input_data=input_data,
         cellpose_crops=cellpose_crops,
         cellpose_labels=cellpose_labels,
@@ -798,12 +829,15 @@ def train_prepare_cmd(
         model_type=model_type,
         net_avg=net_avg,
         diam_mean=diam_mean,
-        device=device,
+        device=torch_device,
         residual_on=residual_on,
         style_on=style_on,
         concatenation=concatenation,
+        nchan=nchan,
         # segmentation parameters
         batch_size=batch_size,
+        channel_axis=0,
+        channels=channels,
         normalize=normalize,
         diameter=diameter,
         tile=tile,
@@ -813,7 +847,9 @@ def train_prepare_cmd(
         flow_threshold=flow_threshold,
         cellprob_threshold=cellprob_threshold,
         min_size=min_size,
-        seed=seed,
+        rand_seed=rand_seed,
+        save_crops=save_crops
     ):
-        logger.info("Crop iamge: %s", crop_file)
+        io.write_mask(masks, label_file)
+        logger.info("Crop image: %s", crop_file)
         logger.info("Crop label: %s", label_file)
