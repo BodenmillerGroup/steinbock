@@ -12,6 +12,7 @@ networkx==3.0
 numpy==1.23.5  # deepcell 0.12.4 requires <1.24
 opencv-python-headless==4.7.0.68
 pandas==1.5.3
+pydantic<2
 pyyaml==6.0
 readimc==0.6.2
 scikit-image==0.19.3

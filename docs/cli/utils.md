@@ -40,3 +40,10 @@ The created image tiles will have the following file name, where `{IMG}` is the 
 The following command will stitch all mask tiles in `masks` (following the file conventions above) to assemble masks of original size and save them to `masks_full`:
 
     steinbock utils mosaics stitch masks -o masks_full
+
+### Expansion
+
+This utility incorporates the `expand_labels` from [`skimage.segmentation`](https://scikit-image.org/docs/stable/api/skimage.segmentation.html#skimage.segmentation.expand_labels). It expands mask objects outwards by up to a distance specified in pixels without overflowing into neighboring regions.
+The following command expands the masks in each fils contained in `masks` directory by a maximum of 5 pixels and saves the resulting masks in `expanded_masks`:
+
+    steinbock utils expand masks 5 -o expanded_masks
