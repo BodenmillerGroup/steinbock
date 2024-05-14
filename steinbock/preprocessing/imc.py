@@ -355,7 +355,7 @@ def _try_preprocess_mcd_images_from_disk(
                             )
                             continue
                     try:
-                        img = f_mcd.read_acquisition(acquisition)
+                        img = f_mcd.read_acquisition(acquisition, strict=False)
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
