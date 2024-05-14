@@ -441,7 +441,7 @@ def try_preprocess_images_from_disk(
                 channel_names=channel_names,
                 hpf=hpf,
                 unzip=unzip,
-                strict=strict
+                strict=strict,
             ):
                 yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered
                 del img
@@ -461,7 +461,7 @@ def try_preprocess_images_from_disk(
                         channel_names=channel_names,
                         hpf=hpf,
                         unzip=unzip,
-                        strict=strict
+                        strict=strict,
                     ):
                         yield (
                             Path(mcd_file),
