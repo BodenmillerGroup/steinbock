@@ -201,7 +201,9 @@ def panel_cmd(
 )
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, strict):
+def images_cmd(
+    mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, strict
+):
     channel_names = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
@@ -220,7 +222,12 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
         recovery_txt_file,
         recovered,
     ) in imc.try_preprocess_images_from_disk(
-        mcd_files, txt_files, channel_names=channel_names, hpf=hpf, unzip=unzip, strict=strict
+        mcd_files,
+        txt_files,
+        channel_names=channel_names,
+        hpf=hpf,
+        unzip=unzip,
+        strict=strict,
     ):
         img_file_stem = Path(mcd_or_txt_file).stem
         if acquisition is not None:
