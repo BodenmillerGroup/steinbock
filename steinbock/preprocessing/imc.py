@@ -336,7 +336,9 @@ def _try_preprocess_mcd_images_from_disk(
     unzip: bool = False,
     xti: bool = False,
 ) -> Generator[
-    Tuple[Acquisition, np.ndarray, Optional[Path], bool, Optional[pd.DataFrame]], None, None
+    Tuple[Acquisition, np.ndarray, Optional[Path], bool, Optional[pd.DataFrame]],
+    None,
+    None,
 ]:
     img_gen_txt = None
     try:
