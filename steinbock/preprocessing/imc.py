@@ -531,9 +531,9 @@ def try_gen_text_file_from_mcd(
     indexes = pd.DataFrame(indexes)
     pair_df = pd.DataFrame(np.vstack(indexes.values), columns=["y", "x"])
     num_rows = pair_df.shape[0]
-    df.insert(0, 'Start_push', 0)
-    df.insert(1, 'End_push', 0)
-    df.insert(2, 'Pushes_duration', 0)
+    df.insert(0, "Start_push", 0)
+    df.insert(1, "End_push", 0)
+    df.insert(2, "Pushes_duration", 0)
 
     df["X"] = pair_df["x"]
     df["Y"] = pair_df["y"]
