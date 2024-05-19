@@ -364,6 +364,8 @@ def _try_preprocess_mcd_images_from_disk(
                         img = f_mcd.read_acquisition(acquisition)
                         if xti:
                             img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
+                        else:
+                            img_gen_txt = None
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
