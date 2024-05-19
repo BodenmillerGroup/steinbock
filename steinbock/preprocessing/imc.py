@@ -340,7 +340,6 @@ def _try_preprocess_mcd_images_from_disk(
     None,
     None,
 ]:
-    img_gen_txt = None
     try:
         with MCDFile(mcd_file) as f_mcd:
             for slide in f_mcd.slides:
