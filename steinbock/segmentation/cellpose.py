@@ -64,7 +64,7 @@ def try_train_model(
     model_type: str,
     net_avg: bool,
     diam_mean: float,
-    device: "Union[torch.device, None]",
+    device: Union["torch.device", None],
     residual_on: bool,
     style_on: bool,
     concatenation: bool,

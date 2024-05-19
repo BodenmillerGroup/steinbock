@@ -336,9 +336,10 @@ def _try_preprocess_mcd_images_from_disk(
     unzip: bool = False,
     xti: bool = False,
 ) -> Generator[
-    Tuple[Acquisition, np.ndarray, Optional[Path], bool, pd.DataFrame], None, None
+    Tuple[Acquisition, np.ndarray, Optional[Path], bool, Optional[pd.DataFrame]],
+    None,
+    None,
 ]:
-    img_gen_txt = None
     try:
         with MCDFile(mcd_file) as f_mcd:
             for slide in f_mcd.slides:
@@ -362,6 +363,8 @@ def _try_preprocess_mcd_images_from_disk(
                         img = f_mcd.read_acquisition(acquisition)
                         if xti:
                             img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
+                        else:
+                            img_gen_txt = None
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
@@ -374,6 +377,8 @@ def _try_preprocess_mcd_images_from_disk(
                         )
                         if xti:
                             img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
+                        else:
+                            img_gen_txt = None
                         if recovery_txt_file is not None:
                             logger.warning(f"Recovering from file {recovery_txt_file}")
                             zip_file_txt_member = _get_zip_file_member(
@@ -427,7 +432,12 @@ def try_preprocess_images_from_disk(
     xti: bool = False,
 ) -> Generator[
     Tuple[
-        Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, pd.DataFrame
+        Path,
+        Optional["Acquisition"],
+        np.ndarray,
+        Optional[Path],
+        bool,
+        Optional[pd.DataFrame],
     ],
     None,
     None,

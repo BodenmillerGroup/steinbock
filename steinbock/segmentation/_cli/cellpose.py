@@ -424,7 +424,7 @@ def run_cmd(
     default=0.1,
     show_default=True,
     type=click.FLOAT,
-    help="Learning rate. Default: %(default)s",
+    help="Learning rate",
 )
 @click.option(
     "--n-epochs",
