@@ -377,6 +377,8 @@ def _try_preprocess_mcd_images_from_disk(
                         )
                         if xti:
                             img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
+                        else:
+                            img_gen_txt = None
                         if recovery_txt_file is not None:
                             logger.warning(f"Recovering from file {recovery_txt_file}")
                             zip_file_txt_member = _get_zip_file_member(
