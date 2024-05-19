@@ -432,7 +432,7 @@ def try_preprocess_images_from_disk(
     xti: bool = False,
 ) -> Generator[
     Tuple[
-        Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, pd.DataFrame
+        Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool, Optional[pd.DataFrame]
     ],
     None,
     None,
