@@ -512,7 +512,7 @@ def try_gen_text_file_from_mcd(
     acquisition: Acquisition,
     img: np.ndarray,
 ) -> pd.DataFrame:
-    columns = ["x", "y", "z"]
+    columns = ["X", "Y", "Z"]
     df = pd.DataFrame(columns=columns)
     indexes = []
     paired_df = []
@@ -520,9 +520,15 @@ def try_gen_text_file_from_mcd(
         indexes.append(ix)
     indexes = pd.DataFrame(indexes)
     pair_df = pd.DataFrame(np.vstack(indexes.values), columns=["y", "x"])
-    df["x"] = pair_df["x"]
-    df["y"] = pair_df["y"]
-    df["z"] = pair_df["x"]
+    num_rows = pair_df.shape[0]
+    df.insert(0, 'Start_push', 0)
+    df.insert(1, 'End_push', 0)
+    df.insert(2, 'Pushes_duration', 0)
+
+    df["X"] = pair_df["x"]
+    df["Y"] = pair_df["y"]
+    df["Z"] = pair_df["x"]
+
     for i in range(0, img.shape[0]):
         channel_name = (
             acquisition.channel_labels[i]
