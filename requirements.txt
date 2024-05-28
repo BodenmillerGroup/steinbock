@@ -7,6 +7,7 @@ deepcell==0.12.6
 fcswrite==0.6.2
 h5py==3.8.0
 imageio==2.25.0
+lxml_html_clean==0.1.1
 napari[all]==0.4.19
 networkx==3.0
 numpy==1.23.5  # deepcell 0.12.4 requires <1.24
