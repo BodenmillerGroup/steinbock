@@ -334,6 +334,7 @@ def _try_preprocess_mcd_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
+    strict: bool = False,
 ) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool], None, None]:
     try:
         with MCDFile(mcd_file) as f_mcd:
@@ -355,7 +356,7 @@ def _try_preprocess_mcd_images_from_disk(
                             )
                             continue
                     try:
-                        img = f_mcd.read_acquisition(acquisition)
+                        img = f_mcd.read_acquisition(acquisition, strict=strict)
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
@@ -415,6 +416,7 @@ def try_preprocess_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
+    strict: bool = False,
 ) -> Generator[
     Tuple[Path, Optional["Acquisition"], np.ndarray, Optional[Path], bool],
     None,
@@ -439,6 +441,7 @@ def try_preprocess_images_from_disk(
                 channel_names=channel_names,
                 hpf=hpf,
                 unzip=unzip,
+                strict=strict,
             ):
                 yield Path(mcd_file), acquisition, img, recovery_txt_file, recovered
                 del img
@@ -458,6 +461,7 @@ def try_preprocess_images_from_disk(
                         channel_names=channel_names,
                         hpf=hpf,
                         unzip=unzip,
+                        strict=strict,
                     ):
                         yield (
                             Path(mcd_file),
