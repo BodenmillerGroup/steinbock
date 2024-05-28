@@ -49,7 +49,7 @@ def ilastik_cmd(ilastik_binary, ilastik_args, ilastik_env):
     "--python",
     "python_path",
     type=click.Path(dir_okay=False),
-    default="python",
+    default="/opt/cellprofiler-venv/bin/python",
     show_default=True,
     help="Python path",
 )

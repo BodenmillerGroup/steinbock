@@ -105,7 +105,7 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 !!! danger "Experimental feature"
     This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
-    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options. The steinbock default parameters for the cellpose models (cell probability threshhold, flow threshhold etc) are not the same as the default values of *cellpose* itself. The steinbock default values are the result of manual optimization of cellpose parameters for segmentation of IMC images in the Bodenmiller lab.
+    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options. The steinbock default parameters for the cellpose models (cell probability threshhold, flow threshhold etc) are not the same as the default values of *cellpose* itself. The steinbock default values are the result of manual optimization of cellpose parameters for segmentation of IMC images in the Bodenmiller lab. This default values can be viewed using the command `steinbock segment cellpose run --help`.
 
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
@@ -142,7 +142,7 @@ The second command runs the cellpose training module. Unless specified via the `
 
 
 
-	  steinbock segment cellpose run pretrained-model ./training_out/models/myModel
+	  steinbock segment cellpose run --pretrained-model ./training_out/models/myModel
 
 
 !!! note "GPU support"
