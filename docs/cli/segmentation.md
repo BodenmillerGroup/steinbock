@@ -7,6 +7,12 @@ Various segmentation approaches are supported, each of which is described in the
 !!! note "Pixel classification-based image segmentation vs end-to-end approaches"
     While [pixel classification](classification.md)-based image segmentation using CellProfiler uses probability images to segment objects, end-to-end workflows such as DeepCell/Mesmer and Cellpose directly operate on images without the need for a preceding pixel classification step.
 
+
+!!! note "Large masks containing more than 65535 objects"
+  Please refer to the [installation page](../install-docker.md#Using-the-docker-container-with-large-images-containing-more-than-65535-objects) when analizing large masks with more than 65535 objects.
+
+
+
 ## CellProfiler
 
 [CellProfiler](https://cellprofiler.org) is an open-source software for measuring and analyzing cell images. Here, CellProfiler is used for object detection and region growth-based object segmentation.
@@ -87,7 +93,7 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
     Specify `--minmax` to enable min-max normalization and `--zscore` to enable z-score normalization.
 
 !!! note "Preprocessing/postprocessing parameters"
-    Application-dependent preprocessing/postprocessing parameters can be specified in YAML files using the `--preprocess`/`--postprocess` options. For the Mesmer application, this can e.g. be used to control thresholding, histogram normalization and watershed segmentation. Please refer to the DeepCell online documentation for available parameters. For example, one could specify `--preprocess preprocessing.yml`, where `preprocessing.yml` is a file in the steinbock data/working directory containing:
+    Application-dependent preprocessing/postprocessing parameters can be specified in YAML files using the `--preprocess`/`--postprocess` options. For the Mesmer application, this can e.g. be used to control thresholding, histogram normalization and watershed segmentation. Please refer to the DeepCell online documentation for available parameters. For example, one could specify `--preprocess preprocessing.yml`, where `preprocessing.yml` is a file in the *steinbock* data/working directory containing:
 
         threshold: true
         percentile: 99.9
@@ -99,20 +105,23 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 !!! danger "Experimental feature"
     This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
-    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options.
+    Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options. The steinbock default parameters for the cellpose models (cell probability threshhold, flow threshhold etc) are not the same as the default values of *cellpose* itself. The steinbock default values are the result of manual optimization of cellpose parameters for segmentation of IMC images in the Bodenmiller lab. This default values can be viewed using the command `steinbock segment cellpose run --help`.
 
 [Cellpose](https://www.cellpose.org) is a generalist algorithm for cellular segmentation.
 
 !!! note "End-to-end cell segmentation"
     This approach operates directly on image intensities and does not require a preceding pixel classification step.
 
-To segment cells using the default `cyto2` model:
+To segment cells using the default `tissuenet` model:
 
-    steinbock segment cellpose --minmax
+    steinbock segment cellpose run --minmax
 
 To segment nuclei using the `nuclei` model:
 
-    steinbock segment cellpose --minmax --model nuclei
+    steinbock segment cellpose run --minmax --model nuclei
+
+Models introduced in [cellpose 2.0](https://www.nature.com/articles/s41592-022-01663-4) can also be chosen, bringing the total number of available models to 14, these are 'nuclei',
+            'cyto', 'cyto2', 'tissuenet', 'livecell', 'CP', 'CPx', 'TN1', 'TN2', 'TN3', 'LC1', 'LC2', 'LC3' and 'LC4'. The user can utilize any of these models by specifying them using the `--model` argument as demonstrated above. The default is set to `tissuenet` model, please note that `tissuenet` is also the default model for training a cellpose model (See training a cellpose model below). Furthermore the path to a user-trained model (see [`Training a cellpose model` below](### Training a cellpose model)) can be used via the `-pretrained-model` argument.
 
 !!! note "Cellpose image data"
     Cellpose expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a cytoplasmic channel (e.g. E-Cadherin). The nuclear channel is optional and only the cytoplasmic channel ("channel to segment") is required. Note that - compared to the original cellpose implementation - the channel order is reversed for compatibility with DeepCell/Mesmer.
@@ -120,6 +129,21 @@ To segment nuclei using the `nuclei` model:
     If a `cellpose` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
 
     If no `cellpose` column is present, images are expected to be in the correct format already.
+
+### Training a cellpose model
+Training a cellpose model is performed using two commands
+
+      steinbock segment cellpose preapre
+      steinbock segment cellpose train
+
+By default the first command generates crops of images in `img` and stores them in `cellpose_crops` folder. These crops consist of a nuclear and a Cytoplasmic channels as described above. By default crops are then segmented using the `tissuenet` pre-trained model and the resulting masks are placed in the folder `cellpose_labels`. Any model from the  model zoo can be specified using the`--model_type` argument. User trained models can be specified by providing the full path to the model using the `pretrained-model` option (when `pretrained-model` is provided, the `--model_type` argument is set to `None`, see above). The user can optionally specify a list of files for cropping and training. After running the first command, the user should open and inspect the generated masks and correct them as needed. This can be done by starting the `cellpose` gui via *steinbock*: `steinbock apps cellpose` (See `Apps`in this document. For details on how to use cellpose to correct gui segmentations, see its relevant [documentation](https://cellpose.readthedocs.io/en/latest/gui.html).
+
+The second command runs the cellpose training module. Unless specified via the `--train-data` and `--train-labels` options, the command looks in `cellpose_crops` and `cellpose_labels` for images and masks that are used as ground truth. The resulting model is by default saved in `training_out`. The trained model can subsequently be used for segmentation via the `--pretrained-model` argument, for example as following;
+
+
+
+	  steinbock segment cellpose run --pretrained-model ./training_out/models/myModel
+
 
 !!! note "GPU support"
     Currently. steinbock does not support cellpose segmentation with GPU support.

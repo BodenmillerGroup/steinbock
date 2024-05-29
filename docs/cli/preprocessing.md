@@ -76,6 +76,10 @@ After image extraction, if the `--hpf` option is specified, the images are filte
 
 [^1]: Zanotelli et al. ImcSegmentationPipeline: A pixel classification-based multiplexed image segmentation pipeline. Zenodo, 2017. DOI: [10.5281/zenodo.3841961](https://doi.org/10.5281/zenodo.3841961).
 
+### Support for XTI imc machines
+
+The new generation of imc machines do not provide back-up text files of individual ROIs any more. Instead they provide individual mcd files per ROI as back-up. In some instances the downstream analysis pipelines are configured to use the text files as input. Therefore in order to maintain compatibility with these pieplines, we now provide the option to generate text files for ROIs via the command: `steinbock preprocess imc images --xti`.
+
 ## External images
 
 *External images* are images preprocessed externally (i.e., without *steinbock*) that are saved in an image format supported by [imageio](https://imageio.readthedocs.io).
