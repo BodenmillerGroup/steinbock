@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Print GitHub context
         run: echo "GITHUB_REF=$GITHUB_REF"
-        
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
