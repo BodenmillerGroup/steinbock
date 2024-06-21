@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../img/steinbock-favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.25">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -146,7 +146,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -1858,7 +1858,7 @@ SteinbockCellposeSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.cellpose.create_segmentation_stack" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f294cabedc0</span><span class="o">&gt;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd82b5a2dc0</span><span class="o">&gt;</span><span class="p">)</span></code>
 
 
 </h3>
@@ -1910,7 +1910,7 @@ SteinbockCellposeSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.cellpose.try_segment_objects" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">img_files</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f294cabedc0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">net_avg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">diameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tile_overlap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flow_threshold</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">cellprob_threshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">img_files</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd82b5a2dc0</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">net_avg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">diameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tile_overlap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flow_threshold</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">cellprob_threshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span></code>
 
 
 </h3>
@@ -2221,7 +2221,7 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.deepcell.create_segmentation_stack" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f294cabedc0</span><span class="o">&gt;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">create_segmentation_stack</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd82b5a2dc0</span><span class="o">&gt;</span><span class="p">)</span></code>
 
 
 </h3>
@@ -2273,7 +2273,7 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
 
 
 <h3 id="steinbock.segmentation.deepcell.try_segment_objects" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7f294cabedc0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">try_segment_objects</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channelwise_minmax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channelwise_zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggr_func</span><span class="o">=&lt;</span><span class="n">function</span> <span class="n">mean</span> <span class="n">at</span> <span class="mh">0x7fd82b5a2dc0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">**</span><span class="n">predict_kwargs</span><span class="p">)</span></code>
 
 
 </h3>
@@ -2397,7 +2397,7 @@ SteinbockDeepcellSegmentationException            (<span title="steinbock.segmen
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.top", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.081f42fc.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
     
   </body>
