@@ -17,7 +17,7 @@ on:
 jobs:
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     steps:
 
       - name: Checkout repository
@@ -46,7 +46,7 @@ jobs:
   pypi:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-m
     steps:
 
       - name: Checkout repository
@@ -74,8 +74,10 @@ jobs:
   ghcr:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
+      - name: Print GitHub context
+        run: echo "GITHUB_REF=$GITHUB_REF"
 
       - name: Checkout repository
         uses: actions/checkout@v3

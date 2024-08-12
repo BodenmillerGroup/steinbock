@@ -14,3 +14,18 @@
 A toolkit for processing multiplexed tissue images
 
 Documentation is available at https://bodenmillergroup.github.io/steinbock
+
+## Citation
+
+Please cite the following paper when using `steinbock` in your work:
+
+>  Windhager, J., Zanotelli, V.R.T., Schulz, D. et al. An end-to-end workflow for multiplexed image processing and analysis. Nat Protoc (2023). https://doi.org/10.1038/s41596-023-00881-0
+
+    @article{Windhager2023,
+        author = {Windhager, Jonas and Zanotelli, Vito R.T. and Schulz, Daniel and Meyer, Lasse and Daniel, Michelle and Bodenmiller, Bernd and Eling, Nils},
+        title = {An end-to-end workflow for multiplexed image processing and analysis},
+        year = {2023},
+        doi = {10.1038/s41596-023-00881-0},
+        URL = {https://www.nature.com/articles/s41596-023-00881-0},
+        journal = {Nature Protocols}
+    }

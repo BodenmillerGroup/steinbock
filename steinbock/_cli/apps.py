@@ -148,3 +148,35 @@ def jupyterlab_cmd(python_path, jupyter_module, jupyterlab_args):
     args = [python_path, "-m", jupyter_module, "lab"] + jupyterlab_args
     result = run_captured(args)
     sys.exit(result.returncode)
+
+
+@apps_cmd_group.command(
+    name="cellpose",
+    context_settings={"ignore_unknown_options": True},
+    help="Run cellpose GUI",
+    add_help_option=False,
+)
+@click.option(
+    "--python",
+    "python_path",
+    type=click.Path(dir_okay=False),
+    default="python",
+    show_default=True,
+    help="Python path",
+)
+@click.option(
+    "--cellpose",
+    "cellpose_module",
+    type=click.STRING,
+    default="cellpose",
+    show_default=True,
+    help="cellpose module",
+)
+@click.argument("cellpose_args", nargs=-1, type=click.UNPROCESSED)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
+def cellpose_view_cmd(python_path, cellpose_module, cellpose_args):
+    cellpose_args = list(cellpose_args)
+    args = [python_path, "-m", cellpose_module] + cellpose_args
+    result = run_captured(args)
+    sys.exit(result.returncode)

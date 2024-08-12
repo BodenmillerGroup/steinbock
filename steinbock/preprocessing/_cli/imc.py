@@ -191,9 +191,30 @@ def panel_cmd(
     show_default=True,
     help="Path to the image information output file",
 )
+@click.option(
+<<<<<<< HEAD
+    "--xti/--no-xti",
+    "xti",
+    show_default=True,
+    help="generate txt files from xti imc file",
+)
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file):
+def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, xti):
+=======
+    "--strict",
+    "strict",
+    default=True,
+    show_default=True,
+    type=bool,
+    help="Use strict parsing (skip and throw errors on corrupted ROIs)",
+)
+@click_log.simple_verbosity_option(logger=steinbock_logger)
+@catch_exception(handle=SteinbockException)
+def images_cmd(
+    mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, strict
+):
+>>>>>>> main
     channel_names = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
@@ -205,14 +226,25 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
     txt_files = imc.list_txt_files(txt_dir, unzip=unzip)
     mcd_txt_files = {}
     num_dupl = 0
+
     for (
         mcd_or_txt_file,
         acquisition,
         img,
         recovery_txt_file,
         recovered,
+        img_gen_txt,
     ) in imc.try_preprocess_images_from_disk(
-        mcd_files, txt_files, channel_names=channel_names, hpf=hpf, unzip=unzip
+        mcd_files,
+        txt_files,
+        channel_names=channel_names,
+        hpf=hpf,
+        unzip=unzip,
+<<<<<<< HEAD
+        xti=xti,
+=======
+        strict=strict,
+>>>>>>> main
     ):
         img_file_stem = Path(mcd_or_txt_file).stem
         if acquisition is not None:
@@ -230,6 +262,11 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
             mcd_txt_files[img_file_stem] = [mcd_or_txt_file]
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
         io.write_image(img, img_file)
+
+        if xti:
+            gen_txt_file = Path(img_dir) / f"{img_file_stem}.txt"
+            img_gen_txt.to_csv(gen_txt_file, header=True, index=None, sep="\t")
+
         image_info_row = imc.create_image_info(
             mcd_or_txt_file, acquisition, img, recovery_txt_file, recovered, img_file
         )
