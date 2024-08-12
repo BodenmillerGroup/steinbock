@@ -39,7 +39,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git fetch origin gh-pages --verbose
-          mike deploy -p -u --rebase ${GITHUB_REF#refs/tags/}
+          mike deploy -p -u ${GITHUB_REF#refs/tags/}
 
       - name: Build documentation (latest)
         if: github.ref == 'refs/heads/main'
@@ -47,4 +47,4 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git fetch origin gh-pages --verbose
-          mike deploy -p -u --rebase latest
+          mike deploy -p -u latest

@@ -334,12 +334,17 @@ def _try_preprocess_mcd_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
+<<<<<<< HEAD
     xti: bool = False,
 ) -> Generator[
     Tuple[Acquisition, np.ndarray, Optional[Path], bool, Optional[pd.DataFrame]],
     None,
     None,
 ]:
+=======
+    strict: bool = False,
+) -> Generator[Tuple[Acquisition, np.ndarray, Optional[Path], bool], None, None]:
+>>>>>>> main
     try:
         with MCDFile(mcd_file) as f_mcd:
             for slide in f_mcd.slides:
@@ -360,11 +365,7 @@ def _try_preprocess_mcd_images_from_disk(
                             )
                             continue
                     try:
-                        img = f_mcd.read_acquisition(acquisition)
-                        if xti:
-                            img_gen_txt = try_gen_text_file_from_mcd(acquisition, img)
-                        else:
-                            img_gen_txt = None
+                        img = f_mcd.read_acquisition(acquisition, strict=strict)
                         if channel_ind is not None:
                             img = img[channel_ind, :, :]
                         img = preprocess_image(img, hpf=hpf)
@@ -429,7 +430,7 @@ def try_preprocess_images_from_disk(
     channel_names: Optional[Sequence[str]] = None,
     hpf: Optional[float] = None,
     unzip: bool = False,
-    xti: bool = False,
+    strict: bool = False,
 ) -> Generator[
     Tuple[
         Path,
@@ -462,7 +463,7 @@ def try_preprocess_images_from_disk(
                 channel_names=channel_names,
                 hpf=hpf,
                 unzip=unzip,
-                xti=xti,
+                strict=strict,
             ):
                 yield Path(
                     mcd_file
@@ -485,7 +486,7 @@ def try_preprocess_images_from_disk(
                         channel_names=channel_names,
                         hpf=hpf,
                         unzip=unzip,
-                        xti=xti,
+                        strict=strict,
                     ):
                         yield (
                             Path(mcd_file),
