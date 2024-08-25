@@ -194,13 +194,22 @@ def panel_cmd(
 @click.option(
     "--xti/--no-xti",
     "xti",
-    default=False,
     show_default=True,
     help="generate txt files from xti imc file",
 )
+
+@click.option(
+    "--strict",
+    "strict",
+    default=True,
+    show_default=True,
+    type=bool,
+    help="Use strict parsing (skip and throw errors on corrupted ROIs)",
+)
+
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
-def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, xti):
+def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, xti, strict):
     channel_names = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
@@ -219,8 +228,15 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
         img,
         recovery_txt_file,
         recovered,
+        img_gen_txt,
     ) in imc.try_preprocess_images_from_disk(
-        mcd_files, txt_files, channel_names=channel_names, hpf=hpf, unzip=unzip,
+        mcd_files,
+        txt_files,
+        channel_names=channel_names,
+        hpf=hpf,
+        unzip=unzip,
+        xti=xti,
+        strict = strict
     ):
         img_file_stem = Path(mcd_or_txt_file).stem
         if acquisition is not None:
@@ -238,6 +254,11 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
             mcd_txt_files[img_file_stem] = [mcd_or_txt_file]
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
         io.write_image(img, img_file)
+
+        if xti:
+            gen_txt_file = Path(img_dir) / f"{img_file_stem}.txt"
+            img_gen_txt.to_csv(gen_txt_file, header=True, index=None, sep="\t")
+
         image_info_row = imc.create_image_info(
             mcd_or_txt_file, acquisition, img, recovery_txt_file, recovered, img_file
         )
@@ -247,32 +268,3 @@ def images_cmd(mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_fil
     image_info = pd.DataFrame(data=image_info_data)
     io.write_image_info(image_info, image_info_file)
     logger.info(image_info_file)
-    if xti:
-        mcd_txt_files = {}
-        num_dupl = 0
-        for (
-            mcd_file,
-            acquisition,
-            img,
-        ) in imc.try_gen_text_file_from_mcd(
-            mcd_files, unzip=unzip
-        ):
-            img_file_stem = Path(mcd_file).stem
-            if acquisition is not None:
-                img_file_stem += f"_{acquisition.id:03d}"
-            if img_file_stem in mcd_txt_files:
-                num_dupl += 1
-                first_mcd_txt_file = mcd_txt_files[img_file_stem][0]
-                img_file_stem = f"DUPLICATE{num_dupl:03d}_{img_file_stem}"
-                logger.warning(
-                    f"File {mcd_file} is a duplicate of {first_mcd_txt_file}, "
-                    f"saving as {img_file_stem}"
-                )
-                mcd_txt_files[img_file_stem].append(mcd_file)
-            else:
-                mcd_txt_files[img_file_stem] = [mcd_file]
-
-            gentxt_file = Path(txt_dir) / f"{img_file_stem}.txt"
-            img.to_csv(gentxt_file, header=True, index=None, sep='\t')
-            del img
-            logger.info(gentxt_file)
