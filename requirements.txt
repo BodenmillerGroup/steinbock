@@ -14,7 +14,7 @@ numpy==1.23.5  # deepcell 0.12.4 requires <1.24
 opencv-python-headless==4.7.0.68
 pandas==1.5.3
 pyyaml==6.0
-readimc==0.7.0
+readimc==0.9.2
 scikit-image==0.19.3
 scipy==1.10.0
 tifffile==2023.1.23.1
