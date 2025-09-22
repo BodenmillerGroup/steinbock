@@ -10,7 +10,7 @@ from . import data as cellprofiler_data
 
 
 def create_and_save_segmentation_pipeline(
-    segmentation_pipeline_file: Union[str, PathLike]
+    segmentation_pipeline_file: Union[str, PathLike],
 ) -> None:
     with resources.open_binary(cellprofiler_data, "cell_segmentation.cppipe") as fsrc:
         with open(segmentation_pipeline_file, mode="wb") as fdst:
