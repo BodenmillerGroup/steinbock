@@ -186,22 +186,8 @@ RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
 USER steinbock:steinbock
 
 RUN mkdir -p /home/steinbock/.cellpose/models && \
-    cd /home/steinbock/.cellpose/models && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_0 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_1 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_2 && \
-    curl -SsO https://www.cellpose.org/models/cytotorch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_cytotorch_0.npy && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_0 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_1 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_2 && \
-    curl -SsO https://www.cellpose.org/models/nucleitorch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_nucleitorch_0.npy && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_0 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_1 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_2 && \
-    curl -SsO https://www.cellpose.org/models/cyto2torch_3 && \
-    curl -SsO https://www.cellpose.org/models/size_cyto2torch_0.npy
+    curl -L -sS -o /home/steinbock/.cellpose/models/cpsam \
+      https://huggingface.co/mouseland/cellpose-sam/resolve/main/cpsam
 
 
 
