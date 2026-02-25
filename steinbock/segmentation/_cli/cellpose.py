@@ -161,13 +161,6 @@ cellpose_cli_available = cellpose.cellpose_available
     help="See Cellpose documentation",
 )
 @click.option(
-    "--interp/--no-interp",
-    "interp",
-    default=True,
-    show_default=True,
-    help="See Cellpose documentation",
-)
-@click.option(
     "-o",
     "mask_dir",
     type=click.Path(file_okay=False),
@@ -197,7 +190,6 @@ def cellpose_cmd(
     niter,
     augment,
     tile_overlap,
-    interp,
     mask_dir,
 ):
     channel_groups = None
@@ -228,7 +220,6 @@ def cellpose_cmd(
         niter=niter,
         augment=augment,
         tile_overlap=tile_overlap,
-        interp=interp,
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)

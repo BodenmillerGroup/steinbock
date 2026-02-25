@@ -79,7 +79,6 @@ def try_segment_objects(
     niter: Optional[int] = None,
     augment: bool = False,
     tile_overlap: float = 0.1,
-    interp: bool = True,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray], None, None]:
     model = models.CellposeModel(gpu=True) # cellpose checks for gpu availability internally, so we can just set gpu=True here.
     for img_file in img_files:
@@ -108,7 +107,6 @@ def try_segment_objects(
                 niter=niter,
                 augment=augment,
                 tile_overlap=tile_overlap,
-                interp=interp,
             )
             
             yield Path(img_file), masks[0], flows[0], styles[0]
