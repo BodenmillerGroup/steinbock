@@ -93,7 +93,11 @@ def try_segment_objects(
                 channel_groups=channel_groups,
                 aggr_func=aggr_func,
             )
-
+            if img.shape[0] > 3:
+                raise SteinbockCellposeSegmentationException(
+                    f"Invalid number of aggregated channels: "
+                    f"expected 1 or 2, got {img.shape[0]}"
+                )
             masks, flows, styles = model.eval(
                 [img],
                 batch_size=batch_size,
