@@ -71,7 +71,7 @@ def try_segment_objects(
     normalize: bool = True,
     invert: bool = False,
     rescale: Optional[float] = None,
-    diameter: Optional[int] = None,
+    diameter: Optional[float] = None,
     flow_threshold: float = 0.4,
     cellprob_threshold: float = 0.0,
     min_size: int = 15,

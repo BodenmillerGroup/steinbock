@@ -100,7 +100,7 @@ cellpose_cli_available = cellpose.cellpose_available
 @click.option(
     "--diameter",
     "diameter",
-    type=click.INT,
+    type=click.FLOAT,
     default=None,
     show_default=True,
     help="See Cellpose documentation",
