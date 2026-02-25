@@ -15,14 +15,6 @@ cellpose_cli_available = cellpose.cellpose_available
 
 @click.command(name="cellpose", help="Run an object segmentation batch using Cellpose")
 @click.option(
-    "--model",
-    "model_name",
-    type=click.Choice(["nuclei", "cyto", "cyto2"]),
-    default="cyto2",
-    show_default=True,
-    help="Name of the Cellpose model",
-)
-@click.option(
     "--img",
     "img_dir",
     type=click.Path(exists=True, file_okay=False),
@@ -61,19 +53,27 @@ cellpose_cli_available = cellpose.cellpose_available
     help="Numpy function for aggregating channel pixels",
 )
 @click.option(
-    "--net-avg/--no-net-avg",
-    "net_avg",
-    default=True,
-    show_default=True,
-    help="See Cellpose documentation",
-)
-@click.option(
     "--batch-size",
     "batch_size",
     type=click.INT,
     default=8,
     show_default=True,
     help="See Cellpose documentation",
+)
+@click.option(
+    "--resample/--no-resample",
+    "resample",
+    default=False,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
+    "--channel-axis",
+    "channel_axis",
+    type=click.INT,
+    default=0,
+    show_default=True,
+    help="See Cellpose documentation.",
 )
 @click.option(
     "--normalize/--no-normalize",
@@ -83,37 +83,25 @@ cellpose_cli_available = cellpose.cellpose_available
     help="See Cellpose documentation",
 )
 @click.option(
-    "--diameter",
-    "diameter",
-    type=click.FLOAT,
-    help="See Cellpose documentation",
-)
-@click.option(
-    "--tile/--no-tile",
-    "tile",
+    "--invert/--no-invert",
+    "invert",
     default=False,
     show_default=True,
     help="See Cellpose documentation",
 )
 @click.option(
-    "--tile-overlap",
-    "tile_overlap",
+    "--rescale",
+    "rescale",
     type=click.FLOAT,
-    default=0.1,
+    default=None,
     show_default=True,
     help="See Cellpose documentation",
 )
 @click.option(
-    "--resample/--no-resample",
-    "resample",
-    default=True,
-    show_default=True,
-    help="See Cellpose documentation",
-)
-@click.option(
-    "--interp/--no-interp",
-    "interp",
-    default=True,
+    "--diameter",
+    "diameter",
+    type=click.INT,
+    default=None,
     show_default=True,
     help="See Cellpose documentation",
 )
@@ -126,8 +114,8 @@ cellpose_cli_available = cellpose.cellpose_available
     help="See Cellpose documentation",
 )
 @click.option(
-    "--cellprobab-threshold",
-    "cellprobab_threshold",
+    "--cellprob-threshold",
+    "cellprob_threshold",
     type=click.FLOAT,
     default=0.0,
     show_default=True,
@@ -142,6 +130,44 @@ cellpose_cli_available = cellpose.cellpose_available
     help="See Cellpose documentation",
 )
 @click.option(
+    "--max-size-fraction",
+    "max_size_fraction",
+    type=click.FLOAT,
+    default=0.4,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
+    "--niter",
+    "niter",
+    type=click.INT,
+    default=None,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
+    "--augment/--no-augment",
+    "augment",
+    default=False,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
+    "--tile-overlap",
+    "tile_overlap",
+    type=click.FLOAT,
+    default=0.1,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
+    "--interp/--no-interp",
+    "interp",
+    default=True,
+    show_default=True,
+    help="See Cellpose documentation",
+)
+@click.option(
     "-o",
     "mask_dir",
     type=click.Path(file_okay=False),
@@ -152,23 +178,26 @@ cellpose_cli_available = cellpose.cellpose_available
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def cellpose_cmd(
-    model_name: str,
     img_dir,
     channelwise_minmax,
     channelwise_zscore,
     panel_file,
     aggr_func_name,
-    net_avg,
     batch_size,
-    normalize,
-    diameter,
-    tile,
-    tile_overlap,
     resample,
-    interp,
+    channel_axis,
+    normalize,
+    invert,
+    rescale,
+    diameter,
     flow_threshold,
-    cellprobab_threshold,
+    cellprob_threshold,
     min_size,
+    max_size_fraction,
+    niter,
+    augment,
+    tile_overlap,
+    interp,
     mask_dir,
 ):
     channel_groups = None
@@ -179,24 +208,27 @@ def cellpose_cmd(
     aggr_func = getattr(np, aggr_func_name)
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
-    for img_file, mask, flow, style, diam in cellpose.try_segment_objects(
-        model_name,
+    for img_file, mask, _, _ in cellpose.try_segment_objects(
         img_files,
         channelwise_minmax=channelwise_minmax,
         channelwise_zscore=channelwise_zscore,
         channel_groups=channel_groups,
         aggr_func=aggr_func,
-        net_avg=net_avg,
         batch_size=batch_size,
-        normalize=normalize,
-        diameter=diameter,
-        tile=tile,
-        tile_overlap=tile_overlap,
         resample=resample,
-        interp=interp,
+        channel_axis=channel_axis,
+        normalize=normalize,
+        invert=invert,
+        rescale=rescale,
+        diameter=diameter,
         flow_threshold=flow_threshold,
-        cellprob_threshold=cellprobab_threshold,
+        cellprob_threshold=cellprob_threshold,
         min_size=min_size,
+        max_size_fraction=max_size_fraction,
+        niter=niter,
+        augment=augment,
+        tile_overlap=tile_overlap,
+        interp=interp,
     ):
         mask_file = io._as_path_with_suffix(Path(mask_dir) / img_file.name, ".tiff")
         io.write_mask(mask, mask_file)

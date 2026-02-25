@@ -10,8 +10,7 @@ from .. import io
 from ._segmentation import SteinbockSegmentationException
 
 try:
-    import cellpose.models
-
+    from cellpose import models
     cellpose_available = True
 except Exception:
     cellpose_available = False
@@ -61,25 +60,28 @@ def create_segmentation_stack(
 
 
 def try_segment_objects(
-    model_name: str,
     img_files: Sequence[Union[str, PathLike]],
     channelwise_minmax: bool = False,
     channelwise_zscore: bool = False,
     channel_groups: Optional[np.ndarray] = None,
     aggr_func: AggregationFunction = np.mean,
-    net_avg: bool = True,
     batch_size: int = 8,
+    resample: bool = False,
+    channel_axis: int = 0,
     normalize: bool = True,
+    invert: bool = False,
+    rescale: Optional[float] = None,
     diameter: Optional[int] = None,
-    tile: bool = False,
-    tile_overlap: float = 0.1,
-    resample: bool = True,
-    interp: bool = True,
     flow_threshold: float = 0.4,
     cellprob_threshold: float = 0.0,
     min_size: int = 15,
-) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray, float], None, None]:
-    model = cellpose.models.Cellpose(model_type=model_name, net_avg=net_avg)
+    max_size_fraction: float = 0.4,
+    niter: Optional[int] = None,
+    augment: bool = False,
+    tile_overlap: float = 0.1,
+    interp: bool = True,
+) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray], None, None]:
+    model = models.CellposeModel(gpu=True) # cellpose checks for gpu availability internally, so we can just set gpu=True here.
     for img_file in img_files:
         try:
             img = create_segmentation_stack(
@@ -89,35 +91,27 @@ def try_segment_objects(
                 channel_groups=channel_groups,
                 aggr_func=aggr_func,
             )
-            # channels: [cytoplasmic, nuclear]
-            if img.shape[0] == 1:
-                channels = [0, 0]  # grayscale image (cytoplasmic channel only)
-            elif img.shape[0] == 2:
-                channels = [2, 1]  # R=1 G=2 B=3 image (nuclear & cytoplasmic channels)
-            else:
-                raise SteinbockCellposeSegmentationException(
-                    f"Invalid number of aggregated channels: "
-                    f"expected 1 or 2, got {img.shape[0]}"
-                )
-            masks, flows, styles, diams = model.eval(
+
+            masks, flows, styles = model.eval(
                 [img],
                 batch_size=batch_size,
-                channels=channels,
-                channel_axis=0,
-                normalize=normalize,
-                diameter=diameter,
-                net_avg=net_avg,
-                tile=tile,
-                tile_overlap=tile_overlap,
                 resample=resample,
-                interp=interp,
+                channel_axis=channel_axis,
+                normalize=normalize,
+                invert=invert,
+                rescale=rescale,
+                diameter=diameter,
                 flow_threshold=flow_threshold,
                 cellprob_threshold=cellprob_threshold,
                 min_size=min_size,
-                progress=False,
+                max_size_fraction=max_size_fraction,
+                niter=niter,
+                augment=augment,
+                tile_overlap=tile_overlap,
+                interp=interp,
             )
-            diam = diams if isinstance(diams, float) else diams[0]
-            yield Path(img_file), masks[0], flows[0], styles[0], diam
-            del img, masks, flows, styles, diams
+            
+            yield Path(img_file), masks[0], flows[0], styles[0]
+            del img, masks, flows, styles
         except Exception as e:
             logger.exception(f"Error segmenting objects in {img_file}: {e}")
