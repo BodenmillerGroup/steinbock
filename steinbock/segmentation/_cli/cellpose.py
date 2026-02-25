@@ -142,7 +142,6 @@ cellpose_cli_available = cellpose.cellpose_available
     "niter",
     type=click.INT,
     default=None,
-    show_default=True,
     help="See Cellpose documentation",
 )
 @click.option(

@@ -11,6 +11,7 @@ from ._segmentation import SteinbockSegmentationException
 
 try:
     from cellpose import models
+
     cellpose_available = True
 except Exception:
     cellpose_available = False
@@ -80,7 +81,9 @@ def try_segment_objects(
     augment: bool = False,
     tile_overlap: float = 0.1,
 ) -> Generator[Tuple[Path, np.ndarray, np.ndarray, np.ndarray], None, None]:
-    model = models.CellposeModel(gpu=True) # cellpose checks for gpu availability internally, so we can just set gpu=True here.
+    model = models.CellposeModel(
+        gpu=True
+    )  # cellpose checks for gpu availability internally, so we can just set gpu=True here.
     for img_file in img_files:
         try:
             img = create_segmentation_stack(
@@ -108,7 +111,7 @@ def try_segment_objects(
                 augment=augment,
                 tile_overlap=tile_overlap,
             )
-            
+
             yield Path(img_file), masks[0], flows[0], styles[0]
             del img, masks, flows, styles
         except Exception as e:
