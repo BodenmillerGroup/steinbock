@@ -94,7 +94,7 @@ cellpose_cli_available = cellpose.cellpose_available
     "rescale",
     type=click.FLOAT,
     default=None,
-    show_default=True,
+    show_default=False,
     help="See Cellpose documentation",
 )
 @click.option(
@@ -102,7 +102,7 @@ cellpose_cli_available = cellpose.cellpose_available
     "diameter",
     type=click.FLOAT,
     default=None,
-    show_default=True,
+    show_default=False,
     help="See Cellpose documentation",
 )
 @click.option(
