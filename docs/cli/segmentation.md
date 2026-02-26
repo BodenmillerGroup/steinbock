@@ -96,8 +96,8 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 
 ## Cellpose
 
-!!! danger "Experimental feature"
-    This is an experimental feature and is only available in the `-cellpose` flavors of the *steinbock* Docker container.
+
+!!! This feature is only available in the `-cellpose` flavors of the *steinbock* Docker container.
 
     Segmentation using cellpose likely requires fine-tuning of parameters, e.g. using steinbock command-line interface options.
 
@@ -106,22 +106,16 @@ This will create grayscale cell/nuclear masks of the same x and y dimensions as 
 !!! note "End-to-end cell segmentation"
     This approach operates directly on image intensities and does not require a preceding pixel classification step.
 
-To segment cells using the default `cyto2` model:
+To segment nuclei or cells using the default `cpsam` model:
 
-    steinbock segment cellpose --minmax
-
-To segment nuclei using the `nuclei` model:
-
-    steinbock segment cellpose --minmax --model nuclei
+    steinbock segment cellpose
 
 !!! note "Cellpose image data"
-    Cellpose expects two-channel images as input, where the first channel must be a nuclear channel (e.g. DAPI) and the second channel must be a cytoplasmic channel (e.g. E-Cadherin). The nuclear channel is optional and only the cytoplasmic channel ("channel to segment") is required. Note that - compared to the original cellpose implementation - the channel order is reversed for compatibility with DeepCell/Mesmer.
+    For cell segmentation, Cellpose expects maximum 3-channel images as input, where one channel should be a nuclear channel (e.g. DAPI) and the second channel should be a cytoplasmic channel (e.g. E-Cadherin), the order does not matter anymore in v4+. For nuclei segmentation, only a nuclei channel should be provided and the parameter `--diameter` has to be adjusted accordingly.
 
-    If a `cellpose` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for DeepCell: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
+    If a `cellpose` column is present in the *steinbock* panel file, channels are sorted and grouped according to values in that column to generate the required input for Cellpose: For each image, each group of channels is aggregated by computing the mean along the channel axis (use the `--aggr` option to specify a different aggregation strategy). The resulting images consist of one channel per group; channels without a group label are ignored.
 
     If no `cellpose` column is present, images are expected to be in the correct format already.
 
 !!! note "GPU support"
-    Currently. steinbock does not support cellpose segmentation with GPU support.
-
-    If GPU support is required, consider running cellpose on your host system independently.
+    In Cellpose v4+ GPU usage is supported inherently - there is a check whether GPU devices are available, otherwise it will fall back to CPU usage.
