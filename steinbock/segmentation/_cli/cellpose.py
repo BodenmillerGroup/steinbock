@@ -13,7 +13,7 @@ from .. import cellpose
 cellpose_cli_available = cellpose.cellpose_available
 
 
-@click.command(name="cellpose", help="Run an object segmentation batch using Cellpose")
+@click.command(name="cellpose", help="Run an object segmentation batch using CellposeSAM")
 @click.option(
     "--img",
     "img_dir",
