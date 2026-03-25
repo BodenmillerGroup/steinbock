@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.6] - 2026-03-25
+
+### Changed
+
+  - Updated build.yml to run ghcr docker build on ubuntu-latest
+
 ## [0.16.5] - 2026-03-25
 
 ### Changed
 
   - Updated build.yml to run ghcr docker build on ubuntu-latest-m
+  - removed cellpose-, gpu-, xpra docker build
 
 ## [0.16.4] - 2026-02-26
 
