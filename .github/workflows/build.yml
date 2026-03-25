@@ -34,18 +34,9 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
-      
-      - name: Debug container filesystem
-        run: |
-          docker compose run --rm --entrypoint sh steinbock -lc '
-            pwd
-            ls -la
-            find . -maxdepth 3 -type d | sed -n "1,100p"
-            find . -maxdepth 4 \( -name "test_*.py" -o -name "*_test.py" \) | sed -n "1,100p"
-          '
 
       - name: Run pytest in steinbock container
-        run: docker compose run --rm --entrypoint sh steinbock -lc 'python -m pytest tests'
+        run: docker compose run --rm pytest
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
