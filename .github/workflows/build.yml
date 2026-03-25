@@ -36,7 +36,7 @@ jobs:
           COMPOSE_DOCKER_CLI_BUILD: 1
 
       - name: Run pytest in steinbock container
-        run: docker compose run --rm --entrypoint python steinbock -m pytest
+        run: docker compose run --rm --entrypoint sh steinbock -lc 'python -m pytest tests'
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
@@ -73,7 +73,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_API_TOKEN_VI }}
 
   ghcr:
     needs: test
