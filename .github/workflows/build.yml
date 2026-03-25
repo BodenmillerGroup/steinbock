@@ -36,7 +36,7 @@ jobs:
           COMPOSE_DOCKER_CLI_BUILD: 1
 
       - name: Run pytest in steinbock container
-        run: docker compose run --rm steinbock pytest
+        run: docker compose run --rm --entrypoint python steinbock -m pytest
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
