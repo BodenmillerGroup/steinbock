@@ -21,7 +21,7 @@ on:
 jobs:
 
   test:
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout repository
@@ -50,7 +50,7 @@ jobs:
   pypi:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout repository
@@ -78,7 +78,7 @@ jobs:
   ghcr:
     needs: test
     if: startsWith(github.ref, 'refs/tags')
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     steps:
       - name: Print GitHub context
         run: echo "GITHUB_REF=$GITHUB_REF"
@@ -126,192 +126,3 @@ jobs:
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.steinbock_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_container_meta.outputs.labels }}
-
-      # steinbock-gpu
-
-      - name: Create steinbock-gpu container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_gpu_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-gpu,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-gpu container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: steinbock
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow-gpu
-            STEINBOCK_TARGET=steinbock
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_gpu_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_gpu_container_meta.outputs.labels }}
-
-      # steinbock-cellpose
-
-      - name: Create steinbock-cellpose container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_cellpose_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-cellpose,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-cellpose container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: steinbock-cellpose
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow
-            STEINBOCK_TARGET=steinbock-cellpose
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_cellpose_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_cellpose_container_meta.outputs.labels }}
-
-      # steinbock-cellpose-gpu
-
-      - name: Create steinbock-cellpose-gpu container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_cellpose_gpu_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-cellpose-gpu,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-cellpose-gpu container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: steinbock-cellpose
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow-gpu
-            STEINBOCK_TARGET=steinbock-cellpose
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_cellpose_gpu_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_cellpose_gpu_container_meta.outputs.labels }}
-
-      # steinbock-xpra
-
-      - name: Create steinbock-xpra container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_xpra_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-xpra,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-xpra container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: xpra
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow
-            STEINBOCK_TARGET=steinbock
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_xpra_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_xpra_container_meta.outputs.labels }}
-
-      # steinbock-gpu-xpra
-
-      - name: Create steinbock-gpu-xpra container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_gpu_xpra_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-gpu-xpra,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-gpu-xpra container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: xpra
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow-gpu
-            STEINBOCK_TARGET=steinbock
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_gpu_xpra_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_gpu_xpra_container_meta.outputs.labels }}
-
-      # steinbock-cellpose-xpra
-
-      - name: Create steinbock-cellpose-xpra container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_cellpose_xpra_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-cellpose-xpra,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-cellpose-xpra container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: xpra
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow
-            STEINBOCK_TARGET=steinbock-cellpose
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_cellpose_xpra_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_cellpose_xpra_container_meta.outputs.labels }}
-
-      # steinbock-cellpose-gpu-xpra
-
-      - name: Create steinbock-cellpose-gpu-xpra container metadata
-        uses: docker/metadata-action@v4
-        id: steinbock_cellpose_gpu_xpra_container_meta
-        with:
-          images: ghcr.io/${{ github.repository }}
-          flavor: |
-            suffix=-cellpose-gpu-xpra,onlatest=true
-          tags: |
-            type=semver,pattern={{major}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-
-      - name: Build and publish steinbock-cellpose-gpu-xpra container
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          target: xpra
-          build-args: |
-            TENSORFLOW_TARGET=tensorflow-gpu
-            STEINBOCK_TARGET=steinbock-cellpose
-            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
-          tags: ${{ steps.steinbock_cellpose_gpu_xpra_container_meta.outputs.tags }}
-          labels: ${{ steps.steinbock_cellpose_gpu_xpra_container_meta.outputs.labels }}
