@@ -45,31 +45,32 @@ jobs:
           files: coverage.xml
 
   pypi:
-    needs: test
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      needs: test
+      if: startsWith(github.ref, 'refs/tags')
+      runs-on: ubuntu-latest-m
+      steps:
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.8"
+        - name: Checkout repository
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
 
-      - name: Build package
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install build
-          python -m build .
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: 3.8
 
-      - name: Publish package
-        uses: pypa/gh-action-pypi-publish@release/v1
+        - name: Build package
+          run: |
+            python -m pip install --upgrade pip
+            python -m pip install build
+            python -m build .
+
+        - name: Publish package
+          uses: pypa/gh-action-pypi-publish@release/v1
+          with:
+            user: __token__
+            password: ${{ secrets.PYPI_API_TOKEN }}
 
   ghcr:
     needs: test
@@ -103,6 +104,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # steinbock
 
       - name: Create steinbock container metadata
         id: steinbock_container_meta
@@ -120,10 +123,64 @@ jobs:
           context: .
           push: true
           target: steinbock
-          platforms: linux/amd64,linux/arm64
           build-args: |
             TENSORFLOW_TARGET=tensorflow
             STEINBOCK_TARGET=steinbock
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.steinbock_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_container_meta.outputs.labels }}
+      
+
+      # steinbock-gpu
+
+      - name: Create steinbock-gpu container metadata
+        uses: docker/metadata-action@v4
+        id: steinbock_gpu_container_meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            suffix=-gpu,onlatest=true
+          tags: |
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+
+      - name: Build and publish steinbock-gpu container
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          target: steinbock
+          build-args: |
+            TENSORFLOW_TARGET=tensorflow-gpu
+            STEINBOCK_TARGET=steinbock
+            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
+          tags: ${{ steps.steinbock_gpu_container_meta.outputs.tags }}
+          labels: ${{ steps.steinbock_gpu_container_meta.outputs.labels }}
+
+
+      # steinbock cellpose
+
+      - name: Create steinbock-cellpose container metadata
+        uses: docker/metadata-action@v4
+        id: steinbock_cellpose_container_meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            suffix=-cellpose,onlatest=true
+          tags: |
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+
+      - name: Build and publish steinbock-cellpose container
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          target: steinbock-cellpose
+          build-args: |
+            STEINBOCK_TARGET=steinbock-cellpose
+            STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
+          tags: ${{ steps.steinbock_cellpose_container_meta.outputs.tags }}
+          labels: ${{ steps.steinbock_cellpose_container_meta.outputs.labels }}

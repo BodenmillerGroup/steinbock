@@ -166,15 +166,6 @@ RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSIO
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
 
-# Install Cellpose into the main steinbock image so the default image includes Cellpose
-RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
-
-# Download CPSAM model for Cellpose into steinbock user's home and set ownership
-RUN mkdir -p /home/steinbock/.cellpose/models && \
-    curl -L -sS -o /home/steinbock/.cellpose/models/cpsam \
-    https://huggingface.co/mouseland/cellpose-sam/resolve/main/cpsam && \
-    chown -R steinbock:steinbock /home/steinbock/.cellpose
-
 # configure container
 
 WORKDIR /data
