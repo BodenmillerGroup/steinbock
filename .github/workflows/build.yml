@@ -181,7 +181,7 @@ jobs:
           target: steinbock-cellpose
           platforms: linux/amd64,linux/arm64
           build-args: |
-            STEINBOCK_TARGET=steinbock-cellpose
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
+            CELLPOSE_VERSION=4.0.8
           tags: ${{ steps.steinbock_cellpose_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_cellpose_container_meta.outputs.labels }}

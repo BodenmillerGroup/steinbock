@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 # "tensorflow" or "tensorflow-gpu"
 ARG TENSORFLOW_TARGET="tensorflow"
 
@@ -23,7 +25,9 @@ FROM --platform=linux/amd64 tensorflow/tensorflow:${TENSORFLOW_VERSION} AS tenso
 
 ARG TENSORFLOW_VERSION
 
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
+ENV DEBIAN_FRONTEND="noninteractive" \
+    PYTHONDONTWRITEBYTECODE="1" \
+    PYTHONUNBUFFERED="1"
 
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
@@ -35,11 +39,13 @@ RUN apt-get update && \
 
 ########## TENSORFLOW-GPU ##########
 
-FROM --platform=linux/amd64 tensorflow/tensorflow:${TENSORFLOW_VERSION}-gpu as tensorflow-gpu
+FROM --platform=linux/amd64 tensorflow/tensorflow:${TENSORFLOW_VERSION}-gpu AS tensorflow-gpu
 
 ARG TENSORFLOW_VERSION
 
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1"
+ENV DEBIAN_FRONTEND="noninteractive" \
+    PYTHONDONTWRITEBYTECODE="1" \
+    PYTHONUNBUFFERED="1"
 
 RUN apt-get update && \
     apt-get install -yqq python3 python3-pip && \
@@ -68,10 +74,92 @@ RUN apt-get update && \
 # are for arm64-based Mac OS only (no Linux wheels available).
 
 
+########## COMMON BASE FOR NON-TENSORFLOW MULTI-ARCH BUILDS ##########
+
+FROM python:3.10-slim AS steinbock-base
+
+ARG TARGETARCH
+ARG STEINBOCK_VERSION
+ARG FIXUID_VERSION
+ARG TZ="Europe/Zurich"
+
+ENV DEBIAN_FRONTEND="noninteractive" \
+    PYTHONDONTWRITEBYTECODE="1" \
+    PYTHONUNBUFFERED="1" \
+    XDG_RUNTIME_DIR="/tmp"
+
+RUN apt-get update && \
+    apt-get install -yqq --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    locales \
+    python3-dev \
+    python3-venv \
+    mesa-utils \
+    libgl1 \
+    libglib2.0-0 \
+    libfontconfig1 \
+    libxrender1 \
+    libdbus-1-3 \
+    libxkbcommon-x11-0 \
+    libxi6 \
+    libxcb-icccm4 \
+    libxcb-image0 \
+    libxcb-keysyms1 \
+    libxcb-randr0 \
+    libxcb-render-util0 \
+    libxcb-xinerama0 \
+    libxcb-xinput0 \
+    libxcb-xfixes0 \
+    libxcb-shape0 \
+    tzdata && \
+    rm -rf /var/lib/apt/lists/* && \
+    python -m pip install --upgrade pip setuptools wheel
+
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+ENV LANG="en_US.UTF-8" LANGUAGE="en_US:en" LC_ALL="en_US.UTF-8"
+RUN ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && echo "${TZ}" > /etc/timezone
+
+RUN addgroup --gid 1000 steinbock && \
+    adduser --uid 1000 --ingroup steinbock --disabled-password --gecos "" steinbock
+
+RUN mkdir /data && chown steinbock:steinbock /data
+
+ENV RUN_FIXUID=1
+RUN case "${TARGETARCH}" in \
+    amd64) FIXUID_ARCH="amd64" ;; \
+    arm64) FIXUID_ARCH="arm64" ;; \
+    *) echo "Unsupported TARGETARCH: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    curl -SsL "https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-${FIXUID_ARCH}.tar.gz" | tar -C /usr/local/bin -xzf - && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid
+COPY --chown=root:root fixuid.yml /etc/fixuid/config.yml
+
+RUN python3 -m venv --system-site-packages /opt/steinbock-venv
+ENV ROOT_VENV_PATH="${PATH}" \
+    STEINBOCK_VENV_PATH="/opt/steinbock-venv/bin:${PATH}" \
+    PATH="/opt/steinbock-venv/bin:${PATH}" \
+    TF_CPP_MIN_LOG_LEVEL="2" \
+    NO_AT_BRIDGE="1"
+
+COPY --chown=root:root steinbock /app/steinbock/steinbock/
+COPY --chown=root:root requirements.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
+
+RUN python -m pip install -r /app/steinbock/requirements.txt && \
+    python -m pip install -r /app/steinbock/requirements_test.txt && \
+    python -m pip install jupyter jupyterlab
+
+COPY --chown=root:root entrypoint.sh /app/entrypoint.sh
+
+
+
 ########## STEINBOCK ##########
 
 FROM ${TENSORFLOW_TARGET} AS steinbock
 
+ARG TARGETARCH
 ARG STEINBOCK_VERSION
 ARG FIXUID_VERSION
 ARG ILASTIK_BINARY
@@ -80,7 +168,10 @@ ARG CELLPROFILER_PLUGINS_VERSION
 ARG CELLPOSE_VERSION
 ARG TZ="Europe/Zurich"
 
-ENV DEBIAN_FRONTEND="noninteractive" PYTHONDONTWRITEBYTECODE="1" PYTHONUNBUFFERED="1" XDG_RUNTIME_DIR="/tmp"
+ENV DEBIAN_FRONTEND="noninteractive" \
+    PYTHONDONTWRITEBYTECODE="1" \
+    PYTHONUNBUFFERED="1" \
+    XDG_RUNTIME_DIR="/tmp"
 
 # install system packages
 
@@ -108,9 +199,14 @@ RUN mkdir /data && \
 # install fixuid
 
 ENV RUN_FIXUID=1
-RUN USER=steinbock && \
+RUN case "${TARGETARCH}" in \
+    amd64) FIXUID_ARCH="amd64" ;; \
+    arm64) FIXUID_ARCH="arm64" ;; \
+    *) echo "Unsupported TARGETARCH: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    USER=steinbock && \
     GROUP=steinbock && \
-    curl -SsL "https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xzf - && \
+    curl -SsL "https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-${FIXUID_ARCH}.tar.gz" | tar -C /usr/local/bin -xzf - && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid
 COPY --chown=root:root fixuid.yml /etc/fixuid/config.yml
@@ -121,6 +217,7 @@ RUN mkdir /opt/ilastik && \
     curl -SsL "https://files.ilastik.org/${ILASTIK_BINARY}" | tar -C /opt/ilastik -xjf - --strip-components=1
 
 # install cellprofiler in cellprofiler-venv
+# kept amd64-only because this whole image is tensorflow/amd64-based anyway
 
 RUN python3 -m venv --system-site-packages /opt/cellprofiler-venv
 ENV ROOT_VENV_PATH="${PATH}" CELLPROFILER_VENV_PATH="/opt/cellprofiler-venv/bin:${PATH}"
@@ -161,7 +258,9 @@ RUN python -m pip install -r /app/steinbock/requirements.txt && \
     python -m pip install jupyter jupyterlab
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
 
-RUN --mount=source=.git,target=/app/steinbock/.git SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" python -m pip install -e "/app/steinbock[imc,deepcell,napari]"
+RUN --mount=source=.git,target=/app/steinbock/.git \
+    SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" \
+    python -m pip install -e "/app/steinbock[imc,deepcell,napari]"
 
 RUN mkdir -p /opt/keras/models && \
     curl -SsL https://deepcell-data.s3-us-west-1.amazonaws.com/saved-models/MultiplexSegmentation-9.tar.gz | tar -C /opt/keras/models -xzf -
@@ -178,17 +277,31 @@ EXPOSE 8888
 
 ########## STEINBOCK-CELLPOSE ##########
 
-FROM steinbock AS steinbock-cellpose
+FROM steinbock-base AS steinbock-cellpose
 
+ARG STEINBOCK_VERSION
 ARG CELLPOSE_VERSION
 
-USER root:root
-RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
-USER steinbock:steinbock
+ENV PATH="/opt/steinbock-venv/bin:${PATH}"
 
+# install steinbock without tensorflow/deepcell extras
+RUN --mount=source=.git,target=/app/steinbock/.git \
+    SETUPTOOLS_SCM_PRETEND_VERSION="${STEINBOCK_VERSION#v}" \
+    python -m pip install -e "/app/steinbock[imc,napari]"
+
+# install cellpose natively per architecture
+RUN python -m pip install "cellpose==${CELLPOSE_VERSION}"
+
+USER root:root
 RUN mkdir -p /home/steinbock/.cellpose/models && \
     curl -L -sS -o /home/steinbock/.cellpose/models/cpsam \
-    https://huggingface.co/mouseland/cellpose-sam/resolve/main/cpsam
+    https://huggingface.co/mouseland/cellpose-sam/resolve/main/cpsam && \
+    chown -R steinbock:steinbock /home/steinbock/.cellpose
+
+WORKDIR /data
+USER steinbock:steinbock
+ENTRYPOINT ["/app/entrypoint.sh"]
+EXPOSE 8888
 
 
 
