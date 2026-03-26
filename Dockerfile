@@ -252,8 +252,9 @@ RUN apt-get update && \
     apt-get clean
 
 COPY --chown=root:root steinbock /app/steinbock/steinbock/
-COPY --chown=root:root requirements.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
+COPY --chown=root:root requirements.txt requirements-deepcell.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 RUN python -m pip install -r /app/steinbock/requirements.txt && \
+    python -m pip install -r /app/steinbock/requirements-deepcell.txt && \
     python -m pip install -r /app/steinbock/requirements_test.txt && \
     python -m pip install jupyter jupyterlab
 ENV TF_CPP_MIN_LOG_LEVEL="2" NO_AT_BRIDGE="1"
