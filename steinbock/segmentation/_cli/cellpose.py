@@ -8,14 +8,32 @@ from ... import io
 from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
-from .. import cellpose
-
-cellpose_cli_available = cellpose.cellpose_available
 
 
-@click.command(
-    name="cellpose", help="Run an object segmentation batch using CellposeSAM"
-)
+def _get_cellpose_module():
+    try:
+        from .. import cellpose as cellpose_module
+    except ImportError as e:
+        raise click.ClickException("The 'cellpose' command requires the optional Cellpose dependencies.") from e
+
+    if not getattr(cellpose_module, "cellpose_available", False):
+        raise click.ClickException(
+            "The 'cellpose' command is not available because Cellpose dependencies "
+            "are not installed in this environment."
+        )
+
+    return cellpose_module
+
+
+try:
+    from .. import cellpose as _cellpose_probe
+
+    cellpose_cli_available = bool(getattr(_cellpose_probe, "cellpose_available", False))
+except ImportError:
+    cellpose_cli_available = False
+
+
+@click.command(name="cellpose", help="Run an object segmentation batch using CellposeSAM")
 @click.option(
     "--img",
     "img_dir",
@@ -193,14 +211,22 @@ def cellpose_cmd(
     tile_overlap,
     mask_dir,
 ):
+    cellpose = _get_cellpose_module()
+
     channel_groups = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "cellpose" in panel and panel["cellpose"].notna().any():
             channel_groups = panel["cellpose"].values
-    aggr_func = getattr(np, aggr_func_name)
+
+    try:
+        aggr_func = getattr(np, aggr_func_name)
+    except AttributeError as e:
+        raise click.ClickException(f"Invalid numpy aggregation function: {aggr_func_name}") from e
+
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
+
     for img_file, mask, _, _ in cellpose.try_segment_objects(
         img_files,
         channelwise_minmax=channelwise_minmax,

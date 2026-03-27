@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Sequence
 
-import napari
 import numpy as np
 
 
@@ -11,7 +10,9 @@ def view(
     pixel_size_um: float = 1.0,
     run: bool = True,
     **viewer_kwargs,
-) -> Optional[napari.Viewer]:
+) -> Optional["napari.Viewer"]:
+    import napari
+
     viewer = napari.Viewer(**viewer_kwargs)
     viewer.axes.visible = True
     viewer.dims.axis_labels = ("y", "x")

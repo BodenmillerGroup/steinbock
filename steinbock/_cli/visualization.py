@@ -6,7 +6,6 @@ import click_log
 from .. import io
 from .._steinbock import SteinbockException
 from .._steinbock import logger as steinbock_logger
-from ..visualization import view
 from .utils import catch_exception
 
 
@@ -48,13 +47,13 @@ from .utils import catch_exception
 @click_log.simple_verbosity_option(logger=steinbock_logger)
 @catch_exception(handle=SteinbockException)
 def view_cmd(img_dir, mask_dirs, panel_file, pixel_size_um, img_file_name):
+    from ..visualization import view
+
     img = io.read_image(Path(img_dir) / img_file_name, native_dtype=True)
     masks = None
     if len(mask_dirs) > 0:
         masks = {
-            f"Mask ({Path(mask_dir).name})": io.read_mask(
-                Path(mask_dir) / img_file_name, native_dtype=True
-            )
+            f"Mask ({Path(mask_dir).name})": io.read_mask(Path(mask_dir) / img_file_name, native_dtype=True)
             for mask_dir in mask_dirs
         }
     channel_names = None

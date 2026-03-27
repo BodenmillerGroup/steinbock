@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-  - fixed new docker build distribution, where cellpose does not include deepcell + proper arm64/amd64 build
+  - fixed new docker build distribution, where cellpose does not include deepcell, added lazy loading + proper arm64/amd64 build
+  
 
 ## [0.16.4] - 2026-03-26
 

@@ -9,13 +9,20 @@ from ..segmentation._cli import segment_cmd_group
 from ..utils._cli import utils_cmd_group
 from .apps import apps_cmd_group
 from .utils import OrderedClickGroup
-from .visualization import view_cmd
 
 
 @click.group(name="steinbock", cls=OrderedClickGroup)
 @click.version_option(steinbock_version)
 def steinbock_cmd_group():
     pass
+
+
+@click.command(name="view")
+@click.pass_context
+def view_cmd(ctx, *args, **kwargs):
+    from .visualization import view_cmd as _view_cmd
+
+    return ctx.invoke(_view_cmd, *args, **kwargs)
 
 
 steinbock_cmd_group.add_command(preprocess_cmd_group)

@@ -8,23 +8,52 @@ from ... import io
 from ..._cli.utils import catch_exception, logger
 from ..._steinbock import SteinbockException
 from ..._steinbock import logger as steinbock_logger
-from .. import deepcell
 
-if deepcell.deepcell_available:
-    import yaml
 
-deepcell_cli_available = deepcell.deepcell_available
+def _get_deepcell_module():
+    try:
+        from .. import deepcell as deepcell_module
+    except ImportError as e:
+        raise click.ClickException("The 'deepcell' command requires the optional DeepCell dependencies.") from e
 
-_applications = {
-    "mesmer": deepcell.Application.MESMER,
-}
+    if not getattr(deepcell_module, "deepcell_available", False):
+        raise click.ClickException(
+            "The 'deepcell' command is not available because DeepCell dependencies "
+            "are not installed in this environment."
+        )
+
+    return deepcell_module
+
+
+def _get_yaml_module():
+    try:
+        import yaml
+    except ImportError as e:
+        raise click.ClickException("The 'deepcell' command requires PyYAML.") from e
+
+    return yaml
+
+
+def _get_applications():
+    deepcell_module = _get_deepcell_module()
+    return {
+        "mesmer": deepcell_module.Application.MESMER,
+    }
+
+
+try:
+    from .. import deepcell as _deepcell_probe
+
+    deepcell_cli_available = bool(getattr(_deepcell_probe, "deepcell_available", False))
+except ImportError:
+    deepcell_cli_available = False
 
 
 @click.command(name="deepcell", help="Run an object segmentation batch using DeepCell")
 @click.option(
     "--app",
     "application_name",
-    type=click.Choice(list(_applications.keys()), case_sensitive=True),
+    type=click.Choice(["mesmer"], case_sensitive=True),
     show_choices=True,
     default="mesmer",
     show_default=True,
@@ -138,36 +167,54 @@ def deepcell_cmd(
     postprocess_file,
     mask_dir,
 ):
+    deepcell = _get_deepcell_module()
+    applications = _get_applications()
+
     channel_groups = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
         if "deepcell" in panel and panel["deepcell"].notna().any():
             channel_groups = panel["deepcell"].values
-    aggr_func = getattr(np, aggr_func_name)
+
+    try:
+        aggr_func = getattr(np, aggr_func_name)
+    except AttributeError as e:
+        raise click.ClickException(f"Invalid numpy aggregation function: {aggr_func_name}") from e
+
     img_files = io.list_image_files(img_dir)
+
     model = None
     if model_path_or_name is not None:
-        from tensorflow.keras.models import load_model  # type: ignore
+        try:
+            from tensorflow.keras.models import load_model  # type: ignore
+        except ImportError as e:
+            raise click.ClickException("TensorFlow/Keras is required to load a DeepCell model.") from e
 
-        if Path(model_path_or_name).exists():
-            model = load_model(model_path_or_name, compile=False)
-        elif Path(keras_model_dir).joinpath(model_path_or_name).exists():
-            model = load_model(
-                Path(keras_model_dir).joinpath(model_path_or_name),
-                compile=False,
-            )
+        model_path = Path(model_path_or_name)
+        keras_model_path = Path(keras_model_dir).joinpath(model_path_or_name)
+
+        if model_path.exists():
+            model = load_model(model_path, compile=False)
+        elif keras_model_path.exists():
+            model = load_model(keras_model_path, compile=False)
+
     preprocess_kwargs = None
     if preprocess_file is not None:
+        yaml = _get_yaml_module()
         with Path(preprocess_file).open() as f:
             preprocess_kwargs = yaml.load(f, yaml.Loader)
+
     postprocess_kwargs = None
     if postprocess_file is not None:
+        yaml = _get_yaml_module()
         with Path(postprocess_file).open() as f:
             postprocess_kwargs = yaml.load(f, yaml.Loader)
+
     Path(mask_dir).mkdir(exist_ok=True)
+
     for img_file, mask in deepcell.try_segment_objects(
         img_files,
-        _applications[application_name],
+        applications[application_name],
         model=model,
         channelwise_minmax=channelwise_minmax,
         channelwise_zscore=channelwise_zscore,
