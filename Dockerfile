@@ -211,8 +211,13 @@ COPY --chown=root:root fixuid.yml /etc/fixuid/config.yml
 
 # install ilastik
 
-RUN mkdir /opt/ilastik && \
-    curl -SsL "https://files.ilastik.org/${ILASTIK_BINARY}" | tar -C /opt/ilastik -xjf - --strip-components=1
+RUN mkdir -p /opt/ilastik /tmp/ilastik && \
+    curl --fail --show-error --location --retry 5 --retry-all-errors \
+    -o /tmp/ilastik/${ILASTIK_BINARY} \
+    "https://files.ilastik.org/${ILASTIK_BINARY}" && \
+    tar -tjf /tmp/ilastik/${ILASTIK_BINARY} > /dev/null && \
+    tar -xjf /tmp/ilastik/${ILASTIK_BINARY} -C /opt/ilastik --strip-components=1 && \
+    rm -rf /tmp/ilastik
 
 # install cellprofiler in cellprofiler-venv
 # kept amd64-only because this whole image is tensorflow/amd64-based anyway
