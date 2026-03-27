@@ -145,13 +145,9 @@ ENV ROOT_VENV_PATH="${PATH}" \
     NO_AT_BRIDGE="1"
 
 COPY --chown=root:root steinbock /app/steinbock/steinbock/
-COPY --chown=root:root requirements.txt requirements-deepcell.txt requirements-napari.txt requirements_test.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
+COPY --chown=root:root requirements.txt conftest.py MANIFEST.in pyproject.toml setup.cfg /app/steinbock/
 
-RUN python -m pip install -r /app/steinbock/requirements.txt && \
-    python -m pip install -r /app/steinbock/requirements-deepcell.txt && \
-    python -m pip install -r /app/steinbock/requirements-napari.txt && \
-    python -m pip install -r /app/steinbock/requirements_test.txt && \
-    python -m pip install jupyter jupyterlab
+RUN python -m pip install -r /app/steinbock/requirements.txt
 
 COPY --chown=root:root entrypoint.sh /app/entrypoint.sh
 
