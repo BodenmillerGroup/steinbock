@@ -212,7 +212,7 @@ COPY --chown=root:root fixuid.yml /etc/fixuid/config.yml
 # install ilastik
 
 RUN mkdir -p /opt/ilastik /tmp/ilastik && \
-    curl --fail --show-error --location --retry 5 --retry-all-errors \
+    curl --fail --show-error --location --retry 5 \
     -o /tmp/ilastik/${ILASTIK_BINARY} \
     "https://files.ilastik.org/${ILASTIK_BINARY}" && \
     tar -tjf /tmp/ilastik/${ILASTIK_BINARY} > /dev/null && \
