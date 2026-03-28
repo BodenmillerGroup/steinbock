@@ -92,6 +92,13 @@ def imc_cmd_group():
     help="Unzip .mcd/.txt files from .zip archives",
 )
 @click.option(
+    "--unzip/--no-unzip",
+    "unzip",
+    default=False,
+    show_default=True,
+    help="Unzip .mcd/.txt files from .zip archives",
+)
+@click.option(
     "-o",
     "panel_file",
     type=click.Path(dir_okay=False),
