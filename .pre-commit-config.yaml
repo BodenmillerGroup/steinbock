@@ -1,7 +1,7 @@
 exclude: ^\.vscode/.*
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -16,25 +16,25 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/PyCQA/isort
-    rev: "5.13.2"
+    rev: "9.0.0a3"
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+    rev: v2.3.3
     hooks:
       - id: autoflake
         args: [--in-place, --remove-all-unused-imports]
-  - repo: https://github.com/psf/black
-    rev: '24.8.0'
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: '26.3.1'
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
-    rev: "7.1.1"
+    rev: "7.3.0"
     hooks:
       - id: flake8
         additional_dependencies: [flake8-typing-imports]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.1
+    rev: v1.20.2
     hooks:
       - id: mypy
         additional_dependencies: [types-requests, types-PyYAML]
