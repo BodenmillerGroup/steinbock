@@ -235,12 +235,12 @@ def images_cmd(
         if img_file_stem in mcd_txt_files:
             num_dupl += 1
             first_mcd_txt_file = mcd_txt_files[img_file_stem][0]
+            mcd_txt_files[img_file_stem].append(mcd_or_txt_file)
             img_file_stem = f"DUPLICATE{num_dupl:03d}_{img_file_stem}"
             logger.warning(
                 f"File {mcd_or_txt_file} is a duplicate of {first_mcd_txt_file}, "
                 f"saving as {img_file_stem}"
             )
-            mcd_txt_files[img_file_stem].append(mcd_or_txt_file)
         else:
             mcd_txt_files[img_file_stem] = [mcd_or_txt_file]
         img_file = Path(img_dir) / f"{img_file_stem}.tiff"
