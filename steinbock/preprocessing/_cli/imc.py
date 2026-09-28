@@ -18,6 +18,15 @@ from .. import imc
 imc_cli_available = imc.imc_available
 
 
+def _check_input_dir(path, param_name: str, option: str) -> bool:
+    if Path(path).is_dir():
+        return True
+    source = click.get_current_context().get_parameter_source(param_name)
+    if source == click.core.ParameterSource.DEFAULT:
+        return False
+    raise click.BadParameter(f"Directory '{path}' does not exist.", param_hint=option)
+
+
 @click.group(
     name="imc",
     cls=OrderedClickGroup,
@@ -141,7 +150,7 @@ def panel_cmd(
 @click.option(
     "--mcd",
     "mcd_dir",
-    type=click.Path(exists=True, file_okay=False),
+    type=click.Path(file_okay=False),
     default="raw",
     show_default=True,
     help="Path to the IMC .mcd/.zip file directory",
@@ -149,7 +158,7 @@ def panel_cmd(
 @click.option(
     "--txt",
     "txt_dir",
-    type=click.Path(exists=True, file_okay=False),
+    type=click.Path(file_okay=False),
     default="raw",
     show_default=True,
     help="Path to the IMC .txt/.zip file directory",
@@ -204,6 +213,14 @@ def panel_cmd(
 def images_cmd(
     mcd_dir, txt_dir, unzip, panel_file, hpf, img_dir, image_info_file, strict
 ):
+    mcd_files = []
+    if _check_input_dir(mcd_dir, "mcd_dir", "--mcd"):
+        mcd_files = imc.list_mcd_files(mcd_dir, unzip=unzip)
+    txt_files = []
+    if _check_input_dir(txt_dir, "txt_dir", "--txt"):
+        txt_files = imc.list_txt_files(txt_dir, unzip=unzip)
+    if len(mcd_files) == 0 and len(txt_files) == 0:
+        raise SteinbockCLIException("No .mcd/.txt files found")
     channel_names = None
     if Path(panel_file).is_file():
         panel = io.read_panel(panel_file)
@@ -211,8 +228,6 @@ def images_cmd(
             channel_names = panel["channel"].tolist()
     image_info_data = []
     Path(img_dir).mkdir(exist_ok=True)
-    mcd_files = imc.list_mcd_files(mcd_dir, unzip=unzip)
-    txt_files = imc.list_txt_files(txt_dir, unzip=unzip)
     mcd_txt_files = {}
     num_dupl = 0
     for (
