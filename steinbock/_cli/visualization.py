@@ -53,7 +53,9 @@ def view_cmd(img_dir, mask_dirs, panel_file, pixel_size_um, img_file_name):
     masks = None
     if len(mask_dirs) > 0:
         masks = {
-            f"Mask ({Path(mask_dir).name})": io.read_mask(Path(mask_dir) / img_file_name, native_dtype=True)
+            f"Mask ({Path(mask_dir).name})": io.read_mask(
+                Path(mask_dir) / img_file_name, native_dtype=True
+            )
             for mask_dir in mask_dirs
         }
     channel_names = None

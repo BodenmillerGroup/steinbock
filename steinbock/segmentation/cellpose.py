@@ -25,8 +25,7 @@ class SteinbockCellposeSegmentationException(SteinbockSegmentationException):
 
 
 class AggregationFunction(Protocol):
-    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray:
-        ...
+    def __call__(self, img: np.ndarray, axis: Optional[int] = None) -> np.ndarray: ...
 
 
 def create_segmentation_stack(

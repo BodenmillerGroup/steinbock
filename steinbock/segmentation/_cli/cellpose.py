@@ -14,7 +14,9 @@ def _get_cellpose_module():
     try:
         from .. import cellpose as cellpose_module
     except ImportError as e:
-        raise click.ClickException("The 'cellpose' command requires the optional Cellpose dependencies.") from e
+        raise click.ClickException(
+            "The 'cellpose' command requires the optional Cellpose dependencies."
+        ) from e
 
     if not getattr(cellpose_module, "cellpose_available", False):
         raise click.ClickException(
@@ -33,7 +35,9 @@ except ImportError:
     cellpose_cli_available = False
 
 
-@click.command(name="cellpose", help="Run an object segmentation batch using CellposeSAM")
+@click.command(
+    name="cellpose", help="Run an object segmentation batch using CellposeSAM"
+)
 @click.option(
     "--img",
     "img_dir",
@@ -222,7 +226,9 @@ def cellpose_cmd(
     try:
         aggr_func = getattr(np, aggr_func_name)
     except AttributeError as e:
-        raise click.ClickException(f"Invalid numpy aggregation function: {aggr_func_name}") from e
+        raise click.ClickException(
+            f"Invalid numpy aggregation function: {aggr_func_name}"
+        ) from e
 
     img_files = io.list_image_files(img_dir)
     Path(mask_dir).mkdir(exist_ok=True)
