@@ -14,7 +14,9 @@ def _get_deepcell_module():
     try:
         from .. import deepcell as deepcell_module
     except ImportError as e:
-        raise click.ClickException("The 'deepcell' command requires the optional DeepCell dependencies.") from e
+        raise click.ClickException(
+            "The 'deepcell' command requires the optional DeepCell dependencies."
+        ) from e
 
     if not getattr(deepcell_module, "deepcell_available", False):
         raise click.ClickException(
@@ -179,7 +181,9 @@ def deepcell_cmd(
     try:
         aggr_func = getattr(np, aggr_func_name)
     except AttributeError as e:
-        raise click.ClickException(f"Invalid numpy aggregation function: {aggr_func_name}") from e
+        raise click.ClickException(
+            f"Invalid numpy aggregation function: {aggr_func_name}"
+        ) from e
 
     img_files = io.list_image_files(img_dir)
 
@@ -188,7 +192,9 @@ def deepcell_cmd(
         try:
             from tensorflow.keras.models import load_model  # type: ignore
         except ImportError as e:
-            raise click.ClickException("TensorFlow/Keras is required to load a DeepCell model.") from e
+            raise click.ClickException(
+                "TensorFlow/Keras is required to load a DeepCell model."
+            ) from e
 
         model_path = Path(model_path_or_name)
         keras_model_path = Path(keras_model_dir).joinpath(model_path_or_name)

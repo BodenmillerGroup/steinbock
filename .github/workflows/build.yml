@@ -104,7 +104,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       # steinbock
 
       - name: Create steinbock container metadata
@@ -129,7 +129,7 @@ jobs:
             STEINBOCK_VERSION=${{ steps.steinbock_meta.outputs.version }}
           tags: ${{ steps.steinbock_container_meta.outputs.tags }}
           labels: ${{ steps.steinbock_container_meta.outputs.labels }}
-      
+
 
       # steinbock-gpu
 
