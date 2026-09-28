@@ -1,9 +1,12 @@
+import shutil
 from pathlib import Path
 
 import numpy as np
 import pytest
+from click.testing import CliRunner
 
 from steinbock import io
+from steinbock._cli import steinbock_cmd_group
 from steinbock.preprocessing import imc
 
 
@@ -95,3 +98,37 @@ class TestIMCPreprocessing:
         gen = imc.try_preprocess_images_from_disk(mcd_files, txt_files)
         for mcd_txt_file, acquisition, img, recovery_file, recovered in gen:
             pass  # TODO
+
+
+@pytest.mark.skipif(not imc.imc_available, reason="IMC is not available")
+def test_images_cmd_duplicate_file_names(
+    imc_test_data_steinbock_path: Path, tmp_path: Path
+):
+    txt_file = next((imc_test_data_steinbock_path / "raw").rglob("*.txt"))
+    raw_dir = tmp_path / "raw"
+    for run in ("run1", "run2", "run3"):
+        (raw_dir / run).mkdir(parents=True)
+        shutil.copy(txt_file, raw_dir / run)
+    runner = CliRunner()
+    with runner.isolated_filesystem(temp_dir=tmp_path):
+        result = runner.invoke(
+            steinbock_cmd_group,
+            [
+                "preprocess",
+                "imc",
+                "images",
+                "--mcd",
+                str(raw_dir),
+                "--txt",
+                str(raw_dir),
+            ],
+        )
+        assert result.exit_code == 0, result.output
+        assert sorted(p.name for p in Path("img").glob("*.tiff")) == sorted(
+            [
+                f"{txt_file.stem}.tiff",
+                f"DUPLICATE001_{txt_file.stem}.tiff",
+                f"DUPLICATE002_{txt_file.stem}.tiff",
+            ]
+        )
+        assert len(io.read_image_info("images.csv")) == 3
