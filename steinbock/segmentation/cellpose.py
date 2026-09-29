@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Generator, Optional, Protocol, Sequence, Tuple, Union
 
 import numpy as np
+from skimage.transform import resize
 
 from .. import io
 from ._segmentation import SteinbockSegmentationException
@@ -116,7 +117,16 @@ def try_segment_objects(
                 tile_overlap=tile_overlap,
             )
 
-            yield Path(img_file), masks[0], flows[0], styles[0]
+            mask = masks[0]
+            if mask.shape != img.shape[1:]:
+                mask = resize(
+                    mask,
+                    img.shape[1:],
+                    order=0,
+                    preserve_range=True,
+                    anti_aliasing=False,
+                ).astype(mask.dtype)
+            yield Path(img_file), mask, flows[0], styles[0]
             del img, masks, flows, styles
         except Exception as e:
             logger.exception(f"Error segmenting objects in {img_file}: {e}")
