@@ -12,7 +12,7 @@ from .. import mosaics
 
 
 def _collect_tiff_files(
-    img_files_or_dirs: Sequence[Union[str, PathLike]]
+    img_files_or_dirs: Sequence[Union[str, PathLike]],
 ) -> List[Path]:
     img_files = []
     for img_file_or_dir in img_files_or_dirs:
