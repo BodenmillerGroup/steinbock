@@ -43,7 +43,7 @@ def list_image_files(ext_img_dir: Union[str, PathLike]) -> List[Path]:
 
 
 def create_panel_from_image_files(
-    ext_img_files: Sequence[Union[str, PathLike]]
+    ext_img_files: Sequence[Union[str, PathLike]],
 ) -> pd.DataFrame:
     num_channels = None
     for ext_img_file in ext_img_files:
@@ -75,7 +75,7 @@ def create_panel_from_image_files(
 
 
 def try_preprocess_images_from_disk(
-    ext_img_files: Sequence[Union[str, PathLike]]
+    ext_img_files: Sequence[Union[str, PathLike]],
 ) -> Generator[Tuple[Path, np.ndarray], None, None]:
     for ext_img_file in ext_img_files:
         try:
